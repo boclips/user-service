@@ -19,13 +19,14 @@ dependencies {
     compile('org.jboss.resteasy:resteasy-jackson2-provider:3.6.2.Final')
     compile('org.jboss.resteasy:resteasy-client:3.6.2.Final')
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compile('org.keycloak:keycloak-authz-client:4.6.0.Final')
+
 
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testCompile("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testCompile("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testCompile('org.assertj:assertj-core:3.11.1')
     testCompile('org.yaml:snakeyaml:1.23')
-
 }
 
 compileKotlin {
