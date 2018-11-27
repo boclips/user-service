@@ -1,11 +1,8 @@
 package com.boclips.users.keycloakclient
 
-import com.sun.org.apache.regexp.internal.RE
 import org.keycloak.admin.client.Keycloak
-
 import org.keycloak.admin.client.resource.UserResource
 import org.keycloak.representations.idm.UserRepresentation
-import java.lang.RuntimeException
 import javax.ws.rs.core.Response
 
 class KeycloakClient(config: KeycloakConfig) : IdentityProvider {
@@ -14,6 +11,7 @@ class KeycloakClient(config: KeycloakConfig) : IdentityProvider {
         const val REALM = "teachers"
 
     }
+
     private val keycloak = Keycloak.getInstance(
             config.url,
             "master",

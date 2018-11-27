@@ -1,7 +1,5 @@
 package com.boclips.users.keycloakclient
 
-import javax.ws.rs.core.Response
-
 interface IdentityProvider {
     fun getUserById(id: String): KeycloakUser
     fun getUserByUsername(username: String): KeycloakUser

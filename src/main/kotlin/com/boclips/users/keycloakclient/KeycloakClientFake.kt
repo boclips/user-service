@@ -1,8 +1,6 @@
 package com.boclips.users.keycloakclient
 
-import javax.swing.text.html.HTML.Tag.P
 import javax.ws.rs.NotFoundException
-import javax.ws.rs.core.Response
 
 class KeycloakClientFake : IdentityProvider {
     val fakeUsers = hashMapOf(

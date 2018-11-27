@@ -43,7 +43,7 @@ class KeycloakClientFakeContractTest : ContractTest {
 
     @Test
     override fun `get invalid user`() {
-        assertThrows<NotFoundException> {keycloakClient.getUserById("invalid-user")}
+        assertThrows<NotFoundException> { keycloakClient.getUserById("invalid-user") }
     }
 
     @Test
