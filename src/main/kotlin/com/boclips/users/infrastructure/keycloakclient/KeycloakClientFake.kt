@@ -1,4 +1,4 @@
-package com.boclips.users.keycloakclient
+package com.boclips.users.infrastructure.keycloakclient
 
 import java.util.*
 import javax.ws.rs.NotFoundException

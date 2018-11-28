@@ -1,4 +1,4 @@
-package com.boclips.users.keycloakclient
+package com.boclips.users.infrastructure.keycloakclient
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*

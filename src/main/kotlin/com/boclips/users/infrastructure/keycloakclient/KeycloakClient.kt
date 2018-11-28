@@ -1,4 +1,4 @@
-package com.boclips.users.keycloakclient
+package com.boclips.users.infrastructure.keycloakclient
 
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.resource.UserResource

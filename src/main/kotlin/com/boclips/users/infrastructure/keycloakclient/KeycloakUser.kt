@@ -1,4 +1,4 @@
-package com.boclips.users.keycloakclient
+package com.boclips.users.infrastructure.keycloakclient
 
 data class KeycloakUser(
         val username: String,

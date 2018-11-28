@@ -1,4 +1,4 @@
-package com.boclips.users.keycloakclient
+package com.boclips.users.infrastructure.keycloakclient
 
 import org.yaml.snakeyaml.Yaml
 import java.io.InputStream

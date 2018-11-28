@@ -1,4 +1,4 @@
-package com.boclips.users.keycloakclient
+package com.boclips.users.infrastructure.keycloakclient
 
 interface IdentityProvider {
     fun getUserById(id: String): KeycloakUser
