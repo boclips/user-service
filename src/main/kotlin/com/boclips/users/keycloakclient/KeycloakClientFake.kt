@@ -1,5 +1,6 @@
 package com.boclips.users.keycloakclient
 
+import java.util.*
 import javax.ws.rs.NotFoundException
 
 class KeycloakClientFake : IdentityProvider {
@@ -54,7 +55,8 @@ class KeycloakClientFake : IdentityProvider {
     }
 
     override fun createUser(user: KeycloakUser): KeycloakUser {
-        fakeUsers[user.id!!] = user
-        return fakeUsers[user.id] ?: throw RuntimeException("Something failed")
+        val createdUser = user.copy(id = "${UUID.randomUUID()}")
+        fakeUsers[createdUser.id!!] = createdUser
+        return fakeUsers[createdUser.id] ?: throw RuntimeException("Something failed")
     }
 }

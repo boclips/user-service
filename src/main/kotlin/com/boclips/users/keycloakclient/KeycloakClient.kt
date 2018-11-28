@@ -21,7 +21,7 @@ class KeycloakClient(config: KeycloakConfig) : IdentityProvider {
     )
 
     override fun getUserById(id: String): KeycloakUser {
-        val user = getUserResourece(id).toRepresentation()
+        val user = getUserResource(id).toRepresentation()
 
         return KeycloakUser(
                 id = user.id,
@@ -77,7 +77,7 @@ class KeycloakClient(config: KeycloakConfig) : IdentityProvider {
         return events.isNotEmpty()
     }
 
-    private fun getUserResourece(id: String): UserResource {
+    private fun getUserResource(id: String): UserResource {
         return keycloak.realm(REALM).users().get(id)
     }
 }
