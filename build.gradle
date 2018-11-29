@@ -52,7 +52,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-actuator')
 
-    compile('com.github.boclips:boclips-spring-security:0.14.0')
+    compile('com.github.boclips:boclips-spring-security:0.15.0')
 
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
     compile('org.keycloak:keycloak-admin-client:4.6.0.Final')
