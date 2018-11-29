@@ -7,9 +7,7 @@ import javax.ws.rs.core.Response
 
 class KeycloakClient(config: KeycloakConfig) : IdentityProvider {
     companion object {
-
         const val REALM = "teachers"
-
     }
 
     private val keycloak = Keycloak.getInstance(
