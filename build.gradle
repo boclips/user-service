@@ -55,10 +55,10 @@ dependencies {
     compile('com.github.boclips:boclips-spring-security:0.15.0')
 
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
-    compile('org.keycloak:keycloak-admin-client:4.6.0.Final')
-    compile('org.jboss.resteasy:resteasy-jackson2-provider:3.6.2.Final')
-    compile('org.jboss.resteasy:resteasy-client:3.6.2.Final')
-    compile('org.keycloak:keycloak-authz-client:4.6.0.Final')
+//    compile('org.keycloak:keycloak-admin-client:4.6.0.Final')
+//    compile('org.jboss.resteasy:resteasy-jackson2-provider:3.6.2.Final')
+//    compile('org.jboss.resteasy:resteasy-client:3.6.2.Final')
+//    compile('org.keycloak:keycloak-authz-client:4.6.0.Final')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')

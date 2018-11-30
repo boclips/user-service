@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloakclient
 
+import org.springframework.data.crossstore.ChangeSetPersister
 import java.util.*
-import javax.ws.rs.NotFoundException
 
 class KeycloakClientFake : IdentityProvider {
     val fakeUsers = hashMapOf(
@@ -51,7 +51,7 @@ class KeycloakClientFake : IdentityProvider {
     }
 
     override fun getUserById(id: String): KeycloakUser {
-        return fakeUsers[id] ?: throw NotFoundException()
+        return fakeUsers[id] ?: throw ChangeSetPersister.NotFoundException()
     }
 
     override fun createUser(user: KeycloakUser): KeycloakUser {

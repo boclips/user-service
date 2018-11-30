@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.keycloakclient
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
-import javax.ws.rs.NotFoundException
+import org.springframework.data.crossstore.ChangeSetPersister
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class ContractTest {
@@ -40,7 +40,7 @@ abstract class ContractTest {
 
     @Test
     fun `get invalid user`() {
-        assertThrows<NotFoundException> { keycloakClient.getUserById("invalidId") }
+        assertThrows<ChangeSetPersister.NotFoundException> { keycloakClient.getUserById("invalidId") }
     }
 
     @Test
