@@ -1,6 +1,6 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.users.User
 
 
 class UserFactory {

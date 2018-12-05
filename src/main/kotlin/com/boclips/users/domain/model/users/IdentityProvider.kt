@@ -1,4 +1,7 @@
-package com.boclips.users.infrastructure.keycloakclient
+package com.boclips.users.domain.model.users
+
+import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
+import java.time.LocalDate
 
 interface IdentityProvider {
     fun getUserById(id: String): KeycloakUser
@@ -6,4 +9,5 @@ interface IdentityProvider {
     fun hasLoggedIn(id: String): Boolean
     fun createUser(user: KeycloakUser): KeycloakUser
     fun deleteUserById(id: String): KeycloakUser
+    fun getLastLoginUserIds(client: String, since: LocalDate): List<String>
 }

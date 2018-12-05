@@ -1,7 +1,7 @@
 package com.boclips.users.presentation
 
 import com.boclips.users.application.UserActions
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.users.User
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Identifiable
 import org.springframework.web.bind.annotation.GetMapping

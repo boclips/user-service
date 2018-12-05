@@ -1,6 +1,6 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.model.UserRepository
+import com.boclips.users.domain.model.users.UserRepository
 import com.boclips.users.presentation.SecurityContextUserNotFoundException
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.UserFactory

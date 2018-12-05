@@ -1,8 +1,8 @@
 package com.boclips.users.infrastructure.keycloakclient
 
+import com.boclips.users.domain.model.users.IdentityProvider
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
-import org.springframework.data.crossstore.ChangeSetPersister
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class ContractTest {
@@ -40,7 +40,7 @@ abstract class ContractTest {
 
     @Test
     fun `get invalid user`() {
-        assertThrows<ChangeSetPersister.NotFoundException> { keycloakClient.getUserById("invalidId") }
+        assertThrows<ResourceNotFoundException> { keycloakClient.getUserById("invalidId") }
     }
 
     @Test

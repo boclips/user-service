@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.keycloakclient
 
-import org.springframework.data.crossstore.ChangeSetPersister
+import com.boclips.users.domain.model.users.IdentityProvider
+import java.time.LocalDate
 import java.util.*
 
 class KeycloakClientFake : IdentityProvider {
@@ -28,11 +29,15 @@ class KeycloakClientFake : IdentityProvider {
             )
     )
 
-    private val hasLoggedIn = mapOf<String, Boolean>()
+    private val hasLoggedIn = mutableMapOf<String, Boolean>()
 
     override fun hasLoggedIn(id: String): Boolean {
         return hasLoggedIn[id] ?: return false
     }
+
+    override fun getLastLoginUserIds(client: String, since: LocalDate) = hasLoggedIn.entries
+            .filter { it.value }
+            .map { it.key }
 
     override fun getUserByUsername(username: String): KeycloakUser {
         return KeycloakUser(
@@ -51,12 +56,20 @@ class KeycloakClientFake : IdentityProvider {
     }
 
     override fun getUserById(id: String): KeycloakUser {
-        return fakeUsers[id] ?: throw ChangeSetPersister.NotFoundException()
+        return fakeUsers[id] ?: throw ResourceNotFoundException()
     }
 
     override fun createUser(user: KeycloakUser): KeycloakUser {
         val createdUser = user.copy(id = "${UUID.randomUUID()}")
         fakeUsers[createdUser.id!!] = createdUser
         return fakeUsers[createdUser.id] ?: throw RuntimeException("Something failed")
+    }
+
+    fun login(user: KeycloakUser) {
+        hasLoggedIn[user.id!!] = true
+    }
+
+    fun clear() {
+        hasLoggedIn.clear()
     }
 }

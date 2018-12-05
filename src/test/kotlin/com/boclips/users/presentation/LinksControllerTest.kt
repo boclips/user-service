@@ -1,7 +1,7 @@
 package com.boclips.users.presentation
 
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserRepository
+import com.boclips.users.domain.model.users.User
+import com.boclips.users.domain.model.users.UserRepository
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith

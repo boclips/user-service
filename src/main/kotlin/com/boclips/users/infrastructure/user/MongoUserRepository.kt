@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserRepository
+import com.boclips.users.domain.model.users.User
+import com.boclips.users.domain.model.users.UserRepository
 import org.springframework.stereotype.Component
 
 @Component

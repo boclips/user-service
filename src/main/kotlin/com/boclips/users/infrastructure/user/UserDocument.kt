@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.users.User
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
