@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.UserRepository
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
+import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -21,6 +22,13 @@ class LinksControllerTest : AbstractSpringIntergrationTest() {
         mvc.perform(get("/v1/").asUser("unknown-user"))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._links.activate.href", endsWith("/users")))
+    }
+
+    @Test
+    fun `GET links uses proto headers`() {
+        mvc.perform(get("/v1/").asUser("unknown-user").header("x-forwarded-proto", "https"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._links.activate.href", startsWith("https")))
     }
 
     @Test
