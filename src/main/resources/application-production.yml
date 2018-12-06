@@ -1,2 +1,4 @@
 keycloak:
   configurationFile: 'classpath:keycloak-production.json'
+mixpanel:
+  token: 5695e44d19f62e9c99c37d6ea0e11d85

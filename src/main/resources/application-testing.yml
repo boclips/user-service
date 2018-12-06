@@ -1,2 +1,4 @@
 keycloak:
   configurationFile: 'classpath:keycloak-testing.json'
+mixpanel:
+  token: 70f2ae29eaa67a0e93513c2f0d86c94b
