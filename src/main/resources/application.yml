@@ -1,2 +1,2 @@
 app:
-  registration-period-in-seconds: 300
+  registration-period-in-millis: 300000

@@ -14,7 +14,7 @@ class UserRegistrator(
 ) {
     companion object : KLogging()
 
-    @Scheduled(fixedDelayString = "\${app.registration-period-in-seconds}")
+    @Scheduled(fixedDelayString = "\${app.registration-period-in-millis}")
     fun registerNewTeachersSinceYesterday() = identityProvider
             .getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
             .apply { logger.info { "Found ${this.size} login events in the past 24 hours - checking registration state" } }
