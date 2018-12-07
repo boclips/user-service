@@ -1,6 +1,8 @@
 package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
+import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
+import org.keycloak.representations.idm.AdminEventRepresentation
 import java.time.LocalDate
 import java.util.*
 
@@ -29,15 +31,35 @@ class KeycloakClientFake : IdentityProvider {
             )
     )
 
+    val fakeGroups = hashMapOf<String, KeycloakGroup>(
+    )
+
+    data class GroupAssociation(val userId: String, val groupName: String)
+    val fakeAdminEvents = mutableListOf<GroupAssociation>(
+
+    )
+
+    @Synchronized
+    override fun getLastAdditionsToTeacherGroup(since: LocalDate): List<String> {
+        return fakeAdminEvents.filter { it.groupName == TEACHERS_GROUP_NAME }.map { it.userId }
+    }
+
+    override fun createGroupIfDoesntExist(keycloakGroup: KeycloakGroup): KeycloakGroup {
+        val createdGroup = keycloakGroup.copy(id = "${UUID.randomUUID()}")
+        fakeGroups[createdGroup.id!!] = keycloakGroup
+        return createdGroup
+    }
+
+    override fun addUserToGroup(userId: String, groupId: String) {
+        val groupName = fakeGroups[groupId]!!.name
+        fakeAdminEvents.add(GroupAssociation(userId, groupName))
+    }
+
     private val hasLoggedIn = mutableMapOf<String, Boolean>()
 
     override fun hasLoggedIn(id: String): Boolean {
         return hasLoggedIn[id] ?: return false
     }
-
-    override fun getLastLoginUserIds(client: String, since: LocalDate) = hasLoggedIn.entries
-            .filter { it.value }
-            .map { it.key }
 
     override fun getUserByUsername(username: String): KeycloakUser {
         return KeycloakUser(
@@ -59,7 +81,7 @@ class KeycloakClientFake : IdentityProvider {
         return fakeUsers[id] ?: throw ResourceNotFoundException()
     }
 
-    override fun createUser(user: KeycloakUser): KeycloakUser {
+    override fun createUserIfDoesntExist(user: KeycloakUser): KeycloakUser {
         val createdUser = user.copy(id = "${UUID.randomUUID()}")
         fakeUsers[createdUser.id!!] = createdUser
         return fakeUsers[createdUser.id] ?: throw RuntimeException("Something failed")
@@ -69,7 +91,11 @@ class KeycloakClientFake : IdentityProvider {
         hasLoggedIn[user.id!!] = true
     }
 
+    @Synchronized
     fun clear() {
+        fakeAdminEvents.clear()
         hasLoggedIn.clear()
+        fakeUsers.clear()
+        fakeGroups.clear()
     }
 }

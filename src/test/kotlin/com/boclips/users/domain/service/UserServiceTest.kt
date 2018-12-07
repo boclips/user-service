@@ -31,7 +31,7 @@ class UserServiceTest {
      fun `register user when no user sends activation event`() {
         subject.registerUserIfNew("doesn't exist")
 
-        verify(analyticsClient).track(Event(EventType.BEGIN_ACTIVATION, "doesn't exist"))
+        verify(analyticsClient).track(Event(EventType.ACCOUNT_CREATED, "doesn't exist"))
     }
 
     @Test

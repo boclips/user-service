@@ -16,7 +16,7 @@ class UserRegistrator(
 
     @Scheduled(fixedDelayString = "\${app.registration-period-in-seconds}")
     fun registerNewTeachersSinceYesterday() = identityProvider
-            .getLastLoginUserIds("educators", LocalDate.now().minusDays(1))
+            .getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
             .apply { logger.info { "Found ${this.size} login events in the past 24 hours - checking registration state" } }
             .forEach { userService.registerUserIfNew(it) }
 

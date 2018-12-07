@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.keycloakclient
 import com.boclips.users.domain.model.users.IdentityProvider
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
+import java.time.LocalDate
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class ContractTest {
@@ -13,7 +14,7 @@ abstract class ContractTest {
 
     @BeforeEach
     fun setUp() {
-        createdUser = keycloakClient.createUser(KeycloakUser(
+        createdUser = keycloakClient.createUserIfDoesntExist(KeycloakUser(
                 email = "some-createdUser@boclips.com",
                 firstName = "Hans",
                 lastName = "Muster",
@@ -53,7 +54,7 @@ abstract class ContractTest {
     fun `can create and delete user`() {
         val username = "contract-test-user-2"
 
-        val createdUser = keycloakClient.createUser(KeycloakUser(
+        val createdUser = keycloakClient.createUserIfDoesntExist(KeycloakUser(
                 username = username,
                 email = "test@testtest.com",
                 firstName = "Hello",
@@ -67,4 +68,17 @@ abstract class ContractTest {
         val deletedUser = keycloakClient.deleteUserById(createdUser.id!!)
         Assertions.assertThat(deletedUser.username).isEqualTo(username)
     }
+
+    @Test
+    fun `can retrieve new teacher group membership`() {
+        val createdGroup = keycloakClient.createGroupIfDoesntExist(KeycloakGroup(
+                name = "teachers"
+        ))
+
+        keycloakClient.addUserToGroup(createdUser.id!!, createdGroup.id!!)
+        val userIds =  keycloakClient.getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
+
+        Assertions.assertThat(userIds).contains(createdUser.id)
+    }
+
 }

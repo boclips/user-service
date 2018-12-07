@@ -6,5 +6,5 @@ data class Event(
 )
 
 enum class EventType {
-    BEGIN_ACTIVATION
+    ACCOUNT_CREATED
 }

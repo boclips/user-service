@@ -7,7 +7,6 @@ import com.boclips.users.domain.model.events.Event
 import com.boclips.users.domain.model.events.EventType
 import mu.KLogging
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
@@ -23,7 +22,7 @@ class UserService(
             ?: userRepository
                     .save(User(id = id, activated = false))
                     .apply {
-                        analyticsClient.track(Event(eventType = EventType.BEGIN_ACTIVATION, userId = id))
+                        analyticsClient.track(Event(eventType = EventType.ACCOUNT_CREATED, userId = id))
                         logger.info { "Registered new user: $id" }
                     }
     fun activate(id: String) = userRepository.save(User(id = id, activated = true))

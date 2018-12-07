@@ -54,6 +54,7 @@ dependencies {
 
     compile('com.github.boclips:boclips-spring-security:0.15.0')
 
+    compile('com.jayway.jsonpath:json-path:2.3.0')
     compile('io.github.microutils:kotlin-logging:1.6.22')
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
     compile('org.keycloak:keycloak-admin-client:4.6.0.Final')

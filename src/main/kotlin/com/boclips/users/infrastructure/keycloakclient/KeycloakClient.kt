@@ -1,18 +1,21 @@
 package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
+import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
+import com.jayway.jsonpath.JsonPath.*
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.resource.UserResource
+import org.keycloak.representations.idm.GroupRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import java.time.LocalDate
 import javax.ws.rs.core.Response
 
 class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
-
     companion object {
-        const val REALM = "teachers"
-    }
 
+        const val REALM = "teachers"
+
+    }
     private val keycloak = Keycloak.getInstance(
             properties.url,
             "master",
@@ -20,7 +23,6 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
             properties.password,
             "admin-cli"
     )
-
     override fun getUserById(id: String): KeycloakUser {
         val user: UserRepresentation?
         try {
@@ -51,16 +53,16 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
         )
     }
 
-    override fun createUser(user: KeycloakUser): KeycloakUser {
+    override fun createUserIfDoesntExist(user: KeycloakUser): KeycloakUser {
         val userRepresentation = UserRepresentation()
         userRepresentation.username = user.username
         userRepresentation.firstName = user.firstName
         userRepresentation.lastName = user.lastName
         userRepresentation.email = user.email
 
-        val response = keycloak.realm(REALM).users().create(userRepresentation)
-        if (response.statusInfo.toEnum() != Response.Status.CREATED) {
-            throw RuntimeException("Could not create user")
+        val newUser = keycloak.realm(REALM).users().create(userRepresentation)
+        if (!newUser.isCreatedOrExists()) {
+            throw RuntimeException("Could not create user ${user.username}")
         }
 
         return getUserByUsername(user.username)
@@ -92,12 +94,40 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
         return events.isNotEmpty()
     }
 
-    override fun getLastLoginUserIds(client: String, since: LocalDate) = keycloak.realm(REALM)
-            .getEvents(listOf("LOGIN"), client, null, since.toString(), null, null, null, 9999)
-            .map { it.userId }
+    override fun getLastAdditionsToTeacherGroup(since: LocalDate) = keycloak.realm(REALM)
+            .getAdminEvents(listOf("CREATE"), null, null, null, null, null, since.toString(), null, 0, 9999)
+            .filter { it.resourceType == "GROUP_MEMBERSHIP" }
+            .filter { parse(it.representation).read<String>("$.name") == TEACHERS_GROUP_NAME }
+            .map { it.resourcePath.substringAfter("users/").substringBefore("/") }
 
-
-    private fun getUserResource(id: String): UserResource {
+    fun getUserResource(id: String): UserResource {
         return keycloak.realm(REALM).users().get(id)
+    }
+
+    override fun createGroupIfDoesntExist(keycloakGroup: KeycloakGroup): KeycloakGroup {
+        val newGroup = keycloak.realm(REALM).groups().add(GroupRepresentation().apply { name = keycloakGroup.name })
+
+        if (!newGroup.isCreatedOrExists()) {
+            throw RuntimeException("Could not create group ${keycloakGroup.name}")
+        }
+
+        return getGroupByGroupName(keycloakGroup.name)
+    }
+
+    private fun Response.isCreatedOrExists() =
+            this.statusInfo.toEnum() in listOf(Response.Status.CREATED, Response.Status.CONFLICT)
+
+
+    private fun getGroupByGroupName(groupName: String): KeycloakGroup {
+        val group = keycloak.realm(REALM).groups().groups().first { it.name == groupName }
+
+        return KeycloakGroup(
+                id = group.id,
+                name = group.name
+        )
+    }
+
+    override fun addUserToGroup(userId: String, groupId: String) {
+        getUserResource(userId).joinGroup(groupId)
     }
 }
