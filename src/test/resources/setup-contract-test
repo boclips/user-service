@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-lpass show --notes "keycloak-client-contract-test" > contract-test-setup.yml
+echo "KEYCLOAK_USERNAME: $(lpass show --username "e2e-admin-testing")" > contract-test-setup.yml
+echo "KEYCLOAK_PASSWORD: $(lpass show --password "e2e-admin-testing")" >> contract-test-setup.yml

@@ -13,12 +13,12 @@ import javax.ws.rs.core.Response
 class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     companion object {
 
-        const val REALM = "teachers"
+        const val TEACHERS_REALM = "teachers"
 
     }
     private val keycloak = Keycloak.getInstance(
             properties.url,
-            "master",
+            TEACHERS_REALM,
             properties.username,
             properties.password,
             "admin-cli"
@@ -41,7 +41,7 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     }
 
     override fun getUserByUsername(username: String): KeycloakUser {
-        val user = keycloak.realm(REALM).users().search(username)
+        val user = keycloak.realm(TEACHERS_REALM).users().search(username)
                 .first { it.username == username }
 
         return KeycloakUser(
@@ -60,7 +60,7 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
         userRepresentation.lastName = user.lastName
         userRepresentation.email = user.email
 
-        val newUser = keycloak.realm(REALM).users().create(userRepresentation)
+        val newUser = keycloak.realm(TEACHERS_REALM).users().create(userRepresentation)
         if (!newUser.isCreatedOrExists()) {
             throw RuntimeException("Could not create user ${user.username}")
         }
@@ -71,7 +71,7 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     override fun deleteUserById(id: String): KeycloakUser {
         val user = getUserById(id)
 
-        val response = keycloak.realm(REALM).users().delete(id)
+        val response = keycloak.realm(TEACHERS_REALM).users().delete(id)
 
         if (response.statusInfo.toEnum() != Response.Status.NO_CONTENT) {
             throw RuntimeException("Could not delete user")
@@ -81,7 +81,7 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     }
 
     override fun hasLoggedIn(id: String): Boolean {
-        val events = keycloak.realm(REALM).getEvents(
+        val events = keycloak.realm(TEACHERS_REALM).getEvents(
                 listOf("LOGIN"),
                 null,
                 id,
@@ -94,18 +94,18 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
         return events.isNotEmpty()
     }
 
-    override fun getLastAdditionsToTeacherGroup(since: LocalDate) = keycloak.realm(REALM)
+    override fun getLastAdditionsToTeacherGroup(since: LocalDate) = keycloak.realm(TEACHERS_REALM)
             .getAdminEvents(listOf("CREATE"), null, null, null, null, null, since.toString(), null, 0, 9999)
             .filter { it.resourceType == "GROUP_MEMBERSHIP" }
             .filter { parse(it.representation).read<String>("$.name") == TEACHERS_GROUP_NAME }
             .map { it.resourcePath.substringAfter("users/").substringBefore("/") }
 
     fun getUserResource(id: String): UserResource {
-        return keycloak.realm(REALM).users().get(id)
+        return keycloak.realm(TEACHERS_REALM).users().get(id)
     }
 
     override fun createGroupIfDoesntExist(keycloakGroup: KeycloakGroup): KeycloakGroup {
-        val newGroup = keycloak.realm(REALM).groups().add(GroupRepresentation().apply { name = keycloakGroup.name })
+        val newGroup = keycloak.realm(TEACHERS_REALM).groups().add(GroupRepresentation().apply { name = keycloakGroup.name })
 
         if (!newGroup.isCreatedOrExists()) {
             throw RuntimeException("Could not create group ${keycloakGroup.name}")
@@ -119,7 +119,7 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
 
 
     private fun getGroupByGroupName(groupName: String): KeycloakGroup {
-        val group = keycloak.realm(REALM).groups().groups().first { it.name == groupName }
+        val group = keycloak.realm(TEACHERS_REALM).groups().groups().first { it.name == groupName }
 
         return KeycloakGroup(
                 id = group.id,
