@@ -16,6 +16,7 @@ outputs:
 
 caches:
 - path: .gradle/
+- path: source/dependency-check-cache
 
 run:
   path: source/pipeline/scripts/build.sh
