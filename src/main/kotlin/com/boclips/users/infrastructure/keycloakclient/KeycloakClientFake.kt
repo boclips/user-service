@@ -2,32 +2,38 @@ package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
 import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
-import org.keycloak.representations.idm.AdminEventRepresentation
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 class KeycloakClientFake : IdentityProvider {
     val fakeUsers = hashMapOf(
             "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027" to KeycloakUser(
-                    id = "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027",
                     username = "boclipper",
+                    id = "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027",
+                    email = "engineering@boclips.com",
                     firstName = "Little",
                     lastName = "Bo",
-                    email = "engineering@boclips.com"
+                    isEmailVerified = false,
+                    createdAccountAt = LocalDateTime.of(2018, 1, 1, 0, 0)
             ),
             "590784b2-c201-4ecb-b16f-9412af00bc69" to KeycloakUser(
-                    id = "590784b2-c201-4ecb-b16f-9412af00bc69",
                     username = "Matt Jones",
+                    id = "590784b2-c201-4ecb-b16f-9412af00bc69",
+                    email = "matt+testing@boclips.com",
                     firstName = "Matt",
                     lastName = "Jones",
-                    email = "matt+testing@boclips.com"
+                    isEmailVerified = false,
+                    createdAccountAt = LocalDateTime.of(2018, 1, 1, 0, 0)
             ),
             "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3" to KeycloakUser(
-                    id = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3",
                     username = "notloggedin",
+                    id = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3",
+                    email = "notloggedin@somewhere.com",
                     firstName = "Not",
                     lastName = "Logged in",
-                    email = "notloggedin@somewhere.com"
+                    isEmailVerified = false,
+                    createdAccountAt = LocalDateTime.of(2018, 1, 1, 0, 0)
             )
     )
 
@@ -35,9 +41,8 @@ class KeycloakClientFake : IdentityProvider {
     )
 
     data class GroupAssociation(val userId: String, val groupName: String)
-    val fakeAdminEvents = mutableListOf<GroupAssociation>(
 
-    )
+    val fakeAdminEvents = mutableListOf<GroupAssociation>()
 
     @Synchronized
     override fun getLastAdditionsToTeacherGroup(since: LocalDate): List<String> {
@@ -48,6 +53,10 @@ class KeycloakClientFake : IdentityProvider {
         val createdGroup = keycloakGroup.copy(id = "${UUID.randomUUID()}")
         fakeGroups[createdGroup.id!!] = keycloakGroup
         return createdGroup
+    }
+
+    override fun getAllUsers(): List<KeycloakUser> {
+        return fakeUsers.values.toList()
     }
 
     override fun addUserToGroup(userId: String, groupId: String) {
@@ -63,11 +72,13 @@ class KeycloakClientFake : IdentityProvider {
 
     override fun getUserByUsername(username: String): KeycloakUser {
         return KeycloakUser(
-                id = username,
                 username = username,
+                id = username,
+                email = "$username@boclips.com",
                 firstName = "Little",
                 lastName = "Bo",
-                email = "$username@boclips.com"
+                isEmailVerified = false,
+                createdAccountAt = LocalDateTime.of(2018, 1, 1, 0, 0)
         )
     }
 

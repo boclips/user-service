@@ -16,6 +16,7 @@ import org.awaitility.Awaitility
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.LocalDateTime
 
 class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
@@ -41,7 +42,12 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     fun `user registration eventually triggers`() {
         assertThat(mixpanelClientFake.getEvents()).isEmpty()
 
-        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser("username"))
+        val user = keycloakClientFake.createUserIfDoesntExist(
+                KeycloakUser(
+                        username = "username",
+                        isEmailVerified = true,
+                        createdAccountAt = LocalDateTime.of(2018, 1, 1, 0, 0)))
+
         val group = keycloakClientFake.createGroupIfDoesntExist(KeycloakGroup(name = TEACHERS_GROUP_NAME))
         keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
 
@@ -52,7 +58,12 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration triggers only once`() {
-        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser("username"))
+        val user = keycloakClientFake.createUserIfDoesntExist(
+                KeycloakUser(
+                        username = "username",
+                        isEmailVerified = true,
+                        createdAccountAt = LocalDateTime.of(2018, 1, 1, 0, 0)))
+
         val group = keycloakClientFake.createGroupIfDoesntExist(KeycloakGroup(name = TEACHERS_GROUP_NAME))
         keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
 
@@ -63,7 +74,12 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration does not modify existing users`() {
-        val user = KeycloakUser("username", id = "id")
+        val user = KeycloakUser(
+                username = "username",
+                id = "id",
+                isEmailVerified = true,
+                createdAccountAt = LocalDateTime.of(2018, 1, 1, 0, 0))
+
         userService.activate("id")
 
         keycloakClientFake.createUserIfDoesntExist(user)
@@ -76,7 +92,12 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration does not trigger events for existing users`() {
-        val user = KeycloakUser("username", id = "id")
+        val user = KeycloakUser(
+                username = "username",
+                id = "id",
+                isEmailVerified = true,
+                createdAccountAt = LocalDateTime.of(2018, 1, 1, 0, 0))
+
         userService.activate("id")
 
         keycloakClientFake.createUserIfDoesntExist(user)

@@ -2,20 +2,22 @@ package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
 import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
-import com.jayway.jsonpath.JsonPath.*
+import com.jayway.jsonpath.JsonPath.parse
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.resource.UserResource
 import org.keycloak.representations.idm.GroupRepresentation
 import org.keycloak.representations.idm.UserRepresentation
+import java.sql.Timestamp
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.ws.rs.core.Response
 
 class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     companion object {
-
         const val TEACHERS_REALM = "teachers"
-
     }
+
     private val keycloak = Keycloak.getInstance(
             properties.url,
             TEACHERS_REALM,
@@ -23,6 +25,7 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
             properties.password,
             "admin-cli"
     )
+
     override fun getUserById(id: String): KeycloakUser {
         val user: UserRepresentation?
         try {
@@ -32,12 +35,31 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
         }
 
         return KeycloakUser(
+                username = user.username,
                 id = user.id,
                 email = user.email,
                 firstName = user.firstName,
                 lastName = user.lastName,
-                username = user.username
+                isEmailVerified = user.isEmailVerified,
+                createdAccountAt = getLocalDateTimeOfTimestamp(user.createdTimestamp)
         )
+    }
+
+    override fun getAllUsers(): List<KeycloakUser> {
+        return keycloak.realm(TEACHERS_REALM)
+                .users()
+                .list()
+                .map { user ->
+                    KeycloakUser(
+                            id = user.id,
+                            email = user.email,
+                            firstName = user.firstName,
+                            lastName = user.lastName,
+                            username = user.username,
+                            isEmailVerified = user.isEmailVerified,
+                            createdAccountAt = getLocalDateTimeOfTimestamp(user.createdTimestamp)
+                    )
+                }
     }
 
     override fun getUserByUsername(username: String): KeycloakUser {
@@ -45,11 +67,13 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
                 .first { it.username == username }
 
         return KeycloakUser(
+                username = user.username,
                 id = user.id,
                 email = user.email,
                 firstName = user.firstName,
                 lastName = user.lastName,
-                username = user.username
+                isEmailVerified = user.isEmailVerified,
+                createdAccountAt = getLocalDateTimeOfTimestamp(user.createdTimestamp)
         )
     }
 
@@ -96,6 +120,7 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
 
     override fun getLastAdditionsToTeacherGroup(since: LocalDate) = keycloak.realm(TEACHERS_REALM)
             .getAdminEvents(listOf("CREATE"), null, null, null, null, null, since.toString(), null, 0, 9999)
+
             .filter { it.resourceType == "GROUP_MEMBERSHIP" }
             .filter { parse(it.representation).read<String>("$.name") == TEACHERS_GROUP_NAME }
             .map { it.resourcePath.substringAfter("users/").substringBefore("/") }
@@ -117,7 +142,6 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     private fun Response.isCreatedOrExists() =
             this.statusInfo.toEnum() in listOf(Response.Status.CREATED, Response.Status.CONFLICT)
 
-
     private fun getGroupByGroupName(groupName: String): KeycloakGroup {
         val group = keycloak.realm(TEACHERS_REALM).groups().groups().first { it.name == groupName }
 
@@ -130,4 +154,7 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     override fun addUserToGroup(userId: String, groupId: String) {
         getUserResource(userId).joinGroup(groupId)
     }
+
+    private fun getLocalDateTimeOfTimestamp(timestamp: Long) =
+            LocalDateTime.ofInstant(Timestamp(timestamp).toInstant(), ZoneOffset.UTC)
 }
