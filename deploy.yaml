@@ -1,0 +1,22 @@
+app: user-service
+port: 8080
+scale: Large
+bootTime: Slow
+healthPath: /actuator/health
+environments:
+  production:
+    replicas: 2
+    urls:
+      - user-service.boclips.com
+  staging:
+    replicas: 2
+    urls:
+      - user-service.staging-boclips.com
+  testing:
+    replicas: 2
+    urls:
+      - user-service.testing-boclips.com
+  local:
+    replicas: 1
+    urls:
+      - user-service.local-boclips.com
