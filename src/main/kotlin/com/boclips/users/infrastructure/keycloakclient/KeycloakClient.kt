@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response
 class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     companion object {
 
-        const val TEACHERS_REALM = "teachers"
+        const val TEACHERS_REALM = "boclips"
 
     }
     private val keycloak = Keycloak.getInstance(
