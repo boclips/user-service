@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
@@ -76,9 +77,53 @@ abstract class ContractTest {
         ))
 
         keycloakClient.addUserToGroup(createdUser.id!!, createdGroup.id!!)
-        val userIds =  keycloakClient.getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
+        val userIds = keycloakClient.getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
 
         Assertions.assertThat(userIds).contains(createdUser.id)
+    }
+
+    fun createNUsers(n: Int, sleep: Long = 0): List<KeycloakUser> {
+        val list = mutableListOf<KeycloakUser>()
+        for (i in 0..n) {
+            list.add(
+                    keycloakClient.createUserIfDoesntExist(KeycloakUser(
+                            email = "test$i@boclips.com",
+                            firstName = "Hans$i",
+                            lastName = "Muster$i",
+                            username = "yolo$i",
+                            id = null)
+                    ))
+            println("Added a user, ${n - i} to go")
+            Thread.sleep(sleep)
+        }
+
+        return list
+    }
+
+    @Test
+    fun `can retrieve keycloak attributes`() {
+        val createdUser = keycloakClient.createUserIfDoesntExist(KeycloakUser(
+                username = "hi",
+                mixpanelDistinctId = "1",
+                subjects = "Maths"
+        ))
+
+        assertThat(createdUser.mixpanelDistinctId).isEqualTo("1")
+        assertThat(createdUser.subjects).isEqualTo("Maths")
+
+        keycloakClient.deleteUserById(createdUser.id!!)
+    }
+
+    @Test
+    fun `can get a list of users`() {
+        val createdUsers = createNUsers(5)
+
+        val users = keycloakClient.getUsers()
+
+        assertThat(users.size).isGreaterThan(5)
+
+        createdUsers.forEach { keycloakClient.deleteUserById(it.id!!) }
+
     }
 
 }

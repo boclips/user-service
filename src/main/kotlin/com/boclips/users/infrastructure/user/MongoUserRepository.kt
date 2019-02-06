@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component
 class MongoUserRepository(
         private val userDocumentMongoRepository: UserDocumentMongoRepository
 ) : UserRepository {
-
     override fun save(user: User) = userDocumentMongoRepository
             .save(UserDocument.from(user))
             .toUser()

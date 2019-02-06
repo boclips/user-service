@@ -35,6 +35,7 @@ class KeycloakClientFake : IdentityProvider {
     )
 
     data class GroupAssociation(val userId: String, val groupName: String)
+
     val fakeAdminEvents = mutableListOf<GroupAssociation>(
 
     )
@@ -54,6 +55,9 @@ class KeycloakClientFake : IdentityProvider {
         val groupName = fakeGroups[groupId]!!.name
         fakeAdminEvents.add(GroupAssociation(userId, groupName))
     }
+
+    override fun getUsers(): List<KeycloakUser> = fakeUsers.values.toList()
+
 
     private val hasLoggedIn = mutableMapOf<String, Boolean>()
 

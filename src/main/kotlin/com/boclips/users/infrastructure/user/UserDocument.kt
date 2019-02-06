@@ -17,5 +17,8 @@ data class UserDocument(
         )
     }
 
-    fun toUser() = User(id = id, activated = activated)
+    fun toUser() = User(
+            id = this.id,
+            activated = this.activated
+    )
 }

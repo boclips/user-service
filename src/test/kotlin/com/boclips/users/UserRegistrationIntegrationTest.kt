@@ -11,11 +11,16 @@ import com.boclips.users.infrastructure.keycloakclient.KeycloakGroup
 import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.KeycloakUserFactory
+import com.boclips.users.testsupport.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.Awaitility
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.Instant
+import java.util.*
 
 class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
@@ -71,7 +76,7 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
         userRegistrator.registerNewTeachersSinceYesterday()
 
-        assertThat(userService.findById("id")).isEqualTo(User(id = "id", activated = true))
+        assertThat(userService.findById("id")?.id).isEqualTo("id")
     }
 
     @Test

@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.stereotype.Component
 
 @Component
-class VideoServiceHttpSecurityConfigurer : HttpSecurityConfigurer {
+class UserServiceHttpSecurityConfigurer : HttpSecurityConfigurer {
     override fun configure(http: HttpSecurity) {
         http
                 .authorizeRequests()
@@ -17,7 +17,9 @@ class VideoServiceHttpSecurityConfigurer : HttpSecurityConfigurer {
                 .antMatchers("/v1").permitAll()
                 .antMatchers("/v1/").permitAll()
 
+                .antMatchers(HttpMethod.GET, "/v1/users").hasRole(UserRoles.VIEW_USERS)
                 .antMatchers(HttpMethod.POST, "/v1/users").authenticated()
+
                 .anyRequest().denyAll()
     }
 }

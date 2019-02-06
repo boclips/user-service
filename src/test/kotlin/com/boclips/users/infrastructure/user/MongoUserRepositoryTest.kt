@@ -17,6 +17,8 @@ class MongoUserRepositoryTest : AbstractSpringIntergrationTest() {
 
         userRepository.save(user)
 
-        assertThat(userRepository.findById(user.id)).isEqualTo(user)
+        val userAfterSave = userRepository.findById(user.id)
+        assertThat(userAfterSave?.id).isEqualTo(user.id)
+        assertThat(userAfterSave?.activated).isEqualTo(user.activated)
     }
 }
