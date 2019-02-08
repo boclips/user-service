@@ -9,16 +9,16 @@ import org.springframework.stereotype.Component
 class VideoServiceHttpSecurityConfigurer : HttpSecurityConfigurer {
     override fun configure(http: HttpSecurity) {
         http
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
 
-                .antMatchers(HttpMethod.OPTIONS, "/v1/**").permitAll()
+            .antMatchers(HttpMethod.OPTIONS, "/v1/**").permitAll()
 
-                .antMatchers("/v1").permitAll()
-                .antMatchers("/v1/").permitAll()
+            .antMatchers("/v1").permitAll()
+            .antMatchers("/v1/").permitAll()
 
-                .antMatchers(HttpMethod.POST, "/v1/users").authenticated()
-                .anyRequest().denyAll()
+            .antMatchers(HttpMethod.POST, "/v1/users").authenticated()
+            .anyRequest().denyAll()
     }
 }
 

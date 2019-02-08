@@ -9,15 +9,14 @@ import java.time.LocalDate
 
 @Component
 class UserRegistrator(
-        val identityProvider: IdentityProvider,
-        val userService: UserService
+    val identityProvider: IdentityProvider,
+    val userService: UserService
 ) {
     companion object : KLogging()
 
     @Scheduled(fixedDelayString = "\${app.registration-period-in-millis}")
     fun registerNewTeachersSinceYesterday() = identityProvider
-            .getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
-            .apply { logger.info { "Found ${this.size} login events in the past 24 hours - checking registration state" } }
-            .forEach { userService.registerUserIfNew(it) }
-
+        .getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
+        .apply { logger.info { "Found ${this.size} login events in the past 24 hours - checking registration state" } }
+        .forEach { userService.registerUserIfNew(it) }
 }

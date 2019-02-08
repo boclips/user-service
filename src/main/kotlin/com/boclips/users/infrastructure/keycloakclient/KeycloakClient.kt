@@ -14,15 +14,16 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     companion object {
 
         const val REALM = "boclips"
-
     }
+
     private val keycloak = Keycloak.getInstance(
-            properties.url,
-            REALM,
-            properties.username,
-            properties.password,
-            "admin-cli"
+        properties.url,
+        REALM,
+        properties.username,
+        properties.password,
+        "admin-cli"
     )
+
     override fun getUserById(id: String): KeycloakUser {
         val user: UserRepresentation?
         try {
@@ -32,24 +33,24 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
         }
 
         return KeycloakUser(
-                id = user.id,
-                email = user.email,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                username = user.username
+            id = user.id,
+            email = user.email,
+            firstName = user.firstName,
+            lastName = user.lastName,
+            username = user.username
         )
     }
 
     override fun getUserByUsername(username: String): KeycloakUser {
         val user = keycloak.realm(REALM).users().search(username)
-                .first { it.username == username }
+            .first { it.username == username }
 
         return KeycloakUser(
-                id = user.id,
-                email = user.email,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                username = user.username
+            id = user.id,
+            email = user.email,
+            firstName = user.firstName,
+            lastName = user.lastName,
+            username = user.username
         )
     }
 
@@ -82,23 +83,23 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
 
     override fun hasLoggedIn(id: String): Boolean {
         val events = keycloak.realm(REALM).getEvents(
-                listOf("LOGIN"),
-                null,
-                id,
-                null,
-                null,
-                null,
-                null,
-                1
+            listOf("LOGIN"),
+            null,
+            id,
+            null,
+            null,
+            null,
+            null,
+            1
         )
         return events.isNotEmpty()
     }
 
     override fun getLastAdditionsToTeacherGroup(since: LocalDate) = keycloak.realm(REALM)
-            .getAdminEvents(listOf("CREATE"), null, null, null, null, null, since.toString(), null, 0, 9999)
-            .filter { it.resourceType == "GROUP_MEMBERSHIP" }
-            .filter { parse(it.representation).read<String>("$.name") == TEACHERS_GROUP_NAME }
-            .map { it.resourcePath.substringAfter("users/").substringBefore("/") }
+        .getAdminEvents(listOf("CREATE"), null, null, null, null, null, since.toString(), null, 0, 9999)
+        .filter { it.resourceType == "GROUP_MEMBERSHIP" }
+        .filter { parse(it.representation).read<String>("$.name") == TEACHERS_GROUP_NAME }
+        .map { it.resourcePath.substringAfter("users/").substringBefore("/") }
 
     fun getUserResource(id: String): UserResource {
         return keycloak.realm(REALM).users().get(id)
@@ -115,15 +116,14 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     }
 
     private fun Response.isCreatedOrExists() =
-            this.statusInfo.toEnum() in listOf(Response.Status.CREATED, Response.Status.CONFLICT)
-
+        this.statusInfo.toEnum() in listOf(Response.Status.CREATED, Response.Status.CONFLICT)
 
     private fun getGroupByGroupName(groupName: String): KeycloakGroup {
         val group = keycloak.realm(REALM).groups().groups().first { it.name == groupName }
 
         return KeycloakGroup(
-                id = group.id,
-                name = group.name
+            id = group.id,
+            name = group.name
         )
     }
 

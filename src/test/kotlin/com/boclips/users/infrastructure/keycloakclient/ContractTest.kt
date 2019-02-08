@@ -14,12 +14,14 @@ abstract class ContractTest {
 
     @BeforeEach
     fun setUp() {
-        createdUser = keycloakClient.createUserIfDoesntExist(KeycloakUser(
+        createdUser = keycloakClient.createUserIfDoesntExist(
+            KeycloakUser(
                 email = "some-createdUser@boclips.com",
                 firstName = "Hans",
                 lastName = "Muster",
                 username = "yolo",
-                id = null)
+                id = null
+            )
         )
     }
 
@@ -54,14 +56,16 @@ abstract class ContractTest {
     fun `can create and delete user`() {
         val username = "contract-test-user-2"
 
-        val createdUser = keycloakClient.createUserIfDoesntExist(KeycloakUser(
+        val createdUser = keycloakClient.createUserIfDoesntExist(
+            KeycloakUser(
                 username = username,
                 email = "test@testtest.com",
                 firstName = "Hello",
                 lastName = "There",
                 id = null
 
-        ))
+            )
+        )
         Assertions.assertThat(createdUser.username).isEqualTo(username)
         Assertions.assertThat(createdUser.id).isNotEmpty()
 
@@ -71,14 +75,15 @@ abstract class ContractTest {
 
     @Test
     fun `can retrieve new teacher group membership`() {
-        val createdGroup = keycloakClient.createGroupIfDoesntExist(KeycloakGroup(
+        val createdGroup = keycloakClient.createGroupIfDoesntExist(
+            KeycloakGroup(
                 name = "teachers"
-        ))
+            )
+        )
 
         keycloakClient.addUserToGroup(createdUser.id!!, createdGroup.id!!)
-        val userIds =  keycloakClient.getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
+        val userIds = keycloakClient.getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
 
         Assertions.assertThat(userIds).contains(createdUser.id)
     }
-
 }

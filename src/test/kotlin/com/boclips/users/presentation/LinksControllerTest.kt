@@ -20,22 +20,22 @@ class LinksControllerTest : AbstractSpringIntergrationTest() {
     @Test
     fun `GET links when unknown user returns activation link`() {
         mvc.perform(get("/v1/").asUser("unknown-user"))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._links.activate.href", endsWith("/users")))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.activate.href", endsWith("/users")))
     }
 
     @Test
     fun `GET links uses proto headers`() {
         mvc.perform(get("/v1/").asUser("unknown-user").header("x-forwarded-proto", "https"))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._links.activate.href", startsWith("https")))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.activate.href", startsWith("https")))
     }
 
     @Test
     fun `GET links when anonymous user returns empty links`() {
         mvc.perform(get("/v1/"))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._links").doesNotExist())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links").doesNotExist())
     }
 
     @Test
@@ -43,8 +43,7 @@ class LinksControllerTest : AbstractSpringIntergrationTest() {
         userRepository.save(User(id = "a-user-id", activated = true))
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
     }
-
 }

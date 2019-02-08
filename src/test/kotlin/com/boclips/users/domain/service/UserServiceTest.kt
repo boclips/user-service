@@ -16,26 +16,26 @@ class UserServiceTest {
     val userRepository = mock<UserRepository>()
     val analyticsClient = mock<AnalyticsClient>()
     val subject = UserService(
-            userRepository,
-            analyticsClient
+        userRepository,
+        analyticsClient
     )
 
     @Test
-     fun `register user when no user creates inactive user`() {
+    fun `register user when no user creates inactive user`() {
         subject.registerUserIfNew("doesn't exist")
 
         verify(userRepository).save(User(id = "doesn't exist", activated = false))
     }
 
     @Test
-     fun `register user when no user sends activation event`() {
+    fun `register user when no user sends activation event`() {
         subject.registerUserIfNew("doesn't exist")
 
         verify(analyticsClient).track(Event(EventType.ACCOUNT_CREATED, "doesn't exist"))
     }
 
     @Test
-     fun `register user when user exists returns current user`() {
+    fun `register user when user exists returns current user`() {
         whenever(userRepository.findById("exists")).thenReturn(User(id = "exists", activated = true))
         subject.registerUserIfNew("exists")
 

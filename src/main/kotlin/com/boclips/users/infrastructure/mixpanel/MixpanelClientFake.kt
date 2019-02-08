@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.mixpanel
 import com.boclips.users.domain.model.events.AnalyticsClient
 import com.boclips.users.domain.model.events.Event
 
-class MixpanelClientFake: AnalyticsClient {
+class MixpanelClientFake : AnalyticsClient {
     private val events: MutableList<Event> = mutableListOf()
 
     override fun track(event: Event) {

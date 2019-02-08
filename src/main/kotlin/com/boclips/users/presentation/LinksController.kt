@@ -11,5 +11,4 @@ class LinksController(private val userActions: UserActions) {
 
     @GetMapping
     fun getLinks() = userActions.getLinks()
-
 }

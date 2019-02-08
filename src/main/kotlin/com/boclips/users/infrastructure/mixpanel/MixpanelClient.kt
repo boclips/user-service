@@ -12,9 +12,9 @@ class MixpanelClient(mixpanelPropeties: MixpanelProperties) : AnalyticsClient {
 
     override fun track(event: Event) {
         ClientDelivery()
-                .apply {
-                    addMessage(messageBuilder.event(event.userId, event.eventType.toString(), null))
-                }
-                .let { mixpanel.deliver(it) }
+            .apply {
+                addMessage(messageBuilder.event(event.userId, event.eventType.toString(), null))
+            }
+            .let { mixpanel.deliver(it) }
     }
 }

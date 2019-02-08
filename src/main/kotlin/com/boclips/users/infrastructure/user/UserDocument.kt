@@ -6,14 +6,14 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "users")
 data class UserDocument(
-        @Id
-        val id: String,
-        val activated: Boolean
+    @Id
+    val id: String,
+    val activated: Boolean
 ) {
     companion object {
         fun from(user: User) = UserDocument(
-                id = user.id,
-                activated = user.activated
+            id = user.id,
+            activated = user.activated
         )
     }
 

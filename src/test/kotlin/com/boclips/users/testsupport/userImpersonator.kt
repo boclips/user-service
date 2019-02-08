@@ -4,4 +4,4 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 
 fun MockHttpServletRequestBuilder.asUser(id: String) =
-        this.with(SecurityMockMvcRequestPostProcessors.user(id))
+    this.with(SecurityMockMvcRequestPostProcessors.user(id))

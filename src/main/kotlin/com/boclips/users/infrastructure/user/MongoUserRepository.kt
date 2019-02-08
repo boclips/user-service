@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component
 
 @Component
 class MongoUserRepository(
-        private val userDocumentMongoRepository: UserDocumentMongoRepository
+    private val userDocumentMongoRepository: UserDocumentMongoRepository
 ) : UserRepository {
 
     override fun save(user: User) = userDocumentMongoRepository
-            .save(UserDocument.from(user))
-            .toUser()
+        .save(UserDocument.from(user))
+        .toUser()
 
     override fun findById(id: String) = userDocumentMongoRepository
-            .findById(id)
-            .orElse(null)
-            ?.toUser()
+        .findById(id)
+        .orElse(null)
+        ?.toUser()
 }
 

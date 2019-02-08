@@ -17,8 +17,8 @@ class KeycloakClientContractTest : ContractTest() {
 
         val yaml = Yaml()
         val inputStream: InputStream =
-                KeycloakClientContractTest::javaClass.javaClass.classLoader
-                        .getResourceAsStream("contract-test-setup.yml")
+            KeycloakClientContractTest::javaClass.javaClass.classLoader
+                .getResourceAsStream("contract-test-setup.yml")
 
         val apiKey = yaml.load<Map<String, String>>(inputStream)[key]!!
         inputStream.close()

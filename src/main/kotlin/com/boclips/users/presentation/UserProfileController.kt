@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
 class UserProfileController(
-        private val userActions: UserActions
+    private val userActions: UserActions
 ) {
 
     @PostMapping
@@ -22,7 +22,6 @@ class UserProfileController(
     @GetMapping("/{id}")
     fun getUserProfile(): Nothing? = null
 }
-
 
 class UserResource(private val id: String) : Identifiable<String> {
     override fun getId() = id

@@ -12,22 +12,22 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserActions(
-        private val userService: UserService,
-        private val entityLinks: EntityLinks
+    private val userService: UserService,
+    private val entityLinks: EntityLinks
 ) {
 
     fun getLinks() = Resource("", UserExtractor.getCurrentUser()
-            ?.let { buildLinksForUser(it) }
-            ?: emptyList<Link>())
+        ?.let { buildLinksForUser(it) }
+        ?: emptyList<Link>())
 
     fun activateUser() = UserExtractor.getCurrentUser()
-            ?.let { userService.activate(it.id) }
-            ?.let { Resource("", entityLinks.linkToSingleResource(UserResource(it.id)).withSelfRel()) }
-            ?: throw SecurityContextUserNotFoundException()
+        ?.let { userService.activate(it.id) }
+        ?.let { Resource("", entityLinks.linkToSingleResource(UserResource(it.id)).withSelfRel()) }
+        ?: throw SecurityContextUserNotFoundException()
 
     private fun buildLinksForUser(currentUser: User) = userService.findById(currentUser.id)
-            ?.takeIf { it.activated }
-            ?.let { UserResource.from(it) }
-            ?.let { listOf(entityLinks.linkToSingleResource(it).withRel("profile")) }
-            ?: listOf(entityLinks.linkToCollectionResource(UserResource::class.java).withRel("activate"))
+        ?.takeIf { it.activated }
+        ?.let { UserResource.from(it) }
+        ?.let { listOf(entityLinks.linkToSingleResource(it).withRel("profile")) }
+        ?: listOf(entityLinks.linkToCollectionResource(UserResource::class.java).withRel("activate"))
 }

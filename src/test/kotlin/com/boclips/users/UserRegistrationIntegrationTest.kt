@@ -58,7 +58,12 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
         repeat(3) { userRegistrator.registerNewTeachersSinceYesterday() }
 
-        assertThat(mixpanelClientFake.getEvents()).containsOnlyOnce(Event(EventType.ACCOUNT_CREATED, userId = user.id!!))
+        assertThat(mixpanelClientFake.getEvents()).containsOnlyOnce(
+            Event(
+                EventType.ACCOUNT_CREATED,
+                userId = user.id!!
+            )
+        )
     }
 
     @Test
