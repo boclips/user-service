@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
 import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
-import com.jayway.jsonpath.JsonPath.*
+import com.jayway.jsonpath.JsonPath.parse
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.resource.UserResource
 import org.keycloak.representations.idm.GroupRepresentation
@@ -11,8 +11,8 @@ import java.time.LocalDate
 import javax.ws.rs.core.Response
 
 class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
-    companion object {
 
+    companion object {
         const val REALM = "boclips"
     }
 
@@ -32,26 +32,14 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
             throw ResourceNotFoundException()
         }
 
-        return KeycloakUser(
-            id = user.id,
-            email = user.email,
-            firstName = user.firstName,
-            lastName = user.lastName,
-            username = user.username
-        )
+        return KeycloakUser.from(user)
     }
 
     override fun getUserByUsername(username: String): KeycloakUser {
         val user = keycloak.realm(REALM).users().search(username)
             .first { it.username == username }
 
-        return KeycloakUser(
-            id = user.id,
-            email = user.email,
-            firstName = user.firstName,
-            lastName = user.lastName,
-            username = user.username
-        )
+        return KeycloakUser.from(user)
     }
 
     override fun createUserIfDoesntExist(user: KeycloakUser): KeycloakUser {
@@ -101,10 +89,6 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
         .filter { parse(it.representation).read<String>("$.name") == TEACHERS_GROUP_NAME }
         .map { it.resourcePath.substringAfter("users/").substringBefore("/") }
 
-    fun getUserResource(id: String): UserResource {
-        return keycloak.realm(REALM).users().get(id)
-    }
-
     override fun createGroupIfDoesntExist(keycloakGroup: KeycloakGroup): KeycloakGroup {
         val newGroup = keycloak.realm(REALM).groups().add(GroupRepresentation().apply { name = keycloakGroup.name })
 
@@ -113,6 +97,20 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
         }
 
         return getGroupByGroupName(keycloakGroup.name)
+    }
+
+    override fun addUserToGroup(userId: String, groupId: String) {
+        getUserResource(userId).joinGroup(groupId)
+    }
+
+    override fun getUsers(): List<KeycloakUser> {
+        val userCount = keycloak.realm(REALM).users().count()
+
+        return keycloak.realm(REALM).users().list(0, userCount).map { KeycloakUser.from(it) }
+    }
+
+    private fun getUserResource(id: String): UserResource {
+        return keycloak.realm(REALM).users().get(id)
     }
 
     private fun Response.isCreatedOrExists() =
@@ -125,9 +123,5 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
             id = group.id,
             name = group.name
         )
-    }
-
-    override fun addUserToGroup(userId: String, groupId: String) {
-        getUserResource(userId).joinGroup(groupId)
     }
 }

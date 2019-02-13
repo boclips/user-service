@@ -2,9 +2,8 @@ package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
 import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
-import org.keycloak.representations.idm.AdminEventRepresentation
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 class KeycloakClientFake : IdentityProvider {
     val fakeUsers = hashMapOf(
@@ -86,6 +85,10 @@ class KeycloakClientFake : IdentityProvider {
         val createdUser = user.copy(id = "${UUID.randomUUID()}")
         fakeUsers[createdUser.id!!] = createdUser
         return fakeUsers[createdUser.id] ?: throw RuntimeException("Something failed")
+    }
+
+    override fun getUsers(): List<KeycloakUser> {
+        return fakeUsers.values.toList()
     }
 
     fun login(user: KeycloakUser) {

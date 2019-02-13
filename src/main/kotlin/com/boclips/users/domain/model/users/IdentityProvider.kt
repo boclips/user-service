@@ -17,4 +17,5 @@ interface IdentityProvider {
     fun getLastAdditionsToTeacherGroup(since: LocalDate): List<String>
     fun createGroupIfDoesntExist(keycloakGroup: KeycloakGroup): KeycloakGroup
     fun addUserToGroup(userId: String, groupId: String)
+    fun getUsers(): List<KeycloakUser>
 }
