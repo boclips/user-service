@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
 
+extract () {
+    echo "$1" | awk -F'=' "/^$2/ { print \$2 }"
+}
+
+user_service_env="$(lpass show --notes user-service-testing-env)"
+
 echo "KEYCLOAK_USERNAME: $(lpass show --username "e2e-admin-testing")" > contract-test-setup.yml
 echo "KEYCLOAK_PASSWORD: $(lpass show --password "e2e-admin-testing")" >> contract-test-setup.yml
+echo "HUBSPOT_API_KEY: $(extract "$user_service_env" HUBSPOT_API_KEY)" >> contract-test-setup.yml
