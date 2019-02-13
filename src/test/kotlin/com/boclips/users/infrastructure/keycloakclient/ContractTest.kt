@@ -1,9 +1,16 @@
 package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
+import com.boclips.users.testsupport.KeycloakUserFactory
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
+import java.util.UUID
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class ContractTest {
@@ -86,4 +93,21 @@ abstract class ContractTest {
 
         Assertions.assertThat(userIds).contains(createdUser.id)
     }
+
+    @Test
+    fun `can get a list of all users`() {
+        val randomEmails =
+            listOf(generateRandomEmail(), generateRandomEmail(), generateRandomEmail(), generateRandomEmail())
+
+        randomEmails.forEach { email ->
+            keycloakClient.createUserIfDoesntExist(KeycloakUserFactory.sample(email = email))
+        }
+
+        val users = keycloakClient.getUsers()
+
+        assertThat(users.size).isGreaterThanOrEqualTo(4)
+        assertThat(users.map { it.username }).containsAll(randomEmails)
+    }
+
+    private fun generateRandomEmail() = "user@${UUID.randomUUID()}.com"
 }
