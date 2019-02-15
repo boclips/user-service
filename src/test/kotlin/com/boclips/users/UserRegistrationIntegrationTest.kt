@@ -41,7 +41,7 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     fun `user registration eventually triggers`() {
         assertThat(mixpanelClientFake.getEvents()).isEmpty()
 
-        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser("username"))
+        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser(username = "username", isVerified = true))
         val group = keycloakClientFake.createGroupIfDoesntExist(KeycloakGroup(name = TEACHERS_GROUP_NAME))
         keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
 
@@ -52,7 +52,7 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration triggers only once`() {
-        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser("username"))
+        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser(username = "username", isVerified = true))
         val group = keycloakClientFake.createGroupIfDoesntExist(KeycloakGroup(name = TEACHERS_GROUP_NAME))
         keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
 
@@ -68,7 +68,7 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration does not modify existing users`() {
-        val user = KeycloakUser("username", id = "id")
+        val user = KeycloakUser(username = "username", isVerified = true, id = "id")
         userService.activate("id")
 
         keycloakClientFake.createUserIfDoesntExist(user)
@@ -81,7 +81,7 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration does not trigger events for existing users`() {
-        val user = KeycloakUser("username", id = "id")
+        val user = KeycloakUser(username = "username", isVerified = true, id = "id")
         userService.activate("id")
 
         keycloakClientFake.createUserIfDoesntExist(user)

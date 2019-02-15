@@ -7,7 +7,8 @@ data class KeycloakUser(
     val id: String? = null,
     val email: String? = null,
     val firstName: String? = null,
-    val lastName: String? = null
+    val lastName: String? = null,
+    val isVerified: Boolean? = null
 ) {
     companion object {
         fun from(
@@ -18,7 +19,8 @@ data class KeycloakUser(
             email = user.email,
             firstName = user.firstName,
             lastName = user.lastName,
-            username = user.username
+            username = user.username,
+            isVerified = user.isEmailVerified
         )
     }
 }

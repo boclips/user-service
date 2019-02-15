@@ -12,21 +12,24 @@ class KeycloakClientFake : IdentityProvider {
             username = "boclipper",
             firstName = "Little",
             lastName = "Bo",
-            email = "engineering@boclips.com"
+            email = "engineering@boclips.com",
+            isVerified = true
         ),
         "590784b2-c201-4ecb-b16f-9412af00bc69" to KeycloakUser(
             id = "590784b2-c201-4ecb-b16f-9412af00bc69",
             username = "Matt Jones",
             firstName = "Matt",
             lastName = "Jones",
-            email = "matt+testing@boclips.com"
+            email = "matt+testing@boclips.com",
+            isVerified = true
         ),
         "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3" to KeycloakUser(
             id = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3",
             username = "notloggedin",
             firstName = "Not",
             lastName = "Logged in",
-            email = "notloggedin@somewhere.com"
+            email = "notloggedin@somewhere.com",
+            isVerified = true
         )
     )
 
@@ -67,7 +70,8 @@ class KeycloakClientFake : IdentityProvider {
             username = username,
             firstName = "Little",
             lastName = "Bo",
-            email = "$username@boclips.com"
+            email = "$username@boclips.com",
+            isVerified = true
         )
     }
 

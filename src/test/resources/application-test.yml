@@ -1,2 +1,6 @@
 app:
   registration-period-in-millis: 50
+
+hubspot:
+  host: http://localhost:9999
+  apiKey: some-api-key

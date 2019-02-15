@@ -80,13 +80,14 @@ dependencies {
     testCompile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
     testCompile('com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0')
     testCompile('org.awaitility:awaitility:3.1.0')
+    testCompile('org.springframework.cloud:spring-cloud-contract-wiremock:2.1.0.RELEASE')
 }
 
 dependencyCheck {
     failBuildOnCVSS = 7 // Fail on high severity or greater
 
     data {
-        directory='./dependency-check-cache'
+        directory = './dependency-check-cache'
     }
 
     analyzers {

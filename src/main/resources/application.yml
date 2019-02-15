@@ -3,3 +3,4 @@ app:
 hubspot:
   api:
     url: 'https://api.hubapi.com/'
+  batchSize: 100

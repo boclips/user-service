@@ -1,0 +1,23 @@
+[
+  {
+    "email": "someuser@boclips.com",
+    "properties": [
+      {
+        "property": "firstname",
+        "value": "Ben"
+      },
+      {
+        "property": "lastname",
+        "value": "Huang"
+      },
+      {
+        "property": "is_b2t",
+        "value": "true"
+      },
+      {
+        "property": "b2t_is_activated",
+        "value": "true"
+      }
+    ]
+  }
+]

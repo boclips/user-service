@@ -61,23 +61,21 @@ abstract class ContractTest {
 
     @Test
     fun `can create and delete user`() {
-        val username = "contract-test-user-2"
+        val email = "test@testtest.com"
 
         val createdUser = keycloakClient.createUserIfDoesntExist(
-            KeycloakUser(
-                username = username,
+            KeycloakUserFactory.sample(
                 email = "test@testtest.com",
                 firstName = "Hello",
                 lastName = "There",
                 id = null
-
             )
         )
-        Assertions.assertThat(createdUser.username).isEqualTo(username)
+        Assertions.assertThat(createdUser.email).isEqualTo(email)
         Assertions.assertThat(createdUser.id).isNotEmpty()
 
         val deletedUser = keycloakClient.deleteUserById(createdUser.id!!)
-        Assertions.assertThat(deletedUser.username).isEqualTo(username)
+        Assertions.assertThat(deletedUser.email).isEqualTo(email)
     }
 
     @Test
