@@ -106,7 +106,11 @@ class KeycloakClient(properties: KeycloakProperties) : IdentityProvider {
     override fun getUsers(): List<KeycloakUser> {
         val userCount = keycloak.realm(REALM).users().count()
 
-        return keycloak.realm(REALM).users().list(0, userCount).map { KeycloakUser.from(it) }
+        return keycloak
+            .realm(REALM)
+            .users()
+            .list(0, userCount)
+            .map { KeycloakUser.from(it) }
     }
 
     private fun getUserResource(id: String): UserResource {

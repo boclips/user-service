@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.hubspot
 import com.boclips.users.domain.model.users.CustomerManagementProvider
 import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
 import com.fasterxml.jackson.databind.ObjectMapper
+import mu.KLogging
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -16,12 +17,15 @@ class HubSpotClient(
     val objectMapper: ObjectMapper,
     val hubspotProperties: HubSpotProperties
 ) : CustomerManagementProvider {
+    companion object : KLogging()
+
     val restTemplate = RestTemplate()
 
     override fun update(users: List<KeycloakUser>) {
+        logger.info { "Sychronising ${users.size} contacts with HubSpot" }
         users
             .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
-            .forEach { batchOfUsers ->
+            .forEachIndexed { index, batchOfUsers ->
                 val contacts = batchOfUsers.map { user ->
                     HubSpotContact(
                         email = user.email!!,
@@ -34,16 +38,19 @@ class HubSpotClient(
                     )
                 }
 
-                val entity = HttpEntity(objectMapper.writeValueAsString(contacts), getHeaders())
+                val entity = HttpEntity(objectMapper.writeValueAsString(contacts), getContentTypeHeader())
 
                 restTemplate.postForLocation(
-                    getUri(),
+                    getContactsEndpoint(),
                     entity
                 )
+
+                logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
             }
+        logger.info { "Successfully synchronized ${users.size} contacts with HubSpot" }
     }
 
-    private fun getUri(): URI {
+    private fun getContactsEndpoint(): URI {
         return UriComponentsBuilder
             .fromUriString("${hubspotProperties.host}/contacts/v1/contact/batch")
             .queryParam("hapikey", hubspotProperties.apiKey)
@@ -51,7 +58,7 @@ class HubSpotClient(
             .toUri()
     }
 
-    private fun getHeaders(): HttpHeaders {
+    private fun getContentTypeHeader(): HttpHeaders {
         val headers = HttpHeaders()
         headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         return headers
