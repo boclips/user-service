@@ -1,6 +1,5 @@
 app:
   registration-period-in-millis: 300000
 hubspot:
-  api:
-    url: 'https://api.hubapi.com/'
+  host: https://api.hubapi.com/
   batchSize: 100
