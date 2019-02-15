@@ -1,7 +1,9 @@
 package com.boclips.users.presentation
 
+import com.boclips.users.application.ContactsUpdater
 import com.boclips.users.application.UserActions
 import com.boclips.users.domain.model.users.User
+import mu.KLogging
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Identifiable
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,14 +15,21 @@ import org.springframework.web.bind.annotation.RestController
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
 class UserProfileController(
-    private val userActions: UserActions
+    private val userActions: UserActions,
+    private val contactsUpdater: ContactsUpdater
 ) {
+    companion object : KLogging()
 
     @PostMapping
     fun activateUser() = userActions.activateUser()
 
     @GetMapping("/{id}")
     fun getUserProfile(): Nothing? = null
+
+    @PostMapping("/sync")
+    fun syncUsers() {
+        contactsUpdater.update()
+    }
 }
 
 class UserResource(private val id: String) : Identifiable<String> {
