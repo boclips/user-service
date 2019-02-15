@@ -1,45 +1,43 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.users.User
-import com.boclips.users.domain.model.users.UserRepository
 import com.boclips.users.domain.model.events.AnalyticsClient
 import com.boclips.users.domain.model.events.Event
 import com.boclips.users.domain.model.events.EventType
+import com.boclips.users.domain.model.users.IdentityProvider
+import com.boclips.users.testsupport.UserFactory
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Test
+import org.mockito.internal.verification.Times
 
 class UserServiceTest {
 
-    val userRepository = mock<UserRepository>()
     val analyticsClient = mock<AnalyticsClient>()
+    val identityProvider = mock<IdentityProvider>()
     val subject = UserService(
-        userRepository,
-        analyticsClient
+        identityProvider = identityProvider,
+        analyticsClient = analyticsClient
     )
 
     @Test
-    fun `register user when no user creates inactive user`() {
-        subject.registerUserIfNew("doesn't exist")
+    fun `fires event to mixpanel if user is new`() {
+        val user = UserFactory.sample(activated = false)
+        whenever(identityProvider.getUserById(any())).thenReturn(user)
 
-        verify(userRepository).save(User(id = "doesn't exist", activated = false))
-    }
+        subject.registerUserIfNew(user.keycloakId.value)
 
-    @Test
-    fun `register user when no user sends activation event`() {
-        subject.registerUserIfNew("doesn't exist")
-
-        verify(analyticsClient).track(Event(EventType.ACCOUNT_CREATED, "doesn't exist"))
+        verify(analyticsClient).track(Event(EventType.ACCOUNT_CREATED, user.keycloakId.value))
     }
 
     @Test
     fun `register user when user exists returns current user`() {
-        whenever(userRepository.findById("exists")).thenReturn(User(id = "exists", activated = true))
-        subject.registerUserIfNew("exists")
+        val user = UserFactory.sample(activated = true)
+        whenever(identityProvider.getUserById(any())).thenReturn(user)
 
-        verify(userRepository).findById("exists")
-        verifyNoMoreInteractions(userRepository)
+        subject.registerUserIfNew(user.keycloakId.value)
+
+        verify(analyticsClient, Times(0)).track(any())
     }
 }

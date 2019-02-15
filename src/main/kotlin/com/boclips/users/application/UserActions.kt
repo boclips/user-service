@@ -20,11 +20,6 @@ class UserActions(
         ?.let { buildLinksForUser(it) }
         ?: emptyList<Link>())
 
-    fun activateUser() = UserExtractor.getCurrentUser()
-        ?.let { userService.activate(it.id) }
-        ?.let { Resource("", entityLinks.linkToSingleResource(UserResource(it.id)).withSelfRel()) }
-        ?: throw SecurityContextUserNotFoundException()
-
     private fun buildLinksForUser(currentUser: User) = userService.findById(currentUser.id)
         ?.takeIf { it.activated }
         ?.let { UserResource.from(it) }

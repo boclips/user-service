@@ -1,22 +1,17 @@
 package com.boclips.users.presentation
 
-import com.boclips.users.domain.model.users.User
-import com.boclips.users.domain.model.users.UserRepository
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.startsWith
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class LinksControllerTest : AbstractSpringIntergrationTest() {
-
-    @Autowired
-    lateinit var userRepository: UserRepository
-
     @Test
     fun `GET links when unknown user returns activation link`() {
         mvc.perform(get("/v1/").asUser("unknown-user"))
@@ -40,10 +35,11 @@ class LinksControllerTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `GET links when activated user returns profile link`() {
-        userRepository.save(User(id = "a-user-id", activated = true))
+        val user =
+            keycloakClientFake.createUserIfDoesntExist(UserFactory.sample(activated = true))
 
-        mvc.perform(get("/v1/").asUser("a-user-id"))
+        mvc.perform(get("/v1/").asUser(user.keycloakId.value))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
+            .andExpect(jsonPath("$._links.profile.href", endsWith(user.keycloakId.value)))
     }
 }

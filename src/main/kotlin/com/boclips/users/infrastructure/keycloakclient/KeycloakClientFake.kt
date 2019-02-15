@@ -1,94 +1,88 @@
 package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
-import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
-import java.time.LocalDate
+import com.boclips.users.domain.model.users.KeycloakId
+import com.boclips.users.domain.model.users.User
+import java.time.LocalDateTime
 import java.util.UUID
 
 class KeycloakClientFake : IdentityProvider {
     val fakeUsers = hashMapOf(
-        "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027" to KeycloakUser(
-            id = "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027",
-            username = "boclipper",
+        "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027" to User(
+            keycloakId = KeycloakId(value = "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027"),
             firstName = "Little",
             lastName = "Bo",
-            email = "engineering@boclips.com"
+            email = "engineering@boclips.com",
+            subjects = "some user input",
+            mixpanelId = null,
+            activated = false,
+            createdAt = LocalDateTime.now()
         ),
-        "590784b2-c201-4ecb-b16f-9412af00bc69" to KeycloakUser(
-            id = "590784b2-c201-4ecb-b16f-9412af00bc69",
-            username = "Matt Jones",
+        "590784b2-c201-4ecb-b16f-9412af00bc69" to User(
+            keycloakId = KeycloakId(value = "590784b2-c201-4ecb-b16f-9412af00bc69"),
             firstName = "Matt",
             lastName = "Jones",
-            email = "matt+testing@boclips.com"
+            email = "matt+testing@boclips.com",
+            subjects = "some user input",
+            mixpanelId = null,
+            activated = false,
+            createdAt = LocalDateTime.now()
         ),
-        "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3" to KeycloakUser(
-            id = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3",
-            username = "notloggedin",
+        "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3" to User(
+            keycloakId = KeycloakId(value = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3"),
             firstName = "Not",
             lastName = "Logged in",
-            email = "notloggedin@somewhere.com"
+            email = "notloggedin@somewhere.com",
+            subjects = "some user input",
+            mixpanelId = null,
+            activated = false,
+            createdAt = LocalDateTime.now()
         )
     )
-
-    val fakeGroups = hashMapOf<String, KeycloakGroup>(
-    )
-
-    data class GroupAssociation(val userId: String, val groupName: String)
-
-    val fakeAdminEvents = mutableListOf<GroupAssociation>(
-
-    )
-
-    @Synchronized
-    override fun getLastAdditionsToTeacherGroup(since: LocalDate): List<String> {
-        return fakeAdminEvents.filter { it.groupName == TEACHERS_GROUP_NAME }.map { it.userId }
-    }
-
-    override fun createGroupIfDoesntExist(keycloakGroup: KeycloakGroup): KeycloakGroup {
-        val createdGroup = keycloakGroup.copy(id = "${UUID.randomUUID()}")
-        fakeGroups[createdGroup.id!!] = keycloakGroup
-        return createdGroup
-    }
-
-    override fun addUserToGroup(userId: String, groupId: String) {
-        val groupName = fakeGroups[groupId]!!.name
-        fakeAdminEvents.add(GroupAssociation(userId, groupName))
-    }
 
     private val hasLoggedIn = mutableMapOf<String, Boolean>()
 
-    override fun hasLoggedIn(id: String): Boolean {
-        return hasLoggedIn[id] ?: return false
+    private val registeredEvents = mutableMapOf<KeycloakId, LocalDateTime>()
+
+    override fun getUserIdsRegisteredSince(since: LocalDateTime): List<KeycloakId> {
+        return registeredEvents
+            .filter { it.value.isAfter(since) }
+            .keys
+            .toList()
     }
 
-    override fun getUserByUsername(username: String): KeycloakUser {
-        return KeycloakUser(
-            id = username,
-            username = username,
-            firstName = "Little",
-            lastName = "Bo",
-            email = "$username@boclips.com"
-        )
+    override fun getUsersRegisteredSince(since: LocalDateTime): List<User> {
+        return getUserIdsRegisteredSince(since)
+            .mapNotNull { fakeUsers[it.value] }
     }
 
-    override fun deleteUserById(id: String): KeycloakUser {
-        val user = fakeUsers[id]
-        fakeUsers.remove(id)
+    override fun hasLoggedIn(keycloakId: KeycloakId): Boolean {
+        return hasLoggedIn[keycloakId.value] ?: return false
+    }
+
+    override fun deleteUserById(keycloakId: KeycloakId): User {
+        val user = fakeUsers[keycloakId.value]
+        fakeUsers.remove(keycloakId.value)
         return user!!
     }
 
-    override fun getUserById(id: String): KeycloakUser {
-        return fakeUsers[id] ?: throw ResourceNotFoundException()
+    override fun getUserById(keycloakId: KeycloakId): User {
+        return fakeUsers[keycloakId.value] ?: throw ResourceNotFoundException()
     }
 
-    override fun createUserIfDoesntExist(user: KeycloakUser): KeycloakUser {
-        val createdUser = user.copy(id = "${UUID.randomUUID()}")
-        fakeUsers[createdUser.id!!] = createdUser
-        return fakeUsers[createdUser.id] ?: throw RuntimeException("Something failed")
+    override fun createUserIfDoesntExist(user: User): User {
+        val createdUser = user.copy(keycloakId = KeycloakId(value = "${UUID.randomUUID()}"))
+        fakeUsers[createdUser.keycloakId.value] = createdUser
+        return fakeUsers[createdUser.keycloakId.value] ?: throw RuntimeException("Something failed")
     }
 
-    override fun getUsers(): List<KeycloakUser> {
+    override fun getUsers(): List<User> {
         return fakeUsers.values.toList()
+    }
+
+    fun createUserWithId(user: User): User {
+        fakeUsers[user.keycloakId.value] = user
+        return fakeUsers[user.keycloakId.value] ?: throw RuntimeException("Could not create user")
     }
 
     fun login(user: KeycloakUser) {
@@ -97,9 +91,11 @@ class KeycloakClientFake : IdentityProvider {
 
     @Synchronized
     fun clear() {
-        fakeAdminEvents.clear()
         hasLoggedIn.clear()
         fakeUsers.clear()
-        fakeGroups.clear()
+    }
+
+    fun createRegisteredEvents(keycloakId: KeycloakId) {
+        registeredEvents[keycloakId] = LocalDateTime.now()
     }
 }

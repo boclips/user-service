@@ -1,7 +1,9 @@
 package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
-import com.boclips.users.testsupport.KeycloakUserFactory
+import com.boclips.users.domain.model.users.KeycloakId
+import com.boclips.users.domain.model.users.User
+import com.boclips.users.testsupport.UserFactory
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -10,6 +12,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.UUID
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -17,32 +21,26 @@ abstract class ContractTest {
 
     abstract val keycloakClient: IdentityProvider
 
-    lateinit var createdUser: KeycloakUser
+    lateinit var createdUser: User
 
     @BeforeEach
     fun setUp() {
         createdUser = keycloakClient.createUserIfDoesntExist(
-            KeycloakUser(
-                email = "some-createdUser@boclips.com",
-                firstName = "Hans",
-                lastName = "Muster",
-                username = "yolo",
-                id = null
-            )
+            UserFactory.sample()
         )
     }
 
     @AfterEach
     fun tearDown() {
-        keycloakClient.deleteUserById(createdUser.id!!)
+        keycloakClient.deleteUserById(createdUser.keycloakId)
     }
 
     @Test
     fun `getUserById`() {
-        val user: KeycloakUser = keycloakClient.getUserById(createdUser.id!!)
+        val user: User = keycloakClient.getUserById(createdUser.keycloakId)
 
-        Assertions.assertThat(user.id).isNotEmpty()
-        Assertions.assertThat(user.username).isEqualTo(createdUser.username)
+        Assertions.assertThat(user.keycloakId.value).isNotEmpty()
+        Assertions.assertThat(user.email).isEqualTo(createdUser.email)
         Assertions.assertThat(user.firstName).isEqualTo(createdUser.firstName)
         Assertions.assertThat(user.lastName).isEqualTo(createdUser.lastName)
         Assertions.assertThat(user.email).isEqualTo(createdUser.email)
@@ -50,49 +48,40 @@ abstract class ContractTest {
 
     @Test
     fun `get invalid user`() {
-        assertThrows<ResourceNotFoundException> { keycloakClient.getUserById("invalidId") }
+        assertThrows<ResourceNotFoundException> { keycloakClient.getUserById(KeycloakId(value = "invalidId")) }
     }
 
     @Test
     fun `new user has not logged in before`() {
-        val loggedIn: Boolean = keycloakClient.hasLoggedIn(createdUser.id!!)
+        val loggedIn: Boolean = keycloakClient.hasLoggedIn(createdUser.keycloakId)
         Assertions.assertThat(loggedIn).isFalse()
     }
 
     @Test
     fun `can create and delete user`() {
-        val username = "contract-test-user-2"
+        val email = "contract-test-user-2@boclips.com"
 
         val createdUser = keycloakClient.createUserIfDoesntExist(
-            KeycloakUser(
-                username = username,
-                email = "test@testtest.com",
-                firstName = "Hello",
-                lastName = "There",
-                id = null
-
+            UserFactory.sample(
+                email = email
             )
         )
-        Assertions.assertThat(createdUser.username).isEqualTo(username)
-        Assertions.assertThat(createdUser.id).isNotEmpty()
+        Assertions.assertThat(createdUser.email).isEqualTo(email)
+        Assertions.assertThat(createdUser.keycloakId.value).isNotEmpty()
 
-        val deletedUser = keycloakClient.deleteUserById(createdUser.id!!)
-        Assertions.assertThat(deletedUser.username).isEqualTo(username)
+        val deletedUser = keycloakClient.deleteUserById(createdUser.keycloakId!!)
+        Assertions.assertThat(deletedUser.email).isEqualTo(email)
     }
 
-    @Test
-    fun `can retrieve new teacher group membership`() {
-        val createdGroup = keycloakClient.createGroupIfDoesntExist(
-            KeycloakGroup(
-                name = "teachers"
-            )
-        )
-
-        keycloakClient.addUserToGroup(createdUser.id!!, createdGroup.id!!)
-        val userIds = keycloakClient.getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
-
-        Assertions.assertThat(userIds).contains(createdUser.id)
-    }
+//    @Test
+//    fun `get list of all users registered since forever`() {
+//        val randomEmails =
+//            listOf(generateRandomEmail(), generateRandomEmail(), generateRandomEmail(), generateRandomEmail())
+//        val usersRegisteredSince =
+//            keycloakClient.getUsersRegisteredSince(LocalDateTime.of(LocalDate.ofYearDay(1000, 1), LocalTime.MIN))
+//
+//        assertThat(usersRegisteredSince.map { it.email }).containsAll(randomEmails)
+//    }
 
     @Test
     fun `can get a list of all users`() {
@@ -100,13 +89,13 @@ abstract class ContractTest {
             listOf(generateRandomEmail(), generateRandomEmail(), generateRandomEmail(), generateRandomEmail())
 
         randomEmails.forEach { email ->
-            keycloakClient.createUserIfDoesntExist(KeycloakUserFactory.sample(email = email))
+            keycloakClient.createUserIfDoesntExist(UserFactory.sample(email = email))
         }
 
         val users = keycloakClient.getUsers()
 
         assertThat(users.size).isGreaterThanOrEqualTo(4)
-        assertThat(users.map { it.username }).containsAll(randomEmails)
+        assertThat(users.map { it.email }).containsAll(randomEmails)
     }
 
     private fun generateRandomEmail() = "user@${UUID.randomUUID()}.com"

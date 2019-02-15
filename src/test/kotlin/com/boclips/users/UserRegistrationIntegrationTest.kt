@@ -1,16 +1,13 @@
 package com.boclips.users
 
 import com.boclips.users.application.UserRegistrator
+import com.boclips.users.config.SchedulerProperties
 import com.boclips.users.domain.model.events.Event
 import com.boclips.users.domain.model.events.EventType
-import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
-import com.boclips.users.domain.model.users.User
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.infrastructure.keycloakclient.KeycloakClientFake
-import com.boclips.users.infrastructure.keycloakclient.KeycloakGroup
-import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.Awaitility
 import org.junit.jupiter.api.BeforeEach
@@ -23,17 +20,16 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     lateinit var userRegistrator: UserRegistrator
 
     @Autowired
-    lateinit var keycloakClientFake: KeycloakClientFake
+    lateinit var mixpanelClientFake: MixpanelClientFake
 
     @Autowired
-    lateinit var mixpanelClientFake: MixpanelClientFake
+    lateinit var schedulerProperties: SchedulerProperties
 
     @Autowired
     lateinit var userService: UserService
 
     @BeforeEach
-    internal fun setUp() {
-        keycloakClientFake.clear()
+    fun setUp() {
         mixpanelClientFake.clear()
     }
 
@@ -41,53 +37,71 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     fun `user registration eventually triggers`() {
         assertThat(mixpanelClientFake.getEvents()).isEmpty()
 
-        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser("username"))
-        val group = keycloakClientFake.createGroupIfDoesntExist(KeycloakGroup(name = TEACHERS_GROUP_NAME))
-        keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
+        val user = keycloakClientFake.createUserIfDoesntExist(UserFactory.sample(activated = false))
+        keycloakClientFake.createRegisteredEvents(user.keycloakId)
 
         Awaitility.await().untilAsserted {
-            assertThat(mixpanelClientFake.getEvents()).containsExactly(Event(EventType.ACCOUNT_CREATED, user.id!!))
+            assertThat(mixpanelClientFake.getEvents()).containsExactly(
+                Event(
+                    EventType.ACCOUNT_CREATED,
+                    user.keycloakId.value
+                )
+            )
         }
     }
 
     @Test
-    fun `user registration triggers only once`() {
-        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser("username"))
-        val group = keycloakClientFake.createGroupIfDoesntExist(KeycloakGroup(name = TEACHERS_GROUP_NAME))
-        keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
+    fun `user registration triggers only once for events when polling`() {
+        assertThat(mixpanelClientFake.getEvents()).isEmpty()
 
-        repeat(3) { userRegistrator.registerNewTeachersSinceYesterday() }
+        val user = keycloakClientFake.createUserIfDoesntExist(UserFactory.sample(activated = false))
+        keycloakClientFake.createRegisteredEvents(user.keycloakId)
+
+        repeat(3) {
+            Thread.sleep(schedulerProperties.registrationPeriodInMillis.toLong())
+        }
 
         assertThat(mixpanelClientFake.getEvents()).containsOnlyOnce(
             Event(
                 EventType.ACCOUNT_CREATED,
-                userId = user.id!!
+                userId = user.keycloakId.value!!
             )
         )
     }
 
     @Test
+    fun `user registration triggers multiple times if not between timed polls`() {
+        assertThat(mixpanelClientFake.getEvents()).isEmpty()
+
+        val user = keycloakClientFake.createUserIfDoesntExist(UserFactory.sample(activated = false))
+        keycloakClientFake.createRegisteredEvents(user.keycloakId)
+
+        val timesToRepeat = 3
+        repeat(timesToRepeat) {
+            userRegistrator.registerNewTeachersSinceLastPoll()
+        }
+
+        assertThat(mixpanelClientFake.getEvents().filter { it.userId == user.keycloakId.value }.size)
+            .isGreaterThanOrEqualTo(timesToRepeat)
+    }
+
+    @Test
     fun `user registration does not modify existing users`() {
-        val user = KeycloakUser("username", id = "id")
-        userService.activate("id")
+        val user = UserFactory.sample(activated = true)
+        keycloakClientFake.createUserWithId(user)
 
-        keycloakClientFake.createUserIfDoesntExist(user)
-        keycloakClientFake.login(user)
+        userRegistrator.registerNewTeachersSinceLastPoll()
 
-        userRegistrator.registerNewTeachersSinceYesterday()
-
-        assertThat(userService.findById("id")).isEqualTo(User(id = "id", activated = true))
+        assertThat(userService.findById(user.keycloakId.value)).isEqualTo(user)
     }
 
     @Test
     fun `user registration does not trigger events for existing users`() {
-        val user = KeycloakUser("username", id = "id")
-        userService.activate("id")
+        val user = UserFactory.sample(activated = true)
 
         keycloakClientFake.createUserIfDoesntExist(user)
-        keycloakClientFake.login(user)
 
-        userRegistrator.registerNewTeachersSinceYesterday()
+        userRegistrator.registerNewTeachersSinceLastPoll()
 
         assertThat(mixpanelClientFake.getEvents()).hasSize(0)
     }
