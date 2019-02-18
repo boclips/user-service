@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.keycloakclient
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.REALM
 import com.boclips.users.testsupport.KeycloakTestSupport
 import org.keycloak.admin.client.Keycloak
+import org.springframework.util.ResourceUtils
 import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
 
@@ -28,9 +29,7 @@ class KeycloakClientContractTest : ContractTest() {
         }
 
         val yaml = Yaml()
-        val inputStream: InputStream =
-            KeycloakClientContractTest::javaClass.javaClass.classLoader
-                .getResourceAsStream("contract-test-setup.yml")
+        val inputStream: InputStream = ResourceUtils.getFile("classpath:contract-test-setup.yml").inputStream()
 
         val apiKey = yaml.load<Map<String, String>>(inputStream)[key]!!
         inputStream.close()
