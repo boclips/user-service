@@ -14,6 +14,10 @@ inputs:
 outputs:
 - name: dist
 
+params:
+  KEYCLOAK_USERNAME:
+  KEYCLOAK_PASSWORD:
+
 caches:
 - path: .gradle/
 - path: source/dependency-check-cache
