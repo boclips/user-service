@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.hubspot
 import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.KeycloakUserFactory
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
@@ -24,8 +25,13 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
     @Autowired
     protected lateinit var wireMockServer: WireMockServer
 
-    @Autowired
-    lateinit var hubSpotClient: HubSpotClient
+    var hubSpotClient: HubSpotClient = HubSpotClient(
+        ObjectMapper(), HubSpotProperties().apply {
+            this.host = "http://localhost:9999"
+            this.apiKey = "some-api-key"
+            this.batchSize = 100
+        }
+    )
 
     @Test
     fun `updates contacts in hubspot`() {
@@ -38,27 +44,50 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
         wireMockServer.verify(
             postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*"))
                 .withQueryParam("hapikey", matching("some-api-key"))
-                .withRequestBody(equalToJson(loadActualPayload()))
+                .withRequestBody(equalToJson(loadJsonFile("hubspot-one-contact.json")))
                 .withHeader("Content-Type", matching(MediaType.APPLICATION_JSON_VALUE))
         )
     }
 
-    private fun loadActualPayload(): String? {
-        val jsonPayload = IOUtils.toString(
-            ResourceUtils.getFile("classpath:wiremock/hubspot-one-contact.json").toURI(),
+    @Test
+    fun `omits first and lastname if not available`() {
+        setUpHubSpotStub()
+
+        val users = listOf(userWithNoName())
+
+        hubSpotClient.update(users)
+
+        wireMockServer.verify(
+            postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*"))
+                .withQueryParam("hapikey", matching("some-api-key"))
+                .withRequestBody(equalToJson(loadJsonFile("hubspot-no-names-contact.json")))
+                .withHeader("Content-Type", matching(MediaType.APPLICATION_JSON_VALUE))
+        )
+    }
+
+    private fun loadJsonFile(fileName: String): String? {
+        return IOUtils.toString(
+            ResourceUtils.getFile("classpath:wiremock/$fileName").toURI(),
             Charset.defaultCharset()
         )
-        return jsonPayload
     }
 
     private fun verifiedUser(): KeycloakUser {
-        val user = KeycloakUserFactory.sample(
+        return KeycloakUserFactory.sample(
             email = "someuser@boclips.com",
             firstName = "Ben",
             lastName = "Huang",
             isVerified = true
         )
-        return user
+    }
+
+    private fun userWithNoName(): KeycloakUser {
+        return KeycloakUserFactory.sample(
+            email = "someuser@boclips.com",
+            firstName = null,
+            lastName = null,
+            isVerified = true
+        )
     }
 
     private fun setUpHubSpotStub() {

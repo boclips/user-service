@@ -50,9 +50,9 @@ class HubSpotClient(
     private fun toHubSpotContact(user: KeycloakUser): HubSpotContact {
         return HubSpotContact(
             email = user.email!!,
-            properties = listOf(
-                HubSpotProperty("firstname", user.firstName!!),
-                HubSpotProperty("lastname", user.lastName!!),
+            properties = listOfNotNull(
+                user.firstName?.let { HubSpotProperty("firstname", user.firstName) },
+                user.lastName?.let { HubSpotProperty("lastname", user.lastName) },
                 HubSpotProperty("is_b2t", "true"),
                 HubSpotProperty("b2t_is_activated", user.isVerified.toString())
             )

@@ -21,8 +21,8 @@ class KeycloakUserFactory {
         fun sample(
             id: String? = null,
             email: String = "test@test.com",
-            firstName: String = "Test",
-            lastName: String = "Test",
+            firstName: String? = "Test",
+            lastName: String? = "Test",
             isVerified: Boolean = true
         ) = KeycloakUser(
             username = email,
