@@ -51,7 +51,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
             postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*"))
                 .withQueryParam("hapikey", matching("some-api-key"))
                 .withRequestBody(equalToJson(loadJsonFile("hubspot-one-contact.json")))
-                .withHeader("Content-Type", matching(MediaType.APPLICATION_JSON_VALUE))
+                .withHeader("Content-Type", matching(MediaType.APPLICATION_JSON_UTF8_VALUE))
         )
     }
 
@@ -83,7 +83,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
             postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*"))
                 .withQueryParam("hapikey", matching("some-api-key"))
                 .withRequestBody(equalToJson(loadJsonFile("hubspot-no-names-contact.json")))
-                .withHeader("Content-Type", matching(MediaType.APPLICATION_JSON_VALUE))
+                .withHeader("Content-Type", matching(MediaType.APPLICATION_JSON_UTF8_VALUE))
         )
     }
 

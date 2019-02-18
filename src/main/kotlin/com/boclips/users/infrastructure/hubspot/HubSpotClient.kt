@@ -71,7 +71,7 @@ class HubSpotClient(
 
     private fun getContentTypeHeader(): HttpHeaders {
         val headers = HttpHeaders()
-        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        headers.set("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
         return headers
     }
 }
