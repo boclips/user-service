@@ -22,7 +22,7 @@ class HubSpotClient(
     private val emailValidator = EmailValidator.getInstance()
 
     override fun update(users: List<KeycloakUser>) {
-        logger.info { "Sychronising ${users.size} contacts with HubSpot" }
+        logger.info { "Sychronising contacts with HubSpot" }
         users
             .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
             .forEachIndexed { index, batchOfUsers ->
@@ -46,7 +46,7 @@ class HubSpotClient(
 
                 logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
             }
-        logger.info { "Successfully synchronized ${users.size} contacts with HubSpot" }
+        logger.info { "Successfully synchronized all valid contacts with HubSpot" }
     }
 
     private fun toHubSpotContact(user: KeycloakUser): HubSpotContact {
