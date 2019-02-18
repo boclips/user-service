@@ -41,8 +41,9 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     fun `user registration eventually triggers`() {
         assertThat(mixpanelClientFake.getEvents()).isEmpty()
 
-        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser(username = "username", isVerified = true))
-        val group = keycloakClientFake.createGroupIfDoesntExist(KeycloakGroup(name = TEACHERS_GROUP_NAME))
+        val user = keycloakClientFake.createUser(KeycloakUser(username = "username", isVerified = true))
+        val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
+
         keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
 
         Awaitility.await().untilAsserted {
@@ -52,8 +53,8 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration triggers only once`() {
-        val user = keycloakClientFake.createUserIfDoesntExist(KeycloakUser(username = "username", isVerified = true))
-        val group = keycloakClientFake.createGroupIfDoesntExist(KeycloakGroup(name = TEACHERS_GROUP_NAME))
+        val user = keycloakClientFake.createUser(KeycloakUser(username = "username", isVerified = true))
+        val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
         keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
 
         repeat(3) { userRegistrator.registerNewTeachersSinceYesterday() }
@@ -71,7 +72,7 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
         val user = KeycloakUser(username = "username", isVerified = true, id = "id")
         userService.activate("id")
 
-        keycloakClientFake.createUserIfDoesntExist(user)
+        keycloakClientFake.createUser(user)
         keycloakClientFake.login(user)
 
         userRegistrator.registerNewTeachersSinceYesterday()
@@ -82,9 +83,10 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     @Test
     fun `user registration does not trigger events for existing users`() {
         val user = KeycloakUser(username = "username", isVerified = true, id = "id")
+        keycloakClientFake.createUser(user)
         userService.activate("id")
 
-        keycloakClientFake.createUserIfDoesntExist(user)
+        keycloakClientFake.createUser(user)
         keycloakClientFake.login(user)
 
         userRegistrator.registerNewTeachersSinceYesterday()

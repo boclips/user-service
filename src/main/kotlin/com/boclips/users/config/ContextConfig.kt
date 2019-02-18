@@ -8,6 +8,7 @@ import com.boclips.users.infrastructure.keycloakclient.KeycloakProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.keycloak.admin.client.Keycloak
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -21,7 +22,18 @@ class ContextConfig(
     fun analyticsClient(properties: MixpanelProperties) = MixpanelClient(properties)
 
     @Bean
-    fun identityProvider(properties: KeycloakProperties) = KeycloakClient(properties)
+    fun identityProvider(keycloak: Keycloak) = KeycloakClient(keycloak)
+
+    @Bean
+    fun keycloak(properties: KeycloakProperties): Keycloak {
+        return Keycloak.getInstance(
+            properties.url,
+            KeycloakClient.REALM,
+            properties.username,
+            properties.password,
+            "admin-cli"
+        )
+    }
 
     @Bean
     fun customerManagement(properties: HubSpotProperties): CustomerManagementProvider =

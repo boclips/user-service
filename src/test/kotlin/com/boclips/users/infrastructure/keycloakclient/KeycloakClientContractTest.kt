@@ -1,14 +1,26 @@
 package com.boclips.users.infrastructure.keycloakclient
 
+import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.REALM
+import com.boclips.users.testsupport.KeycloakTestSupport
+import org.keycloak.admin.client.Keycloak
 import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
 
 class KeycloakClientContractTest : ContractTest() {
-    override val keycloakClient: KeycloakClient = KeycloakClient(KeycloakProperties().apply {
-        url = "https://login.testing-boclips.com/auth"
-        username = readSecret("KEYCLOAK_USERNAME")
-        password = readSecret("KEYCLOAK_PASSWORD")
-    })
+    private val keycloakInstance: Keycloak = Keycloak.getInstance(
+        "https://login.testing-boclips.com/auth",
+        REALM,
+        readSecret("KEYCLOAK_USERNAME"),
+        readSecret("KEYCLOAK_PASSWORD"),
+        "admin-cli"
+    )
+
+    override val keycloakClient: KeycloakClient = KeycloakClient(keycloakInstance)
+
+    override val keycloakTestSupport: LowLevelKeycloakClient = KeycloakTestSupport(
+        keycloakInstance,
+        keycloakClient
+    )
 
     private fun readSecret(key: String): String {
         if (System.getenv(key) != null) {

@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
+import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
 import com.boclips.users.testsupport.KeycloakUserFactory
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -17,11 +18,13 @@ abstract class ContractTest {
 
     abstract val keycloakClient: IdentityProvider
 
-    lateinit var createdUser: KeycloakUser
+    abstract val keycloakTestSupport: LowLevelKeycloakClient
+
+    private lateinit var createdUser: KeycloakUser
 
     @BeforeEach
     fun setUp() {
-        createdUser = keycloakClient.createUserIfDoesntExist(
+        createdUser = keycloakTestSupport.createUser(
             KeycloakUser(
                 email = "some-createdUser@boclips.com",
                 firstName = "Hans",
@@ -34,7 +37,7 @@ abstract class ContractTest {
 
     @AfterEach
     fun tearDown() {
-        keycloakClient.deleteUserById(createdUser.id!!)
+        keycloakTestSupport.deleteUserById(createdUser.id!!)
     }
 
     @Test
@@ -63,7 +66,7 @@ abstract class ContractTest {
     fun `can create and delete user`() {
         val email = "test@testtest.com"
 
-        val createdUser = keycloakClient.createUserIfDoesntExist(
+        val createdUser = keycloakTestSupport.createUser(
             KeycloakUserFactory.sample(
                 email = "test@testtest.com",
                 firstName = "Hello",
@@ -74,20 +77,16 @@ abstract class ContractTest {
         Assertions.assertThat(createdUser.email).isEqualTo(email)
         Assertions.assertThat(createdUser.id).isNotEmpty()
 
-        val deletedUser = keycloakClient.deleteUserById(createdUser.id!!)
+        val deletedUser = keycloakTestSupport.deleteUserById(createdUser.id!!)
         Assertions.assertThat(deletedUser.email).isEqualTo(email)
     }
 
     @Test
-    fun `can retrieve new teacher group membership`() {
-        val createdGroup = keycloakClient.createGroupIfDoesntExist(
-            KeycloakGroup(
-                name = "teachers"
-            )
-        )
+    fun `can retrieve new teachers`() {
+        val createdGroup = keycloakTestSupport.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
+        keycloakTestSupport.addUserToGroup(createdUser.id!!, createdGroup.id!!)
 
-        keycloakClient.addUserToGroup(createdUser.id!!, createdGroup.id!!)
-        val userIds = keycloakClient.getLastAdditionsToTeacherGroup(LocalDate.now().minusDays(1))
+        val userIds = keycloakClient.getNewTeachers(LocalDate.now().minusDays(1))
 
         Assertions.assertThat(userIds).contains(createdUser.id)
     }
@@ -98,7 +97,7 @@ abstract class ContractTest {
             listOf(generateRandomEmail(), generateRandomEmail(), generateRandomEmail(), generateRandomEmail())
 
         randomEmails.forEach { email ->
-            keycloakClient.createUserIfDoesntExist(KeycloakUserFactory.sample(email = email))
+            keycloakTestSupport.createUser(KeycloakUserFactory.sample(email = email))
         }
 
         val users = keycloakClient.getUsers()
