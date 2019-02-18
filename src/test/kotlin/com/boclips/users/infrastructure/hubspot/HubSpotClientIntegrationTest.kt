@@ -13,6 +13,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.apache.commons.io.IOUtils
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
@@ -32,6 +33,11 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
             this.batchSize = 100
         }
     )
+
+    @BeforeEach
+    fun setUp() {
+        wireMockServer.resetAll()
+    }
 
     @Test
     fun `updates contacts in hubspot`() {
