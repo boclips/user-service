@@ -73,6 +73,7 @@ dependencies {
     compile('org.keycloak:keycloak-authz-client:4.8.3.Final')
     compile('com.mixpanel:mixpanel-java:1.4.4')
     compile('com.google.guava:guava:27.0.1-jre')
+    compile('commons-validator:commons-validator:1.6')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')

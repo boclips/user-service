@@ -50,6 +50,22 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
     }
 
     @Test
+    fun `does not update invalid emails`() {
+        setUpHubSpotStub()
+
+        val users = listOf(
+            KeycloakUserFactory.sample(email = "gfgf@fghh.ko"),
+            KeycloakUserFactory.sample(email = "aa@aa.aa"),
+            KeycloakUserFactory.sample(email = "test@test.test"),
+            KeycloakUserFactory.sample(email = "tod@tod.tod")
+        )
+
+        hubSpotClient.update(users)
+
+        wireMockServer.verify(0, postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*")))
+    }
+
+    @Test
     fun `omits first and lastname if not available`() {
         setUpHubSpotStub()
 
