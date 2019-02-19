@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.user
+package com.boclips.users.infrastructure.account
 
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.AccountFactory

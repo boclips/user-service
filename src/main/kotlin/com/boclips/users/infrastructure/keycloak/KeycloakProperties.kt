@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.keycloakclient
+package com.boclips.users.infrastructure.keycloak
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component

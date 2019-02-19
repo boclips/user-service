@@ -1,6 +1,8 @@
-package com.boclips.users.infrastructure.keycloakclient
+package com.boclips.users.infrastructure.keycloak
 
-import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.REALM
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClient.Companion.REALM
+import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToUserIdentityConverter
 import com.boclips.users.testsupport.KeycloakTestSupport
 import org.keycloak.admin.client.Keycloak
 import org.springframework.util.ResourceUtils
@@ -17,7 +19,10 @@ class KeycloakClientContractTest : ContractTest() {
     )
 
     override val keycloakClient: KeycloakClient =
-        KeycloakClient(keycloakInstance, KeycloakUserToUserIdentityConverter())
+        KeycloakClient(
+            keycloakInstance,
+            KeycloakUserToUserIdentityConverter()
+        )
 
     override val keycloakTestSupport: LowLevelKeycloakClient = KeycloakTestSupport(
         keycloakInstance,

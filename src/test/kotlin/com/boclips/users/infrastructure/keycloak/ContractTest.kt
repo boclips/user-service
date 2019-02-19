@@ -1,9 +1,10 @@
-package com.boclips.users.infrastructure.keycloakclient
+package com.boclips.users.infrastructure.keycloak
 
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClient.Companion.TEACHERS_GROUP_NAME
+import com.boclips.users.infrastructure.keycloak.client.KeycloakGroup
 import com.boclips.users.testsupport.UserIdentityFactory
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -82,7 +83,11 @@ abstract class ContractTest {
 
     @Test
     fun `can retrieve new teachers`() {
-        val createdGroup = keycloakTestSupport.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
+        val createdGroup = keycloakTestSupport.createGroup(
+            KeycloakGroup(
+                name = TEACHERS_GROUP_NAME
+            )
+        )
         keycloakTestSupport.addUserToGroup(createdIdentity.id.value, createdGroup.id!!)
 
         val users = keycloakClient.getNewTeachers(LocalDate.now().minusDays(1))

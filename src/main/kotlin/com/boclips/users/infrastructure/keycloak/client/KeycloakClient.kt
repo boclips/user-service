@@ -1,8 +1,9 @@
-package com.boclips.users.infrastructure.keycloakclient
+package com.boclips.users.infrastructure.keycloak.client
 
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.resource.UserResource

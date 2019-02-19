@@ -1,9 +1,10 @@
-package com.boclips.users.infrastructure.keycloakclient
+package com.boclips.users.infrastructure.keycloak.client
 
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
+import com.boclips.users.infrastructure.keycloak.LowLevelKeycloakClient
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClient.Companion.TEACHERS_GROUP_NAME
 import java.time.LocalDate
 import java.util.UUID
 
@@ -35,7 +36,10 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
     data class GroupAssociation(val userId: String, val groupName: String)
 
     val fakeGroups = hashMapOf(
-        "teachers-id" to KeycloakGroup("teachers-id", TEACHERS_GROUP_NAME)
+        "teachers-id" to KeycloakGroup(
+            "teachers-id",
+            TEACHERS_GROUP_NAME
+        )
     )
 
     val fakeAdminEvents = mutableListOf<GroupAssociation>()
@@ -105,7 +109,12 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
 
     override fun addUserToGroup(userId: String, groupId: String) {
         val groupName = fakeGroups[groupId]!!.name
-        fakeAdminEvents.add(GroupAssociation(userId, groupName))
+        fakeAdminEvents.add(
+            GroupAssociation(
+                userId,
+                groupName
+            )
+        )
     }
 
     private val hasLoggedIn = mutableMapOf<String, Boolean>()

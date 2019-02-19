@@ -4,11 +4,10 @@ import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.MetadataProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
-import com.boclips.users.infrastructure.keycloakclient.KeycloakClient
-import com.boclips.users.infrastructure.keycloakclient.KeycloakMetadataProvider
-import com.boclips.users.infrastructure.keycloakclient.KeycloakProperties
-import com.boclips.users.infrastructure.keycloakclient.KeycloakUserToUserIdentityConverter
-import com.boclips.users.infrastructure.keycloakclient.LowLevelKeycloakClient
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
+import com.boclips.users.infrastructure.keycloak.metadata.KeycloakMetadataProvider
+import com.boclips.users.infrastructure.keycloak.KeycloakProperties
+import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToUserIdentityConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -26,7 +25,10 @@ class ContextConfig(
     fun analyticsClient(properties: MixpanelProperties) = MixpanelClient(properties)
 
     @Bean
-    fun identityProvider(keycloak: Keycloak) = KeycloakClient(keycloak, KeycloakUserToUserIdentityConverter())
+    fun identityProvider(keycloak: Keycloak) = KeycloakClient(
+        keycloak,
+        KeycloakUserToUserIdentityConverter()
+    )
 
     @Bean
     fun keycloak(properties: KeycloakProperties): Keycloak {
@@ -44,5 +46,6 @@ class ContextConfig(
         HubSpotClient(objectMapper = objectMapper, hubspotProperties = properties)
 
     @Bean
-    fun metadataProvider(keycloak: Keycloak): MetadataProvider = KeycloakMetadataProvider(keycloak)
+    fun metadataProvider(keycloak: Keycloak): MetadataProvider =
+        KeycloakMetadataProvider(keycloak)
 }

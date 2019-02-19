@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.user
+package com.boclips.users.infrastructure.account
 
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountRepository

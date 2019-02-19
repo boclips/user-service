@@ -3,7 +3,7 @@ package com.boclips.users.config
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.MetadataProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
-import com.boclips.users.infrastructure.keycloakclient.KeycloakClientFake
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClientFake
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.testsupport.MetadataProviderFake
 import org.mockito.Mockito

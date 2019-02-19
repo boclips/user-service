@@ -1,9 +1,10 @@
-package com.boclips.users.infrastructure.keycloakclient
+package com.boclips.users.infrastructure.keycloak.metadata
 
 import com.boclips.users.domain.model.AccountMetadata
 import com.boclips.users.domain.model.analytics.MixpanelId
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.MetadataProvider
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import org.keycloak.admin.client.Keycloak
 
 class KeycloakMetadataProvider(private val keycloakInstance: Keycloak) : MetadataProvider {

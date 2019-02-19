@@ -6,9 +6,9 @@ import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
-import com.boclips.users.infrastructure.keycloakclient.KeycloakClientFake
-import com.boclips.users.infrastructure.keycloakclient.KeycloakGroup
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClient.Companion.TEACHERS_GROUP_NAME
+import com.boclips.users.infrastructure.keycloak.client.KeycloakClientFake
+import com.boclips.users.infrastructure.keycloak.client.KeycloakGroup
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.UserIdentityFactory
