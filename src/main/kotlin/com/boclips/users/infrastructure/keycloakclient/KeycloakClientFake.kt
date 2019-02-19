@@ -13,19 +13,22 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
             id = IdentityId(value = "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027"),
             firstName = "Little",
             lastName = "Bo",
-            email = "engineering@boclips.com"
+            email = "engineering@boclips.com",
+            isVerified = true
         ),
         "590784b2-c201-4ecb-b16f-9412af00bc69" to Identity(
             id = IdentityId(value = "590784b2-c201-4ecb-b16f-9412af00bc69"),
             firstName = "Matt",
             lastName = "Jones",
-            email = "matt+testing@boclips.com"
+            email = "matt+testing@boclips.com",
+            isVerified = true
         ),
         "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3" to Identity(
             id = IdentityId(value = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3"),
             firstName = "Not",
             lastName = "Logged in",
-            email = "notloggedin@somewhere.com"
+            email = "notloggedin@somewhere.com",
+            isVerified = true
         )
     )
 
@@ -52,7 +55,8 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
             id = IdentityId(value = username),
             firstName = "Little",
             lastName = "Bo",
-            email = "$username@boclips.com"
+            email = "$username@boclips.com",
+            isVerified = true
         )
     }
 

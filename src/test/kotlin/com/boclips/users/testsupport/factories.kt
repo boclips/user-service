@@ -24,12 +24,14 @@ class UserIdentityFactory {
             id: String = UUID.randomUUID().toString(),
             email: String = "test@test.com",
             firstName: String = "Test",
-            lastName: String = "Test"
+            lastName: String = "Test",
+            isVerified: Boolean = true
         ) = Identity(
             id = IdentityId(value = id),
             email = email,
             firstName = firstName,
-            lastName = lastName
+            lastName = lastName,
+            isVerified = isVerified
         )
     }
 }

@@ -57,24 +57,6 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
         )
     }
 
-    @Test
-    fun `does not update invalid emails`() {
-        setUpHubSpotStub()
-
-        val identities = listOf(
-            UserIdentityFactory.sample(email = "gfgf@fghh.ko"),
-            UserIdentityFactory.sample(email = "aa@aa.aa"),
-            UserIdentityFactory.sample(email = "test@test.test"),
-            UserIdentityFactory.sample(email = "tod@tod.tod")
-        )
-
-        val users = identities.map { UserFactory.sample(identity = it) }
-
-        hubSpotClient.update(users)
-
-        wireMockServer.verify(0, postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*")))
-    }
-
     private fun loadJsonFile(fileName: String): String? {
         return IOUtils.toString(
             ResourceUtils.getFile("classpath:wiremock/$fileName").toURI(),

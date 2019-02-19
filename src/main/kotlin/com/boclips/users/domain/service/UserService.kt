@@ -67,20 +67,16 @@ class UserService(
             val account = allAccounts.find { account -> account.id == identity.id.value }
             val metadata = allMetadata[identity.id]
 
-            when {
-                account == null -> {
+            when (account) {
+                null -> {
                     logger.warn { "Cannot find account for user: ${identity.id.value}. This is probably because the user is new" }
-                    null
-                }
-                metadata == null -> {
-                    logger.warn { "Cannot find metadata for user: ${identity.id.value}" }
                     null
                 }
                 else -> User(
                     account = account,
                     identity = identity,
-                    subjects = metadata.subjects,
-                    analyticsId = metadata.mixpanelId,
+                    subjects = metadata?.subjects,
+                    analyticsId = metadata?.mixpanelId,
                     userId = UserId(identity.id.value)
                 )
             }

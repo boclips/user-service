@@ -8,6 +8,6 @@ data class User(
     val userId: UserId,
     val account: Account,
     val identity: Identity,
-    val analyticsId: MixpanelId,
-    val subjects: String
+    val analyticsId: MixpanelId?,
+    val subjects: String?
 )
