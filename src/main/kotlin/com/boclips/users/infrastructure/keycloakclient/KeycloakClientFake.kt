@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloakclient
 
-import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
 import java.time.LocalDate
 import java.util.UUID

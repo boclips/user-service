@@ -41,7 +41,8 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     fun `user registration eventually triggers`() {
         assertThat(mixpanelClientFake.getEvents()).isEmpty()
 
-        val user = keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true))
+        val user =
+            keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true))
         val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
 
         keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
@@ -53,7 +54,8 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration triggers only once`() {
-        val user = keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true))
+        val user =
+            keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true))
         val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
         keycloakClientFake.addUserToGroup(userId = user.id, groupId = group.id!!)
 

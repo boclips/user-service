@@ -16,7 +16,8 @@ class KeycloakClientContractTest : ContractTest() {
         "admin-cli"
     )
 
-    override val keycloakClient: KeycloakClient = KeycloakClient(keycloakInstance, KeycloakUserToUserIdentityConverter())
+    override val keycloakClient: KeycloakClient =
+        KeycloakClient(keycloakInstance, KeycloakUserToUserIdentityConverter())
 
     override val keycloakTestSupport: LowLevelKeycloakClient = KeycloakTestSupport(
         keycloakInstance,

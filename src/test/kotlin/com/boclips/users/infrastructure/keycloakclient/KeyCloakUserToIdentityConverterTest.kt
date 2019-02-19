@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.keycloak.representations.idm.UserRepresentation
-import java.util.*
+import java.util.UUID
 
 class KeyCloakUserToIdentityConverterTest {
     private val userConverter = KeycloakUserToUserIdentityConverter()
@@ -39,8 +39,8 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.id = null
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("missing id")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("missing id")
     }
 
     @Test
@@ -48,8 +48,8 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.firstName = null
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("missing firstName")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("missing firstName")
     }
 
     @Test
@@ -57,8 +57,8 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.lastName = null
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("missing lastName")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("missing lastName")
     }
 
     @Test
@@ -66,8 +66,8 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.isEmailVerified = null
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("missing isVerified")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("missing isVerified")
     }
 
     @Test
@@ -75,8 +75,8 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.id = ""
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("missing id")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("missing id")
     }
 
     @Test
@@ -84,8 +84,8 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.firstName = ""
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("missing firstName")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("missing firstName")
     }
 
     @Test
@@ -93,8 +93,8 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.lastName = ""
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("missing lastName")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("missing lastName")
     }
 
     @Test
@@ -102,8 +102,8 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.email = ""
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("invalid email")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("invalid email")
     }
 
     @Test
@@ -111,7 +111,7 @@ class KeyCloakUserToIdentityConverterTest {
         keycloakUser.email = "invalid email"
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-                .isInstanceOf(InvalidUserRepresentation::class.java)
-                .hasMessage("invalid email")
+            .isInstanceOf(InvalidUserRepresentation::class.java)
+            .hasMessage("invalid email")
     }
 }

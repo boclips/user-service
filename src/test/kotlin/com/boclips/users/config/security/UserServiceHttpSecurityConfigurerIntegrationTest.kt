@@ -4,7 +4,9 @@ import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.asUser
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class UserServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntergrationTest() {

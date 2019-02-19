@@ -1,10 +1,10 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.users.User
-import com.boclips.users.domain.model.users.UserRepository
 import com.boclips.users.domain.model.events.AnalyticsClient
 import com.boclips.users.domain.model.events.Event
 import com.boclips.users.domain.model.events.EventType
+import com.boclips.users.domain.model.users.User
+import com.boclips.users.domain.model.users.UserRepository
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
