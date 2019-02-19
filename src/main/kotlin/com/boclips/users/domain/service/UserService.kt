@@ -3,10 +3,12 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.AccountNotFoundException
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.identity.IdentityNotFoundException
 import mu.KLogging
 import org.springframework.stereotype.Service
 
