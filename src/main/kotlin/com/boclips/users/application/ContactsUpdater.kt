@@ -1,7 +1,7 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.model.users.CustomerManagementProvider
-import com.boclips.users.domain.model.users.IdentityProvider
+import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.IdentityProvider
 import org.springframework.stereotype.Component
 
 @Component

@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.users.CustomerManagementProvider
-import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
+import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.service.CustomerManagementProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.apache.commons.validator.routines.EmailValidator
@@ -21,13 +21,13 @@ class HubSpotClient(
     private val restTemplate = RestTemplate()
     private val emailValidator = EmailValidator.getInstance()
 
-    override fun update(users: List<KeycloakUser>) {
+    override fun update(users: List<Identity>) {
         logger.info { "Sychronising contacts with HubSpot" }
         users
             .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
             .forEachIndexed { index, batchOfUsers ->
                 val contacts = batchOfUsers.mapNotNull { user ->
-                    if (user.email == null || !emailValidator.isValid(user.email)) {
+                    if (!emailValidator.isValid(user.email)) {
                         logger.warn { "Not synchronizing user ${user.id} as email is not set" }
                         return@mapNotNull null
                     }
@@ -49,12 +49,12 @@ class HubSpotClient(
         logger.info { "Successfully synchronized all valid contacts with HubSpot" }
     }
 
-    private fun toHubSpotContact(user: KeycloakUser): HubSpotContact {
+    private fun toHubSpotContact(user: Identity): HubSpotContact {
         return HubSpotContact(
-            email = user.email!!,
+            email = user.email,
             properties = listOfNotNull(
-                user.firstName?.let { HubSpotProperty("firstname", user.firstName) },
-                user.lastName?.let { HubSpotProperty("lastname", user.lastName) },
+                HubSpotProperty("firstname", user.firstName),
+                HubSpotProperty("lastname", user.lastName),
                 HubSpotProperty("is_b2t", "true"),
                 HubSpotProperty("b2t_is_activated", user.isVerified.toString())
             )

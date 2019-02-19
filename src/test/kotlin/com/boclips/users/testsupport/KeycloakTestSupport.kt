@@ -1,11 +1,12 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.users.IdentityProvider
+import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.REALM
 import com.boclips.users.infrastructure.keycloakclient.KeycloakGroup
-import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
 import com.boclips.users.infrastructure.keycloakclient.LowLevelKeycloakClient
+import com.boclips.users.infrastructure.keycloakclient.ResourceNotFoundException
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.GroupRepresentation
 import org.keycloak.representations.idm.UserRepresentation
@@ -16,7 +17,7 @@ class KeycloakTestSupport(
     private val identityProvider: IdentityProvider
 ) : LowLevelKeycloakClient {
 
-    override fun deleteUserById(id: String): KeycloakUser {
+    override fun deleteUserById(id: String): Identity {
         val user = identityProvider.getUserById(id)
 
         val response = keycloakInstance.realm(KeycloakClient.REALM).users().delete(id)
@@ -25,22 +26,22 @@ class KeycloakTestSupport(
             throw RuntimeException("Could not delete user")
         }
 
-        return user
+        return user ?: throw ResourceNotFoundException()
     }
 
-    override fun createUser(user: KeycloakUser): KeycloakUser {
+    override fun createUser(user: Identity): Identity {
         val userRepresentation = UserRepresentation()
-        userRepresentation.username = user.username
+        userRepresentation.username = user.email.toLowerCase()
         userRepresentation.firstName = user.firstName
         userRepresentation.lastName = user.lastName
-        userRepresentation.email = user.email
+        userRepresentation.email = user.email.toLowerCase()
 
         val newUser = keycloakInstance.realm(KeycloakClient.REALM).users().create(userRepresentation)
         if (!newUser.isCreatedOrExists()) {
-            throw RuntimeException("Could not create user ${user.username}")
+            throw RuntimeException("Could not create user ${user.email}")
         }
 
-        return identityProvider.getUserByUsername(user.username)
+        return identityProvider.getUserByUsername(user.email)
     }
 
     override fun createGroup(keycloakGroup: KeycloakGroup): KeycloakGroup {

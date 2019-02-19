@@ -1,7 +1,7 @@
 package com.boclips.users.application
 
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.domain.model.users.IdentityProvider
 import mu.KLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -18,5 +18,5 @@ class UserRegistrator(
     fun registerNewTeachersSinceYesterday() = identityProvider
         .getNewTeachers(LocalDate.now().minusDays(1))
         .apply { logger.info { "Found ${this.size} login events in the past 24 hours - checking registration state" } }
-        .forEach { userService.registerUserIfNew(it) }
+        .forEach { userService.registerUserIfNew(it.id) }
 }
