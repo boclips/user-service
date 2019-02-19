@@ -14,14 +14,20 @@ class KeycloakMetadataProvider(private val keycloakInstance: Keycloak) : Metadat
             .realm(KeycloakClient.REALM)
             .users()
             .list(0, userCount)
-            .map {
-                val subjects = it.attributes.get("subjects")?.first()
-                val mixpanelId = it.attributes.get("mixpanelId")?.first()
+            .mapNotNull {
+                if (it.attributes == null) {
+                    null
+                } else if (it.attributes["subjects"] == null || it.attributes["mixpanelDistinctId"] == null) {
+                    null
+                } else {
+                    val subjects = it.attributes["subjects"]?.first()
+                    val mixpanelId = it.attributes["mixpanelDistinctId"]?.first()
 
-                IdentityId(value = it.id) to AccountMetadata(
-                    subjects = subjects!!,
-                    mixpanelId = MixpanelId(value = mixpanelId!!)
-                )
+                    IdentityId(value = it.id) to AccountMetadata(
+                        subjects = subjects!!,
+                        mixpanelId = MixpanelId(value = mixpanelId!!)
+                    )
+                }
             }.toMap()
     }
 

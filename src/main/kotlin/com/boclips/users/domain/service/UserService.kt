@@ -53,16 +53,12 @@ class UserService(
 
     fun findAllUsers(): List<User> {
         val identities = identityProvider.getUsers()
-
         val allAccounts = accountRepository.findAll(identities.map { it.id.value })
-
         val allMetadata = metadataProvider.getAllMetadata(identities.map { it.id })
 
         return identities.mapNotNull {
             val account = allAccounts.find { account -> account.id == it.id.value }
-
             val metadata = allMetadata[it.id]
-
 
             when {
                 account == null -> {
