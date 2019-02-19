@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.account.Account
 import java.util.UUID
 
-class UserFactory {
+class AccountFactory {
     companion object {
         fun sample(
             id: String = "user-id",

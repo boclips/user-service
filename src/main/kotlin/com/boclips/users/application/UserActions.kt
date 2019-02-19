@@ -2,6 +2,7 @@ package com.boclips.users.application
 
 import com.boclips.security.utils.User
 import com.boclips.security.utils.UserExtractor
+import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.presentation.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.UserResource
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component
 @Component
 class UserActions(
     private val userService: UserService,
+    private val accountRepository: AccountRepository,
     private val entityLinks: EntityLinks
 ) {
 
@@ -25,7 +27,7 @@ class UserActions(
         ?.let { Resource("", entityLinks.linkToSingleResource(UserResource(it.id)).withSelfRel()) }
         ?: throw SecurityContextUserNotFoundException()
 
-    private fun buildLinksForUser(currentUser: User) = userService.findById(currentUser.id)
+    private fun buildLinksForUser(currentUser: User) = accountRepository.findById(currentUser.id)
         ?.takeIf { it.activated }
         ?.let { UserResource.from(it) }
         ?.let { listOf(entityLinks.linkToSingleResource(it).withRel("profile")) }

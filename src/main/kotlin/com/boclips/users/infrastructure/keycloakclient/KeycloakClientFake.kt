@@ -91,10 +91,9 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
             return user
         }
 
-        val createdUser = user.copy(id = IdentityId(value = "${UUID.randomUUID()}"))
-        fakeUsers[createdUser.id.value] = createdUser
+        fakeUsers[user.id.value] = user
 
-        return fakeUsers[createdUser.id.value]!!
+        return fakeUsers[user.id.value]!!
     }
 
     override fun deleteUserById(identityId: IdentityId): Identity {

@@ -1,9 +1,10 @@
 package com.boclips.users
 
 import com.boclips.users.application.UserRegistrator
-import com.boclips.users.domain.model.Event
-import com.boclips.users.domain.model.EventType
 import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.analytics.Event
+import com.boclips.users.domain.model.analytics.EventType
+import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClientFake
@@ -76,15 +77,21 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration does not modify existing users`() {
-        val user = UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true, id = "id")
+        val identity = UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true, id = "id")
         userService.activate("id")
 
-        keycloakClientFake.createUser(user)
-        keycloakClientFake.login(user)
+        keycloakClientFake.createUser(identity)
+        keycloakClientFake.login(identity)
 
         userRegistrator.registerNewTeachersSinceYesterday()
 
-        assertThat(userService.findById("id")).isEqualTo(Account(id = "id", activated = true))
+        val retrievedUser = userService.findById(IdentityId(value = "id"))
+        assertThat(retrievedUser.account).isEqualTo(
+            Account(
+                id = "id",
+                activated = true
+            )
+        )
     }
 
     @Test

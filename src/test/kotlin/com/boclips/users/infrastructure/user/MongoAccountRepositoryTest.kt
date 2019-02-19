@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
-import com.boclips.users.testsupport.UserFactory
+import com.boclips.users.testsupport.AccountFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +13,7 @@ class MongoAccountRepositoryTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `save persists provided user`() {
-        val user = UserFactory.sample()
+        val user = AccountFactory.sample()
 
         userRepository.save(user)
 

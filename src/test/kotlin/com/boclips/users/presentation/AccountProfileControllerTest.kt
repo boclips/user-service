@@ -1,6 +1,7 @@
 package com.boclips.users.presentation
 
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.UserIdentityFactory
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
 import org.junit.jupiter.api.Test
@@ -26,6 +27,8 @@ class AccountProfileControllerTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `activated user gets the correct links`() {
+        identityProvider.createUser(UserIdentityFactory.sample(id = "activated-user"))
+
         mvc.perform(post("/v1/users").asUser("activated-user"))
             .andExpect(status().isOk)
 

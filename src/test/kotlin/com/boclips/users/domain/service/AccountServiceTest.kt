@@ -1,10 +1,10 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.Event
-import com.boclips.users.domain.model.EventType
-import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountRepository
+import com.boclips.users.domain.model.analytics.Event
+import com.boclips.users.domain.model.analytics.EventType
+import com.boclips.users.domain.model.identity.IdentityId
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
@@ -15,9 +15,14 @@ class AccountServiceTest {
 
     val userRepository = mock<AccountRepository>()
     val analyticsClient = mock<AnalyticsClient>()
+    val metadataProvider = mock<MetadataProvider>()
+    val identityProvider = mock<IdentityProvider>()
+
     val subject = UserService(
-        userRepository,
-        analyticsClient
+        accountRepository = userRepository,
+        identityProvider = identityProvider,
+        analyticsClient = analyticsClient,
+        metadataProvider = metadataProvider
     )
 
     @Test

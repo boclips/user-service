@@ -30,7 +30,7 @@ abstract class ContractTest {
                 email = "some-createdUser@boclips.com",
                 firstName = "Hans",
                 lastName = "Muster",
-                id = IdentityId(value = ""),
+                id = IdentityId(value = UUID.randomUUID().toString()),
                 isVerified = false
             )
         )

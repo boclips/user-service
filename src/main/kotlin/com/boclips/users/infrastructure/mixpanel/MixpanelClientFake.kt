@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.mixpanel
 
 import com.boclips.users.domain.service.AnalyticsClient
-import com.boclips.users.domain.model.Event
+import com.boclips.users.domain.model.analytics.Event
 
 class MixpanelClientFake : AnalyticsClient {
     private val events: MutableList<Event> = mutableListOf()

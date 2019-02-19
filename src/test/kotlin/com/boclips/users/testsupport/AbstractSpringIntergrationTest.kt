@@ -1,5 +1,9 @@
 package com.boclips.users.testsupport
 
+import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.account.AccountRepository
+import com.boclips.users.domain.service.MetadataProvider
+import com.boclips.users.infrastructure.keycloakclient.KeycloakClientFake
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,10 +24,24 @@ abstract class AbstractSpringIntergrationTest {
     protected lateinit var mvc: MockMvc
 
     @Autowired
+    lateinit var accountRepository: AccountRepository
+
+    @Autowired
+    lateinit var identityProvider: KeycloakClientFake
+
+    @Autowired
+    lateinit var metadataProvider: MetadataProvider
+
+    @Autowired
     lateinit var repositories: Collection<CrudRepository<*, *>>
 
     @BeforeEach
     fun cleanUpDatabases() {
         repositories.forEach { it.deleteAll() }
+    }
+
+    fun saveUser(user: User) {
+        accountRepository.save(user.account)
+        identityProvider.createUser(user.identity)
     }
 }
