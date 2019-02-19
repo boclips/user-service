@@ -24,13 +24,13 @@ class KeycloakClient(
             user = getUserResource(id.value).toRepresentation()
             userConverter.convert(user)
         } catch (e: javax.ws.rs.NotFoundException) {
-            logger.warn(e) { "Could not find user: $id" }
+            logger.warn { "Could not find user: $id, omitting user" }
             null
         } catch (e: InvalidUserRepresentation) {
-            logger.warn(e) { "Could not convert external keycloak user: $id" }
+            logger.warn { "Could not convert external keycloak user: $id, omitting user" }
             null
         } catch (e: Exception) {
-            logger.warn(e) { "Unexpected exception happened when looking up user: $id" }
+            logger.warn(e) { "Unexpected exception happened when looking up user: $id, omitting user" }
             null
         }
     }
@@ -87,7 +87,7 @@ class KeycloakClient(
                 try {
                     userConverter.convert(it)
                 } catch (e: InvalidUserRepresentation) {
-                    logger.warn(e) { "Could not convert external keycloak user" }
+                    logger.warn { "Could not convert external keycloak user as email address is invalid" }
                     null
                 }
             }

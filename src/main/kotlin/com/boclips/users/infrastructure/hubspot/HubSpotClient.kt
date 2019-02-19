@@ -4,7 +4,6 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
-import org.apache.commons.validator.routines.EmailValidator
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -19,7 +18,6 @@ class HubSpotClient(
     companion object : KLogging()
 
     private val restTemplate = RestTemplate()
-    private val emailValidator = EmailValidator.getInstance()
 
     override fun update(users: List<User>) {
         logger.info { "Sychronising contacts with HubSpot" }
@@ -27,11 +25,6 @@ class HubSpotClient(
             .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
             .forEachIndexed { index, batchOfUsers ->
                 val contacts = batchOfUsers.mapNotNull { user ->
-                    if (!emailValidator.isValid(user.identity.email)) {
-                        logger.warn { "Not synchronizing user ${user.userId} as email is not set" }
-                        return@mapNotNull null
-                    }
-
                     toHubSpotContact(user)
                 }
 

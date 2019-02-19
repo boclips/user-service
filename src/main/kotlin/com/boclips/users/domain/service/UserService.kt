@@ -42,6 +42,8 @@ class UserService(
         val identity = identityProvider.getUserById(id) ?: throw IdentityNotFoundException()
         val metadata = metadataProvider.getMetadata(id)
 
+        logger.info { "Fetched user ${id.value}" }
+
         return User(
             account = account,
             identity = identity,
@@ -53,30 +55,39 @@ class UserService(
 
     fun findAllUsers(): List<User> {
         val identities = identityProvider.getUsers()
-        val allAccounts = accountRepository.findAll(identities.map { it.id.value })
-        val allMetadata = metadataProvider.getAllMetadata(identities.map { it.id })
+        logger.info { "Fetched ${identities.size} users from Keycloak" }
 
-        return identities.mapNotNull {
-            val account = allAccounts.find { account -> account.id == it.id.value }
-            val metadata = allMetadata[it.id]
+        val allAccounts = accountRepository.findAll(identities.map { it.id.value })
+        logger.info { "Fetched ${allAccounts.size} users from database" }
+
+        val allMetadata = metadataProvider.getAllMetadata(identities.map { it.id })
+        logger.info { "Fetched ${allMetadata.size} metadata" }
+
+        val allUsers = identities.mapNotNull { identity ->
+            val account = allAccounts.find { account -> account.id == identity.id.value }
+            val metadata = allMetadata[identity.id]
 
             when {
                 account == null -> {
-                    logger.warn { "Cannot find account for user: ${it.id.value}. This is probably because the user is new" }
+                    logger.warn { "Cannot find account for user: ${identity.id.value}. This is probably because the user is new" }
                     null
                 }
                 metadata == null -> {
-                    logger.warn { "Cannot find metadata for user: ${it.id.value}" }
+                    logger.warn { "Cannot find metadata for user: ${identity.id.value}" }
                     null
                 }
                 else -> User(
                     account = account,
-                    identity = it,
+                    identity = identity,
                     subjects = metadata.subjects,
                     analyticsId = metadata.mixpanelId,
-                    userId = UserId(it.id.value)
+                    userId = UserId(identity.id.value)
                 )
             }
         }
+
+        logger.info { "Return ${allUsers.size} users" }
+
+        return allUsers
     }
 }
