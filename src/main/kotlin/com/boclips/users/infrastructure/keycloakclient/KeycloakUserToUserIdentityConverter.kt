@@ -14,8 +14,7 @@ class KeycloakUserToUserIdentityConverter {
             id = IdentityId(value = getValueIfValid("id", userRepresentation.id)),
             email = getEmailIfValid(userRepresentation.email),
             firstName = getValueIfValid("firstName", userRepresentation.firstName),
-            lastName = getValueIfValid("lastName", userRepresentation.lastName),
-            isVerified = userRepresentation.isEmailVerified ?: throw InvalidUserRepresentation("missing isVerified")
+            lastName = getValueIfValid("lastName", userRepresentation.lastName)
         )
     }
 

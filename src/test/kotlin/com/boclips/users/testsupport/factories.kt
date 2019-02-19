@@ -1,8 +1,8 @@
 package com.boclips.users.testsupport
 
+import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
-import com.boclips.users.domain.model.account.Account
 import java.util.UUID
 
 class AccountFactory {
@@ -24,14 +24,12 @@ class UserIdentityFactory {
             id: String = UUID.randomUUID().toString(),
             email: String = "test@test.com",
             firstName: String = "Test",
-            lastName: String = "Test",
-            isVerified: Boolean = false
+            lastName: String = "Test"
         ) = Identity(
             id = IdentityId(value = id),
             email = email,
             firstName = firstName,
-            lastName = lastName,
-            isVerified = isVerified
+            lastName = lastName
         )
     }
 }

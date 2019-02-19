@@ -43,7 +43,7 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
         assertThat(mixpanelClientFake.getEvents()).isEmpty()
 
         val user =
-            keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true))
+            keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com"))
         val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
 
         keycloakClientFake.addUserToGroup(userId = user.id.value, groupId = group.id!!)
@@ -61,7 +61,7 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     @Test
     fun `user registration triggers only once`() {
         val user =
-            keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true))
+            keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com"))
         val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
         keycloakClientFake.addUserToGroup(userId = user.id.value, groupId = group.id!!)
 
@@ -77,7 +77,7 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration does not modify existing users`() {
-        val identity = UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true, id = "id")
+        val identity = UserIdentityFactory.sample(email = "username@gmail.com", id = "id")
         userService.activate("id")
 
         keycloakClientFake.createUser(identity)
@@ -96,7 +96,7 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `user registration does not trigger events for existing users`() {
-        val user = UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true, id = "id")
+        val user = UserIdentityFactory.sample(email = "username@gmail.com", id = "id")
         keycloakClientFake.createUser(user)
         userService.activate("id")
 
