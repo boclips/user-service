@@ -2,7 +2,7 @@ package com.boclips.users.presentation
 
 import com.boclips.users.application.ContactsUpdater
 import com.boclips.users.application.UserActions
-import com.boclips.users.domain.model.users.User
+import com.boclips.users.domain.model.account.Account
 import mu.KLogging
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Identifiable
@@ -36,6 +36,6 @@ class UserResource(private val id: String) : Identifiable<String> {
     override fun getId() = id
 
     companion object {
-        fun from(user: User) = UserResource(user.id)
+        fun from(account: Account) = UserResource(account.id)
     }
 }

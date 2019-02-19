@@ -1,7 +1,7 @@
 package com.boclips.users.presentation
 
-import com.boclips.users.domain.model.users.User
-import com.boclips.users.domain.model.users.UserRepository
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class LinksControllerTest : AbstractSpringIntergrationTest() {
 
     @Autowired
-    lateinit var userRepository: UserRepository
+    lateinit var accountRepository: AccountRepository
 
     @Test
     fun `GET links when unknown user returns activation link`() {
@@ -40,7 +40,7 @@ class LinksControllerTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `GET links when activated user returns profile link`() {
-        userRepository.save(User(id = "a-user-id", activated = true))
+        accountRepository.save(Account(id = "a-user-id", activated = true))
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)

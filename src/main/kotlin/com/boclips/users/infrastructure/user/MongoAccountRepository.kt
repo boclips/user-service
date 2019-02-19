@@ -1,16 +1,16 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.users.User
-import com.boclips.users.domain.model.users.UserRepository
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.AccountRepository
 import org.springframework.stereotype.Component
 
 @Component
-class MongoUserRepository(
+class MongoAccountRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository
-) : UserRepository {
+) : AccountRepository {
 
-    override fun save(user: User) = userDocumentMongoRepository
-        .save(UserDocument.from(user))
+    override fun save(account: Account) = userDocumentMongoRepository
+        .save(UserDocument.from(account))
         .toUser()
 
     override fun findById(id: String) = userDocumentMongoRepository

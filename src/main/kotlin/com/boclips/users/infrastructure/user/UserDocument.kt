@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.users.User
+import com.boclips.users.domain.model.account.Account
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -11,11 +11,11 @@ data class UserDocument(
     val activated: Boolean
 ) {
     companion object {
-        fun from(user: User) = UserDocument(
-            id = user.id,
-            activated = user.activated
+        fun from(account: Account) = UserDocument(
+            id = account.id,
+            activated = account.activated
         )
     }
 
-    fun toUser() = User(id = id, activated = activated)
+    fun toUser() = Account(id = id, activated = activated)
 }

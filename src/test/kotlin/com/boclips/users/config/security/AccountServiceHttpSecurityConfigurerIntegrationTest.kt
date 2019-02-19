@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.optio
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class UserServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntergrationTest() {
+class AccountServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `everybody can access actuator without permissions`() {

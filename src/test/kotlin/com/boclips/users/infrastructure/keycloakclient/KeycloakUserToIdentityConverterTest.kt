@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import org.keycloak.representations.idm.UserRepresentation
 import java.util.UUID
 
-class KeyCloakUserToIdentityConverterTest {
+class KeycloakUserToIdentityConverterTest {
     private val userConverter = KeycloakUserToUserIdentityConverter()
 
     lateinit var keycloakUser: UserRepresentation

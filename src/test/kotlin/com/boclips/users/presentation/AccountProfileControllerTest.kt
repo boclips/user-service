@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class UserProfileControllerTest : AbstractSpringIntergrationTest() {
+class AccountProfileControllerTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `activate user endpoint`() {

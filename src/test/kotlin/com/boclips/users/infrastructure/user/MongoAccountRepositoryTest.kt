@@ -6,10 +6,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class MongoUserRepositoryTest : AbstractSpringIntergrationTest() {
+class MongoAccountRepositoryTest : AbstractSpringIntergrationTest() {
 
     @Autowired
-    lateinit var userRepository: MongoUserRepository
+    lateinit var userRepository: MongoAccountRepository
 
     @Test
     fun `save persists provided user`() {

@@ -3,7 +3,7 @@ package com.boclips.users
 import com.boclips.users.application.UserRegistrator
 import com.boclips.users.domain.model.events.Event
 import com.boclips.users.domain.model.events.EventType
-import com.boclips.users.domain.model.users.User
+import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClientFake
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
+class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Autowired
     lateinit var userRegistrator: UserRegistrator
@@ -79,7 +79,7 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
 
         userRegistrator.registerNewTeachersSinceYesterday()
 
-        assertThat(userService.findById("id")).isEqualTo(User(id = "id", activated = true))
+        assertThat(userService.findById("id")).isEqualTo(Account(id = "id", activated = true))
     }
 
     @Test

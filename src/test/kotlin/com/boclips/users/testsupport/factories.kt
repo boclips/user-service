@@ -2,7 +2,7 @@ package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
-import com.boclips.users.domain.model.users.User
+import com.boclips.users.domain.model.account.Account
 import java.util.UUID
 
 class UserFactory {
@@ -11,7 +11,7 @@ class UserFactory {
             id: String = "user-id",
             activated: Boolean = false
 
-        ) = User(
+        ) = Account(
             id = id,
             activated = activated
         )
