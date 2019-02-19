@@ -1,8 +1,8 @@
 package com.boclips.users
 
 import com.boclips.users.application.UserRegistrator
-import com.boclips.users.domain.model.events.Event
-import com.boclips.users.domain.model.events.EventType
+import com.boclips.users.domain.model.Event
+import com.boclips.users.domain.model.EventType
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
@@ -48,7 +48,12 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
         keycloakClientFake.addUserToGroup(userId = user.id.value, groupId = group.id!!)
 
         Awaitility.await().untilAsserted {
-            assertThat(mixpanelClientFake.getEvents()).containsExactly(Event(EventType.ACCOUNT_CREATED, user.id.value))
+            assertThat(mixpanelClientFake.getEvents()).containsExactly(
+                Event(
+                    EventType.ACCOUNT_CREATED,
+                    user.id.value
+                )
+            )
         }
     }
 

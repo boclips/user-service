@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.mixpanel
 
-import com.boclips.users.domain.model.events.AnalyticsClient
-import com.boclips.users.domain.model.events.Event
+import com.boclips.users.domain.service.AnalyticsClient
+import com.boclips.users.domain.model.Event
 import com.mixpanel.mixpanelapi.ClientDelivery
 import com.mixpanel.mixpanelapi.MessageBuilder
 import com.mixpanel.mixpanelapi.MixpanelAPI

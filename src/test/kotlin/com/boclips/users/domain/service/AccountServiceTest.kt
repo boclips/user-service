@@ -1,8 +1,7 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.events.AnalyticsClient
-import com.boclips.users.domain.model.events.Event
-import com.boclips.users.domain.model.events.EventType
+import com.boclips.users.domain.model.Event
+import com.boclips.users.domain.model.EventType
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountRepository
@@ -32,7 +31,12 @@ class AccountServiceTest {
     fun `register user when no user sends activation event`() {
         subject.registerUserIfNew(IdentityId(value = "doesn't exist"))
 
-        verify(analyticsClient).track(Event(EventType.ACCOUNT_CREATED, "doesn't exist"))
+        verify(analyticsClient).track(
+            Event(
+                EventType.ACCOUNT_CREATED,
+                "doesn't exist"
+            )
+        )
     }
 
     @Test
