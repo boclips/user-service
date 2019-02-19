@@ -1,6 +1,5 @@
 package com.boclips.users.domain.model.users
 
-import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
 import java.time.LocalDate
 
 interface IdentityProvider {
@@ -8,9 +7,9 @@ interface IdentityProvider {
         const val TEACHERS_GROUP_NAME: String = "teachers"
     }
 
-    fun getUserById(id: String): KeycloakUser
-    fun getUserByUsername(username: String): KeycloakUser
+    fun getUserById(id: String): UserIdentity
+    fun getUserByUsername(username: String): UserIdentity
     fun hasLoggedIn(id: String): Boolean
     fun getNewTeachers(since: LocalDate): List<String>
-    fun getUsers(): List<KeycloakUser>
+    fun getUsers(): List<UserIdentity>
 }

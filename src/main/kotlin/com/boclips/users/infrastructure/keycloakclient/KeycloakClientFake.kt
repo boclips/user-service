@@ -2,34 +2,32 @@ package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
 import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
+import com.boclips.users.domain.model.users.UserIdentity
 import java.time.LocalDate
 import java.util.UUID
 
 class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
     private val fakeUsers = hashMapOf(
-        "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027" to KeycloakUser(
+        "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027" to UserIdentity(
             id = "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027",
-            username = "boclipper",
             firstName = "Little",
             lastName = "Bo",
             email = "engineering@boclips.com",
-            isVerified = true
+            isVerified = false
         ),
-        "590784b2-c201-4ecb-b16f-9412af00bc69" to KeycloakUser(
+        "590784b2-c201-4ecb-b16f-9412af00bc69" to UserIdentity(
             id = "590784b2-c201-4ecb-b16f-9412af00bc69",
-            username = "Matt Jones",
             firstName = "Matt",
             lastName = "Jones",
             email = "matt+testing@boclips.com",
-            isVerified = true
+            isVerified = false
         ),
-        "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3" to KeycloakUser(
+        "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3" to UserIdentity(
             id = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3",
-            username = "notloggedin",
             firstName = "Not",
             lastName = "Logged in",
             email = "notloggedin@somewhere.com",
-            isVerified = true
+            isVerified = false
         )
     )
 
@@ -50,27 +48,26 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
         return hasLoggedIn[id] ?: return false
     }
 
-    override fun getUserByUsername(username: String): KeycloakUser {
-        return KeycloakUser(
+    override fun getUserByUsername(username: String): UserIdentity {
+        return UserIdentity(
             id = username,
-            username = username,
             firstName = "Little",
             lastName = "Bo",
             email = "$username@boclips.com",
-            isVerified = true
+            isVerified = false
         )
     }
 
-    override fun getUserById(id: String): KeycloakUser {
+    override fun getUserById(id: String): UserIdentity {
         return fakeUsers[id] ?: throw ResourceNotFoundException()
     }
 
-    override fun getUsers(): List<KeycloakUser> {
+    override fun getUsers(): List<UserIdentity> {
         return fakeUsers.values.toList()
     }
 
-    fun login(user: KeycloakUser) {
-        hasLoggedIn[user.id!!] = true
+    fun login(user: UserIdentity) {
+        hasLoggedIn[user.id] = true
     }
 
     @Synchronized
@@ -87,18 +84,18 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
         return createdGroup
     }
 
-    override fun createUser(user: KeycloakUser): KeycloakUser {
+    override fun createUser(user: UserIdentity): UserIdentity {
         if (fakeUsers.containsKey(user.id)) {
             return user
         }
 
         val createdUser = user.copy(id = "${UUID.randomUUID()}")
-        fakeUsers[createdUser.id!!] = createdUser
+        fakeUsers[createdUser.id] = createdUser
 
         return fakeUsers[createdUser.id]!!
     }
 
-    override fun deleteUserById(id: String): KeycloakUser {
+    override fun deleteUserById(id: String): UserIdentity {
         val user = fakeUsers[id]
         fakeUsers.remove(id)
         return user!!

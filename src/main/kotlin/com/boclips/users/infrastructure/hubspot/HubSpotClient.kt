@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.users.CustomerManagementProvider
-import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
+import com.boclips.users.domain.model.users.UserIdentity
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.apache.commons.validator.routines.EmailValidator
@@ -13,60 +13,60 @@ import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 class HubSpotClient(
-    val objectMapper: ObjectMapper,
-    val hubspotProperties: HubSpotProperties
+        val objectMapper: ObjectMapper,
+        val hubspotProperties: HubSpotProperties
 ) : CustomerManagementProvider {
     companion object : KLogging()
 
     private val restTemplate = RestTemplate()
     private val emailValidator = EmailValidator.getInstance()
 
-    override fun update(users: List<KeycloakUser>) {
+    override fun update(users: List<UserIdentity>) {
         logger.info { "Sychronising contacts with HubSpot" }
         users
-            .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
-            .forEachIndexed { index, batchOfUsers ->
-                val contacts = batchOfUsers.mapNotNull { user ->
-                    if (user.email == null || !emailValidator.isValid(user.email)) {
-                        logger.warn { "Not synchronizing user ${user.id} as email is not set" }
-                        return@mapNotNull null
+                .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
+                .forEachIndexed { index, batchOfUsers ->
+                    val contacts = batchOfUsers.mapNotNull { user ->
+                        if (!emailValidator.isValid(user.email)) {
+                            logger.warn { "Not synchronizing user ${user.id} as email is not set" }
+                            return@mapNotNull null
+                        }
+
+                        toHubSpotContact(user)
                     }
 
-                    toHubSpotContact(user)
+                    val entity = HttpEntity(objectMapper.writeValueAsString(contacts), getContentTypeHeader())
+
+                    if (contacts.isNotEmpty()) {
+                        restTemplate.postForLocation(
+                                getContactsEndpoint(),
+                                entity
+                        )
+                    }
+
+                    logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
                 }
-
-                val entity = HttpEntity(objectMapper.writeValueAsString(contacts), getContentTypeHeader())
-
-                if (contacts.isNotEmpty()) {
-                    restTemplate.postForLocation(
-                        getContactsEndpoint(),
-                        entity
-                    )
-                }
-
-                logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
-            }
         logger.info { "Successfully synchronized all valid contacts with HubSpot" }
     }
 
-    private fun toHubSpotContact(user: KeycloakUser): HubSpotContact {
+    private fun toHubSpotContact(user: UserIdentity): HubSpotContact {
         return HubSpotContact(
-            email = user.email!!,
-            properties = listOfNotNull(
-                user.firstName?.let { HubSpotProperty("firstname", user.firstName) },
-                user.lastName?.let { HubSpotProperty("lastname", user.lastName) },
-                HubSpotProperty("is_b2t", "true"),
-                HubSpotProperty("b2t_is_activated", user.isVerified.toString())
-            )
+                email = user.email,
+                properties = listOfNotNull(
+                        HubSpotProperty("firstname", user.firstName),
+                        HubSpotProperty("lastname", user.lastName),
+                        HubSpotProperty("is_b2t", "true"),
+                        HubSpotProperty("b2t_is_activated", user.isVerified.toString())
+                )
         )
     }
 
     private fun getContactsEndpoint(): URI {
         return UriComponentsBuilder
-            .fromUriString("${hubspotProperties.host}/contacts/v1/contact/batch")
-            .queryParam("hapikey", hubspotProperties.apiKey)
-            .build()
-            .toUri()
+                .fromUriString("${hubspotProperties.host}/contacts/v1/contact/batch")
+                .queryParam("hapikey", hubspotProperties.apiKey)
+                .build()
+                .toUri()
     }
 
     private fun getContentTypeHeader(): HttpHeaders {

@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.keycloakclient
 
 import com.boclips.users.domain.model.users.IdentityProvider
 import com.boclips.users.domain.model.users.IdentityProvider.Companion.TEACHERS_GROUP_NAME
+import com.boclips.users.domain.model.users.UserIdentity
 import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.resource.UserResource
@@ -9,14 +10,15 @@ import org.keycloak.representations.idm.UserRepresentation
 import java.time.LocalDate
 
 class KeycloakClient(
-    private val keycloak: Keycloak
+    private val keycloak: Keycloak,
+    private val userConverter: KeycloakUserToUserIdentityConverter
 ) : IdentityProvider {
 
     companion object : KLogging() {
         const val REALM = "boclips"
     }
 
-    override fun getUserById(id: String): KeycloakUser {
+    override fun getUserById(id: String): UserIdentity {
         val user: UserRepresentation?
         try {
             user = getUserResource(id).toRepresentation()
@@ -24,14 +26,15 @@ class KeycloakClient(
             throw ResourceNotFoundException()
         }
 
-        return KeycloakUser.from(user)
+        return userConverter.convert(user)
     }
 
-    override fun getUserByUsername(username: String): KeycloakUser {
-        val user = keycloak.realm(REALM).users().search(username)
-            .first { it.username == username }
+    override fun getUserByUsername(username: String): UserIdentity {
+        val usernameLowercase = username.toLowerCase()
+        val user = keycloak.realm(REALM).users().search(usernameLowercase)
+            .first { it.username == usernameLowercase }
 
-        return KeycloakUser.from(user)
+        return userConverter.convert(user)
     }
 
     override fun hasLoggedIn(id: String): Boolean {
@@ -66,14 +69,21 @@ class KeycloakClient(
             }
         }
 
-    override fun getUsers(): List<KeycloakUser> {
+    override fun getUsers(): List<UserIdentity> {
         val userCount = keycloak.realm(REALM).users().count()
 
         return keycloak
             .realm(REALM)
             .users()
             .list(0, userCount)
-            .map { KeycloakUser.from(it) }
+            .mapNotNull {
+                try {
+                    userConverter.convert(it)
+                } catch (e: InvalidUserRepresentation) {
+                    logger.warn(e) { "Could not convert external keycloak user" }
+                    null
+                }
+            }
     }
 
     private fun getUserResource(id: String): UserResource {

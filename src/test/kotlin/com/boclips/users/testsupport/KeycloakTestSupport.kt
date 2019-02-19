@@ -1,10 +1,10 @@
 package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.users.IdentityProvider
+import com.boclips.users.domain.model.users.UserIdentity
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.REALM
 import com.boclips.users.infrastructure.keycloakclient.KeycloakGroup
-import com.boclips.users.infrastructure.keycloakclient.KeycloakUser
 import com.boclips.users.infrastructure.keycloakclient.LowLevelKeycloakClient
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.GroupRepresentation
@@ -12,11 +12,11 @@ import org.keycloak.representations.idm.UserRepresentation
 import javax.ws.rs.core.Response
 
 class KeycloakTestSupport(
-    private val keycloakInstance: Keycloak,
-    private val identityProvider: IdentityProvider
+        private val keycloakInstance: Keycloak,
+        private val identityProvider: IdentityProvider
 ) : LowLevelKeycloakClient {
 
-    override fun deleteUserById(id: String): KeycloakUser {
+    override fun deleteUserById(id: String): UserIdentity {
         val user = identityProvider.getUserById(id)
 
         val response = keycloakInstance.realm(KeycloakClient.REALM).users().delete(id)
@@ -28,24 +28,24 @@ class KeycloakTestSupport(
         return user
     }
 
-    override fun createUser(user: KeycloakUser): KeycloakUser {
+    override fun createUser(user: UserIdentity): UserIdentity {
         val userRepresentation = UserRepresentation()
-        userRepresentation.username = user.username
+        userRepresentation.username = user.email.toLowerCase()
         userRepresentation.firstName = user.firstName
         userRepresentation.lastName = user.lastName
-        userRepresentation.email = user.email
+        userRepresentation.email = user.email.toLowerCase()
 
         val newUser = keycloakInstance.realm(KeycloakClient.REALM).users().create(userRepresentation)
         if (!newUser.isCreatedOrExists()) {
-            throw RuntimeException("Could not create user ${user.username}")
+            throw RuntimeException("Could not create user ${user.email}")
         }
 
-        return identityProvider.getUserByUsername(user.username)
+        return identityProvider.getUserByUsername(user.email)
     }
 
     override fun createGroup(keycloakGroup: KeycloakGroup): KeycloakGroup {
         val newGroup =
-            keycloakInstance.realm(REALM).groups().add(GroupRepresentation().apply { name = keycloakGroup.name })
+                keycloakInstance.realm(REALM).groups().add(GroupRepresentation().apply { name = keycloakGroup.name })
 
         if (!newGroup.isCreatedOrExists()) {
             throw RuntimeException("Could not create group ${keycloakGroup.name}")
