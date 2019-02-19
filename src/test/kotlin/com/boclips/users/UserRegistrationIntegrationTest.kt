@@ -45,10 +45,10 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
             keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true))
         val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
 
-        keycloakClientFake.addUserToGroup(userId = user.id!!, groupId = group.id!!)
+        keycloakClientFake.addUserToGroup(userId = user.id.value, groupId = group.id!!)
 
         Awaitility.await().untilAsserted {
-            assertThat(mixpanelClientFake.getEvents()).containsExactly(Event(EventType.ACCOUNT_CREATED, user.id))
+            assertThat(mixpanelClientFake.getEvents()).containsExactly(Event(EventType.ACCOUNT_CREATED, user.id.value))
         }
     }
 
@@ -57,14 +57,14 @@ class UserRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
         val user =
             keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com", isVerified = true))
         val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
-        keycloakClientFake.addUserToGroup(userId = user.id, groupId = group.id!!)
+        keycloakClientFake.addUserToGroup(userId = user.id.value, groupId = group.id!!)
 
         repeat(3) { userRegistrator.registerNewTeachersSinceYesterday() }
 
         assertThat(mixpanelClientFake.getEvents()).containsOnlyOnce(
             Event(
                 EventType.ACCOUNT_CREATED,
-                userId = user.id!!
+                userId = user.id.value
             )
         )
     }

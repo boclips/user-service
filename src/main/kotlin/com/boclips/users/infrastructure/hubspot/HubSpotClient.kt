@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging

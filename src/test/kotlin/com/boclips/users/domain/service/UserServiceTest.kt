@@ -3,6 +3,7 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.events.AnalyticsClient
 import com.boclips.users.domain.model.events.Event
 import com.boclips.users.domain.model.events.EventType
+import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.users.User
 import com.boclips.users.domain.model.users.UserRepository
 import com.nhaarman.mockitokotlin2.mock
@@ -22,14 +23,14 @@ class UserServiceTest {
 
     @Test
     fun `register user when no user creates inactive user`() {
-        subject.registerUserIfNew("doesn't exist")
+        subject.registerUserIfNew(IdentityId(value = "doesn't exist"))
 
         verify(userRepository).save(User(id = "doesn't exist", activated = false))
     }
 
     @Test
     fun `register user when no user sends activation event`() {
-        subject.registerUserIfNew("doesn't exist")
+        subject.registerUserIfNew(IdentityId(value = "doesn't exist"))
 
         verify(analyticsClient).track(Event(EventType.ACCOUNT_CREATED, "doesn't exist"))
     }
@@ -37,7 +38,7 @@ class UserServiceTest {
     @Test
     fun `register user when user exists returns current user`() {
         whenever(userRepository.findById("exists")).thenReturn(User(id = "exists", activated = true))
-        subject.registerUserIfNew("exists")
+        subject.registerUserIfNew(IdentityId(value = "exists"))
 
         verify(userRepository).findById("exists")
         verifyNoMoreInteractions(userRepository)

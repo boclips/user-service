@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.keycloakclient
 
-import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.identity.IdentityId
 import org.apache.commons.validator.routines.EmailValidator
 import org.keycloak.representations.idm.UserRepresentation
 
@@ -10,7 +11,7 @@ class KeycloakUserToUserIdentityConverter {
 
     fun convert(userRepresentation: UserRepresentation): Identity {
         return Identity(
-            id = getValueIfValid("id", userRepresentation.id),
+            id = IdentityId(value = getValueIfValid("id", userRepresentation.id)),
             email = getEmailIfValid(userRepresentation.email),
             firstName = getValueIfValid("firstName", userRepresentation.firstName),
             lastName = getValueIfValid("lastName", userRepresentation.lastName),

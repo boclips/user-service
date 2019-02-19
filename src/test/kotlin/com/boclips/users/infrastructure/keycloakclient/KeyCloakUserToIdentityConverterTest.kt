@@ -27,7 +27,7 @@ class KeyCloakUserToIdentityConverterTest {
     fun `converts correctly when all fields are valid`() {
         val convertedUser = userConverter.convert(keycloakUser)
 
-        assertThat(convertedUser.id).isEqualTo(keycloakUser.id)
+        assertThat(convertedUser.id.value).isEqualTo(keycloakUser.id)
         assertThat(convertedUser.email).isEqualTo(keycloakUser.email)
         assertThat(convertedUser.firstName).isEqualTo(keycloakUser.firstName)
         assertThat(convertedUser.lastName).isEqualTo(keycloakUser.lastName)

@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.keycloakclient
 
-import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
 import mu.KLogging
 import org.keycloak.admin.client.Keycloak
@@ -17,10 +18,10 @@ class KeycloakClient(
         const val TEACHERS_GROUP_NAME: String = "teachers"
     }
 
-    override fun getUserById(id: String): Identity? {
+    override fun getUserById(id: IdentityId): Identity? {
         val user: UserRepresentation?
         return try {
-            user = getUserResource(id).toRepresentation()
+            user = getUserResource(id.value).toRepresentation()
             userConverter.convert(user)
         } catch (e: javax.ws.rs.NotFoundException) {
             logger.warn(e) { "Could not find user: $id" }
@@ -42,11 +43,11 @@ class KeycloakClient(
         return userConverter.convert(user)
     }
 
-    override fun hasLoggedIn(id: String): Boolean {
+    override fun hasLoggedIn(id: IdentityId): Boolean {
         val events = keycloak.realm(REALM).getEvents(
             listOf("LOGIN"),
             null,
-            id,
+            id.value,
             null,
             null,
             null,
@@ -73,7 +74,7 @@ class KeycloakClient(
                 false
             }
         }
-        .mapNotNull { getUserById(it) }
+        .mapNotNull { getUserById(IdentityId(value = it)) }
 
     override fun getUsers(): List<Identity> {
         val userCount = keycloak.realm(REALM).users().count()

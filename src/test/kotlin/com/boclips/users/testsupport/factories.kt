@@ -1,6 +1,7 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.users.User
 import java.util.UUID
 
@@ -26,7 +27,7 @@ class UserIdentityFactory {
             lastName: String = "Test",
             isVerified: Boolean = false
         ) = Identity(
-            id = id,
+            id = IdentityId(value = id),
             email = email,
             firstName = firstName,
             lastName = lastName,

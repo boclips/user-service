@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.UserIdentityFactory
 import com.fasterxml.jackson.databind.ObjectMapper

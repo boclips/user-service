@@ -1,6 +1,7 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.REALM
@@ -17,10 +18,10 @@ class KeycloakTestSupport(
     private val identityProvider: IdentityProvider
 ) : LowLevelKeycloakClient {
 
-    override fun deleteUserById(id: String): Identity {
+    override fun deleteUserById(id: IdentityId): Identity {
         val user = identityProvider.getUserById(id)
 
-        val response = keycloakInstance.realm(KeycloakClient.REALM).users().delete(id)
+        val response = keycloakInstance.realm(KeycloakClient.REALM).users().delete(id.value)
 
         if (response.statusInfo.toEnum() != Response.Status.NO_CONTENT) {
             throw RuntimeException("Could not delete user")

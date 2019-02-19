@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.keycloakclient
 
-import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
 import java.time.LocalDate
@@ -9,21 +10,21 @@ import java.util.UUID
 class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
     private val fakeUsers = hashMapOf(
         "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027" to Identity(
-            id = "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027",
+            id = IdentityId(value = "b8dba3ac-c5a2-453e-b3d6-b1af1e48f027"),
             firstName = "Little",
             lastName = "Bo",
             email = "engineering@boclips.com",
             isVerified = false
         ),
         "590784b2-c201-4ecb-b16f-9412af00bc69" to Identity(
-            id = "590784b2-c201-4ecb-b16f-9412af00bc69",
+            id = IdentityId(value = "590784b2-c201-4ecb-b16f-9412af00bc69"),
             firstName = "Matt",
             lastName = "Jones",
             email = "matt+testing@boclips.com",
             isVerified = false
         ),
         "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3" to Identity(
-            id = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3",
+            id = IdentityId(value = "6ea9f529-1ec0-4fc9-8caa-ac1bb12eb3f3"),
             firstName = "Not",
             lastName = "Logged in",
             email = "notloggedin@somewhere.com",
@@ -41,16 +42,17 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
 
     @Synchronized
     override fun getNewTeachers(since: LocalDate): List<Identity> {
-        return fakeAdminEvents.filter { it.groupName == TEACHERS_GROUP_NAME }.mapNotNull { getUserById(id = it.userId) }
+        return fakeAdminEvents.filter { it.groupName == TEACHERS_GROUP_NAME }
+            .mapNotNull { getUserById(id = IdentityId(value = it.userId)) }
     }
 
-    override fun hasLoggedIn(id: String): Boolean {
-        return hasLoggedIn[id] ?: return false
+    override fun hasLoggedIn(id: IdentityId): Boolean {
+        return hasLoggedIn[id.value] ?: return false
     }
 
     override fun getUserByUsername(username: String): Identity {
         return Identity(
-            id = username,
+            id = IdentityId(value = username),
             firstName = "Little",
             lastName = "Bo",
             email = "$username@boclips.com",
@@ -58,8 +60,8 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
         )
     }
 
-    override fun getUserById(id: String): Identity? {
-        return fakeUsers[id]
+    override fun getUserById(id: IdentityId): Identity? {
+        return fakeUsers[id.value]
     }
 
     override fun getUsers(): List<Identity> {
@@ -67,7 +69,7 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
     }
 
     fun login(user: Identity) {
-        hasLoggedIn[user.id] = true
+        hasLoggedIn[user.id.value] = true
     }
 
     @Synchronized
@@ -85,17 +87,18 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
     }
 
     override fun createUser(user: Identity): Identity {
-        if (fakeUsers.containsKey(user.id)) {
+        if (fakeUsers.containsKey(user.id.value)) {
             return user
         }
 
-        val createdUser = user.copy(id = "${UUID.randomUUID()}")
-        fakeUsers[createdUser.id] = createdUser
+        val createdUser = user.copy(id = IdentityId(value = "${UUID.randomUUID()}"))
+        fakeUsers[createdUser.id.value] = createdUser
 
-        return fakeUsers[createdUser.id]!!
+        return fakeUsers[createdUser.id.value]!!
     }
 
-    override fun deleteUserById(id: String): Identity {
+    override fun deleteUserById(identityId: IdentityId): Identity {
+        val id = identityId.value
         val user = fakeUsers[id]
         fakeUsers.remove(id)
         return user!!

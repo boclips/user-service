@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.keycloakclient
 
-import com.boclips.users.domain.model.users.Identity
+import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloakclient.KeycloakClient.Companion.TEACHERS_GROUP_NAME
 import com.boclips.users.testsupport.UserIdentityFactory
@@ -29,7 +30,7 @@ abstract class ContractTest {
                 email = "some-createdUser@boclips.com",
                 firstName = "Hans",
                 lastName = "Muster",
-                id = "",
+                id = IdentityId(value = ""),
                 isVerified = false
             )
         )
@@ -44,7 +45,7 @@ abstract class ContractTest {
     fun `getUserById`() {
         val user = keycloakClient.getUserById(createdIdentity.id)!!
 
-        Assertions.assertThat(user.id).isNotEmpty()
+        Assertions.assertThat(user.id.value).isNotEmpty()
         Assertions.assertThat(user.firstName).isEqualTo(createdIdentity.firstName)
         Assertions.assertThat(user.lastName).isEqualTo(createdIdentity.lastName)
         Assertions.assertThat(user.email).isEqualTo(createdIdentity.email)
@@ -52,7 +53,7 @@ abstract class ContractTest {
 
     @Test
     fun `get invalid user`() {
-        assertThat(keycloakClient.getUserById("invalidId")).isNull()
+        assertThat(keycloakClient.getUserById(IdentityId(value = "invalidId"))).isNull()
     }
 
     @Test
@@ -73,7 +74,7 @@ abstract class ContractTest {
             )
         )
         Assertions.assertThat(createdUser.email).isEqualTo(email)
-        Assertions.assertThat(createdUser.id).isNotEmpty()
+        Assertions.assertThat(createdUser.id).isNotNull
 
         val deletedUser = keycloakTestSupport.deleteUserById(createdUser.id)
         Assertions.assertThat(deletedUser.email).isEqualTo(email)
@@ -82,7 +83,7 @@ abstract class ContractTest {
     @Test
     fun `can retrieve new teachers`() {
         val createdGroup = keycloakTestSupport.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
-        keycloakTestSupport.addUserToGroup(createdIdentity.id, createdGroup.id!!)
+        keycloakTestSupport.addUserToGroup(createdIdentity.id.value, createdGroup.id!!)
 
         val users = keycloakClient.getNewTeachers(LocalDate.now().minusDays(1))
 

@@ -1,7 +1,7 @@
-package com.boclips.users.domain.model.users
+package com.boclips.users.domain.model.identity
 
 data class Identity(
-    val id: String,
+    val id: IdentityId,
     val firstName: String,
     val lastName: String,
     val email: String,
