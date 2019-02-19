@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component
 class MongoAccountRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository
 ) : AccountRepository {
+    override fun findAll(ids: List<String>) = userDocumentMongoRepository
+        .findAllById(ids)
+        .mapNotNull { it.toUser() }
 
     override fun save(account: Account) = userDocumentMongoRepository
         .save(UserDocument.from(account))

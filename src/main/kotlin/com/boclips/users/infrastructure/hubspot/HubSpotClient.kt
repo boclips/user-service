@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
@@ -21,14 +21,14 @@ class HubSpotClient(
     private val restTemplate = RestTemplate()
     private val emailValidator = EmailValidator.getInstance()
 
-    override fun update(users: List<Identity>) {
+    override fun update(users: List<User>) {
         logger.info { "Sychronising contacts with HubSpot" }
         users
             .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
             .forEachIndexed { index, batchOfUsers ->
                 val contacts = batchOfUsers.mapNotNull { user ->
-                    if (!emailValidator.isValid(user.email)) {
-                        logger.warn { "Not synchronizing user ${user.id} as email is not set" }
+                    if (!emailValidator.isValid(user.identity.email)) {
+                        logger.warn { "Not synchronizing user ${user.userId} as email is not set" }
                         return@mapNotNull null
                     }
 
@@ -49,14 +49,14 @@ class HubSpotClient(
         logger.info { "Successfully synchronized all valid contacts with HubSpot" }
     }
 
-    private fun toHubSpotContact(user: Identity): HubSpotContact {
+    private fun toHubSpotContact(user: User): HubSpotContact {
         return HubSpotContact(
-            email = user.email,
+            email = user.identity.email,
             properties = listOfNotNull(
-                HubSpotProperty("firstname", user.firstName),
-                HubSpotProperty("lastname", user.lastName),
+                HubSpotProperty("firstname", user.identity.firstName),
+                HubSpotProperty("lastname", user.identity.lastName),
                 HubSpotProperty("is_b2t", "true"),
-                HubSpotProperty("b2t_is_activated", user.isVerified.toString())
+                HubSpotProperty("b2t_is_activated", user.account.activated.toString())
             )
         )
     }

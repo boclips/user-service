@@ -1,7 +1,9 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.User
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AccountFactory
+import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.UserIdentityFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
@@ -43,7 +45,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
     fun `updates contacts in hubspot`() {
         setUpHubSpotStub()
 
-        val users = listOf(verifiedUser())
+        val users = listOf(activatedUser())
 
         hubSpotClient.update(users)
 
@@ -59,12 +61,14 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
     fun `does not update invalid emails`() {
         setUpHubSpotStub()
 
-        val users = listOf(
+        val identities = listOf(
             UserIdentityFactory.sample(email = "gfgf@fghh.ko"),
             UserIdentityFactory.sample(email = "aa@aa.aa"),
             UserIdentityFactory.sample(email = "test@test.test"),
             UserIdentityFactory.sample(email = "tod@tod.tod")
         )
+
+        val users = identities.map { UserFactory.sample(identity = it) }
 
         hubSpotClient.update(users)
 
@@ -78,12 +82,14 @@ class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
         )
     }
 
-    private fun verifiedUser(): Identity {
-        return UserIdentityFactory.sample(
-            email = "someuser@boclips.com",
-            firstName = "Ben",
-            lastName = "Huang",
-            isVerified = true
+    private fun activatedUser(): User {
+        return UserFactory.sample(
+            account = AccountFactory.sample(activated = true),
+            identity = UserIdentityFactory.sample(
+                email = "someuser@boclips.com",
+                firstName = "Ben",
+                lastName = "Huang"
+            )
         )
     }
 

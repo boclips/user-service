@@ -42,7 +42,6 @@ class UserService(
         val identity = identityProvider.getUserById(id) ?: throw IdentityNotFoundException()
         val metadata = metadataProvider.getMetadata(id)
 
-
         return User(
             account = account,
             identity = identity,
@@ -50,5 +49,38 @@ class UserService(
             analyticsId = metadata.mixpanelId,
             userId = UserId(id.value)
         )
+    }
+
+    fun findAllUsers(): List<User> {
+        val identities = identityProvider.getUsers()
+
+        val allAccounts = accountRepository.findAll(identities.map { it.id.value })
+
+        val allMetadata = metadataProvider.getAllMetadata(identities.map { it.id })
+
+        return identities.mapNotNull {
+            val account = allAccounts.find { account -> account.id == it.id.value }
+
+            val metadata = allMetadata[it.id]
+
+
+            when {
+                account == null -> {
+                    logger.warn { "Cannot find account for user: ${it.id.value}. This is probably because the user is new" }
+                    null
+                }
+                metadata == null -> {
+                    logger.warn { "Cannot find metadata for user: ${it.id.value}" }
+                    null
+                }
+                else -> User(
+                    account = account,
+                    identity = it,
+                    subjects = metadata.subjects,
+                    analyticsId = metadata.mixpanelId,
+                    userId = UserId(it.id.value)
+                )
+            }
+        }
     }
 }

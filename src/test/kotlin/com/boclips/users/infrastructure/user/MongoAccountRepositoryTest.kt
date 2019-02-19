@@ -19,4 +19,18 @@ class MongoAccountRepositoryTest : AbstractSpringIntergrationTest() {
 
         assertThat(userRepository.findById(user.id)).isEqualTo(user)
     }
+
+    @Test
+    fun `can get all accounts`() {
+        val savedUsers = listOf(
+            userRepository.save(AccountFactory.sample()),
+            userRepository.save(AccountFactory.sample()),
+            userRepository.save(AccountFactory.sample()),
+            userRepository.save(AccountFactory.sample()),
+            userRepository.save(AccountFactory.sample()),
+            userRepository.save(AccountFactory.sample())
+        )
+
+        assertThat(userRepository.findAll(savedUsers.map { it.id })).containsAll(savedUsers)
+    }
 }

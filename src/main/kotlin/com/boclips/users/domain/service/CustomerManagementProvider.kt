@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.User
 
 interface CustomerManagementProvider {
-    fun update(users: List<Identity>)
+    fun update(users: List<User>)
 }

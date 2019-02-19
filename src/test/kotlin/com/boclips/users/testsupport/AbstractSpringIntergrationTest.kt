@@ -38,6 +38,7 @@ abstract class AbstractSpringIntergrationTest {
     @BeforeEach
     fun cleanUpDatabases() {
         repositories.forEach { it.deleteAll() }
+        identityProvider.clear()
     }
 
     fun saveUser(user: User) {

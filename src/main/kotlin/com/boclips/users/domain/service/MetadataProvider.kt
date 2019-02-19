@@ -5,4 +5,5 @@ import com.boclips.users.domain.model.identity.IdentityId
 
 interface MetadataProvider {
     fun getMetadata(id: IdentityId): AccountMetadata
+    fun getAllMetadata(ids: List<IdentityId>): Map<IdentityId, AccountMetadata>
 }

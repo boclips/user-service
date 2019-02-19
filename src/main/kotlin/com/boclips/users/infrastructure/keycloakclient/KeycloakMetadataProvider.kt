@@ -7,6 +7,24 @@ import com.boclips.users.domain.service.MetadataProvider
 import org.keycloak.admin.client.Keycloak
 
 class KeycloakMetadataProvider(private val keycloakInstance: Keycloak) : MetadataProvider {
+    override fun getAllMetadata(ids: List<IdentityId>): Map<IdentityId, AccountMetadata> {
+        val userCount = keycloakInstance.realm(KeycloakClient.REALM).users().count()
+
+        return keycloakInstance
+            .realm(KeycloakClient.REALM)
+            .users()
+            .list(0, userCount)
+            .map {
+                val subjects = it.attributes.get("subjects")?.first()
+                val mixpanelId = it.attributes.get("mixpanelId")?.first()
+
+                IdentityId(value = it.id) to AccountMetadata(
+                    subjects = subjects!!,
+                    mixpanelId = MixpanelId(value = mixpanelId!!)
+                )
+            }.toMap()
+    }
+
     override fun getMetadata(id: IdentityId): AccountMetadata {
         val attributes =
             keycloakInstance.realm(KeycloakClient.REALM).users().get(id.value).toRepresentation().attributes
