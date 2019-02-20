@@ -2,6 +2,7 @@ package com.boclips.users.application
 
 import com.boclips.security.utils.User
 import com.boclips.security.utils.UserExtractor
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.presentation.SecurityContextUserNotFoundException
@@ -24,10 +25,10 @@ class UserActions(
 
     fun activateUser() = UserExtractor.getCurrentUser()
         ?.let { userService.activate(it.id) }
-        ?.let { Resource("", entityLinks.linkToSingleResource(UserResource(it.id)).withSelfRel()) }
+        ?.let { Resource("", entityLinks.linkToSingleResource(UserResource(it.id.value)).withSelfRel()) }
         ?: throw SecurityContextUserNotFoundException()
 
-    private fun buildLinksForUser(currentUser: User) = accountRepository.findById(currentUser.id)
+    private fun buildLinksForUser(currentUser: User) = accountRepository.findById(AccountId(value = currentUser.id))
         ?.takeIf { it.activated }
         ?.let { UserResource.from(it) }
         ?.let { listOf(entityLinks.linkToSingleResource(it).withRel("profile")) }

@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloak
 
-import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToUserIdentityConverter
+import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach

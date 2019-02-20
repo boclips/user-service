@@ -36,6 +36,6 @@ class UserResource(private val id: String) : Identifiable<String> {
     override fun getId() = id
 
     companion object {
-        fun from(account: Account) = UserResource(account.id)
+        fun from(account: Account) = UserResource(account.id.value)
     }
 }

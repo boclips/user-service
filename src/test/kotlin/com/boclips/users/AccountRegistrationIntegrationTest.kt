@@ -2,6 +2,7 @@ package com.boclips.users
 
 import com.boclips.users.application.UserRegistrator
 import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.model.identity.IdentityId
@@ -88,7 +89,7 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
         val retrievedUser = userService.findById(IdentityId(value = "id"))
         assertThat(retrievedUser.account).isEqualTo(
             Account(
-                id = "id",
+                id = AccountId(value = "id"),
                 activated = true
             )
         )

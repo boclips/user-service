@@ -50,7 +50,7 @@ class UserServiceIntegrationTest : AbstractSpringIntergrationTest() {
         val users = userService.findAllUsers()
 
         assertThat(users.size).isEqualTo(savedUsers.size)
-        assertThat(users.map { it.account.id }).contains("1", "2", "3", "4", "5")
+        assertThat(users.map { it.account.id.value }).contains("1", "2", "3", "4", "5")
         assertThat(users.map { it.identity.id.value }).contains("1", "2", "3", "4", "5")
     }
 

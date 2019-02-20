@@ -3,10 +3,10 @@ package com.boclips.users.testsupport
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.infrastructure.keycloak.LowLevelKeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient.Companion.REALM
 import com.boclips.users.infrastructure.keycloak.client.KeycloakGroup
-import com.boclips.users.infrastructure.keycloak.LowLevelKeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.exceptions.ResourceNotFoundException
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.GroupRepresentation

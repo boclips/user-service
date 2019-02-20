@@ -1,6 +1,7 @@
 package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import java.util.UUID
@@ -12,7 +13,7 @@ class AccountFactory {
             activated: Boolean = false
 
         ) = Account(
-            id = id,
+            id = AccountId(value = id),
             activated = activated
         )
     }

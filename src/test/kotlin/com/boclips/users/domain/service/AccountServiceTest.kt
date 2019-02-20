@@ -1,6 +1,7 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
@@ -29,7 +30,7 @@ class AccountServiceTest {
     fun `register user when no user creates inactive user`() {
         subject.registerUserIfNew(IdentityId(value = "doesn't exist"))
 
-        verify(userRepository).save(Account(id = "doesn't exist", activated = false))
+        verify(userRepository).save(Account(id = AccountId(value = "doesn't exist"), activated = false))
     }
 
     @Test
@@ -46,10 +47,15 @@ class AccountServiceTest {
 
     @Test
     fun `register user when user exists returns current user`() {
-        whenever(userRepository.findById("exists")).thenReturn(Account(id = "exists", activated = true))
+        whenever(userRepository.findById(AccountId(value = "exists"))).thenReturn(
+            Account(
+                id = AccountId(value = "exists"),
+                activated = true
+            )
+        )
         subject.registerUserIfNew(IdentityId(value = "exists"))
 
-        verify(userRepository).findById("exists")
+        verify(userRepository).findById(AccountId(value = "exists"))
         verifyNoMoreInteractions(userRepository)
     }
 }
