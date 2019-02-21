@@ -1,24 +1,20 @@
-package com.boclips.users
+package com.boclips.users.application
 
-import com.boclips.users.application.UserRegistrator
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.infrastructure.keycloak.client.KeycloakClient.Companion.TEACHERS_GROUP_NAME
-import com.boclips.users.infrastructure.keycloak.client.KeycloakClientFake
-import com.boclips.users.infrastructure.keycloak.client.KeycloakGroup
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.KeycloakClientFake
 import com.boclips.users.testsupport.UserIdentityFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.awaitility.Awaitility
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
+class UserRegistratorIntegrationTest : AbstractSpringIntergrationTest() {
 
     @Autowired
     lateinit var userRegistrator: UserRegistrator
@@ -39,31 +35,8 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     }
 
     @Test
-    fun `user registration eventually triggers`() {
-        assertThat(mixpanelClientFake.getEvents()).isEmpty()
-
-        val user =
-            keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com"))
-        val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
-
-        keycloakClientFake.addUserToGroup(userId = user.id.value, groupId = group.id!!)
-
-        Awaitility.await().untilAsserted {
-            assertThat(mixpanelClientFake.getEvents()).containsExactly(
-                Event(
-                    EventType.ACCOUNT_CREATED,
-                    user.id.value
-                )
-            )
-        }
-    }
-
-    @Test
-    fun `user registration triggers only once`() {
-        val user =
-            keycloakClientFake.createUser(UserIdentityFactory.sample(email = "username@gmail.com"))
-        val group = keycloakClientFake.createGroup(KeycloakGroup(name = TEACHERS_GROUP_NAME))
-        keycloakClientFake.addUserToGroup(userId = user.id.value, groupId = group.id!!)
+    fun `ACCOUNT_CREATED event only gets fired once for each new user`() {
+        val user = keycloakClientFake.createUser(UserIdentityFactory.sample())
 
         repeat(3) { userRegistrator.registerNewTeachersSinceYesterday() }
 
@@ -76,12 +49,11 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     }
 
     @Test
-    fun `user registration does not modify existing users`() {
+    fun `do not re-activate already activated users`() {
         val identity = UserIdentityFactory.sample(email = "username@gmail.com", id = "id")
         userService.activate(AccountId(value = "id"))
 
         keycloakClientFake.createUser(identity)
-        keycloakClientFake.login(identity)
 
         userRegistrator.registerNewTeachersSinceYesterday()
 
@@ -91,13 +63,11 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     }
 
     @Test
-    fun `user registration does not trigger events for existing users`() {
+    fun `ACCOUNT_CREATED event does get fired events for activated users`() {
         val user = UserIdentityFactory.sample(email = "username@gmail.com", id = "id")
-        keycloakClientFake.createUser(user)
         userService.activate(AccountId(value = "id"))
 
         keycloakClientFake.createUser(user)
-        keycloakClientFake.login(user)
 
         userRegistrator.registerNewTeachersSinceYesterday()
 

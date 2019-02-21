@@ -3,7 +3,6 @@ package com.boclips.users.testsupport
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.service.MetadataProvider
-import com.boclips.users.infrastructure.keycloak.client.KeycloakClientFake
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired

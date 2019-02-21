@@ -23,7 +23,6 @@ class UserService(
 
     companion object : KLogging()
 
-    //TODO tidy up
     @Synchronized
     fun registerUserIfNew(id: IdentityId): Account =
         accountRepository.findById(AccountId(value = id.value))
