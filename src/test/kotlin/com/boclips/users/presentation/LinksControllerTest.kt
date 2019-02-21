@@ -2,6 +2,7 @@ package com.boclips.users.presentation
 
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.analytics.MixpanelId
 import com.boclips.users.testsupport.AbstractSpringIntergrationTest
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
@@ -36,7 +37,14 @@ class LinksControllerTest : AbstractSpringIntergrationTest() {
 
     @Test
     fun `GET links when activated user returns profile link`() {
-        accountRepository.save(Account(id = AccountId(value = "a-user-id"), activated = true))
+        accountRepository.save(
+            Account(
+                id = AccountId(value = "a-user-id"),
+                activated = true,
+                subjects = "irrelevant",
+                analyticsId = MixpanelId(value = "irrelevant")
+            )
+        )
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)

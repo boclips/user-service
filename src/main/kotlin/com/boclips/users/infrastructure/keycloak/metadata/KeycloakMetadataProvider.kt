@@ -35,10 +35,11 @@ class KeycloakMetadataProvider(private val keycloakInstance: Keycloak) : Metadat
     override fun getMetadata(id: IdentityId): AccountMetadata {
         val attributes =
             keycloakInstance.realm(KeycloakClient.REALM).users().get(id.value).toRepresentation().attributes
+                ?: return AccountMetadata(null, null)
 
         val subjects = attributes.get("subjects")?.first()
         val mixpanelId = attributes.get("mixpanelId")?.first()
 
-        return AccountMetadata(subjects = subjects!!, mixpanelId = MixpanelId(value = mixpanelId!!))
+        return AccountMetadata(subjects = subjects, mixpanelId = mixpanelId?.let { MixpanelId(value = it) })
     }
 }

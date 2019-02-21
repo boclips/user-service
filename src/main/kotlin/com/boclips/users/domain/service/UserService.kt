@@ -23,22 +23,33 @@ class UserService(
 
     companion object : KLogging()
 
+    //TODO tidy up
     @Synchronized
     fun registerUserIfNew(id: IdentityId): Account =
         accountRepository.findById(AccountId(value = id.value))
-            ?: accountRepository
-                .save(Account(id = AccountId(value = id.value), activated = false))
-                .apply {
-                    analyticsClient.track(
-                        Event(
-                            eventType = EventType.ACCOUNT_CREATED,
-                            userId = id.value
+            ?: metadataProvider.getMetadata(id).let { metadata ->
+                accountRepository
+                    .save(
+                        Account(
+                            id = AccountId(value = id.value),
+                            activated = false,
+                            subjects = metadata.subjects,
+                            analyticsId = metadata.mixpanelId
                         )
                     )
-                    logger.info { "Registered new user: $id" }
-                }
+                    .apply {
+                        trackAccountCreatedEvent(id)
+                    }
+            }
 
-    fun activate(id: String) = accountRepository.save(Account(id = AccountId(value = id), activated = true))
+    fun activate(id: AccountId) = accountRepository.activate(id) ?: accountRepository.save(
+        Account(
+            id = id,
+            activated = true,
+            subjects = null,
+            analyticsId = null
+        )
+    )
 
     fun findById(id: IdentityId): User {
         val account = accountRepository.findById(AccountId(id.value)) ?: throw AccountNotFoundException()
@@ -48,10 +59,11 @@ class UserService(
         logger.info { "Fetched user ${id.value}" }
 
         return User(
-            account = account,
+            account = account.copy(
+                subjects = metadata.subjects,
+                analyticsId = metadata.mixpanelId
+            ),
             identity = identity,
-            subjects = metadata.subjects,
-            analyticsId = metadata.mixpanelId,
             userId = UserId(id.value)
         )
     }
@@ -76,10 +88,11 @@ class UserService(
                     null
                 }
                 else -> User(
-                    account = account,
+                    account = account.copy(
+                        subjects = metadata?.subjects,
+                        analyticsId = metadata?.mixpanelId
+                    ),
                     identity = identity,
-                    subjects = metadata?.subjects,
-                    analyticsId = metadata?.mixpanelId,
                     userId = UserId(identity.id.value)
                 )
             }
@@ -88,5 +101,15 @@ class UserService(
         logger.info { "Return ${allUsers.size} users" }
 
         return allUsers
+    }
+
+    private fun trackAccountCreatedEvent(id: IdentityId) {
+        analyticsClient.track(
+            Event(
+                eventType = EventType.ACCOUNT_CREATED,
+                userId = id.value
+            )
+        )
+        logger.info { "Registered new user: $id" }
     }
 }

@@ -21,6 +21,18 @@ class MongoAccountRepositoryTest : AbstractSpringIntergrationTest() {
     }
 
     @Test
+    fun `saving null fields is all good`() {
+        val user = AccountFactory.sample(
+            analyticsId = null,
+            subjects = null
+        )
+
+        userRepository.save(user)
+
+        assertThat(userRepository.findById(user.id)).isEqualTo(user)
+    }
+
+    @Test
     fun `can get all accounts`() {
         val savedUsers = listOf(
             userRepository.save(AccountFactory.sample()),

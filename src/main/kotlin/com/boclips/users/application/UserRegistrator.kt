@@ -1,6 +1,7 @@
 package com.boclips.users.application
 
 import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.domain.service.MetadataProvider
 import com.boclips.users.domain.service.UserService
 import mu.KLogging
 import org.springframework.scheduling.annotation.Scheduled

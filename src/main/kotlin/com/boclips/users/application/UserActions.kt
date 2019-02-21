@@ -24,7 +24,7 @@ class UserActions(
         ?: emptyList<Link>())
 
     fun activateUser() = UserExtractor.getCurrentUser()
-        ?.let { userService.activate(it.id) }
+        ?.let { userService.activate(AccountId(value = it.id)) }
         ?.let { Resource("", entityLinks.linkToSingleResource(UserResource(it.id.value)).withSelfRel()) }
         ?: throw SecurityContextUserNotFoundException()
 

@@ -1,7 +1,6 @@
 package com.boclips.users
 
 import com.boclips.users.application.UserRegistrator
-import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
@@ -79,7 +78,7 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
     @Test
     fun `user registration does not modify existing users`() {
         val identity = UserIdentityFactory.sample(email = "username@gmail.com", id = "id")
-        userService.activate("id")
+        userService.activate(AccountId(value = "id"))
 
         keycloakClientFake.createUser(identity)
         keycloakClientFake.login(identity)
@@ -87,19 +86,15 @@ class AccountRegistrationIntegrationTest : AbstractSpringIntergrationTest() {
         userRegistrator.registerNewTeachersSinceYesterday()
 
         val retrievedUser = userService.findById(IdentityId(value = "id"))
-        assertThat(retrievedUser.account).isEqualTo(
-            Account(
-                id = AccountId(value = "id"),
-                activated = true
-            )
-        )
+        assertThat(retrievedUser.account.id).isEqualTo(AccountId(value = "id"))
+        assertThat(retrievedUser.account.activated).isTrue()
     }
 
     @Test
     fun `user registration does not trigger events for existing users`() {
         val user = UserIdentityFactory.sample(email = "username@gmail.com", id = "id")
         keycloakClientFake.createUser(user)
-        userService.activate("id")
+        userService.activate(AccountId(value = "id"))
 
         keycloakClientFake.createUser(user)
         keycloakClientFake.login(user)

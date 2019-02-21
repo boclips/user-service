@@ -2,6 +2,7 @@ package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.analytics.MixpanelId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import java.util.UUID
@@ -10,11 +11,15 @@ class AccountFactory {
     companion object {
         fun sample(
             id: String = "user-id",
-            activated: Boolean = false
+            activated: Boolean = false,
+            subjects: String? = "maths english netflix",
+            analyticsId: MixpanelId? = MixpanelId(value = "1234567")
 
         ) = Account(
             id = AccountId(value = id),
-            activated = activated
+            activated = activated,
+            subjects = subjects,
+            analyticsId = analyticsId
         )
     }
 }
