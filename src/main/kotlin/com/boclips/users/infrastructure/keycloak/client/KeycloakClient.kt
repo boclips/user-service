@@ -4,14 +4,14 @@ import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
+import com.boclips.users.infrastructure.keycloak.client.exceptions.ResourceNotFoundException
+import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import mu.KLogging
-import org.keycloak.admin.client.Keycloak
-import org.keycloak.admin.client.resource.UserResource
 import org.keycloak.representations.idm.UserRepresentation
 import java.time.LocalDate
 
 class KeycloakClient(
-    private val keycloak: Keycloak,
+    private val keycloak: KeycloakWrapper,
     private val userConverter: KeycloakUserToUserIdentityConverter
 ) : IdentityProvider {
     companion object : KLogging() {
@@ -22,7 +22,7 @@ class KeycloakClient(
     override fun getUserById(id: IdentityId): Identity? {
         val user: UserRepresentation?
         return try {
-            user = getUserResource(id.value).toRepresentation()
+            user = keycloak.getUser(id.value)!!
             userConverter.convert(user)
         } catch (e: javax.ws.rs.NotFoundException) {
             logger.warn { "Could not find user: $id, omitting user" }
@@ -37,64 +37,39 @@ class KeycloakClient(
     }
 
     override fun getUserByUsername(username: String): Identity {
-        val usernameLowercase = username.toLowerCase()
-        val user = keycloak.realm(REALM).users().search(usernameLowercase)
-            .first { it.username == usernameLowercase }
+        val user = keycloak.getUserByUsername(username) ?: throw ResourceNotFoundException()
 
         return userConverter.convert(user)
     }
 
-    override fun hasLoggedIn(id: IdentityId): Boolean {
-        val events = keycloak.realm(REALM).getEvents(
-            listOf("LOGIN"),
-            null,
-            id.value,
-            null,
-            null,
-            null,
-            null,
-            1
-        )
-        return events.isNotEmpty()
-    }
-
-    override fun getNewTeachers(since: LocalDate): List<Identity> = keycloak.realm(REALM)
-        .getAdminEvents(listOf("CREATE"), null, null, null, null, null, since.toString(), null, 0, 9999)
-        .map { it.resourcePath.substringAfter("users/").substringBefore("/") }
-        .filter { userId ->
-            try {
-                val groupNames = getUserResource(userId).groups().map { group -> group.name }
-                if (groupNames.contains(TEACHERS_GROUP_NAME)) {
-                    true
-                } else {
-                    logger.error { "User $userId not in teachers group" }
+    override fun getNewTeachers(since: LocalDate): List<Identity> {
+        return keycloak.getRegisterEvents(since)
+            .mapNotNull { it.userId }
+            .filter { userId ->
+                try {
+                    val groupNames = keycloak.getGroupsOfUser(userId).map { group -> group.name }
+                    if (groupNames.contains(TEACHERS_GROUP_NAME)) {
+                        true
+                    } else {
+                        logger.error { "User $userId not in teachers group" }
+                        false
+                    }
+                } catch (e: Exception) {
+                    logger.error(e) { "Could not find newly created user $userId" }
                     false
                 }
-            } catch (e: Exception) {
-                logger.error(e) { "Could not find newly created user $userId" }
-                false
             }
-        }
-        .mapNotNull { getUserById(IdentityId(value = it)) }
-
-    override fun getUsers(): List<Identity> {
-        val userCount = keycloak.realm(REALM).users().count()
-
-        return keycloak
-            .realm(REALM)
-            .users()
-            .list(0, userCount)
-            .mapNotNull {
-                try {
-                    userConverter.convert(it)
-                } catch (e: InvalidUserRepresentation) {
-                    logger.warn { "Could not convert external keycloak user as email address is invalid" }
-                    null
-                }
-            }
+            .mapNotNull { getUserById(IdentityId(value = it)) }
     }
 
-    private fun getUserResource(id: String): UserResource {
-        return keycloak.realm(REALM).users().get(id)
+    override fun getUsers(): List<Identity> {
+        return keycloak.users().mapNotNull {
+            try {
+                userConverter.convert(it)
+            } catch (e: InvalidUserRepresentation) {
+                logger.warn { "Could not convert external keycloak user as email address is invalid" }
+                null
+            }
+        }
     }
 }

@@ -50,10 +50,6 @@ class KeycloakClientFake : IdentityProvider, LowLevelKeycloakClient {
             .mapNotNull { getUserById(id = IdentityId(value = it.userId)) }
     }
 
-    override fun hasLoggedIn(id: IdentityId): Boolean {
-        return hasLoggedIn[id.value] ?: return false
-    }
-
     override fun getUserByUsername(username: String): Identity {
         return Identity(
             id = IdentityId(value = username),

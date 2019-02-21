@@ -8,6 +8,7 @@ import com.boclips.users.infrastructure.keycloak.KeycloakProperties
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToUserIdentityConverter
 import com.boclips.users.infrastructure.keycloak.metadata.KeycloakMetadataProvider
+import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -25,8 +26,11 @@ class ContextConfig(
     fun analyticsClient(properties: MixpanelProperties) = MixpanelClient(properties)
 
     @Bean
-    fun identityProvider(keycloak: Keycloak) = KeycloakClient(
-        keycloak,
+    fun keycloakWrapper(keycloak: Keycloak) = KeycloakWrapper(keycloak)
+
+    @Bean
+    fun identityProvider(keycloakWrapper: KeycloakWrapper) = KeycloakClient(
+        keycloakWrapper,
         KeycloakUserToUserIdentityConverter()
     )
 
