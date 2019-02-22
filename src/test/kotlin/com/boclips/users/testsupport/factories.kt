@@ -2,7 +2,7 @@ package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
-import com.boclips.users.domain.model.analytics.MixpanelId
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import java.util.UUID
@@ -13,7 +13,7 @@ class AccountFactory {
             id: String = "user-id",
             activated: Boolean = false,
             subjects: String? = "maths english netflix",
-            analyticsId: MixpanelId? = MixpanelId(value = "1234567")
+            analyticsId: AnalyticsId? = AnalyticsId(value = "1234567")
 
         ) = Account(
             id = AccountId(value = id),

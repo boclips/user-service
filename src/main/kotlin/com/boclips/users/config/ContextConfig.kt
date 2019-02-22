@@ -50,6 +50,6 @@ class ContextConfig(
         HubSpotClient(objectMapper = objectMapper, hubspotProperties = properties)
 
     @Bean
-    fun metadataProvider(keycloak: Keycloak): MetadataProvider =
-        KeycloakMetadataProvider(keycloak)
+    fun metadataProvider(keycloakWrapper: KeycloakWrapper): MetadataProvider =
+        KeycloakMetadataProvider(keycloakWrapper)
 }

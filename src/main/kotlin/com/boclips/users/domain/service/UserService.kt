@@ -8,7 +8,7 @@ import com.boclips.users.domain.model.account.AccountNotFoundException
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
-import com.boclips.users.domain.model.analytics.MixpanelId
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.identity.IdentityNotFoundException
 import mu.KLogging
@@ -34,12 +34,12 @@ class UserService(
                             id = AccountId(value = id.value),
                             activated = false,
                             subjects = metadata.subjects,
-                            analyticsId = metadata.mixpanelId
+                            analyticsId = metadata.analyticsId
                         )
                     )
                     .apply {
-                        metadata.mixpanelId?.let {
-                            trackAccountCreatedEvent(metadata.mixpanelId)
+                        metadata.analyticsId?.let {
+                            trackAccountCreatedEvent(metadata.analyticsId)
                         }
                     }
             }
@@ -63,7 +63,7 @@ class UserService(
         return User(
             account = account.copy(
                 subjects = metadata.subjects,
-                analyticsId = metadata.mixpanelId
+                analyticsId = metadata.analyticsId
             ),
             identity = identity,
             userId = UserId(id.value)
@@ -92,7 +92,7 @@ class UserService(
                 else -> User(
                     account = account.copy(
                         subjects = metadata?.subjects,
-                        analyticsId = metadata?.mixpanelId
+                        analyticsId = metadata?.analyticsId
                     ),
                     identity = identity,
                     userId = UserId(identity.id.value)
@@ -105,8 +105,7 @@ class UserService(
         return allUsers
     }
 
-    //TODO this should be the mixpanel id...
-    private fun trackAccountCreatedEvent(id: MixpanelId) {
+    private fun trackAccountCreatedEvent(id: AnalyticsId) {
         analyticsClient.track(
             Event(
                 eventType = EventType.ACCOUNT_CREATED,

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class ContactsUpdater(
-    val identityProvider: IdentityProvider,
     val userService: UserService,
     val customerManagementProvider: CustomerManagementProvider
 ) {

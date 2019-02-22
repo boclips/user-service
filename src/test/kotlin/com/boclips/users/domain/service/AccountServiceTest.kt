@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
-import com.boclips.users.domain.model.analytics.MixpanelId
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.IdentityId
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -33,7 +33,7 @@ class AccountServiceTest {
     fun setUp() {
         whenever(metadataProvider.getMetadata(IdentityId(value = "doesn't exist")))
             .thenReturn(
-                AccountMetadata(subjects = "subjects", mixpanelId = MixpanelId(value = "123"))
+                AccountMetadata(subjects = "subjects", analyticsId = AnalyticsId(value = "123"))
             )
     }
 
@@ -45,7 +45,7 @@ class AccountServiceTest {
             Account(
                 id = AccountId(value = "doesn't exist"),
                 activated = false,
-                analyticsId = MixpanelId(value = "123"),
+                analyticsId = AnalyticsId(value = "123"),
                 subjects = "subjects"
             )
         )
@@ -71,7 +71,7 @@ class AccountServiceTest {
                 id = AccountId(value = "exists"),
                 activated = true,
                 subjects = "subjects",
-                analyticsId = MixpanelId(value = "123")
+                analyticsId = AnalyticsId(value = "123")
             )
         )
         userService.registerUserIfNew(IdentityId(value = "exists"))

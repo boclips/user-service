@@ -1,45 +1,40 @@
 package com.boclips.users.infrastructure.keycloak.metadata
 
 import com.boclips.users.domain.model.AccountMetadata
-import com.boclips.users.domain.model.analytics.MixpanelId
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.MetadataProvider
-import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
-import org.keycloak.admin.client.Keycloak
+import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 
-class KeycloakMetadataProvider(private val keycloakInstance: Keycloak) : MetadataProvider {
+class KeycloakMetadataProvider(private val keycloakWrapper: KeycloakWrapper) : MetadataProvider {
     override fun getAllMetadata(ids: List<IdentityId>): Map<IdentityId, AccountMetadata> {
-        val userCount = keycloakInstance.realm(KeycloakClient.REALM).users().count()
 
-        return keycloakInstance
-            .realm(KeycloakClient.REALM)
-            .users()
-            .list(0, userCount)
+        return keycloakWrapper.users()
             .mapNotNull {
                 if (it.attributes == null) {
                     null
-                } else if (it.attributes["subjects"] == null || it.attributes["mixpanelDistinctId"] == null) {
-                    null
                 } else {
-                    val subjects = it.attributes["subjects"]?.first()
-                    val mixpanelId = it.attributes["mixpanelDistinctId"]?.first()
-
-                    IdentityId(value = it.id) to AccountMetadata(
-                        subjects = subjects!!,
-                        mixpanelId = MixpanelId(value = mixpanelId!!)
-                    )
+                    IdentityId(value = it.id) to toAccountMetadata(it.attributes)
                 }
             }.toMap()
     }
 
     override fun getMetadata(id: IdentityId): AccountMetadata {
-        val attributes =
-            keycloakInstance.realm(KeycloakClient.REALM).users().get(id.value).toRepresentation().attributes
-                ?: return AccountMetadata(null, null)
+        val attributes = keycloakWrapper.getUser(id.value)?.attributes
+            ?: return AccountMetadata(null, null)
 
-        val subjects = attributes.get("subjects")?.first()
-        val mixpanelId = attributes.get("mixpanelId")?.first()
-
-        return AccountMetadata(subjects = subjects, mixpanelId = mixpanelId?.let { MixpanelId(value = it) })
+        return toAccountMetadata(attributes)
     }
+
+    private fun toAccountMetadata(attributes: Map<String, List<String>?>): AccountMetadata {
+        val subjects = attributes.get("subjects")?.first()
+        val mixpanelId = attributes.get("mixpanelDistinctId")?.first()
+
+        return AccountMetadata(
+            subjects = subjects,
+            analyticsId = getAnalyticsIdSafely(mixpanelId)
+        )
+    }
+
+    private fun getAnalyticsIdSafely(id: String?): AnalyticsId? = id?.let { AnalyticsId(value = it) }
 }

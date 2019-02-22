@@ -44,7 +44,7 @@ class UserRegistratorIntegrationTest : AbstractSpringIntergrationTest() {
         assertThat(mixpanelClientFake.getEvents()).containsOnlyOnce(
             Event(
                 EventType.ACCOUNT_CREATED,
-                userId = metadata.mixpanelId!!.value
+                userId = metadata.analyticsId!!.value
             )
         )
     }
