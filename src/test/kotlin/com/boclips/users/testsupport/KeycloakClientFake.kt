@@ -13,16 +13,6 @@ class KeycloakClientFake : IdentityProvider {
         return fakeUsers.values.toList()
     }
 
-    override fun getUserByUsername(username: String): Identity {
-        return Identity(
-            id = IdentityId(value = username),
-            firstName = "Little",
-            lastName = "Bo",
-            email = "$username@boclips.com",
-            isVerified = true
-        )
-    }
-
     override fun getUserById(id: IdentityId): Identity? {
         return fakeUsers[id.value]
     }

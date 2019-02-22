@@ -25,21 +25,15 @@ class KeycloakClient(
             user = keycloak.getUser(id.value)!!
             userConverter.convert(user)
         } catch (e: javax.ws.rs.NotFoundException) {
-            logger.warn { "Could not find user: $id, omitting user" }
+            logger.warn { "Could not find user: ${id.value}, omitting user" }
             null
         } catch (e: InvalidUserRepresentation) {
-            logger.warn { "Could not convert external keycloak user: $id, omitting user" }
+            logger.warn { "Could not convert external keycloak user: ${id.value}, omitting user because: ${e.message}" }
             null
         } catch (e: Exception) {
-            logger.warn(e) { "Unexpected exception happened when looking up user: $id, omitting user" }
+            logger.warn(e) { "Unexpected exception happened when looking up user: ${id.value}, omitting user" }
             null
         }
-    }
-
-    override fun getUserByUsername(username: String): Identity {
-        val user = keycloak.getUserByUsername(username) ?: throw ResourceNotFoundException()
-
-        return userConverter.convert(user)
     }
 
     override fun getNewTeachers(since: LocalDate): List<Identity> {

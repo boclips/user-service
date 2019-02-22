@@ -6,7 +6,6 @@ import java.time.LocalDate
 
 interface IdentityProvider {
     fun getUserById(id: IdentityId): Identity?
-    fun getUserByUsername(username: String): Identity
     fun getNewTeachers(since: LocalDate): List<Identity>
     fun getUsers(): List<Identity>
 }
