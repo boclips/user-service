@@ -37,7 +37,7 @@ class UserIdentityFactory {
             email = email,
             firstName = firstName,
             lastName = lastName,
-            isVerified = isVerified
+            isEmailVerified = isVerified
         )
     }
 }

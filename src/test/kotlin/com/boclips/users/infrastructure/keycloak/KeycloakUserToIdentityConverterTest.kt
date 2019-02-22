@@ -33,7 +33,7 @@ class KeycloakUserToIdentityConverterTest {
         assertThat(convertedUser.email).isEqualTo(keycloakUser.email)
         assertThat(convertedUser.firstName).isEqualTo(keycloakUser.firstName)
         assertThat(convertedUser.lastName).isEqualTo(keycloakUser.lastName)
-        assertThat(convertedUser.isVerified).isEqualTo(keycloakUser.isEmailVerified)
+        assertThat(convertedUser.isEmailVerified).isEqualTo(keycloakUser.isEmailVerified)
     }
 
     @Test

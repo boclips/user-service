@@ -5,9 +5,9 @@ data class Identity(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val isVerified: Boolean
+    val isEmailVerified: Boolean
 ) {
     override fun toString(): String {
-        return "Identity(id=$id, isVerified=$isVerified)"
+        return "Identity(id=$id, isEmailVerified=$isEmailVerified)"
     }
 }
