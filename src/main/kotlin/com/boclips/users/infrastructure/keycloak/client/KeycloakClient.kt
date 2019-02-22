@@ -3,9 +3,8 @@ package com.boclips.users.infrastructure.keycloak.client
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
-import com.boclips.users.infrastructure.keycloak.client.exceptions.ResourceNotFoundException
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
+import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import mu.KLogging
 import org.keycloak.representations.idm.UserRepresentation
 import java.time.LocalDate
