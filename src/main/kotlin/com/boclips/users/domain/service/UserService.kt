@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.account.AccountNotFoundException
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
+import com.boclips.users.domain.model.analytics.MixpanelId
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.identity.IdentityNotFoundException
 import mu.KLogging
@@ -37,7 +38,9 @@ class UserService(
                         )
                     )
                     .apply {
-                        trackAccountCreatedEvent(id)
+                        metadata.mixpanelId?.let {
+                            trackAccountCreatedEvent(metadata.mixpanelId)
+                        }
                     }
             }
 
@@ -103,7 +106,7 @@ class UserService(
     }
 
     //TODO this should be the mixpanel id...
-    private fun trackAccountCreatedEvent(id: IdentityId) {
+    private fun trackAccountCreatedEvent(id: MixpanelId) {
         analyticsClient.track(
             Event(
                 eventType = EventType.ACCOUNT_CREATED,

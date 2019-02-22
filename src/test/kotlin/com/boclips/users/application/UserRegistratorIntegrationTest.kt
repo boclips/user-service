@@ -37,13 +37,14 @@ class UserRegistratorIntegrationTest : AbstractSpringIntergrationTest() {
     @Test
     fun `ACCOUNT_CREATED event only gets fired once for each new user`() {
         val user = keycloakClientFake.createUser(UserIdentityFactory.sample())
+        val metadata = metadataProvider.getMetadata(user.id)
 
         repeat(3) { userRegistrator.registerNewTeachersSinceYesterday() }
 
         assertThat(mixpanelClientFake.getEvents()).containsOnlyOnce(
             Event(
                 EventType.ACCOUNT_CREATED,
-                userId = user.id.value
+                userId = metadata.mixpanelId!!.value
             )
         )
     }
