@@ -75,6 +75,9 @@ dependencies {
     compile('com.google.guava:guava:27.0.1-jre')
     compile('commons-validator:commons-validator:1.6')
 
+    compile('ch.qos.logback.contrib:logback-json-classic:0.1.5')
+    compile('ch.qos.logback.contrib:logback-jackson:0.1.5')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')
     testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
