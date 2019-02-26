@@ -74,6 +74,7 @@ dependencies {
     compile('com.mixpanel:mixpanel-java:1.4.4')
     compile('com.google.guava:guava:27.0.1-jre')
     compile('commons-validator:commons-validator:1.6')
+    compile('io.sentry:sentry-logback:1.7.21')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')
