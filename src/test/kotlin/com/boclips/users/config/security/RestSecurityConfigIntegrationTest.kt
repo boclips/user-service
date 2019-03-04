@@ -1,12 +1,12 @@
 package com.boclips.users.config.security
 
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-class RestSecurityConfigIntegrationTest : AbstractSpringIntergrationTest() {
+class RestSecurityConfigIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `only user managers can synchronize users`() {
         mvc.perform(MockMvcRequestBuilders.post("/v1/users/sync"))

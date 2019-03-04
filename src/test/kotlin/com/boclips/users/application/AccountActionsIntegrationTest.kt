@@ -2,7 +2,7 @@ package com.boclips.users.application
 
 import com.boclips.users.domain.model.User
 import com.boclips.users.presentation.SecurityContextUserNotFoundException
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.UserIdentityFactory
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithMockUser
 
-class AccountActionsIntegrationTest : AbstractSpringIntergrationTest() {
+class AccountActionsIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
     lateinit var userActions: UserActions

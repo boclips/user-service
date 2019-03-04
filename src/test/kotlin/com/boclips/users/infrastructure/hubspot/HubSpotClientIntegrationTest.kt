@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.UserIdentityFactory
@@ -24,7 +24,7 @@ import org.springframework.util.ResourceUtils
 import java.nio.charset.Charset
 
 @AutoConfigureWireMock(port = 9999)
-class HubSpotClientIntegrationTest : AbstractSpringIntergrationTest() {
+class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
     protected lateinit var wireMockServer: WireMockServer
 

@@ -1,6 +1,6 @@
 package com.boclips.users.presentation
 
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.UserIdentityFactory
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class AccountProfileControllerTest : AbstractSpringIntergrationTest() {
+class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `activate user endpoint`() {

@@ -2,7 +2,7 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.identity.IdentityId
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.UserIdentityFactory
@@ -10,7 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class UserServiceIntegrationTest : AbstractSpringIntergrationTest() {
+class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
     lateinit var userService: UserService
 

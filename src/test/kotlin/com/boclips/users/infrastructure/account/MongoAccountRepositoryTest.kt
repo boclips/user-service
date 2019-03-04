@@ -1,12 +1,12 @@
 package com.boclips.users.infrastructure.account
 
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class MongoAccountRepositoryTest : AbstractSpringIntergrationTest() {
+class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Autowired
     lateinit var userRepository: MongoAccountRepository

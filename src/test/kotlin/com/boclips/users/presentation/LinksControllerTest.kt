@@ -3,7 +3,7 @@ package com.boclips.users.presentation
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.startsWith
@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class LinksControllerTest : AbstractSpringIntergrationTest() {
+class LinksControllerTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `GET links when unknown user returns activation link`() {

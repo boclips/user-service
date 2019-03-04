@@ -1,6 +1,6 @@
 package com.boclips.users.config.security
 
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.optio
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class AccountServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntergrationTest() {
+class AccountServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `everybody can access actuator without permissions`() {

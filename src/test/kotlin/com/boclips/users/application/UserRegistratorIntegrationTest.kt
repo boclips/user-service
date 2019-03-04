@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
-import com.boclips.users.testsupport.AbstractSpringIntergrationTest
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.KeycloakClientFake
 import com.boclips.users.testsupport.UserIdentityFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class UserRegistratorIntegrationTest : AbstractSpringIntergrationTest() {
+class UserRegistratorIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
     lateinit var userRegistrator: UserRegistrator

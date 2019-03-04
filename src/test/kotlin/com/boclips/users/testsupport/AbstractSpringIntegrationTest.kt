@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-abstract class AbstractSpringIntergrationTest {
+abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     protected lateinit var mvc: MockMvc
