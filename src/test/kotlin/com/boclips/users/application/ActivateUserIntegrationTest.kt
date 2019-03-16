@@ -25,6 +25,13 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `activate user is idempotent`() {
+        setSecurityContext("user@example.com")
+
+        assertThat(activateUser.activateUser()).isEqualTo(activateUser.activateUser())
+    }
+
+    @Test
     fun `activateUser when security context not populated throws`() {
         assertThrows<SecurityContextUserNotFoundException> {
             activateUser.activateUser()
