@@ -52,7 +52,8 @@ class NewReferralRockClientTest : AbstractSpringIntegrationTest() {
                 firstName = "Jane",
                 lastName = "Doe",
                 email = "jane@doe.com",
-                externalIdentifier = "35"
+                externalIdentifier = "35",
+                status = "qualified"
             )
         )
 
@@ -60,6 +61,7 @@ class NewReferralRockClientTest : AbstractSpringIntegrationTest() {
 
         wireMockServer.verify(
             WireMock.postRequestedFor(WireMock.urlMatching(".*/api/referrals"))
+                .withRequestBody(WireMock.equalToJson(loadWireMockStub("referralrock-create-referral.json")))
                 .withHeader(
                     "Authorization",
                     matching(basicAuth(user = "public-key", password = "private-key"))

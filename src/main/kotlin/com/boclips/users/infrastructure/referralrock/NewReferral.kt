@@ -5,5 +5,6 @@ data class NewReferral(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val externalIdentifier: String
+    val externalIdentifier: String,
+    val status: String
 )
