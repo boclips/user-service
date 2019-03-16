@@ -18,7 +18,7 @@ class ReferralRockClient(
     private val restTemplate = RestTemplate()
 
     fun createReferral(newReferral: NewReferral): ReferralId {
-        val headers = getStandardHeader()
+        val headers = getStandardHeaders()
 
         val request = HttpEntity(
             objectMapper.writeValueAsString(newReferral),
@@ -48,7 +48,7 @@ class ReferralRockClient(
         return properties.host + path
     }
 
-    private fun getStandardHeader(): HttpHeaders {
+    private fun getStandardHeaders(): HttpHeaders {
         val headers = getContentTypeHeader()
         headers.add("Authorization", "${basicAuthHeaderValue()}")
         return headers

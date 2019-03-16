@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.MediaType
 
-@AutoConfigureWireMock(port = 9999)
 class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
-    @Autowired
-    protected lateinit var wireMockServer: WireMockServer
 
     var hubSpotClient: HubSpotClient = HubSpotClient(
         ObjectMapper(), HubSpotProperties().apply {
@@ -33,11 +30,6 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             this.batchSize = 100
         }
     )
-
-    @BeforeEach
-    fun setUp() {
-        wireMockServer.resetAll()
-    }
 
     @Test
     fun `updates contacts in hubspot`() {

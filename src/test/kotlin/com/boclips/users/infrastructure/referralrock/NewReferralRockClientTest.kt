@@ -3,7 +3,6 @@ package com.boclips.users.infrastructure.referralrock
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.loadWireMockStub
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.matching
@@ -13,14 +12,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import java.util.Base64
 
-@AutoConfigureWireMock(port = 9999)
 class NewReferralRockClientTest : AbstractSpringIntegrationTest() {
-    @Autowired
-    protected lateinit var wireMockServer: WireMockServer
-
     @Autowired
     protected lateinit var objectMapper: ObjectMapper
 
