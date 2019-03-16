@@ -23,10 +23,11 @@ data class UserDocument(
         )
     }
 
-    fun toUser() = Account(
+    fun toAccount() = Account(
         id = AccountId(value = id),
         activated = activated,
         subjects = subjects,
-        analyticsId = analyticsId?.let { AnalyticsId(value = it) }
+        analyticsId = analyticsId?.let { AnalyticsId(value = it) },
+        isReferral = false
     )
 }

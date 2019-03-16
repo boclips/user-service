@@ -19,7 +19,8 @@ class AccountFactory {
             id = AccountId(value = id),
             activated = activated,
             subjects = subjects,
-            analyticsId = analyticsId
+            analyticsId = analyticsId,
+            isReferral = false
         )
     }
 }

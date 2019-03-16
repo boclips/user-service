@@ -4,9 +4,9 @@ import com.boclips.users.domain.model.AccountMetadata
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountRepository
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
-import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.IdentityId
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -46,7 +46,8 @@ class AccountServiceTest {
                 id = AccountId(value = "doesn't exist"),
                 activated = false,
                 analyticsId = AnalyticsId(value = "123"),
-                subjects = "subjects"
+                subjects = "subjects",
+                isReferral = false
             )
         )
     }
@@ -71,7 +72,8 @@ class AccountServiceTest {
                 id = AccountId(value = "exists"),
                 activated = true,
                 subjects = "subjects",
-                analyticsId = AnalyticsId(value = "123")
+                analyticsId = AnalyticsId(value = "123"),
+                isReferral = false
             )
         )
         userService.registerUserIfNew(IdentityId(value = "exists"))

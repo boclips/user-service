@@ -36,6 +36,16 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `activate user tracks whether it's a referral or not`() {
+        setSecurityContext("user@example.com")
+
+        val activatedUser = activateUser.activateUser(UserActivationRequest(referralCode = "it-is-a-referral"))
+
+        val persistedUser = accountRepository.findById(activatedUser.id)
+        assertThat(persistedUser!!.isReferral).isTrue()
+    }
+
+    @Test
     fun `activateUser when security context not populated throws`() {
         assertThrows<SecurityContextUserNotFoundException> {
             activateUser.activateUser(UserActivationRequest())
