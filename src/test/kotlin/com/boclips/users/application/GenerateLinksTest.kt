@@ -1,32 +1,22 @@
 package com.boclips.users.application
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.presentation.SecurityContextUserNotFoundException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.UserIdentityFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithMockUser
 
-class AccountActionsIntegrationTest : AbstractSpringIntegrationTest() {
-
+class GenerateLinksTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var userActions: UserActions
-
-    @Test
-    fun `activateUser when security context not populated throws`() {
-        assertThrows<SecurityContextUserNotFoundException> {
-            userActions.activateUser()
-        }
-    }
+    lateinit var generateLinks: GenerateLinks
 
     @Test
     fun `getLinks when security context not populated returns no links`() {
-        assertThat(userActions.getLinks().links).isEmpty()
+        assertThat(generateLinks.getLinks().links).isEmpty()
     }
 
     @Test
@@ -34,13 +24,13 @@ class AccountActionsIntegrationTest : AbstractSpringIntegrationTest() {
     fun `getLinks when active user returns profile link only`() {
         saveUser(createUser(true))
 
-        assertThat(userActions.getLinks().links.map { it.rel }).containsExactly("profile")
+        assertThat(generateLinks.getLinks().links.map { it.rel }).containsExactly("profile")
     }
 
     @Test
     @WithMockUser("user-id")
     fun `getLinks when non existing user returns activate link only`() {
-        assertThat(userActions.getLinks().links.map { it.rel }).containsExactly("activate")
+        assertThat(generateLinks.getLinks().links.map { it.rel }).containsExactly("activate")
     }
 
     @Test
@@ -48,7 +38,7 @@ class AccountActionsIntegrationTest : AbstractSpringIntegrationTest() {
     fun `getLinks when non activated user returns activate link only`() {
         saveUser(createUser(false))
 
-        assertThat(userActions.getLinks().links.map { it.rel }).containsExactly("activate")
+        assertThat(generateLinks.getLinks().links.map { it.rel }).containsExactly("activate")
     }
 
     private fun createUser(isActivated: Boolean): User {

@@ -1,11 +1,11 @@
 package com.boclips.users.presentation
 
-import com.boclips.users.application.ContactsUpdater
-import com.boclips.users.application.UserActions
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.application.ActivateUser
+import com.boclips.users.application.UpdateContacts
 import mu.KLogging
+import org.springframework.hateoas.EntityLinks
 import org.springframework.hateoas.ExposesResourceFor
-import org.springframework.hateoas.Identifiable
+import org.springframework.hateoas.Resource
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,27 +15,25 @@ import org.springframework.web.bind.annotation.RestController
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
 class UserProfileController(
-    private val userActions: UserActions,
-    private val contactsUpdater: ContactsUpdater
+    private val activateUser: ActivateUser,
+    private val updateContacts: UpdateContacts,
+    private val entityLinks: EntityLinks
 ) {
     companion object : KLogging()
 
     @PostMapping
-    fun activateUser() = userActions.activateUser()
+    fun activateUser(): Resource<String> {
+        val account = activateUser.activateUser()
+        return Resource("", entityLinks.linkToSingleResource(UserResource(account.id.value)).withSelfRel())
+    }
 
     @GetMapping("/{id}")
-    fun getUserProfile(): Nothing? = null
+    fun getUserProfile(): Nothing? {
+        return null
+    }
 
     @PostMapping("/sync")
     fun syncUsers() {
-        contactsUpdater.update()
-    }
-}
-
-class UserResource(private val id: String) : Identifiable<String> {
-    override fun getId() = id
-
-    companion object {
-        fun from(account: Account) = UserResource(account.id.value)
+        updateContacts.update()
     }
 }

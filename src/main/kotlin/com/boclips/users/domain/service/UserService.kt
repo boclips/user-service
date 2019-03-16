@@ -25,8 +25,9 @@ class UserService(
     companion object : KLogging()
 
     @Synchronized
-    fun registerUserIfNew(id: IdentityId): Account =
-        accountRepository.findById(AccountId(value = id.value))
+    fun registerUserIfNew(id: IdentityId): Account {
+        val existingUser = accountRepository.findById(AccountId(value = id.value))
+        return existingUser
             ?: metadataProvider.getMetadata(id).let { metadata ->
                 accountRepository
                     .save(
@@ -43,15 +44,18 @@ class UserService(
                         }
                     }
             }
+    }
 
-    fun activate(id: AccountId) = accountRepository.activate(id) ?: accountRepository.save(
-        Account(
-            id = id,
-            activated = true,
-            subjects = null,
-            analyticsId = null
+    fun activate(id: AccountId): Account {
+        return accountRepository.activate(id) ?: accountRepository.save(
+            Account(
+                id = id,
+                activated = true,
+                subjects = null,
+                analyticsId = null
+            )
         )
-    )
+    }
 
     fun findById(id: IdentityId): User {
         val account = accountRepository.findById(AccountId(id.value)) ?: throw AccountNotFoundException()

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-class UserRegistrator(
+class RegisterUser(
     val identityProvider: IdentityProvider,
     val userService: UserService
 ) {

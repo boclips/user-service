@@ -61,7 +61,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-actuator')
 
-    compile('com.github.boclips:boclips-spring-security:0.25.0')
+    compile('com.github.boclips:boclips-spring-security:0.48.0')
 
     compile('com.jayway.jsonpath:json-path:2.3.0')
     compile('io.github.microutils:kotlin-logging:1.6.22')
