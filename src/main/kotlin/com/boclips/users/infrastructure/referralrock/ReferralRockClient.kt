@@ -33,14 +33,14 @@ class ReferralRockClient(
             )
 
             if (createdReferral.statusCode == HttpStatus.CREATED) {
-                logger.info { "Created referral for user ${newReferral.externalIdentifier}" }
+                logger.info { "Created referral for user ${newReferral.externalIdentifier} with referral code ${newReferral.referralCode}" }
                 return ReferralId(value = createdReferral.body?.referral!!.id)
             }
 
             throw ReferralRockException("ReferralRock returned ${createdReferral.statusCode} but should have returned ${HttpStatus.CREATED}")
         } catch (ex: Exception) {
             logger.error { "Failed to create referral $newReferral" }
-            throw ReferralRockException("Failed to create referral for ${newReferral.externalIdentifier}")
+            throw ReferralRockException("Failed to create referral for ${newReferral.externalIdentifier} with referral code ${newReferral.referralCode}")
         }
     }
 
