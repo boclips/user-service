@@ -5,6 +5,7 @@ import com.boclips.users.testsupport.UserIdentityFactory
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
 import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -13,7 +14,20 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
 
     @Test
-    fun `activate user endpoint`() {
+    fun `user can be activated with referral code`() {
+        identityProvider.createUser(UserIdentityFactory.sample(id = "registered-user"))
+
+        mvc.perform(
+            post("/v1/users")
+                .asUser("registered-user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"referralCode": "abc-123" }""")
+        )
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `user can be activated without referral code`() {
         mvc.perform(post("/v1/users").asUser("activated-user"))
             .andExpect(status().isOk)
     }

@@ -2,6 +2,7 @@ package com.boclips.users.config
 
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.MetadataProvider
+import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.testsupport.KeycloakClientFake
@@ -24,6 +25,10 @@ class ContextConfig {
     @Bean
     fun customerManagement(properties: HubSpotProperties): CustomerManagementProvider =
         Mockito.mock(CustomerManagementProvider::class.java)
+
+    @Bean
+    fun referralProvider(properties: HubSpotProperties): ReferralProvider =
+        Mockito.mock(ReferralProvider::class.java)
 
     @Bean
     fun metadataProvider(): MetadataProvider = MetadataProviderFake()

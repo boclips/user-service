@@ -8,13 +8,14 @@ import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Resource
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
-class UserProfileController(
+class AccountProfileController(
     private val activateUser: ActivateUser,
     private val updateContacts: UpdateContacts,
     private val entityLinks: EntityLinks
@@ -22,8 +23,9 @@ class UserProfileController(
     companion object : KLogging()
 
     @PostMapping
-    fun activateUser(): Resource<String> {
-        val account = activateUser.activateUser()
+    fun activateUser(@RequestBody userActivationRequest: UserActivationRequest?): Resource<String> {
+        val account = activateUser.activateUser(userActivationRequest)
+
         return Resource("", entityLinks.linkToSingleResource(UserResource(account.id.value)).withSelfRel())
     }
 

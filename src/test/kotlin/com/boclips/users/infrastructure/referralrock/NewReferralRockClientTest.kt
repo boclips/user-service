@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.referralrock
 
+import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.loadWireMockStub
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -68,11 +69,6 @@ class NewReferralRockClientTest : AbstractSpringIntegrationTest() {
                 )
 
         )
-    }
-
-    @Test
-    fun `update referral status`() {
-        // POST api/referrals/status
     }
 
     private fun basicAuth(user: String, password: String): String {

@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.referralrock
+package com.boclips.users.domain.model.referrals
 
 data class NewReferral(
     val referralCode: String,

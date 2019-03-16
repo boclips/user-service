@@ -6,9 +6,9 @@ import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountNotFoundException
 import com.boclips.users.domain.model.account.AccountRepository
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
-import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.identity.IdentityNotFoundException
 import mu.KLogging
@@ -47,7 +47,9 @@ class UserService(
     }
 
     fun activate(id: AccountId): Account {
-        return accountRepository.activate(id) ?: accountRepository.save(
+        val activatedUser = accountRepository.activate(id)
+
+        return activatedUser ?: accountRepository.save(
             Account(
                 id = id,
                 activated = true,

@@ -1,5 +1,8 @@
 package com.boclips.users.infrastructure.referralrock
 
+import com.boclips.users.domain.model.referrals.NewReferral
+import com.boclips.users.domain.model.referrals.ReferralId
+import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.infrastructure.getContentTypeHeader
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
@@ -12,12 +15,12 @@ import java.util.Base64
 class ReferralRockClient(
     val properties: ReferralRockProperties,
     private val objectMapper: ObjectMapper
-) {
+) : ReferralProvider {
     companion object : KLogging()
 
     private val restTemplate = RestTemplate()
 
-    fun createReferral(newReferral: NewReferral): ReferralId {
+    override fun createReferral(newReferral: NewReferral): ReferralId {
         val headers = getStandardHeaders()
 
         val request = HttpEntity(
