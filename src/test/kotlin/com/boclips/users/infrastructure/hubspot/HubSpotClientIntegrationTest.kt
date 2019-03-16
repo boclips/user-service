@@ -5,6 +5,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.UserIdentityFactory
+import com.boclips.users.testsupport.loadWireMockStub
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -14,14 +15,11 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
-import org.apache.commons.io.IOUtils
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.MediaType
-import org.springframework.util.ResourceUtils
-import java.nio.charset.Charset
 
 @AutoConfigureWireMock(port = 9999)
 class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
@@ -52,15 +50,8 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         wireMockServer.verify(
             postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*"))
                 .withQueryParam("hapikey", matching("some-api-key"))
-                .withRequestBody(equalToJson(loadJsonFile("hubspot-one-contact.json")))
+                .withRequestBody(equalToJson(loadWireMockStub("hubspot-one-contact.json")))
                 .withHeader("Content-Type", matching(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        )
-    }
-
-    private fun loadJsonFile(fileName: String): String? {
-        return IOUtils.toString(
-            ResourceUtils.getFile("classpath:wiremock/$fileName").toURI(),
-            Charset.defaultCharset()
         )
     }
 

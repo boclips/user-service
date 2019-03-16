@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.infrastructure.getContentTypeHeader
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.springframework.http.HttpEntity
@@ -60,11 +61,5 @@ class HubSpotClient(
             .queryParam("hapikey", hubspotProperties.apiKey)
             .build()
             .toUri()
-    }
-
-    private fun getContentTypeHeader(): HttpHeaders {
-        val headers = HttpHeaders()
-        headers.set("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
-        return headers
     }
 }
