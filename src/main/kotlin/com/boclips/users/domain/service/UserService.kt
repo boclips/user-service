@@ -48,9 +48,11 @@ class UserService(
     }
 
     fun activate(id: AccountId): Account {
-        val activatedUser = accountRepository.activate(id)
+        accountRepository.findById(id)?.let {
+            return accountRepository.activate(id)!!
+        }
 
-        return activatedUser ?: accountRepository.save(
+        return accountRepository.save(
             Account(
                 id = id,
                 activated = true,
