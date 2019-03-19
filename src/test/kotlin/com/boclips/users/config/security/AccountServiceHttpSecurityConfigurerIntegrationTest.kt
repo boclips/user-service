@@ -28,7 +28,7 @@ class AccountServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntegr
 
     @Test
     fun `everybody can access any endpoint with OPTIONS`() {
-        mvc.perform(options("/v1/users"))
+        mvc.perform(options("/v1/users/activate"))
             .andExpect(status().is2xxSuccessful)
         mvc.perform(options("/v1"))
             .andExpect(status().is2xxSuccessful)
@@ -39,7 +39,7 @@ class AccountServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntegr
         mvc.perform(post("/v1/users"))
             .andExpect(status().isForbidden)
 
-        mvc.perform(post("/v1/users").asUser("user-id"))
+        mvc.perform(post("/v1/users/activate").asUser("user-id"))
             .andExpect(status().is2xxSuccessful)
     }
 }

@@ -17,7 +17,7 @@ class RestSecurityConfig : HttpSecurityConfigurer {
             .antMatchers("/v1").permitAll()
             .antMatchers("/v1/").permitAll()
 
-            .antMatchers(HttpMethod.POST, "/v1/users").authenticated()
+            .antMatchers(HttpMethod.POST, "/v1/users/activate").authenticated()
             .antMatchers(HttpMethod.POST, "/v1/users/sync").hasRole(UserRoles.SYNCHRONIZE_USERS_HUBSPOT)
 
             .anyRequest().denyAll()

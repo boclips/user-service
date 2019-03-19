@@ -18,7 +18,7 @@ class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
         identityProvider.createUser(UserIdentityFactory.sample(id = "registered-user"))
 
         mvc.perform(
-            post("/v1/users")
+            post("/v1/users/activate")
                 .asUser("registered-user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""{"referralCode": "abc-123" }""")
@@ -28,13 +28,13 @@ class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `user can be activated without referral code`() {
-        mvc.perform(post("/v1/users").asUser("activated-user"))
+        mvc.perform(post("/v1/users/activate").asUser("activated-user"))
             .andExpect(status().isOk)
     }
 
     @Test
     fun `activate user endpoint contains self link`() {
-        mvc.perform(post("/v1/users").asUser("activated-user"))
+        mvc.perform(post("/v1/users/activate").asUser("activated-user"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.self.href", endsWith("/users/activated-user")))
     }
@@ -43,7 +43,7 @@ class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
     fun `activated user gets the correct links`() {
         identityProvider.createUser(UserIdentityFactory.sample(id = "activated-user"))
 
-        mvc.perform(post("/v1/users").asUser("activated-user"))
+        mvc.perform(post("/v1/users/activate").asUser("activated-user"))
             .andExpect(status().isOk)
 
         mvc.perform(get("/v1/").asUser("activated-user"))

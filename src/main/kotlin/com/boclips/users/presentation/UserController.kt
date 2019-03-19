@@ -22,7 +22,7 @@ class AccountProfileController(
 ) {
     companion object : KLogging()
 
-    @PostMapping
+    @PostMapping("/activate")
     fun activateUser(@RequestBody userActivationRequest: UserActivationRequest?): Resource<String> {
         val account = activateUser.activateUser(userActivationRequest)
 
