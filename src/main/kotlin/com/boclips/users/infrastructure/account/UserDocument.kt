@@ -12,21 +12,24 @@ data class UserDocument(
     val id: String,
     val activated: Boolean,
     val subjects: String?,
-    val analyticsId: String?
+    val analyticsId: String?,
+    val isReferral: Boolean?
 ) {
     companion object {
         fun from(account: Account) = UserDocument(
             id = account.id.value,
             activated = account.activated,
             subjects = account.subjects,
-            analyticsId = account.analyticsId?.value
+            analyticsId = account.analyticsId?.value,
+            isReferral = account.isReferral
         )
     }
 
-    fun toUser() = Account(
+    fun toAccount() = Account(
         id = AccountId(value = id),
         activated = activated,
         subjects = subjects,
-        analyticsId = analyticsId?.let { AnalyticsId(value = it) }
+        analyticsId = analyticsId?.let { AnalyticsId(value = it) },
+        isReferral = isReferral?.let { it } ?: false
     )
 }

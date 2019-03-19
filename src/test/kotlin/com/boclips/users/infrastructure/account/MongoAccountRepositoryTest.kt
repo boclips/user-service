@@ -4,45 +4,69 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 
 class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
-
-    @Autowired
-    lateinit var userRepository: MongoAccountRepository
 
     @Test
     fun `save persists provided user`() {
         val user = AccountFactory.sample()
 
-        userRepository.save(user)
+        accountRepository.save(user)
 
-        assertThat(userRepository.findById(user.id)).isEqualTo(user)
+        assertThat(accountRepository.findById(user.id)).isEqualTo(user)
     }
 
     @Test
     fun `saving null fields is all good`() {
-        val user = AccountFactory.sample(
+        val account = AccountFactory.sample(
             analyticsId = null,
             subjects = null
         )
 
-        userRepository.save(user)
+        accountRepository.save(account)
 
-        assertThat(userRepository.findById(user.id)).isEqualTo(user)
+        assertThat(accountRepository.findById(account.id)).isEqualTo(account)
     }
 
     @Test
     fun `can get all accounts`() {
         val savedUsers = listOf(
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample())
+            accountRepository.save(AccountFactory.sample()),
+            accountRepository.save(AccountFactory.sample()),
+            accountRepository.save(AccountFactory.sample()),
+            accountRepository.save(AccountFactory.sample()),
+            accountRepository.save(AccountFactory.sample()),
+            accountRepository.save(AccountFactory.sample())
         )
 
-        assertThat(userRepository.findAll(savedUsers.map { it.id })).containsAll(savedUsers)
+        assertThat(accountRepository.findAll(savedUsers.map { it.id })).containsAll(savedUsers)
+    }
+
+    @Test
+    fun `activate an account`() {
+        val account = AccountFactory.sample(
+            analyticsId = null,
+            subjects = null,
+            activated = false
+        )
+
+        accountRepository.save(account)
+        accountRepository.activate(account.id)
+
+        assertThat(accountRepository.findById(account.id)!!.activated).isTrue()
+    }
+
+    @Test
+    fun `mark account as referred`() {
+        val account = AccountFactory.sample(
+            analyticsId = null,
+            subjects = null,
+            isReferral = false
+        )
+
+        accountRepository.save(account)
+        accountRepository.markAsReferred(account.id)
+
+        assertThat(accountRepository.findById(account.id)!!.isReferral).isTrue()
     }
 }

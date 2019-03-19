@@ -35,7 +35,8 @@ class UserService(
                             id = AccountId(value = id.value),
                             activated = false,
                             subjects = metadata.subjects,
-                            analyticsId = metadata.analyticsId
+                            analyticsId = metadata.analyticsId,
+                            isReferral = false
                         )
                     )
                     .apply {
@@ -54,7 +55,8 @@ class UserService(
                 id = id,
                 activated = true,
                 subjects = null,
-                analyticsId = null
+                analyticsId = null,
+                isReferral = false
             )
         )
     }

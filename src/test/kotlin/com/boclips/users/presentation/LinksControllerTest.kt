@@ -42,7 +42,8 @@ class LinksControllerTest : AbstractSpringIntegrationTest() {
                 id = AccountId(value = "a-user-id"),
                 activated = true,
                 subjects = "irrelevant",
-                analyticsId = AnalyticsId(value = "irrelevant")
+                analyticsId = AnalyticsId(value = "irrelevant"),
+                isReferral = false
             )
         )
 

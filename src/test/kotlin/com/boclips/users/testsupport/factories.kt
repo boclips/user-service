@@ -13,13 +13,14 @@ class AccountFactory {
             id: String = "user-id",
             activated: Boolean = false,
             subjects: String? = "maths english netflix",
-            analyticsId: AnalyticsId? = AnalyticsId(value = "1234567")
-
+            analyticsId: AnalyticsId? = AnalyticsId(value = "1234567"),
+            isReferral: Boolean = false
         ) = Account(
             id = AccountId(value = id),
             activated = activated,
             subjects = subjects,
-            analyticsId = analyticsId
+            analyticsId = analyticsId,
+            isReferral = isReferral
         )
     }
 }

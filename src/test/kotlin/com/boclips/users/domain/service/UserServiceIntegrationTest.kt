@@ -57,21 +57,13 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `find all users can handle sync issues of different services`() {
-        identityProvider.createUser(UserIdentityFactory.sample(id = "2"))
-
-        val users = userService.findAllUsers()
-
-        assertThat(users).isEmpty()
-    }
-
-    @Test
     fun `activating user does not override metadata`() {
         userService.registerUserIfNew(IdentityId(value = "new user"))
 
-        val updatedAccount = userService.activate(AccountId(value = "new user"))
+        val activatedUser = userService.activate(AccountId(value = "new user"))
 
-        assertThat(updatedAccount?.subjects).isNotNull()
-        assertThat(updatedAccount?.analyticsId).isNotNull
+        assertThat(activatedUser.isReferral).isFalse()
+        assertThat(activatedUser?.subjects).isNotNull()
+        assertThat(activatedUser?.analyticsId).isNotNull
     }
 }

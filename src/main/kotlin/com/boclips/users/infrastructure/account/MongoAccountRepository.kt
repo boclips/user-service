@@ -9,23 +9,33 @@ import org.springframework.stereotype.Component
 class MongoAccountRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository
 ) : AccountRepository {
+    override fun markAsReferred(id: AccountId): Account? {
+        return userDocumentMongoRepository
+            .findById(id.value)
+            .map { it.copy(isReferral = true) }
+            .map { save(it.toAccount()) }
+            .orElse(null)
+    }
+
     override fun activate(id: AccountId): Account? = userDocumentMongoRepository
         .findById(id.value)
         .map { it.copy(activated = true) }
-        .map { save(it.toUser()) }
+        .map { save(it.toAccount()) }
         .orElse(null)
 
     override fun findAll(ids: List<AccountId>) = userDocumentMongoRepository
         .findAllById(ids.map { it.value })
-        .mapNotNull { it.toUser() }
+        .mapNotNull { it.toAccount() }
 
     override fun save(account: Account) = userDocumentMongoRepository
         .save(UserDocument.from(account))
-        .toUser()
+        .toAccount()
 
-    override fun findById(id: AccountId) = userDocumentMongoRepository
-        .findById(id.value)
-        .orElse(null)
-        ?.toUser()
+    override fun findById(id: AccountId): Account? {
+        return userDocumentMongoRepository
+            .findById(id.value)
+            .orElse(null)
+            ?.toAccount()
+    }
 }
 
