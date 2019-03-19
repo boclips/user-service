@@ -55,7 +55,7 @@ class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
     fun `activate user endpoint contains self link`() {
         mvc.perform(post("/v1/users/activate").asUser("activated-user"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.self.href", endsWith("/users/activated-user")))
+            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/{id}")))
     }
 
     @Test
@@ -67,6 +67,6 @@ class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
 
         mvc.perform(get("/v1/").asUser("activated-user"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/activated-user")))
+            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/{id}")))
     }
 }
