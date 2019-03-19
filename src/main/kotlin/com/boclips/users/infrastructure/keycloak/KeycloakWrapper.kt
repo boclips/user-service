@@ -66,11 +66,11 @@ class KeycloakWrapper(private val keycloak: Keycloak) {
                 .users()
                 .search(keycloakUser.email)
 
-            if (newUser.size != 1) throw UserNotCreated()
+            if (newUser.size != 1) throw UserNotCreatedException()
 
             return newUser[0]
         } catch (ex: Exception) {
-            throw UserNotCreated()
+            throw UserNotCreatedException()
         }
     }
 

@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.IdentityProvider
 import java.time.LocalDate
+import java.util.UUID
 
 class KeycloakClientFake : IdentityProvider {
     private val fakeUsers = hashMapOf<String, Identity>()
@@ -13,8 +14,16 @@ class KeycloakClientFake : IdentityProvider {
         return fakeUsers.values.toList()
     }
 
-    override fun createNewUser(): Identity {
-        return UserIdentityFactory.sample()
+    override fun createNewUser(firstName: String, lastName: String, email: String, password: String): Identity {
+        val id = UUID.randomUUID().toString()
+        fakeUsers[id] = Identity(
+            id = IdentityId(value = id),
+            firstName = firstName,
+            lastName = lastName,
+            email = email,
+            isEmailVerified = false
+        )
+        return fakeUsers[id]!!
     }
 
     override fun getUserById(id: IdentityId): Identity? {

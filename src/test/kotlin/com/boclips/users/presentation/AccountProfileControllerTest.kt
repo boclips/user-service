@@ -18,16 +18,18 @@ class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
         mvc.perform(
             post("/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
+                .content(
+                    """
                     {"firstName": "jane",
                      "lastName": "doe",
                      "subjects": "some subjects",
                      "email": "jane@doe.com",
                      "password": "Champagn3"
                      }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isCreated)
     }
 
     @Test

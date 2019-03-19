@@ -36,7 +36,7 @@ class AccountServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntegr
 
     @Test
     fun `only authenticated users can activate accounts`() {
-        mvc.perform(post("/v1/users"))
+        mvc.perform(post("/v1/users/activate"))
             .andExpect(status().isForbidden)
 
         mvc.perform(post("/v1/users/activate").asUser("user-id"))

@@ -4,7 +4,7 @@ import com.boclips.security.utils.User
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountRepository
-import com.boclips.users.presentation.UserResource
+import com.boclips.users.presentation.resources.UserResource
 import org.springframework.hateoas.EntityLinks
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.Resource

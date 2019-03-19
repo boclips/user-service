@@ -1,9 +1,12 @@
-package com.boclips.users.presentation
+package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.account.Account
 import org.springframework.hateoas.Identifiable
 
-class UserResource(private val id: String) : Identifiable<String> {
+class UserResource(
+    private val id: String
+
+) : Identifiable<String> {
     override fun getId() = id
 
     companion object {

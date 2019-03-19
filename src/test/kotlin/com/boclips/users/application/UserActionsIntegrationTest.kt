@@ -2,9 +2,11 @@ package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.presentation.SecurityContextUserNotFoundException
-import com.boclips.users.presentation.UserActivationRequest
+import com.boclips.users.presentation.requests.CreateUserRequest
+import com.boclips.users.presentation.requests.UserActivationRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.UserIdentityFactory
@@ -16,19 +18,37 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
-class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
+class UserActionsIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
-    lateinit var activateUser: ActivateUser
+    lateinit var userActions: UserActions
 
     @Autowired
     lateinit var referralProvider: ReferralProvider
 
     @Test
+    fun `create account`() {
+        val createdAccount = userActions.create(
+            CreateUserRequest(
+                firstName = "Hans",
+                lastName = "Muster",
+                email = "hans@muster.com",
+                password = "hansli",
+                mixPanelId = "mxp123",
+                subjects = "some stuff",
+                referralCode = null
+            )
+        )
+
+        assertThat(accountRepository.findById(AccountId(value = createdAccount.userId.value))).isNotNull
+        assertThat(identityProvider.getUserById(createdAccount.identity.id)).isNotNull
+    }
+
+    @Test
     fun `activates new user if user does not exist`() {
         setSecurityContext("user@example.com")
 
-        val activatedUser = activateUser.activateUser(UserActivationRequest())
+        val activatedUser = userActions.activate(UserActivationRequest())
 
         val persistedUser = accountRepository.findById(activatedUser.id)
         assertThat(persistedUser).isNotNull
@@ -39,9 +59,9 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun `activate user is idempotent`() {
         setSecurityContext("user@example.com")
 
-        assertThat(activateUser.activateUser(UserActivationRequest()))
+        assertThat(userActions.activate(UserActivationRequest()))
             .isEqualTo(
-                activateUser.activateUser(UserActivationRequest())
+                userActions.activate(UserActivationRequest())
             )
     }
 
@@ -49,7 +69,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun `activate user does not mark as referred if referral code is null`() {
         setSecurityContext("user@example.com")
 
-        val activatedUser = activateUser.activateUser(UserActivationRequest())
+        val activatedUser = userActions.activate(UserActivationRequest())
 
         val persistedUser = accountRepository.findById(activatedUser.id)
         assertThat(persistedUser!!.isReferral).isFalse()
@@ -74,7 +94,11 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val activatedUser = activateUser.activateUser(UserActivationRequest(referralCode = "it-is-a-referral"))
+        val activatedUser = userActions.activate(
+            UserActivationRequest(
+                referralCode = "it-is-a-referral"
+            )
+        )
 
         val persistedAccount = accountRepository.findById(activatedUser.id)
         assertThat(persistedAccount!!.isReferral).isTrue()
@@ -92,7 +116,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `activateUser when security context not populated throws`() {
         assertThrows<SecurityContextUserNotFoundException> {
-            activateUser.activateUser(UserActivationRequest())
+            userActions.activate(UserActivationRequest())
         }
     }
 }
