@@ -10,6 +10,7 @@ import org.springframework.util.ResourceUtils
 import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
 import java.time.LocalDate
+import java.util.UUID
 
 class KeycloakWrapperContractTest {
     private val keycloakInstance: Keycloak = Keycloak.getInstance(
@@ -32,6 +33,30 @@ class KeycloakWrapperContractTest {
         inputStream.close()
 
         return apiKey
+    }
+
+    @Test
+    fun `can create and delete a user`() {
+        val wrapper = KeycloakWrapper(keycloakInstance)
+
+        val randomUsername = UUID.randomUUID().toString()
+
+        val createdUser = wrapper.createUser(
+            KeycloakUser(
+                firstName = "Hans",
+                lastName = "Muster",
+                email = "ben+$randomUsername@boclips.com",
+                password = "123"
+            )
+        )
+
+        assertThat(createdUser.id).isNotNull()
+        assertThat(createdUser.firstName).isEqualTo("Hans")
+        assertThat(createdUser.lastName).isEqualTo("Muster")
+        assertThat(createdUser.username).isEqualTo("ben+$randomUsername@boclips.com")
+        assertThat(createdUser.email).isEqualTo("ben+$randomUsername@boclips.com")
+
+        wrapper.removeUser(createdUser.id)
     }
 
     @Test

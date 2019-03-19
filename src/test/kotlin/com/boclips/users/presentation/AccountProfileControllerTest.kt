@@ -14,6 +14,23 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
 
     @Test
+    fun `can create a new user`() {
+        mvc.perform(
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"firstName": "jane",
+                     "lastName": "doe",
+                     "subjects": "some subjects",
+                     "email": "jane@doe.com",
+                     "password": "Champagn3"
+                     }
+                    """.trimIndent())
+        )
+            .andExpect(status().isOk)
+    }
+
+    @Test
     fun `user can be activated with referral code`() {
         identityProvider.createUser(UserIdentityFactory.sample(id = "registered-user"))
 

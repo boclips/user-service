@@ -13,6 +13,10 @@ class KeycloakClientFake : IdentityProvider {
         return fakeUsers.values.toList()
     }
 
+    override fun createNewUser(): Identity {
+        return UserIdentityFactory.sample()
+    }
+
     override fun getUserById(id: IdentityId): Identity? {
         return fakeUsers[id.value]
     }
