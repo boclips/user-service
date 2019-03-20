@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class UserControllerTest : AbstractSpringIntegrationTest() {
 
     @Test
-    fun `can create a new user`() {
+    fun `can create a new user with valid request`() {
         mvc.perform(
             post("/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -32,6 +32,24 @@ class UserControllerTest : AbstractSpringIntegrationTest() {
                 )
         )
             .andExpect(status().isCreated)
+    }
+
+    @Test
+    fun `cannot create account with invalid request`() {
+        mvc.perform(
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {"firstName": "jane",
+                     "lastName": "doe",
+                     "subjects": "some subjects",
+                     "email": "jane@doe.com",
+                     }
+                    """.trimIndent()
+                )
+        )
+            .andExpect(status().is4xxClientError)
     }
 
     @Test
