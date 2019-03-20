@@ -3,7 +3,6 @@ package com.boclips.users.application
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.AccountId
-import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -61,6 +60,19 @@ class UserActionsIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(persistedAccount.subjects).isEqualTo("maths")
         assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
+    }
+
+    @Test
+    fun `create an account and update contact on hubspot`() {
+        userActions.create(
+            CreateUserRequestFactory.sample(
+                subjects = "maths",
+                referralCode = "referral-code-123",
+                analyticsId = "123"
+            )
+        )
+
+        verify(customerManagementProvider, times(1)).update(any())
     }
 
     @Test

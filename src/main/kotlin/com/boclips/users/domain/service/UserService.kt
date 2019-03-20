@@ -21,7 +21,6 @@ class UserService(
     val analyticsClient: AnalyticsClient,
     val metadataProvider: MetadataProvider
 ) {
-
     companion object : KLogging()
 
     @Synchronized

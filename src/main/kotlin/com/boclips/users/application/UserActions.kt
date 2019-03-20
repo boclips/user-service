@@ -9,6 +9,7 @@ import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.referrals.NewReferral
+import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserService
@@ -22,7 +23,8 @@ class UserActions(
     private val userService: UserService,
     private val identityProvider: IdentityProvider,
     private val accountRepository: AccountRepository,
-    private val referralProvider: ReferralProvider
+    private val referralProvider: ReferralProvider,
+    private val customerManagementProvider: CustomerManagementProvider
 ) {
     companion object : KLogging()
 
@@ -59,12 +61,21 @@ class UserActions(
             )
         )
 
+
         logger.info { "Created user ${account.id.value}" }
-        return com.boclips.users.domain.model.User(
+        val user = com.boclips.users.domain.model.User(
             userId = UserId(identity.id.value),
             account = account,
             identity = identity
         )
+
+        try {
+            customerManagementProvider.update(users = listOf(user))
+        } catch (ex: Exception) {
+            logger.error { "Could not update user ${user.userId.value} as a contact on HubSpot" }
+        }
+
+        return user
     }
 
     private fun registerReferral(activatedUser: Account) {
