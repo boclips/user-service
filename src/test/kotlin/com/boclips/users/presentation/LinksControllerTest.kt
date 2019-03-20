@@ -22,7 +22,7 @@ class LinksControllerTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.activate").doesNotExist())
             .andExpect(jsonPath("$._links.profile").doesNotExist())
-            .andExpect(jsonPath("$._links.create").exists())
+            .andExpect(jsonPath("$._links.createAccount").exists())
     }
 
     @Test
@@ -41,7 +41,7 @@ class LinksControllerTest : AbstractSpringIntegrationTest() {
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.create").doesNotExist())
+            .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.profile").doesNotExist())
             .andExpect(jsonPath("$._links.activate.href", endsWith("/users/activate")))
     }
@@ -63,7 +63,7 @@ class LinksControllerTest : AbstractSpringIntegrationTest() {
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.activate").doesNotExist())
-            .andExpect(jsonPath("$._links.create").doesNotExist())
+            .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/{id}")))
             .andExpect(jsonPath("$._links.profile.templated", equalTo(true)))
     }

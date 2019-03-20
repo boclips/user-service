@@ -38,7 +38,7 @@ class UserController(
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
                     .createUser(null)
-            ).withRel("create")
+            ).withRel("createAccount")
         }
 
         fun getLink(): Link {
