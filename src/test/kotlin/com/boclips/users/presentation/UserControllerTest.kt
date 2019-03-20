@@ -24,7 +24,9 @@ class UserControllerTest : AbstractSpringIntegrationTest() {
                      "lastName": "doe",
                      "subjects": "some subjects",
                      "email": "jane@doe.com",
-                     "password": "Champagn3"
+                     "password": "Champagn3",
+                     "analyticsId": "mxp-123",
+                     "referralCode": "RR-123"
                      }
                     """.trimIndent()
                 )

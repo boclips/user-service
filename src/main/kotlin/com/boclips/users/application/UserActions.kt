@@ -59,7 +59,7 @@ class UserActions(
             Account(
                 id = AccountId(identity.id.value),
                 activated = false,
-                analyticsId = AnalyticsId(value = createUserRequest.mixPanelId.orEmpty()),
+                analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
                 subjects = createUserRequest.subjects,
                 isReferral = createUserRequest.referralCode.let { true }
             )

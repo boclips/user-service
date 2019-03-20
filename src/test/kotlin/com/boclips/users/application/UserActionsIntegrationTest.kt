@@ -34,7 +34,7 @@ class UserActionsIntegrationTest : AbstractSpringIntegrationTest() {
                 lastName = "Muster",
                 email = "hans@muster.com",
                 password = "hansli",
-                mixPanelId = "mxp123",
+                analyticsId = "mxp123",
                 subjects = "some stuff",
                 referralCode = null
             )
