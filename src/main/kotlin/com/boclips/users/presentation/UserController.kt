@@ -28,29 +28,28 @@ class UserController(
     private val updateContacts: UpdateContacts
 ) {
     companion object : KLogging() {
-        fun activateLink(): Link {
+        fun activateUserLink(): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
                     .activateUser()
             ).withRel("activate")
         }
 
-        fun createLink(): Link {
+        fun createUserLink(): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
                     .createUser(null)
             ).withRel("createAccount")
         }
 
-        fun getLink(): Link {
+        fun getUserLink(): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
                     .getUser(null)
             ).withRel("profile")
-                .withSelfRel()
         }
 
-        fun getLink(id: String): Link {
+        fun getUserLink(id: String): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
                     .getUser(id)
@@ -63,7 +62,7 @@ class UserController(
     fun createUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
         val createdUser = userActions.create(createUserRequest!!)
 
-        val resource = Resource("", createLink(), getLink(createdUser.userId.value))
+        val resource = Resource("", createUserLink(), getUserLink(createdUser.userId.value))
 
         val headers = HttpHeaders()
         headers.set(HttpHeaders.LOCATION, resource.getLink("self").href)
@@ -75,12 +74,12 @@ class UserController(
     fun activateUser(): Resource<String> {
         userActions.activate()
 
-        return Resource("", activateLink(), getLink())
+        return Resource("", activateUserLink(), getUserLink())
     }
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: String?): Resource<String> {
-        return Resource("", getLink())
+        return Resource("", getUserLink())
     }
 
     @PostMapping("/sync")

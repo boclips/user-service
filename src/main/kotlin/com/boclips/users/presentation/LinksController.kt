@@ -16,15 +16,15 @@ class LinksController(
     @GetMapping
     fun getLinks(): Resource<String> {
         if (isUnauthenticated()) {
-            return Resource("", listOf(UserController.createLink()))
+            return Resource("", listOf(UserController.createUserLink()))
         }
 
         if (!isActivated()) {
-            return Resource("", listOf(UserController.activateLink()))
+            return Resource("", listOf(UserController.activateUserLink()))
         }
 
         if (isActivated()) {
-            return Resource("", listOf(UserController.getLink()))
+            return Resource("", listOf(UserController.getUserLink()))
         }
 
         return Resource("", emptyList())
