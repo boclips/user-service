@@ -45,33 +45,27 @@ class KeycloakWrapper(private val keycloak: Keycloak) {
     }
 
     fun createUser(keycloakUser: KeycloakUser): UserRepresentation {
-        try {
-            keycloak.realm(KeycloakClient.REALM)
-                .users()
-                .create(UserRepresentation().apply {
-                    username = keycloakUser.email
-                    email = keycloakUser.email
-                    firstName = keycloakUser.firstName
-                    lastName = keycloakUser.lastName
-                    credentials = listOf(CredentialRepresentation().apply {
-                        type = CredentialRepresentation.PASSWORD
-                        value = keycloakUser.password
-                        isTemporary = false
-                    })
-                    isEmailVerified = false
-                    isEnabled = true
+        val response = keycloak.realm(KeycloakClient.REALM)
+            .users()
+            .create(UserRepresentation().apply {
+                username = keycloakUser.email
+                email = keycloakUser.email
+                firstName = keycloakUser.firstName
+                lastName = keycloakUser.lastName
+                credentials = listOf(CredentialRepresentation().apply {
+                    type = CredentialRepresentation.PASSWORD
+                    value = keycloakUser.password
+                    isTemporary = false
                 })
+                isEmailVerified = false
+                isEnabled = true
+            })
 
-            val newUser = keycloak.realm(KeycloakClient.REALM)
-                .users()
-                .search(keycloakUser.email)
+        if (response.status == 409) throw UserAlreadyExistsException()
 
-            if (newUser.size != 1) throw UserNotCreatedException()
-
-            return newUser[0]
-        } catch (ex: Exception) {
-            throw UserNotCreatedException()
-        }
+        val newUser = searchUsers(keycloakUser.email)
+        if (newUser.size != 1) throw UserNotCreatedException()
+        return newUser[0]
     }
 
     fun sendVerificationEmail(id: String) {
@@ -80,5 +74,11 @@ class KeycloakWrapper(private val keycloak: Keycloak) {
 
     fun removeUser(id: String?) {
         keycloak.realm(KeycloakClient.REALM).users().delete(id)
+    }
+
+    private fun searchUsers(email: String): List<UserRepresentation> {
+        return keycloak.realm(KeycloakClient.REALM)
+            .users()
+            .search(email)
     }
 }

@@ -4,6 +4,7 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.util.ResourceUtils
@@ -57,6 +58,27 @@ class KeycloakWrapperContractTest {
         assertThat(createdUser.email).isEqualTo("ben+$randomUsername@boclips.com")
 
         wrapper.removeUser(createdUser.id)
+    }
+
+    @Test
+    fun `throws when user already exists`() {
+        val wrapper = KeycloakWrapper(keycloakInstance)
+
+        val randomUsername = UUID.randomUUID().toString()
+
+        val user = KeycloakUser(
+            firstName = "Hans",
+            lastName = "Muster",
+            email = "ben+$randomUsername@boclips.com",
+            password = "123"
+        )
+
+        assertThrows<UserAlreadyExistsException> {
+            wrapper.createUser(user)
+            wrapper.createUser(user)
+        }
+
+        wrapper.removeUser(user.email)
     }
 
     @Test

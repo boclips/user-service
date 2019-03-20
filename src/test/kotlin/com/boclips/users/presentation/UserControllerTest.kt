@@ -37,6 +37,34 @@ class UserControllerTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `can handle conflicts with valid request`() {
+        val payload = """
+                    {"firstName": "jane",
+                     "lastName": "doe",
+                     "subjects": "some subjects",
+                     "email": "jane@doe.com",
+                     "password": "Champagn3",
+                     "analyticsId": "mxp-123",
+                     "referralCode": "RR-123"
+                     }
+                    """.trimIndent()
+
+        mvc.perform(
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+        )
+            .andExpect(status().isCreated)
+
+        mvc.perform(
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+        )
+            .andExpect(status().isConflict)
+    }
+
+    @Test
     fun `cannot create account with invalid request`() {
         mvc.perform(
             post("/v1/users")
