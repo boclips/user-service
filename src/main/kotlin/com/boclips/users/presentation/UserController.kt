@@ -22,28 +22,28 @@ import javax.validation.Valid
 @RestController
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
-class AccountProfileController(
+class UserController(
     private val userActions: UserActions,
     private val updateContacts: UpdateContacts
 ) {
     companion object : KLogging() {
         fun activateLink(): Link {
             return ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(AccountProfileController::class.java)
+                ControllerLinkBuilder.methodOn(UserController::class.java)
                     .activateUser(null)
             ).withRel("activate")
         }
 
         fun createLink(): Link {
             return ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(AccountProfileController::class.java)
+                ControllerLinkBuilder.methodOn(UserController::class.java)
                     .createUser(null)
             ).withRel("create")
         }
 
         fun getLink(): Link {
             return ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(AccountProfileController::class.java)
+                ControllerLinkBuilder.methodOn(UserController::class.java)
                     .getUser()
             ).withRel("profile")
         }
@@ -69,7 +69,7 @@ class AccountProfileController(
 
     @GetMapping("/{id}")
     fun getUser(): Resource<String> {
-        return Resource("")
+        return Resource("", getLink())
     }
 
     @PostMapping("/sync")

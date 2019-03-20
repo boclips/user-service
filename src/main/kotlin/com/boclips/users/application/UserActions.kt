@@ -12,7 +12,7 @@ import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.presentation.SecurityContextUserNotFoundException
+import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.requests.UserActivationRequest
 import org.springframework.stereotype.Component

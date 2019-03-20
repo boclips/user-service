@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class AccountProfileControllerTest : AbstractSpringIntegrationTest() {
+class UserControllerTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `can create a new user`() {

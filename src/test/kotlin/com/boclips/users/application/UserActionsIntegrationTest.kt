@@ -4,7 +4,7 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.service.ReferralProvider
-import com.boclips.users.presentation.SecurityContextUserNotFoundException
+import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.requests.UserActivationRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest

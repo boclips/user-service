@@ -16,15 +16,15 @@ class LinksController(
     @GetMapping
     fun getLinks(): Resource<String> {
         if (isUnauthenticated()) {
-            return Resource("", listOf(AccountProfileController.createLink()))
+            return Resource("", listOf(UserController.createLink()))
         }
 
         if (!isActivated()) {
-            return Resource("", listOf(AccountProfileController.activateLink()))
+            return Resource("", listOf(UserController.activateLink()))
         }
 
         if (isActivated()) {
-            return Resource("", listOf(AccountProfileController.getLink()))
+            return Resource("", listOf(UserController.getLink()))
         }
 
         return Resource("", emptyList())
@@ -38,6 +38,6 @@ class LinksController(
     }
 
     private fun isUnauthenticated(): Boolean {
-        return return getCurrentUserIfNotAnonymous() == null
+        return getCurrentUserIfNotAnonymous() == null
     }
 }

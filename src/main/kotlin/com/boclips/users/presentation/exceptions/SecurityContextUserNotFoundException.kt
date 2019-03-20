@@ -1,4 +1,4 @@
-package com.boclips.users.presentation
+package com.boclips.users.presentation.exceptions
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
