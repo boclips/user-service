@@ -14,6 +14,7 @@ import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.requests.CreateUserRequest
+import mu.KLogging
 import org.springframework.stereotype.Component
 
 @Component
@@ -23,6 +24,8 @@ class UserActions(
     private val accountRepository: AccountRepository,
     private val referralProvider: ReferralProvider
 ) {
+    companion object : KLogging()
+
     fun activate(): Account {
         val authenticatedUser: User = UserExtractor.getCurrentUser() ?: throw SecurityContextUserNotFoundException()
 
@@ -31,6 +34,8 @@ class UserActions(
         if (activatedUser.isReferral) {
             registerReferral(activatedUser)
         }
+
+        logger.info { "Activated user ${activatedUser.id}" }
 
         return activatedUser
     }
@@ -54,6 +59,7 @@ class UserActions(
             )
         )
 
+        logger.info { "Created user ${account.id.value}" }
         return com.boclips.users.domain.model.User(
             userId = UserId(identity.id.value),
             account = account,
@@ -74,5 +80,6 @@ class UserActions(
         )
 
         referralProvider.createReferral(referral)
+        logger.info { "Confirmed referral of user ${activatedUser.id}" }
     }
 }
