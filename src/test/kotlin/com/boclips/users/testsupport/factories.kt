@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.presentation.requests.CreateUserRequest
 import java.util.UUID
 
 class AccountFactory {
@@ -40,5 +41,29 @@ class UserIdentityFactory {
             lastName = lastName,
             isEmailVerified = isVerified
         )
+    }
+}
+
+class CreateUserRequestFactory {
+    companion object {
+        fun sample(
+            firstName: String? = "Hans",
+            lastName: String? = "Muster",
+            email: String? = "hans@muster.ch",
+            password: String? = "heidiisgreat",
+            subjects: String? = "argriculture",
+            analyticsId: String? = "mixpanel-123",
+            referralCode: String? = "referralCode-123"
+        ): CreateUserRequest {
+            return CreateUserRequest(
+                firstName = firstName,
+                lastName = lastName,
+                email = email,
+                password = password,
+                subjects = subjects,
+                analyticsId = analyticsId,
+                referralCode = referralCode
+            )
+        }
     }
 }

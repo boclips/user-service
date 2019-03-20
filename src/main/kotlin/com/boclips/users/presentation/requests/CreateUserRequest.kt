@@ -1,37 +1,35 @@
 package com.boclips.users.presentation.requests
 
 import javax.validation.constraints.Email
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
+import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 open class CreateUserRequest(
-    @Min(1, message = "First name cannot be shorter than 1 character.")
-    @Max(value = 200, message = "First name cannot be longer than 200 characters")
-    @NotNull(message = "First name is required")
-    var firstName: String,
+    @field:Size(min = 1, max = 200, message = "First name must be between 1 and 200 characters")
+    @field:NotNull(message = "First name is required")
+    var firstName: String? = null,
 
-    @Min(1, message = "Last name cannot be shorter than 1 character.")
-    @Max(value = 200, message = "Last name cannot be longer than 200 characters.")
-    @NotNull(message = "Last name is required.")
-    var lastName: String,
+    @field:Size(min = 1, max = 200, message = "Last name must be between 1 and 200 characters")
+    @field:NotNull(message = "Last name is required")
+    var lastName: String? = null,
 
-    @Email
-    @Max(value = 200)
-    @NotNull(message = "Email is required.")
-    var email: String,
+    @field:Email(message = "Email must be valid")
+    @field:NotNull(message = "Email is required")
+    @field:NotEmpty(message = "Email must be set")
+    var email: String? = null,
 
-    @Min(1)
-    @Max(value = 50)
-    @NotNull(message = "Password is required.")
-    var password: String,
+    @field:Size(min = 8, max = 50, message = "Password length must be at least 8")
+    @field:NotNull(message = "Password is required")
+    @field:NotEmpty(message = "Password must be set")
+    var password: String? = null,
 
-    @Max(value = 50, message = "Analytics ID cannot be longer than 50 characters")
-    var analyticsId: String?,
+    @field:Size(max = 50, message = "Analytics ID cannot be longer than 50 characters")
+    var analyticsId: String? = null,
 
-    @Max(value = 100, message = "Subjects cannot be longer than 100 characters")
-    var subjects: String?,
+    @field:Size(max = 100, message = "Subjects cannot be longer than 100 characters")
+    var subjects: String? = null,
 
-    @Max(value = 50, message = "Referral code cannot be longer than 50 characters")
-    var referralCode: String?
+    @field:Size(max = 50, message = "Referral code cannot be longer than 50 characters")
+    var referralCode: String? = null
 )

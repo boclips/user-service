@@ -50,7 +50,7 @@ class UserController(
     }
 
     @PostMapping()
-    fun createUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<String>> {
+    fun createUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
         val user = userActions.create(createUserRequest!!)
 
         val resource = Resource(

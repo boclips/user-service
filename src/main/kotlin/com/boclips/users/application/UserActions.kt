@@ -49,10 +49,10 @@ class UserActions(
 
     fun create(createUserRequest: CreateUserRequest): com.boclips.users.domain.model.User {
         val identity = identityProvider.createNewUser(
-            firstName = createUserRequest.firstName,
-            lastName = createUserRequest.lastName,
-            email = createUserRequest.email,
-            password = createUserRequest.password
+            firstName = createUserRequest.firstName!!,
+            lastName = createUserRequest.lastName!!,
+            email = createUserRequest.email!!,
+            password = createUserRequest.password!!
         )
 
         val account = accountRepository.save(
