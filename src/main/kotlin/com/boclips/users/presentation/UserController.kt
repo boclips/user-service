@@ -9,9 +9,11 @@ import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -43,20 +45,30 @@ class UserController(
         fun getLink(): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
-                    .getUser()
+                    .getUser(null)
             ).withRel("profile")
+                .withSelfRel()
+        }
+
+        fun getLink(id: String): Link {
+            return ControllerLinkBuilder.linkTo(
+                ControllerLinkBuilder.methodOn(UserController::class.java)
+                    .getUser(id)
+            ).withRel("profile")
+                .withSelfRel()
         }
     }
 
     @PostMapping()
     fun createUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
-        val user = userActions.create(createUserRequest!!)
+        val createdUser = userActions.create(createUserRequest!!)
 
-        val resource = Resource(
-            "", createLink()
-        )
+        val resource = Resource("", createLink(), getLink(createdUser.userId.value))
 
-        return ResponseEntity(resource, HttpStatus.CREATED)
+        val headers = HttpHeaders()
+        headers.set(HttpHeaders.LOCATION, resource.getLink("self").href)
+
+        return ResponseEntity(headers, HttpStatus.CREATED)
     }
 
     @PostMapping("/activate")
@@ -67,7 +79,7 @@ class UserController(
     }
 
     @GetMapping("/{id}")
-    fun getUser(): Resource<String> {
+    fun getUser(@PathVariable id: String?): Resource<String> {
         return Resource("", getLink())
     }
 

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -32,6 +33,7 @@ class UserControllerTest : AbstractSpringIntegrationTest() {
                 )
         )
             .andExpect(status().isCreated)
+            .andExpect(header().exists("Location"))
     }
 
     @Test
