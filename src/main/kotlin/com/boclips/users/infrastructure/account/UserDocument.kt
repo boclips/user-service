@@ -13,7 +13,8 @@ data class UserDocument(
     val activated: Boolean,
     val subjects: String?,
     val analyticsId: String?,
-    val isReferral: Boolean?
+    val isReferral: Boolean?,
+    val referralCode: String?
 ) {
     companion object {
         fun from(account: Account) = UserDocument(
@@ -21,7 +22,8 @@ data class UserDocument(
             activated = account.activated,
             subjects = account.subjects,
             analyticsId = account.analyticsId?.value,
-            isReferral = account.isReferral
+            isReferral = account.isReferral,
+            referralCode = account.referralCode
         )
     }
 
@@ -30,6 +32,7 @@ data class UserDocument(
         activated = activated,
         subjects = subjects,
         analyticsId = analyticsId?.let { AnalyticsId(value = it) },
-        isReferral = isReferral?.let { it } ?: false
+        isReferral = isReferral?.let { it } ?: false,
+        referralCode = referralCode?.let { it }
     )
 }

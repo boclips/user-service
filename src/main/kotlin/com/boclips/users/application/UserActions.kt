@@ -33,7 +33,7 @@ class UserActions(
             val user = userService.findById(IdentityId(value = activatedUser.id.value))
 
             val referral = NewReferral(
-                referralCode = userActivationRequest!!.referralCode!!,
+                referralCode = userActivationRequest.referralCode!!,
                 firstName = user.identity.firstName,
                 lastName = user.identity.lastName,
                 email = user.identity.email,
@@ -61,7 +61,8 @@ class UserActions(
                 activated = false,
                 analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
                 subjects = createUserRequest.subjects,
-                isReferral = createUserRequest.referralCode.let { true }
+                isReferral = createUserRequest.referralCode.let { true },
+                referralCode = createUserRequest.referralCode
             )
         )
 

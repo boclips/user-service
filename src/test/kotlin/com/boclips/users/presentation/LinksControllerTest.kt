@@ -35,7 +35,8 @@ class LinksControllerTest : AbstractSpringIntegrationTest() {
                 activated = false,
                 subjects = "irrelevant",
                 analyticsId = AnalyticsId(value = "irrelevant"),
-                isReferral = false
+                isReferral = false,
+                referralCode = null
             )
         )
 
@@ -56,7 +57,8 @@ class LinksControllerTest : AbstractSpringIntegrationTest() {
                 activated = true,
                 subjects = "irrelevant",
                 analyticsId = AnalyticsId(value = "irrelevant"),
-                isReferral = false
+                isReferral = false,
+                referralCode = null
             )
         )
 

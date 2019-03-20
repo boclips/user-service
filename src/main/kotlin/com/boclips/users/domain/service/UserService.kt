@@ -36,7 +36,8 @@ class UserService(
                             activated = false,
                             subjects = metadata.subjects,
                             analyticsId = metadata.analyticsId,
-                            isReferral = false
+                            isReferral = false,
+                            referralCode = null
                         )
                     )
                     .apply {
@@ -58,7 +59,8 @@ class UserService(
                 activated = true,
                 subjects = null,
                 analyticsId = null,
-                isReferral = false
+                isReferral = false,
+                referralCode = null
             )
         )
     }

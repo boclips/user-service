@@ -7,5 +7,6 @@ data class Account(
     val activated: Boolean,
     val analyticsId: AnalyticsId?,
     val subjects: String?,
-    val isReferral: Boolean
+    val isReferral: Boolean,
+    val referralCode: String?
 )

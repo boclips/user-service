@@ -8,6 +8,7 @@ import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundExce
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.requests.UserActivationRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.CreateUserRequestFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.UserIdentityFactory
 import com.nhaarman.mockitokotlin2.check
@@ -118,5 +119,24 @@ class UserActionsIntegrationTest : AbstractSpringIntegrationTest() {
         assertThrows<SecurityContextUserNotFoundException> {
             userActions.activate(UserActivationRequest())
         }
+    }
+
+    @Test
+    fun `create user stores user information`() {
+        val user = userActions.create(
+            CreateUserRequestFactory.sample(
+                subjects = "maths",
+                referralCode = "referral-code-123",
+                analyticsId = "123"
+            )
+        )
+
+        val persistedAccount = accountRepository.findById(user.account.id)
+
+        assertThat(persistedAccount!!.isReferral).isTrue()
+        assertThat(persistedAccount.referralCode).isEqualTo("referral-code-123")
+
+        assertThat(persistedAccount.subjects).isEqualTo("maths")
+        assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
     }
 }

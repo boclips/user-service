@@ -21,7 +21,8 @@ class AccountFactory {
             activated = activated,
             subjects = subjects,
             analyticsId = analyticsId,
-            isReferral = isReferral
+            isReferral = isReferral,
+            referralCode = null
         )
     }
 }

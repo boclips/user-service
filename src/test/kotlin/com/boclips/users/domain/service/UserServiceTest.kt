@@ -47,7 +47,8 @@ class UserServiceTest {
                 activated = false,
                 analyticsId = AnalyticsId(value = "123"),
                 subjects = "subjects",
-                isReferral = false
+                isReferral = false,
+                referralCode = null
             )
         )
     }
@@ -72,7 +73,8 @@ class UserServiceTest {
                 activated = true,
                 subjects = "subjects",
                 analyticsId = AnalyticsId(value = "123"),
-                isReferral = false
+                isReferral = false,
+                referralCode = null
             )
         )
         userService.registerUserIfNew(IdentityId(value = "exists"))
