@@ -55,18 +55,4 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(accountRepository.findById(account.id)!!.activated).isTrue()
     }
-
-    @Test
-    fun `mark account as referred`() {
-        val account = AccountFactory.sample(
-            analyticsId = null,
-            subjects = null,
-            isReferral = false
-        )
-
-        accountRepository.save(account)
-        accountRepository.markAsReferred(account.id)
-
-        assertThat(accountRepository.findById(account.id)!!.isReferral).isTrue()
-    }
 }

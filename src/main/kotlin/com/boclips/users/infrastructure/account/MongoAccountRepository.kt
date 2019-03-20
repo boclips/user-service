@@ -9,13 +9,6 @@ import org.springframework.stereotype.Component
 class MongoAccountRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository
 ) : AccountRepository {
-    override fun markAsReferred(id: AccountId): Account? {
-        return userDocumentMongoRepository
-            .findById(id.value)
-            .map { it.copy(isReferral = true) }
-            .map { save(it.toAccount()) }
-            .orElse(null)
-    }
 
     override fun activate(id: AccountId): Account? = userDocumentMongoRepository
         .findById(id.value)

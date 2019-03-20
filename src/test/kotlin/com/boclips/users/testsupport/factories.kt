@@ -15,14 +15,15 @@ class AccountFactory {
             activated: Boolean = false,
             subjects: String? = "maths english netflix",
             analyticsId: AnalyticsId? = AnalyticsId(value = "1234567"),
-            isReferral: Boolean = false
+            isReferral: Boolean = false,
+            referralCode: String? = null
         ) = Account(
             id = AccountId(value = id),
             activated = activated,
             subjects = subjects,
             analyticsId = analyticsId,
             isReferral = isReferral,
-            referralCode = null
+            referralCode = referralCode
         )
     }
 }

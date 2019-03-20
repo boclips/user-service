@@ -14,7 +14,6 @@ import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.requests.CreateUserRequest
-import com.boclips.users.presentation.requests.UserActivationRequest
 import org.springframework.stereotype.Component
 
 @Component
@@ -24,24 +23,13 @@ class UserActions(
     private val accountRepository: AccountRepository,
     private val referralProvider: ReferralProvider
 ) {
-    fun activate(userActivationRequest: UserActivationRequest?): Account {
+    fun activate(): Account {
         val authenticatedUser: User = UserExtractor.getCurrentUser() ?: throw SecurityContextUserNotFoundException()
 
         val activatedUser = userService.activate(AccountId(value = authenticatedUser.id))
 
-        if (userActivationRequest?.referralCode != null) {
-            val user = userService.findById(IdentityId(value = activatedUser.id.value))
-
-            val referral = NewReferral(
-                referralCode = userActivationRequest.referralCode!!,
-                firstName = user.identity.firstName,
-                lastName = user.identity.lastName,
-                email = user.identity.email,
-                externalIdentifier = user.identity.id.value,
-                status = "qualified"
-            )
-            referralProvider.createReferral(referral)
-            accountRepository.markAsReferred(activatedUser.id)
+        if (activatedUser.isReferral) {
+            registerReferral(activatedUser)
         }
 
         return activatedUser
@@ -71,5 +59,20 @@ class UserActions(
             account = account,
             identity = identity
         )
+    }
+
+    private fun registerReferral(activatedUser: Account) {
+        val user = userService.findById(IdentityId(value = activatedUser.id.value))
+
+        val referral = NewReferral(
+            referralCode = activatedUser.referralCode!!,
+            firstName = user.identity.firstName,
+            lastName = user.identity.lastName,
+            email = user.identity.email,
+            externalIdentifier = user.identity.id.value,
+            status = "qualified"
+        )
+
+        referralProvider.createReferral(referral)
     }
 }

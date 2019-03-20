@@ -3,7 +3,6 @@ package com.boclips.users.presentation
 import com.boclips.users.application.UpdateContacts
 import com.boclips.users.application.UserActions
 import com.boclips.users.presentation.requests.CreateUserRequest
-import com.boclips.users.presentation.requests.UserActivationRequest
 import com.boclips.users.presentation.resources.UserResource
 import mu.KLogging
 import org.springframework.hateoas.ExposesResourceFor
@@ -30,7 +29,7 @@ class UserController(
         fun activateLink(): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
-                    .activateUser(null)
+                    .activateUser()
             ).withRel("activate")
         }
 
@@ -61,8 +60,8 @@ class UserController(
     }
 
     @PostMapping("/activate")
-    fun activateUser(@RequestBody userActivationRequest: UserActivationRequest?): Resource<String> {
-        val account = userActions.activate(userActivationRequest)
+    fun activateUser(): Resource<String> {
+        userActions.activate()
 
         return Resource("", activateLink(), getLink())
     }

@@ -3,9 +3,12 @@ package com.boclips.users.testsupport
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.service.MetadataProvider
+import com.boclips.users.domain.service.ReferralProvider
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -39,11 +42,16 @@ abstract class AbstractSpringIntegrationTest {
     @Autowired
     lateinit var repositories: Collection<CrudRepository<*, *>>
 
+    @Autowired
+    lateinit var referralProvider: ReferralProvider
+
     @BeforeEach
-    fun cleanUpDatabases() {
+    fun resetState() {
         repositories.forEach { it.deleteAll() }
         identityProvider.clear()
         wireMockServer.resetAll()
+
+        Mockito.reset(referralProvider)
     }
 
     fun saveUser(user: User) {
