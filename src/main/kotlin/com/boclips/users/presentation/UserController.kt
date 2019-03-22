@@ -1,7 +1,9 @@
 package com.boclips.users.presentation
 
+import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.UpdateContacts
 import com.boclips.users.application.UserActions
+import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.resources.UserResource
 import mu.KLogging
@@ -58,7 +60,7 @@ class UserController(
         }
     }
 
-    @PostMapping()
+    @PostMapping
     fun createUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
         val createdUser = userActions.create(createUserRequest!!)
 
@@ -78,8 +80,9 @@ class UserController(
     }
 
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: String?): Resource<String> {
-        return Resource("", getUserLink())
+    fun getUser(@PathVariable id: String?): Resource<UserResource> {
+        val user = userActions.get(id!!)
+        return Resource(user, getUserLink())
     }
 
     @PostMapping("/sync")

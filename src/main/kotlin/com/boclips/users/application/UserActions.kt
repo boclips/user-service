@@ -15,6 +15,8 @@ import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.requests.CreateUserRequest
+import com.boclips.users.presentation.resources.UserConverter
+import com.boclips.users.presentation.resources.UserResource
 import mu.KLogging
 import org.springframework.stereotype.Component
 
@@ -76,6 +78,16 @@ class UserActions(
         }
 
         return user
+    }
+
+    fun get(requestedUserId: String): UserResource {
+        val authenticatedUser = UserExtractor.getCurrentUser() ?: throw SecurityContextUserNotFoundException()
+
+        if (authenticatedUser.id != requestedUserId) throw PermissionDenied()
+
+        val user = userService.findById(id = IdentityId(value = requestedUserId))
+
+        return UserConverter().toUserResource(user)
     }
 
     private fun registerReferral(activatedUser: Account) {

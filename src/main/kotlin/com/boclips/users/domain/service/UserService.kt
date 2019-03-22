@@ -69,12 +69,14 @@ class UserService(
         val identity = identityProvider.getUserById(id) ?: throw IdentityNotFoundException()
         val metadata = metadataProvider.getMetadata(id)
 
+        val analyticsId = account.analyticsId?.let { it } ?: metadata.analyticsId
+
         logger.info { "Fetched user ${id.value}" }
 
         return User(
             account = account.copy(
                 subjects = metadata.subjects,
-                analyticsId = metadata.analyticsId
+                analyticsId = analyticsId
             ),
             identity = identity,
             userId = UserId(id.value)
