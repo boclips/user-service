@@ -1,10 +1,12 @@
 package com.boclips.users.presentation
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -85,5 +87,20 @@ class UserControllerTest : AbstractSpringIntegrationTest() {
         mvc.perform(post("/v1/users/activate").asUser("activated-user"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/{id}")))
+    }
+
+    @Test
+    fun `get user`() {
+        val userId = saveUser(UserFactory.sample())
+
+        mvc.perform(
+            get("/v1/users/$userId").asUser(userId)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.firstName").exists())
+            .andExpect(jsonPath("$.lastName").exists())
+            .andExpect(jsonPath("$.analyticsId").exists())
+            .andExpect(jsonPath("$._links.self.href", endsWith("/users/$userId")))
     }
 }

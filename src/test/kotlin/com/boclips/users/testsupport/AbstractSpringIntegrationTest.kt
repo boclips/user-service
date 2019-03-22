@@ -58,8 +58,10 @@ abstract class AbstractSpringIntegrationTest {
         Mockito.reset(customerManagementProvider)
     }
 
-    fun saveUser(user: User) {
+    fun saveUser(user: User) : String {
         accountRepository.save(user.account)
         identityProvider.createUser(user.identity)
+
+        return user.userId.value
     }
 }
