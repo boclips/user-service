@@ -2,7 +2,6 @@ package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.presentation.requests.CreateUserRequest
@@ -30,25 +29,32 @@ class UserActionsIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class CreateUser {
         @Test
-        fun `create account`() {
+        fun `create account without optional values`() {
             val createdAccount = userActions.create(
                 CreateUserRequest(
                     firstName = "Hans",
                     lastName = "Muster",
                     email = "hans@muster.com",
-                    password = "hansli",
-                    analyticsId = "mxp123",
-                    subjects = "some stuff",
-                    referralCode = null
+                    password = "hansli"
                 )
             )
 
-            assertThat(accountRepository.findById(AccountId(value = createdAccount.userId.value))).isNotNull
-            assertThat(identityProvider.getUserById(createdAccount.identity.id)).isNotNull
+            val account = accountRepository.findById(createdAccount.account.id)
+            assertThat(account).isNotNull
+            assertThat(account!!.isReferral).isFalse()
+            assertThat(account.referralCode).isNull()
+            assertThat(account.subjects).isNull()
+            assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
+
+            val identity = identityProvider.getUserById(createdAccount.identity.id)
+            assertThat(identity).isNotNull
+            assertThat(identity!!.firstName).isEqualTo("Hans")
+            assertThat(identity.lastName).isEqualTo("Muster")
+            assertThat(identity.email).isEqualTo("hans@muster.com")
         }
 
         @Test
-        fun `create account stores user information`() {
+        fun `create account as referral`() {
             val user = userActions.create(
                 CreateUserRequestFactory.sample(
                     subjects = "maths",
@@ -57,11 +63,10 @@ class UserActionsIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val persistedAccount = accountRepository.findById(user.account.id)
+            val persistedAccount = accountRepository.findById(user.account.id)!!
 
-            assertThat(persistedAccount!!.isReferral).isTrue()
+            assertThat(persistedAccount.isReferral).isTrue()
             assertThat(persistedAccount.referralCode).isEqualTo("referral-code-123")
-
             assertThat(persistedAccount.subjects).isEqualTo("maths")
             assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
         }

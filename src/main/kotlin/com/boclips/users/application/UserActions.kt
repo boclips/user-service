@@ -58,7 +58,7 @@ class UserActions(
                 activated = false,
                 analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
                 subjects = createUserRequest.subjects,
-                isReferral = createUserRequest.referralCode.let { true },
+                isReferral = createUserRequest.referralCode?.let { true } ?: false,
                 referralCode = createUserRequest.referralCode
             )
         )

@@ -37,6 +37,26 @@ class UserControllerTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `can create a new user without optional fields`() {
+        mvc.perform(
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {"firstName": "jane",
+                     "lastName": "doe",
+                     "subjects": "some subjects",
+                     "email": "jane@doe.com",
+                     "password": "Champagn3"
+                     }
+                    """.trimIndent()
+                )
+        )
+            .andExpect(status().isCreated)
+            .andExpect(header().exists("Location"))
+    }
+
+    @Test
     fun `can handle conflicts with valid request`() {
         val payload = """
                     {"firstName": "jane",
