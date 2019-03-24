@@ -1,8 +1,8 @@
 package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
@@ -75,7 +75,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `cannot activate user when security context not populated`() {
-        assertThrows<SecurityContextUserNotFoundException> {
+        assertThrows<NotAuthenticatedException> {
             activateUser()
         }
     }

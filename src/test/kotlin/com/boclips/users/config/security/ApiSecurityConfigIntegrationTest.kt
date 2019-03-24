@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-class RestSecurityConfigIntegrationTest : AbstractSpringIntegrationTest() {
+class ApiSecurityConfigIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `only user managers can synchronize users`() {
         mvc.perform(MockMvcRequestBuilders.post("/v1/users/sync"))

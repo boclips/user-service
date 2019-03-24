@@ -1,6 +1,6 @@
 package com.boclips.users.presentation
 
-import com.boclips.users.application.PermissionDeniedException
+import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import mu.KLogging
 import org.springframework.http.HttpStatus

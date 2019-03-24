@@ -1,9 +1,10 @@
 package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.presentation.exceptions.SecurityContextUserNotFoundException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
@@ -62,7 +63,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `get user throws when security context not populated`() {
-        assertThrows<SecurityContextUserNotFoundException> {
+        assertThrows<NotAuthenticatedException> {
             getUser("abc")
         }
     }
