@@ -1,8 +1,8 @@
 package com.boclips.users.application
 
 import com.boclips.security.utils.UserExtractor
-import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
+import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.presentation.resources.UserConverter
@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class GetUser(
-    private val userService: UserService
+    private val userService: UserService,
+    private val userConverter: UserConverter
 ) {
     operator fun invoke(requestedUserId: String): UserResource {
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
@@ -20,6 +21,6 @@ class GetUser(
 
         val user = userService.findById(id = IdentityId(value = requestedUserId))
 
-        return UserConverter().toUserResource(user)
+        return userConverter.toUserResource(user)
     }
 }

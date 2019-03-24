@@ -1,4 +1,4 @@
-package com.boclips.users.presentation
+package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.account.Account
@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class LinksControllerTest : AbstractSpringIntegrationTest() {
+class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `anonymous user`() {

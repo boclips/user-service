@@ -1,4 +1,4 @@
-package com.boclips.users.presentation
+package com.boclips.users.presentation.controllers
 
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountRepository

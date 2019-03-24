@@ -1,3 +1,0 @@
-package com.boclips.users.presentation
-
-interface PresentationPackageMarker

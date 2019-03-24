@@ -1,4 +1,4 @@
-package com.boclips.users.presentation
+package com.boclips.users.presentation.controllers
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.UserFactory
@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class UserControllerTest : AbstractSpringIntegrationTest() {
+class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `can create a new user with valid request`() {

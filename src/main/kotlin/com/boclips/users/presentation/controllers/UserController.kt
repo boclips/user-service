@@ -1,4 +1,4 @@
-package com.boclips.users.presentation
+package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.ActivateUser
 import com.boclips.users.application.CreateUser
@@ -66,7 +66,10 @@ class UserController(
     fun createAUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
         val createdUser = createUser(createUserRequest!!)
 
-        val resource = Resource("", createUserLink(), getUserLink(createdUser.userId.value))
+        val resource = Resource("",
+            createUserLink(),
+            getUserLink(createdUser.userId.value)
+        )
 
         val headers = HttpHeaders()
         headers.set(HttpHeaders.LOCATION, resource.getLink("self").href)
@@ -77,7 +80,10 @@ class UserController(
     @PostMapping("/activate")
     fun activateAUser(): Resource<String> {
         activateUser()
-        return Resource("", activateUserLink(), getUserLink())
+        return Resource("",
+            activateUserLink(),
+            getUserLink()
+        )
     }
 
     @GetMapping("/{id}")
