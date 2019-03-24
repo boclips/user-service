@@ -72,7 +72,8 @@ class KeycloakClient(
                         false
                     }
                 } catch (e: Exception) {
-                    logger.error(e) { "Could not find newly created user $userId" }
+                    //TODO REMOVE METHOD #164657584
+//                    logger.error(e) { "Could not find newly created user $userId" }
                     false
                 }
             }
