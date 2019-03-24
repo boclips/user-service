@@ -13,7 +13,7 @@ environments:
     urls:
       - user-service.staging-boclips.com
   testing:
-    replicas: 2
+    replicas: 1
     urls:
       - user-service.testing-boclips.com
   local:
