@@ -42,9 +42,9 @@ class LinksControllerTest : AbstractSpringIntegrationTest() {
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.createAccount").doesNotExist())
-            .andExpect(jsonPath("$._links.profile").doesNotExist())
+            .andExpect(jsonPath("$._links.profile").exists())
             .andExpect(jsonPath("$._links.activate.href", endsWith("/users/activate")))
+            .andExpect(jsonPath("$._links.createAccount").doesNotExist())
     }
 
     @Test

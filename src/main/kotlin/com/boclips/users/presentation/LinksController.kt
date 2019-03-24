@@ -20,7 +20,13 @@ class LinksController(
         }
 
         if (!isActivated()) {
-            return Resource("", listOf(UserController.activateUserLink()))
+            return Resource(
+                "",
+                listOf(
+                    UserController.activateUserLink(),
+                    UserController.getUserLink()
+                )
+            )
         }
 
         if (isActivated()) {
