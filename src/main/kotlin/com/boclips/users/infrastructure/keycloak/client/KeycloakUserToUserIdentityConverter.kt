@@ -16,7 +16,7 @@ class KeycloakUserToUserIdentityConverter {
             email = getEmailIfValid(userRepresentation.email),
             firstName = getValueIfValid("firstName", userRepresentation.firstName),
             lastName = getValueIfValid("lastName", userRepresentation.lastName),
-            isEmailVerified = userRepresentation.isEmailVerified
+            isVerified = userRepresentation.isEmailVerified
         )
     }
 

@@ -38,7 +38,7 @@ class KeycloakClient(
             firstName = createdUser.firstName,
             lastName = createdUser.lastName,
             email = createdUser.email,
-            isEmailVerified = createdUser.isEmailVerified
+            isVerified = createdUser.isEmailVerified
         )
     }
 

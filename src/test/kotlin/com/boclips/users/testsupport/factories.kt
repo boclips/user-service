@@ -40,7 +40,7 @@ class UserIdentityFactory {
             email = email,
             firstName = firstName,
             lastName = lastName,
-            isEmailVerified = isVerified
+            isVerified = isVerified
         )
     }
 }
