@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.account
 
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -28,7 +28,7 @@ data class UserDocument(
     }
 
     fun toAccount() = Account(
-        id = AccountId(value = id),
+        id = UserId(value = id),
         activated = activated,
         subjects = subjects,
         analyticsId = analyticsId?.let { AnalyticsId(value = it) },

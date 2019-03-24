@@ -2,24 +2,24 @@ package com.boclips.users.infrastructure.keycloak.metadata
 
 import com.boclips.users.domain.model.AccountMetadata
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.MetadataProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 
 class KeycloakMetadataProvider(private val keycloakWrapper: KeycloakWrapper) : MetadataProvider {
-    override fun getAllMetadata(ids: List<IdentityId>): Map<IdentityId, AccountMetadata> {
+    override fun getAllMetadata(ids: List<UserId>): Map<UserId, AccountMetadata> {
 
         return keycloakWrapper.users()
             .mapNotNull {
                 if (it.attributes == null) {
                     null
                 } else {
-                    IdentityId(value = it.id) to toAccountMetadata(it.attributes)
+                    UserId(value = it.id) to toAccountMetadata(it.attributes)
                 }
             }.toMap()
     }
 
-    override fun getMetadata(id: IdentityId): AccountMetadata {
+    override fun getMetadata(id: UserId): AccountMetadata {
         val attributes = keycloakWrapper.getUser(id.value)?.attributes
             ?: return AccountMetadata(null, null)
 

@@ -1,15 +1,13 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountNotFoundException
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
-import com.boclips.users.domain.model.identity.IdentityId
 import com.boclips.users.domain.model.identity.IdentityNotFoundException
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -24,14 +22,14 @@ class UserService(
     companion object : KLogging()
 
     @Synchronized
-    fun registerUserIfNew(id: IdentityId): Account {
-        val existingUser = accountRepository.findById(AccountId(value = id.value))
+    fun registerUserIfNew(id: UserId): Account {
+        val existingUser = accountRepository.findById(UserId(value = id.value))
         return existingUser
             ?: metadataProvider.getMetadata(id).let { metadata ->
                 accountRepository
                     .save(
                         Account(
-                            id = AccountId(value = id.value),
+                            id = UserId(value = id.value),
                             activated = false,
                             subjects = metadata.subjects,
                             analyticsId = metadata.analyticsId,
@@ -47,7 +45,7 @@ class UserService(
             }
     }
 
-    fun activate(id: AccountId): Account {
+    fun activate(id: UserId): Account {
         accountRepository.findById(id)?.let {
             return accountRepository.activate(id)!!
         }
@@ -64,8 +62,8 @@ class UserService(
         )
     }
 
-    fun findById(id: IdentityId): User {
-        val account = accountRepository.findById(AccountId(id.value)) ?: throw AccountNotFoundException()
+    fun findById(id: UserId): User {
+        val account = accountRepository.findById(UserId(id.value)) ?: throw AccountNotFoundException()
         val identity = identityProvider.getUserById(id) ?: throw IdentityNotFoundException()
         val metadata = metadataProvider.getMetadata(id)
 
@@ -87,7 +85,7 @@ class UserService(
         val identities = identityProvider.getUsers()
         logger.info { "Fetched ${identities.size} users from Keycloak" }
 
-        val allAccounts = accountRepository.findAll(identities.map { AccountId(value = it.id.value) })
+        val allAccounts = accountRepository.findAll(identities.map { UserId(value = it.id.value) })
         logger.info { "Fetched ${allAccounts.size} users from database" }
 
         val allMetadata = metadataProvider.getAllMetadata(identities.map { it.id })

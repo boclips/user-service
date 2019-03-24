@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloak.client
 
 import com.boclips.users.domain.model.identity.Identity
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakUser
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
@@ -34,7 +34,7 @@ class KeycloakClient(
         logger.info { "Sent verification email to user ${createdUser.id}" }
 
         return Identity(
-            id = IdentityId(value = createdUser.id),
+            id = UserId(value = createdUser.id),
             firstName = createdUser.firstName,
             lastName = createdUser.lastName,
             email = createdUser.email,
@@ -42,7 +42,7 @@ class KeycloakClient(
         )
     }
 
-    override fun getUserById(id: IdentityId): Identity? {
+    override fun getUserById(id: UserId): Identity? {
         val user: UserRepresentation?
         return try {
             user = keycloak.getUser(id.value)!!
@@ -77,7 +77,7 @@ class KeycloakClient(
                     false
                 }
             }
-            .mapNotNull { getUserById(IdentityId(value = it)) }
+            .mapNotNull { getUserById(UserId(value = it)) }
     }
 
     override fun getUsers(): List<Identity> {

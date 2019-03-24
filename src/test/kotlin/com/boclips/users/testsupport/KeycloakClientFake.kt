@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.identity.Identity
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import java.time.LocalDate
@@ -22,7 +22,7 @@ class KeycloakClientFake : IdentityProvider {
 
         val id = UUID.randomUUID().toString()
         fakeUsers[id] = Identity(
-            id = IdentityId(value = id),
+            id = UserId(value = id),
             firstName = firstName,
             lastName = lastName,
             email = email,
@@ -31,7 +31,7 @@ class KeycloakClientFake : IdentityProvider {
         return fakeUsers[id]!!
     }
 
-    override fun getUserById(id: IdentityId): Identity? {
+    override fun getUserById(id: UserId): Identity? {
         return fakeUsers[id.value]
     }
 

@@ -1,9 +1,8 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.service.CustomerManagementProvider
@@ -30,7 +29,7 @@ class CreateUser(
 
         val account = accountRepository.save(
             Account(
-                id = AccountId(identity.id.value),
+                id = UserId(identity.id.value),
                 activated = false,
                 analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
                 subjects = createUserRequest.subjects,

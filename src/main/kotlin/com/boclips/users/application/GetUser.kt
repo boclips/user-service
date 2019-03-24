@@ -3,7 +3,7 @@ package com.boclips.users.application
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.presentation.resources.UserConverter
 import com.boclips.users.presentation.resources.UserResource
@@ -19,7 +19,7 @@ class GetUser(
 
         if (authenticatedUser.id != requestedUserId) throw PermissionDeniedException()
 
-        val user = userService.findById(id = IdentityId(value = requestedUserId))
+        val user = userService.findById(id = UserId(value = requestedUserId))
 
         return userConverter.toUserResource(user)
     }

@@ -4,8 +4,7 @@ import com.boclips.security.utils.User
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.AccountId
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserService
@@ -22,7 +21,7 @@ class ActivateUser(
     operator fun invoke(): Account {
         val authenticatedUser: User = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
 
-        val activatedUser = userService.activate(AccountId(value = authenticatedUser.id))
+        val activatedUser = userService.activate(UserId(value = authenticatedUser.id))
 
         if (activatedUser.isReferral) {
             registerReferral(activatedUser)
@@ -34,7 +33,7 @@ class ActivateUser(
     }
 
     private fun registerReferral(activatedUser: Account) {
-        val user = userService.findById(IdentityId(value = activatedUser.id.value))
+        val user = userService.findById(UserId(value = activatedUser.id.value))
 
         val referral = NewReferral(
             referralCode = activatedUser.referralCode!!,

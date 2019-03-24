@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.testsupport.UserIdentityFactory
 import com.nhaarman.mockitokotlin2.any
@@ -40,7 +40,7 @@ internal class KeycloakClientTest {
                 this.isEmailVerified = true
             })
 
-            val id = IdentityId(value = "x")
+            val id = UserId(value = "x")
             val identity = keycloakClient.getUserById(id)!!
 
             assertThat(identity.id).isEqualTo(id)
@@ -48,7 +48,7 @@ internal class KeycloakClientTest {
 
         @Test
         fun `returns null when cannot find a given user`() {
-            val id = IdentityId(value = "x")
+            val id = UserId(value = "x")
             val identity = keycloakClient.getUserById(id)
 
             assertThat(identity).isNull()
@@ -60,7 +60,7 @@ internal class KeycloakClientTest {
                 this.id = "x"
             })
 
-            val id = IdentityId(value = "x")
+            val id = UserId(value = "x")
             val identity = keycloakClient.getUserById(id)
 
             assertThat(identity).isNull()

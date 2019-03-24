@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountRepository
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.infrastructure.security.getCurrentUserIfNotAnonymous
 import org.springframework.hateoas.Resource
 import org.springframework.web.bind.annotation.GetMapping
@@ -38,7 +38,7 @@ class LinksController(
 
     private fun isActivated(): Boolean {
         return getCurrentUserIfNotAnonymous()?.let { currentUser ->
-            val user = accountRepository.findById(AccountId(value = currentUser.id))
+            val user = accountRepository.findById(UserId(value = currentUser.id))
             return user?.let { it.activated } ?: false
         } ?: return false
     }

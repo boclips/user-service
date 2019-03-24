@@ -2,8 +2,8 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
@@ -31,7 +31,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         accountRepository.save(
             Account(
-                id = AccountId(value = "a-user-id"),
+                id = UserId(value = "a-user-id"),
                 activated = false,
                 subjects = "irrelevant",
                 analyticsId = AnalyticsId(value = "irrelevant"),
@@ -53,7 +53,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         accountRepository.save(
             Account(
-                id = AccountId(value = "a-user-id"),
+                id = UserId(value = "a-user-id"),
                 activated = true,
                 subjects = "irrelevant",
                 analyticsId = AnalyticsId(value = "irrelevant"),

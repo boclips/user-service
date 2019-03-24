@@ -1,9 +1,8 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -52,21 +51,21 @@ class RegisterUserLegacyIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `do not re-activate already activated users`() {
         val identity = UserIdentityFactory.sample(email = "username@gmail.com", id = "id")
-        userService.activate(AccountId(value = "id"))
+        userService.activate(UserId(value = "id"))
 
         keycloakClientFake.createUser(identity)
 
         registerUserLegacy.registerNewTeachersSinceYesterday()
 
-        val retrievedUser = userService.findById(IdentityId(value = "id"))
-        assertThat(retrievedUser.account.id).isEqualTo(AccountId(value = "id"))
+        val retrievedUser = userService.findById(UserId(value = "id"))
+        assertThat(retrievedUser.account.id).isEqualTo(UserId(value = "id"))
         assertThat(retrievedUser.account.activated).isTrue()
     }
 
     @Test
     fun `ACCOUNT_CREATED event does get fired events for activated users`() {
         val user = UserIdentityFactory.sample(email = "username@gmail.com", id = "id")
-        userService.activate(AccountId(value = "id"))
+        userService.activate(UserId(value = "id"))
 
         keycloakClientFake.createUser(user)
 

@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.keycloak.metadata
 
 import com.boclips.users.domain.model.AccountMetadata
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -50,17 +50,17 @@ internal class KeycloakMetadataProviderTest {
 
             val metadata = keycloakMetadataProvider.getAllMetadata(
                 listOf(
-                    IdentityId(value = "user1"),
-                    IdentityId(value = "user2")
+                    UserId(value = "user1"),
+                    UserId(value = "user2")
                 )
             )
 
             assertThat(metadata).hasSize(2)
-            assertThat(metadata[IdentityId(value = "user1")]).isEqualTo(
+            assertThat(metadata[UserId(value = "user1")]).isEqualTo(
                 AccountMetadata(subjects = "maths", analyticsId = AnalyticsId(value = "1"))
             )
 
-            assertThat(metadata[IdentityId(value = "user2")]).isEqualTo(
+            assertThat(metadata[UserId(value = "user2")]).isEqualTo(
                 AccountMetadata(subjects = "english", analyticsId = AnalyticsId(value = "2"))
             )
         }
@@ -79,7 +79,7 @@ internal class KeycloakMetadataProviderTest {
                 )
             )
 
-            val id = IdentityId(value = "user1")
+            val id = UserId(value = "user1")
             val metadata = keycloakMetadataProvider.getAllMetadata(listOf(id))
             assertThat(metadata).hasSize(1)
 
@@ -101,7 +101,7 @@ internal class KeycloakMetadataProviderTest {
                 }
             )
 
-            val metadata = keycloakMetadataProvider.getMetadata(IdentityId(value = "irrelevant"))
+            val metadata = keycloakMetadataProvider.getMetadata(UserId(value = "irrelevant"))
             assertThat(metadata.analyticsId).isEqualTo(AnalyticsId(value = "2"))
             assertThat(metadata.subjects).isEqualTo("maths")
         }
@@ -114,7 +114,7 @@ internal class KeycloakMetadataProviderTest {
                 }
             )
 
-            val metadata = keycloakMetadataProvider.getMetadata(IdentityId(value = "irrelevant"))
+            val metadata = keycloakMetadataProvider.getMetadata(UserId(value = "irrelevant"))
             assertThat(metadata.subjects).isNull()
             assertThat(metadata.analyticsId).isNull()
         }
@@ -130,7 +130,7 @@ internal class KeycloakMetadataProviderTest {
                 }
             )
 
-            val metadata = keycloakMetadataProvider.getMetadata(IdentityId(value = "irrelevant"))
+            val metadata = keycloakMetadataProvider.getMetadata(UserId(value = "irrelevant"))
             assertThat(metadata.subjects).isNull()
             assertThat(metadata.analyticsId).isEqualTo(AnalyticsId(value = "2"))
         }

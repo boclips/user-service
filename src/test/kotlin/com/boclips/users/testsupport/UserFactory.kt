@@ -1,10 +1,9 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.identity.Identity
-import io.micrometer.core.instrument.config.NamingConvention.identity
 
 class UserFactory {
     companion object {

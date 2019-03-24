@@ -1,7 +1,6 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.account.AccountId
-import com.boclips.users.domain.model.identity.IdentityId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
@@ -58,12 +57,12 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `activating user does not override metadata`() {
-        userService.registerUserIfNew(IdentityId(value = "new user"))
+        userService.registerUserIfNew(UserId(value = "new user"))
 
-        val activatedUser = userService.activate(AccountId(value = "new user"))
+        val activatedUser = userService.activate(UserId(value = "new user"))
 
         assertThat(activatedUser.isReferral).isFalse()
-        assertThat(activatedUser?.subjects).isNotNull()
-        assertThat(activatedUser?.analyticsId).isNotNull
+        assertThat(activatedUser.subjects).isNotNull()
+        assertThat(activatedUser.analyticsId).isNotNull
     }
 }
