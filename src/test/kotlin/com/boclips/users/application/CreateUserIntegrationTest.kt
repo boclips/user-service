@@ -29,8 +29,8 @@ internal class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         val account = accountRepository.findById(createdAccount.account.id)
         Assertions.assertThat(account).isNotNull
         Assertions.assertThat(account!!.isReferral).isFalse()
-        Assertions.assertThat(account.referralCode).isNull()
-        Assertions.assertThat(account.subjects).isNull()
+        Assertions.assertThat(account.referralCode).isEmpty()
+        Assertions.assertThat(account.subjects).isEmpty()
         Assertions.assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
 
         val identity = identityProvider.getUserById(createdAccount.identity.id)

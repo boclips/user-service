@@ -1,7 +1,9 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.application.CreateUser
+import com.boclips.users.domain.model.NewUser
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountNotFoundException
 import com.boclips.users.domain.model.account.AccountRepository
@@ -22,6 +24,7 @@ class UserService(
     companion object : KLogging()
 
     @Synchronized
+    // TODO: remove
     fun registerUserIfNew(id: UserId): Account {
         val existingUser = accountRepository.findById(UserId(value = id.value))
         return existingUser
@@ -114,6 +117,33 @@ class UserService(
         logger.info { "Return ${allUsers.size} users" }
 
         return allUsers
+    }
+
+    fun createUser(newUser: NewUser): User {
+        val identity = identityProvider.createNewUser(
+            firstName = newUser.firstName,
+            lastName = newUser.lastName,
+            email = newUser.email,
+            password = newUser.password
+        )
+
+        val account = accountRepository.save(
+            Account(
+                id = UserId(identity.id.value),
+                activated = false,
+                analyticsId = newUser.analyticsId,
+                subjects = newUser.subjects,
+                isReferral = newUser.referralCode.isNotEmpty(),
+                referralCode = newUser.referralCode
+            )
+        )
+
+        CreateUser.logger.info { "Created user ${account.id.value}" }
+        return User(
+            userId = UserId(identity.id.value),
+            account = account,
+            identity = identity
+        )
     }
 
     private fun trackAccountCreatedEvent(id: AnalyticsId) {
