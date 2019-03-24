@@ -1,9 +1,9 @@
 package com.boclips.users.testsupport
 
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.presentation.requests.CreateUserRequest
 import java.util.UUID
 
@@ -14,15 +14,19 @@ class AccountFactory {
             activated: Boolean = false,
             subjects: String? = "maths english netflix",
             analyticsId: AnalyticsId? = AnalyticsId(value = "1234567"),
-            isReferral: Boolean = false,
-            referralCode: String? = null
+            referralCode: String? = null,
+            firstName: String = "Joe",
+            lastName: String = "Dough",
+            email: String = "joe@dough.com"
         ) = Account(
             id = UserId(value = id),
             activated = activated,
             subjects = subjects,
             analyticsId = analyticsId,
-            isReferral = isReferral,
-            referralCode = referralCode
+            referralCode = referralCode,
+            firstName = firstName,
+            lastName = lastName,
+            email = email
         )
     }
 }

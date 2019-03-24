@@ -1,18 +1,21 @@
 package com.boclips.users.application
 
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.KeycloakClientFake
 import com.boclips.users.testsupport.UserIdentityFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
+@Disabled
 class RegisterUserLegacyIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired

@@ -27,19 +27,11 @@ class UserService(
     // TODO: remove
     fun registerUserIfNew(id: UserId): Account {
         val existingUser = accountRepository.findById(UserId(value = id.value))
+
         return existingUser
             ?: metadataProvider.getMetadata(id).let { metadata ->
-                accountRepository
-                    .save(
-                        Account(
-                            id = UserId(value = id.value),
-                            activated = false,
-                            subjects = metadata.subjects,
-                            analyticsId = metadata.analyticsId,
-                            isReferral = false,
-                            referralCode = null
-                        )
-                    )
+                val newAccount = createLegacyAccount(id)
+                accountRepository.save(newAccount)
                     .apply {
                         metadata.analyticsId?.let {
                             trackAccountCreatedEvent(metadata.analyticsId)
@@ -53,21 +45,15 @@ class UserService(
             return accountRepository.activate(id)!!
         }
 
-        return accountRepository.save(
-            Account(
-                id = id,
-                activated = true,
-                subjects = null,
-                analyticsId = null,
-                isReferral = false,
-                referralCode = null
-            )
-        )
+        //TODO do not create account
+        val newAccount = createLegacyAccount(id)
+        return accountRepository.save(newAccount)
     }
 
     fun findById(id: UserId): User {
         val account = accountRepository.findById(UserId(id.value)) ?: throw AccountNotFoundException()
         val identity = identityProvider.getUserById(id) ?: throw IdentityNotFoundException()
+        // TODO remove metadata lookup
         val metadata = metadataProvider.getMetadata(id)
 
         val analyticsId = account.analyticsId?.let { it } ?: metadata.analyticsId
@@ -91,6 +77,7 @@ class UserService(
         val allAccounts = accountRepository.findAll(identities.map { UserId(value = it.id.value) })
         logger.info { "Fetched ${allAccounts.size} users from database" }
 
+        // TODO Remove
         val allMetadata = metadataProvider.getAllMetadata(identities.map { it.id })
         logger.info { "Fetched ${allMetadata.size} metadata" }
 
@@ -130,10 +117,12 @@ class UserService(
         val account = accountRepository.save(
             Account(
                 id = UserId(identity.id.value),
+                firstName = newUser.firstName,
+                lastName = newUser.lastName,
+                email = newUser.email,
                 activated = false,
                 analyticsId = newUser.analyticsId,
                 subjects = newUser.subjects,
-                isReferral = newUser.referralCode.isNotEmpty(),
                 referralCode = newUser.referralCode
             )
         )
@@ -143,6 +132,22 @@ class UserService(
             userId = UserId(identity.id.value),
             account = account,
             identity = identity
+        )
+    }
+
+    private fun createLegacyAccount(id: UserId): Account {
+        val identity = identityProvider.getUserById(id) ?: throw IdentityNotFoundException()
+        val metadataProvider = metadataProvider.getMetadata(id)
+
+        return Account(
+            id = id,
+            activated = true,
+            subjects = metadataProvider.subjects,
+            analyticsId = metadataProvider.analyticsId,
+            referralCode = null,
+            firstName = identity.firstName,
+            lastName = identity.lastName,
+            email = identity.email
         )
     }
 

@@ -1,6 +1,7 @@
 package com.boclips.users.config.security
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.asUser
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -39,7 +40,8 @@ class AccountServiceHttpSecurityConfigurerIntegrationTest : AbstractSpringIntegr
         mvc.perform(post("/v1/users/activate"))
             .andExpect(status().isForbidden)
 
-        mvc.perform(post("/v1/users/activate").asUser("user-id"))
+        val userId = saveUser(UserFactory.sample())
+        mvc.perform(post("/v1/users/activate").asUser(userId))
             .andExpect(status().is2xxSuccessful)
     }
 }

@@ -10,6 +10,8 @@ import com.boclips.users.testsupport.UserIdentityFactory
 import com.nhaarman.mockitokotlin2.verify
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +22,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var activateUser: ActivateUser
 
     @Test
+    @Disabled
     // TODO: remove, not necessary anymore
     fun `activates new user if user does not exist`() {
         setSecurityContext("user@example.com")
@@ -55,7 +58,6 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 ),
                 account = AccountFactory.sample(
                     id = identity,
-                    isReferral = true,
                     referralCode = "it-is-a-referral"
                 )
             )

@@ -104,7 +104,9 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `activate user`() {
-        mvc.perform(post("/v1/users/activate").asUser("activated-user"))
+        val userId = saveUser(UserFactory.sample())
+
+        mvc.perform(post("/v1/users/activate").asUser(userId))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/{id}")))
     }
