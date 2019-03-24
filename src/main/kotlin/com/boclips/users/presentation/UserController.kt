@@ -1,7 +1,9 @@
 package com.boclips.users.presentation
 
+import com.boclips.users.application.ActivateUser
+import com.boclips.users.application.CreateUser
+import com.boclips.users.application.GetUser
 import com.boclips.users.application.UpdateContacts
-import com.boclips.users.application.UserActions
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.resources.UserResource
 import mu.KLogging
@@ -24,43 +26,45 @@ import javax.validation.Valid
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
 class UserController(
-    private val userActions: UserActions,
+    private val createUser: CreateUser,
+    private val activateUser: ActivateUser,
+    private val getUser: GetUser,
     private val updateContacts: UpdateContacts
 ) {
     companion object : KLogging() {
         fun activateUserLink(): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
-                    .activateUser()
+                    .activateAUser()
             ).withRel("activate")
         }
 
         fun createUserLink(): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
-                    .createUser(null)
+                    .createAUser(null)
             ).withRel("createAccount")
         }
 
         fun getUserLink(): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
-                    .getUser(null)
+                    .getAUser(null)
             ).withRel("profile")
         }
 
         fun getUserLink(id: String): Link {
             return ControllerLinkBuilder.linkTo(
                 ControllerLinkBuilder.methodOn(UserController::class.java)
-                    .getUser(id)
+                    .getAUser(id)
             ).withRel("profile")
                 .withSelfRel()
         }
     }
 
     @PostMapping
-    fun createUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
-        val createdUser = userActions.create(createUserRequest!!)
+    fun createAUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
+        val createdUser = createUser(createUserRequest!!)
 
         val resource = Resource("", createUserLink(), getUserLink(createdUser.userId.value))
 
@@ -71,20 +75,19 @@ class UserController(
     }
 
     @PostMapping("/activate")
-    fun activateUser(): Resource<String> {
-        userActions.activate()
-
+    fun activateAUser(): Resource<String> {
+        activateUser()
         return Resource("", activateUserLink(), getUserLink())
     }
 
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: String?): Resource<UserResource> {
-        val user = userActions.get(id!!)
+    fun getAUser(@PathVariable id: String?): Resource<UserResource> {
+        val user = getUser(id!!)
         return Resource(user, getUserLink(id))
     }
 
     @PostMapping("/sync")
     fun syncUsers() {
-        updateContacts.update()
+        updateContacts()
     }
 }

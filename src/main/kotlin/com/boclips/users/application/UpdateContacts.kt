@@ -9,7 +9,7 @@ class UpdateContacts(
     val userService: UserService,
     val customerManagementProvider: CustomerManagementProvider
 ) {
-    fun update() {
+    operator fun invoke() {
         val allUsers = userService.findAllUsers()
         customerManagementProvider.update(allUsers)
     }

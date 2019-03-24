@@ -14,10 +14,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class RegisterUserIntegrationTest : AbstractSpringIntegrationTest() {
+class RegisterUserLegacyIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
-    lateinit var registerUser: RegisterUser
+    lateinit var registerUserLegacy: RegisterUserLegacy
 
     @Autowired
     lateinit var keycloakClientFake: KeycloakClientFake
@@ -39,7 +39,7 @@ class RegisterUserIntegrationTest : AbstractSpringIntegrationTest() {
         val user = keycloakClientFake.createUser(UserIdentityFactory.sample())
         val metadata = metadataProvider.getMetadata(user.id)
 
-        repeat(3) { registerUser.registerNewTeachersSinceYesterday() }
+        repeat(3) { registerUserLegacy.registerNewTeachersSinceYesterday() }
 
         assertThat(mixpanelClientFake.getEvents()).containsOnlyOnce(
             Event(
@@ -56,7 +56,7 @@ class RegisterUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         keycloakClientFake.createUser(identity)
 
-        registerUser.registerNewTeachersSinceYesterday()
+        registerUserLegacy.registerNewTeachersSinceYesterday()
 
         val retrievedUser = userService.findById(IdentityId(value = "id"))
         assertThat(retrievedUser.account.id).isEqualTo(AccountId(value = "id"))
@@ -70,7 +70,7 @@ class RegisterUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         keycloakClientFake.createUser(user)
 
-        registerUser.registerNewTeachersSinceYesterday()
+        registerUserLegacy.registerNewTeachersSinceYesterday()
 
         assertThat(mixpanelClientFake.getEvents()).hasSize(0)
     }
