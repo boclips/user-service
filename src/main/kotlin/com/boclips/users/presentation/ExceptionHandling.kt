@@ -1,5 +1,6 @@
 package com.boclips.users.presentation
 
+import com.boclips.users.application.PermissionDeniedException
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import mu.KLogging
 import org.springframework.http.HttpStatus
@@ -15,5 +16,11 @@ class ExceptionHandling {
     @ExceptionHandler(UserAlreadyExistsException::class)
     fun handleIOException(ex: UserAlreadyExistsException) {
         logger.error { "User already exists $ex" }
+    }
+
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "User already exists")
+    @ExceptionHandler(PermissionDeniedException::class)
+    fun handleIOException(ex: PermissionDeniedException) {
+        logger.error { "User has no permissions to access resource $ex" }
     }
 }

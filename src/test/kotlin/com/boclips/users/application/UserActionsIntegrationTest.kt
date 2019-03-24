@@ -120,7 +120,7 @@ class UserActionsIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveUser(UserFactory.sample())
 
-            assertThrows<PermissionDenied> { userActions.get(userId) }
+            assertThrows<PermissionDeniedException> { userActions.get(userId) }
         }
 
         @Test

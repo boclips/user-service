@@ -83,7 +83,7 @@ class UserActions(
     fun get(requestedUserId: String): UserResource {
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw SecurityContextUserNotFoundException()
 
-        if (authenticatedUser.id != requestedUserId) throw PermissionDenied()
+        if (authenticatedUser.id != requestedUserId) throw PermissionDeniedException()
 
         val user = userService.findById(id = IdentityId(value = requestedUserId))
 
