@@ -122,7 +122,7 @@ class UserService(
                     userId = id.value
                 )
             )
-            logger.info { "Registered new user: $id" }
+            logger.info { "Send MixPanel event ACCOUNT_CREATED for MixPanel ID $id" }
         }
     }
 }
