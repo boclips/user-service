@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.controllers
 
+import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.asUser
@@ -104,7 +105,11 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `activate user`() {
-        mvc.perform(post("/v1/users/activate").asUser("activated-user"))
+        saveUser(UserFactory.sample())
+
+        setSecurityContext("user-id")
+
+        mvc.perform(post("/v1/users/activate").asUser("user-id"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/{id}")))
     }

@@ -23,46 +23,8 @@ class UserService(
 ) {
     companion object : KLogging()
 
-    @Synchronized
-    // TODO: remove
-    fun registerUserIfNew(id: UserId): Account {
-        val existingUser = accountRepository.findById(UserId(value = id.value))
-        return existingUser
-            ?: metadataProvider.getMetadata(id).let { metadata ->
-                accountRepository
-                    .save(
-                        Account(
-                            id = UserId(value = id.value),
-                            activated = false,
-                            subjects = metadata.subjects,
-                            analyticsId = metadata.analyticsId,
-                            isReferral = false,
-                            referralCode = null
-                        )
-                    )
-                    .apply {
-                        metadata.analyticsId?.let {
-                            trackAccountCreatedEvent(metadata.analyticsId)
-                        }
-                    }
-            }
-    }
-
-    fun activate(id: UserId): Account {
-        accountRepository.findById(id)?.let {
-            return accountRepository.activate(id)!!
-        }
-
-        return accountRepository.save(
-            Account(
-                id = id,
-                activated = true,
-                subjects = null,
-                analyticsId = null,
-                isReferral = false,
-                referralCode = null
-            )
-        )
+    fun activate(userId: UserId): Account {
+        return accountRepository.activate(userId)!!
     }
 
     fun findById(id: UserId): User {
@@ -139,6 +101,9 @@ class UserService(
         )
 
         CreateUser.logger.info { "Created user ${account.id.value}" }
+
+        trackAccountCreatedEvent(newUser.analyticsId)
+
         return User(
             userId = UserId(identity.id.value),
             account = account,
@@ -147,12 +112,14 @@ class UserService(
     }
 
     private fun trackAccountCreatedEvent(id: AnalyticsId) {
-        analyticsClient.track(
-            Event(
-                eventType = EventType.ACCOUNT_CREATED,
-                userId = id.value
+        if (id.value.isNotEmpty()) {
+            analyticsClient.track(
+                Event(
+                    eventType = EventType.ACCOUNT_CREATED,
+                    userId = id.value
+                )
             )
-        )
-        logger.info { "Registered new user: $id" }
+            logger.info { "Registered new user: $id" }
+        }
     }
 }

@@ -20,18 +20,6 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var activateUser: ActivateUser
 
     @Test
-    // TODO: remove, not necessary anymore
-    fun `activates new user if user does not exist`() {
-        setSecurityContext("user@example.com")
-
-        val activatedUser = activateUser()
-
-        val persistedUser = accountRepository.findById(activatedUser.id)
-        Assertions.assertThat(persistedUser).isNotNull
-        Assertions.assertThat(persistedUser!!.activated).isTrue()
-    }
-
-    @Test
     fun `activate user is idempotent`() {
         setSecurityContext("user@example.com")
 

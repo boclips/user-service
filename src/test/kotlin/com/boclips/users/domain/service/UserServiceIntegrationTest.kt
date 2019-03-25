@@ -1,6 +1,5 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
@@ -53,16 +52,5 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(users.size).isEqualTo(savedUsers.size)
         assertThat(users.map { it.account.id.value }).contains("1", "2", "3", "4", "5")
         assertThat(users.map { it.identity.id.value }).contains("1", "2", "3", "4", "5")
-    }
-
-    @Test
-    fun `activating user does not override metadata`() {
-        userService.registerUserIfNew(UserId(value = "new user"))
-
-        val activatedUser = userService.activate(UserId(value = "new user"))
-
-        assertThat(activatedUser.isReferral).isFalse()
-        assertThat(activatedUser.subjects).isNotNull()
-        assertThat(activatedUser.analyticsId).isNotNull
     }
 }
