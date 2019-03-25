@@ -11,7 +11,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-internal class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
+class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
     lateinit var createUser: CreateUser
 

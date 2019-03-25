@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.application.CreateUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.infrastructure.getContentTypeHeader
@@ -37,7 +36,7 @@ class HubSpotClient(
                 }
             logger.info { "Successfully synchronized all valid contacts with HubSpot" }
         } catch (ex: Exception) {
-            CreateUser.logger.error { "Could not update user $users as a contact on HubSpot" }
+            logger.error { "Could not update user $users as a contact on HubSpot" }
         }
     }
 

@@ -1,5 +1,3 @@
 package com.boclips.users.application.exceptions
 
-class PermissionDeniedException : Exception() {
-
-}
+class PermissionDeniedException : RuntimeException()
