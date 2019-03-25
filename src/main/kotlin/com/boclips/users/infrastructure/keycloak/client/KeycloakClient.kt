@@ -19,7 +19,7 @@ class KeycloakClient(
         const val TEACHERS_GROUP_NAME: String = "teachers"
     }
 
-    override fun createNewUser(firstName: String, lastName: String, email: String, password: String): Identity {
+    override fun createUser(firstName: String, lastName: String, email: String, password: String): Identity {
         val createdUser = keycloak.createUser(
             KeycloakUser(
                 firstName = firstName,
@@ -57,27 +57,6 @@ class KeycloakClient(
             logger.warn(e) { "Unexpected exception happened when looking up user: ${id.value}, omitting user" }
             null
         }
-    }
-
-    override fun getNewTeachers(since: LocalDate): List<Identity> {
-        return keycloak.getRegisterEvents(since)
-            .mapNotNull { it.userId }
-            .filter { userId ->
-                try {
-                    val groupNames = keycloak.getGroupsOfUser(userId).map { group -> group.name }
-                    if (groupNames.contains(TEACHERS_GROUP_NAME)) {
-                        true
-                    } else {
-                        logger.error { "User $userId not in teachers group" }
-                        false
-                    }
-                } catch (e: Exception) {
-                    //TODO REMOVE METHOD #164657584
-//                    logger.error(e) { "Could not find newly created user $userId" }
-                    false
-                }
-            }
-            .mapNotNull { getUserById(UserId(value = it)) }
     }
 
     override fun getUsers(): List<Identity> {

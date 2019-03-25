@@ -68,50 +68,6 @@ internal class KeycloakClientTest {
     }
 
     @Test
-    fun getNewTeachers() {
-        whenever(keycloakWrapperMock.getRegisterEvents(any())).thenReturn(
-            listOf(
-                EventRepresentation().apply {
-                    type = "REGISTER"
-                    userId = "new teacher"
-                },
-                EventRepresentation().apply {
-                    type = "REGISTER"
-                    userId = "not new teacher"
-                }
-            )
-        )
-
-        whenever(keycloakWrapperMock.getGroupsOfUser("new teacher")).thenReturn(
-            listOf(
-                GroupRepresentation().apply { this.name = KeycloakClient.TEACHERS_GROUP_NAME }
-            )
-        )
-
-        whenever(keycloakWrapperMock.getUser(any())).thenReturn(
-            UserRepresentation().apply {
-                this.firstName = "New"
-                this.lastName = "Teacher"
-                this.email = "newTeacher@gmail.com"
-                this.id = "new teacher"
-                this.isEmailVerified = false
-            }
-        )
-
-        val newTeachers = keycloakClient.getNewTeachers(since = LocalDate.now().minusDays(1))
-
-        assertThat(newTeachers).containsExactly(
-            UserIdentityFactory.sample(
-                id = "new teacher",
-                firstName = "New",
-                lastName = "Teacher",
-                email = "newTeacher@gmail.com",
-                isVerified = false
-            )
-        )
-    }
-
-    @Test
     fun getUsers() {
         val user1 = UserRepresentation().apply {
             this.id = "1"

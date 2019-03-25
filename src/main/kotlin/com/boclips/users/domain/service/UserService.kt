@@ -83,7 +83,7 @@ class UserService(
     }
 
     fun createUser(newUser: NewUser): User {
-        val identity = identityProvider.createNewUser(
+        val identity = identityProvider.createUser(
             firstName = newUser.firstName,
             lastName = newUser.lastName,
             email = newUser.email,
@@ -96,8 +96,10 @@ class UserService(
                 activated = false,
                 analyticsId = newUser.analyticsId,
                 subjects = newUser.subjects,
-                isReferral = newUser.referralCode.isNotEmpty(),
-                referralCode = newUser.referralCode
+                referralCode = newUser.referralCode,
+                firstName = newUser.firstName,
+                lastName = newUser.lastName,
+                email = newUser.email
             )
         )
 

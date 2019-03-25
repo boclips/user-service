@@ -25,7 +25,7 @@ class ActivateUser(
 
         val activatedUser = userService.activate(UserId(value = authenticatedUser.id))
 
-        if (activatedUser.account.isReferral) {
+        if (activatedUser.account.isReferral()) {
             registerReferral(activatedUser.account)
         }
 

@@ -10,10 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class UserDocument(
     @Id
     val id: String,
+    val firstName: String?,
+    val lastName: String?,
+    val email: String?,
     val activated: Boolean,
     val subjects: String?,
     val analyticsId: String?,
-    val isReferral: Boolean?,
     val referralCode: String?
 ) {
     companion object {
@@ -22,8 +24,10 @@ data class UserDocument(
             activated = account.activated,
             subjects = account.subjects,
             analyticsId = account.analyticsId?.value,
-            isReferral = account.isReferral,
-            referralCode = account.referralCode
+            referralCode = account.referralCode,
+            firstName = account.firstName,
+            lastName = account.lastName,
+            email = account.email
         )
     }
 
@@ -32,7 +36,9 @@ data class UserDocument(
         activated = activated,
         subjects = subjects,
         analyticsId = analyticsId?.let { AnalyticsId(value = it) },
-        isReferral = isReferral?.let { it } ?: false,
-        referralCode = referralCode?.let { it }
+        referralCode = referralCode?.let { it },
+        firstName = firstName.orEmpty(),
+        lastName = lastName.orEmpty(),
+        email = email.orEmpty()
     )
 }

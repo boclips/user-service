@@ -1,21 +1,15 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
-import java.time.LocalDate
 import java.util.UUID
 
 class KeycloakClientFake : IdentityProvider {
     private val fakeUsers = hashMapOf<String, Identity>()
 
-    @Synchronized
-    override fun getNewTeachers(since: LocalDate): List<Identity> {
-        return fakeUsers.values.toList()
-    }
-
-    override fun createNewUser(firstName: String, lastName: String, email: String, password: String): Identity {
+    override fun createUser(firstName: String, lastName: String, email: String, password: String): Identity {
         if (fakeUsers.values.filter { it.email == email }.isNotEmpty()) {
             throw UserAlreadyExistsException()
         }

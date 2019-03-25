@@ -43,7 +43,6 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 ),
                 account = AccountFactory.sample(
                     id = identity,
-                    isReferral = true,
                     referralCode = "it-is-a-referral"
                 )
             )

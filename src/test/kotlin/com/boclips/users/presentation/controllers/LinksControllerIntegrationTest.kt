@@ -1,10 +1,9 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -30,12 +29,11 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         accountRepository.save(
-            Account(
-                id = UserId(value = "a-user-id"),
+            AccountFactory.sample(
+                id = "a-user-id",
                 activated = false,
                 subjects = "irrelevant",
                 analyticsId = AnalyticsId(value = "irrelevant"),
-                isReferral = false,
                 referralCode = null
             )
         )
@@ -52,12 +50,11 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         accountRepository.save(
-            Account(
-                id = UserId(value = "a-user-id"),
+            AccountFactory.sample(
+                id = "a-user-id",
                 activated = true,
                 subjects = "irrelevant",
                 analyticsId = AnalyticsId(value = "irrelevant"),
-                isReferral = false,
                 referralCode = null
             )
         )
