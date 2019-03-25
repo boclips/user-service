@@ -1,14 +1,13 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakUser
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import mu.KLogging
 import org.keycloak.representations.idm.UserRepresentation
-import java.time.LocalDate
 
 class KeycloakClient(
     private val keycloak: KeycloakWrapper,
@@ -16,7 +15,6 @@ class KeycloakClient(
 ) : IdentityProvider {
     companion object : KLogging() {
         const val REALM = "boclips"
-        const val TEACHERS_GROUP_NAME: String = "teachers"
     }
 
     override fun createUser(firstName: String, lastName: String, email: String, password: String): Identity {
@@ -38,7 +36,7 @@ class KeycloakClient(
             firstName = createdUser.firstName,
             lastName = createdUser.lastName,
             email = createdUser.email,
-            isEmailVerified = createdUser.isEmailVerified
+            isVerified = createdUser.isEmailVerified
         )
     }
 

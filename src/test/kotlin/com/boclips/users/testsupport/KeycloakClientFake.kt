@@ -20,7 +20,7 @@ class KeycloakClientFake : IdentityProvider {
             firstName = firstName,
             lastName = lastName,
             email = email,
-            isEmailVerified = false
+            isVerified = false
         )
         return fakeUsers[id]!!
     }
