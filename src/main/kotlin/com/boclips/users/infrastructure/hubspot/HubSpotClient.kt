@@ -25,17 +25,12 @@ class HubSpotClient(
             users
                 .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
                 .forEachIndexed { index, batchOfUsers ->
-                    val contacts = batchOfUsers.mapNotNull { user ->
+                    val contacts = batchOfUsers.map { user ->
                         toHubSpotContact(user)
                     }
 
-                    val entity = HttpEntity(objectMapper.writeValueAsString(contacts), getContentTypeHeader())
-
                     if (contacts.isNotEmpty()) {
-                        restTemplate.postForLocation(
-                            getContactsEndpoint(),
-                            entity
-                        )
+                        postContacts(contacts)
                     }
 
                     logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
@@ -55,6 +50,14 @@ class HubSpotClient(
                 HubSpotProperty("is_b2t", "true"),
                 HubSpotProperty("b2t_is_activated", user.account.activated.toString())
             )
+        )
+    }
+
+    private fun postContacts(contacts: List<HubSpotContact>) {
+        val entity = HttpEntity(objectMapper.writeValueAsString(contacts), getContentTypeHeader())
+        restTemplate.postForLocation(
+            getContactsEndpoint(),
+            entity
         )
     }
 
