@@ -66,7 +66,8 @@ class UserController(
     fun createAUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
         val createdUser = createUser(createUserRequest!!)
 
-        val resource = Resource("",
+        val resource = Resource(
+            "",
             createUserLink(),
             getUserLink(createdUser.userId.value)
         )
@@ -80,7 +81,8 @@ class UserController(
     @PostMapping("/activate")
     fun activateAUser(): Resource<String> {
         activateUser()
-        return Resource("",
+        return Resource(
+            "",
             activateUserLink(),
             getUserLink()
         )

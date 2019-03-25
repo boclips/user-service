@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component
 class MongoAccountRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository
 ) : AccountRepository {
-
     override fun activate(id: UserId): Account? = userDocumentMongoRepository
         .findById(id.value)
         .map { it.copy(activated = true) }
@@ -20,9 +19,9 @@ class MongoAccountRepository(
         .findAllById(ids.map { it.value })
         .mapNotNull { it.toAccount() }
 
-    override fun save(account: Account) = userDocumentMongoRepository
-        .save(UserDocument.from(account))
-        .toAccount()
+    override fun findAll(): List<Account> {
+        return userDocumentMongoRepository.findAll().map { document -> document.toAccount() }
+    }
 
     override fun findById(id: UserId): Account? {
         return userDocumentMongoRepository
@@ -30,5 +29,9 @@ class MongoAccountRepository(
             .orElse(null)
             ?.toAccount()
     }
+
+    override fun save(account: Account) = userDocumentMongoRepository
+        .save(UserDocument.from(account))
+        .toAccount()
 }
 

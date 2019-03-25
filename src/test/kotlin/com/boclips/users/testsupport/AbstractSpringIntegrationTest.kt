@@ -2,8 +2,8 @@ package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.account.AccountRepository
+import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.CustomerManagementProvider
-import com.boclips.users.domain.service.MetadataProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.BeforeEach
@@ -37,9 +37,6 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var identityProvider: KeycloakClientFake
 
     @Autowired
-    lateinit var metadataProvider: MetadataProvider
-
-    @Autowired
     lateinit var repositories: Collection<CrudRepository<*, *>>
 
     @Autowired
@@ -58,9 +55,18 @@ abstract class AbstractSpringIntegrationTest {
         Mockito.reset(customerManagementProvider)
     }
 
-    fun saveUser(user: User) : String {
+    fun saveUser(user: User): String {
         accountRepository.save(user.account)
-        identityProvider.createUser(user.identity)
+
+        identityProvider.createUser(
+            Identity(
+                id = user.userId,
+                firstName = user.account.firstName,
+                lastName = user.account.lastName,
+                email = user.account.email,
+                isVerified = false
+            )
+        )
 
         return user.userId.value
     }

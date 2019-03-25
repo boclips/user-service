@@ -48,10 +48,10 @@ class HubSpotClient(
 
     private fun toHubSpotContact(user: User): HubSpotContact {
         return HubSpotContact(
-            email = user.identity.email,
+            email = user.account.email,
             properties = listOfNotNull(
-                HubSpotProperty("firstname", user.identity.firstName),
-                HubSpotProperty("lastname", user.identity.lastName),
+                HubSpotProperty("firstname", user.account.firstName),
+                HubSpotProperty("lastname", user.account.lastName),
                 HubSpotProperty("is_b2t", "true"),
                 HubSpotProperty("b2t_is_activated", user.account.activated.toString())
             )

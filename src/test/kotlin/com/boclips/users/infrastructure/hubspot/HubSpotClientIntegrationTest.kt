@@ -4,10 +4,8 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
-import com.boclips.users.testsupport.UserIdentityFactory
 import com.boclips.users.testsupport.loadWireMockStub
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.matching
@@ -15,10 +13,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.MediaType
 
 class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
@@ -49,12 +44,13 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
     private fun activatedUser(): User {
         return UserFactory.sample(
-            account = AccountFactory.sample(activated = true),
-            identity = UserIdentityFactory.sample(
-                email = "someuser@boclips.com",
-                firstName = "Ben",
-                lastName = "Huang"
+            account = AccountFactory.sample(
+                activated = true,
+                firstName = "Jane",
+                lastName = "Doe",
+                email = "jane@doe.com"
             )
+
         )
     }
 

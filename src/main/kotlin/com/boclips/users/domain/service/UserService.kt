@@ -10,7 +10,6 @@ import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
-import com.boclips.users.domain.model.identity.IdentityNotFoundException
 import mu.KLogging
 import org.springframework.stereotype.Service
 
@@ -18,8 +17,7 @@ import org.springframework.stereotype.Service
 class UserService(
     val accountRepository: AccountRepository,
     val identityProvider: IdentityProvider,
-    val analyticsClient: AnalyticsClient,
-    val metadataProvider: MetadataProvider
+    val analyticsClient: AnalyticsClient
 ) {
     companion object : KLogging()
 
@@ -30,56 +28,25 @@ class UserService(
 
     fun findById(id: UserId): User {
         val account = accountRepository.findById(UserId(id.value)) ?: throw AccountNotFoundException()
-        val identity = identityProvider.getUserById(id) ?: throw IdentityNotFoundException()
-        val metadata = metadataProvider.getMetadata(id)
-
-        val analyticsId = account.analyticsId?.let { it } ?: metadata.analyticsId
 
         logger.info { "Fetched user ${id.value}" }
 
         return User(
-            account = account.copy(
-                subjects = metadata.subjects,
-                analyticsId = analyticsId
-            ),
-            identity = identity,
+            account = account,
             userId = UserId(id.value)
         )
     }
 
     fun findAllUsers(): List<User> {
-        val identities = identityProvider.getUsers()
-        logger.info { "Fetched ${identities.size} users from Keycloak" }
-
-        val allAccounts = accountRepository.findAll(identities.map { UserId(value = it.id.value) })
+        val allAccounts = accountRepository.findAll()
         logger.info { "Fetched ${allAccounts.size} users from database" }
 
-        val allMetadata = metadataProvider.getAllMetadata(identities.map { it.id })
-        logger.info { "Fetched ${allMetadata.size} metadata" }
-
-        val allUsers = identities.mapNotNull { identity ->
-            val account = allAccounts.find { account -> account.id.value == identity.id.value }
-            val metadata = allMetadata[identity.id]
-
-            when (account) {
-                null -> {
-                    logger.warn { "Cannot find account for user: ${identity.id.value}. This is probably because the user is new" }
-                    null
-                }
-                else -> User(
-                    account = account.copy(
-                        subjects = metadata?.subjects,
-                        analyticsId = metadata?.analyticsId
-                    ),
-                    identity = identity,
-                    userId = UserId(identity.id.value)
-                )
-            }
+        return allAccounts.mapNotNull { account ->
+            User(
+                account = account,
+                userId = UserId(account.id.value)
+            )
         }
-
-        logger.info { "Return ${allUsers.size} users" }
-
-        return allUsers
     }
 
     fun createUser(newUser: NewUser): User {
@@ -109,8 +76,7 @@ class UserService(
 
         return User(
             userId = UserId(identity.id.value),
-            account = account,
-            identity = identity
+            account = account
         )
     }
 

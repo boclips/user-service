@@ -1,14 +1,13 @@
 package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
+import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
-import com.boclips.users.testsupport.UserIdentityFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -28,16 +27,12 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         saveUser(
             UserFactory.sample(
                 userId = UserId(value = userId),
-                identity = UserIdentityFactory.sample(
-                    id = userId,
-                    firstName = "Jane",
-                    lastName = "Doe",
-                    email = "jane@doe.com",
-                    isVerified = true
-                ),
                 account = AccountFactory.sample(
                     id = userId,
-                    analyticsId = AnalyticsId(value = "123")
+                    analyticsId = AnalyticsId(value = "123"),
+                    firstName = "Jane",
+                    lastName = "Doe",
+                    email = "jane@doe.com"
                 )
             )
         )

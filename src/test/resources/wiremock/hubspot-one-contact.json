@@ -1,14 +1,14 @@
 [
   {
-    "email": "someuser@boclips.com",
+    "email": "jane@doe.com",
     "properties": [
       {
         "property": "firstname",
-        "value": "Ben"
+        "value": "Jane"
       },
       {
         "property": "lastname",
-        "value": "Huang"
+        "value": "Doe"
       },
       {
         "property": "is_b2t",

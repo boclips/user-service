@@ -37,14 +37,12 @@ class ActivateUser(
     }
 
     private fun registerReferral(activatedUser: Account) {
-        val user = userService.findById(UserId(value = activatedUser.id.value))
-
         val referral = NewReferral(
             referralCode = activatedUser.referralCode!!,
-            firstName = user.identity.firstName,
-            lastName = user.identity.lastName,
-            email = user.identity.email,
-            externalIdentifier = user.identity.id.value,
+            firstName = activatedUser.firstName,
+            lastName = activatedUser.lastName,
+            email = activatedUser.email,
+            externalIdentifier = activatedUser.id.value,
             status = "qualified"
         )
 

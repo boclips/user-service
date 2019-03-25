@@ -33,7 +33,7 @@ internal class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(account.subjects).isEmpty()
         Assertions.assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
 
-        val identity = identityProvider.getUserById(createdAccount.identity.id)
+        val identity = identityProvider.getUserById(createdAccount.account.id)
         Assertions.assertThat(identity).isNotNull
         Assertions.assertThat(identity!!.firstName).isEqualTo("Hans")
         Assertions.assertThat(identity.lastName).isEqualTo("Muster")

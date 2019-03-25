@@ -6,7 +6,6 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
-import com.boclips.users.testsupport.UserIdentityFactory
 import com.nhaarman.mockitokotlin2.verify
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -34,16 +33,12 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
         saveUser(
             UserFactory.sample(
                 userId = UserId(value = identity),
-                identity = UserIdentityFactory.sample(
-                    id = identity,
-                    firstName = "Jane",
-                    lastName = "Doe",
-                    email = "jane@doe.com",
-                    isVerified = true
-                ),
                 account = AccountFactory.sample(
                     id = identity,
-                    referralCode = "it-is-a-referral"
+                    referralCode = "it-is-a-referral",
+                    firstName = "Jane",
+                    lastName = "Doe",
+                    email = "jane@doe.com"
                 )
             )
         )

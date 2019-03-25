@@ -1,7 +1,6 @@
 package com.boclips.users.config
 
 import com.boclips.users.domain.service.CustomerManagementProvider
-import com.boclips.users.domain.service.MetadataProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
@@ -9,7 +8,6 @@ import com.boclips.users.infrastructure.keycloak.KeycloakProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToUserIdentityConverter
-import com.boclips.users.infrastructure.keycloak.metadata.KeycloakMetadataProvider
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
@@ -51,10 +49,6 @@ class ContextConfig(
     @Bean
     fun customerManagement(properties: HubSpotProperties): CustomerManagementProvider =
         HubSpotClient(objectMapper = objectMapper, hubspotProperties = properties)
-
-    @Bean
-    fun metadataProvider(keycloakWrapper: KeycloakWrapper): MetadataProvider =
-        KeycloakMetadataProvider(keycloakWrapper)
 
     @Bean
     fun referralProvider(referralRockProperties: ReferralRockProperties): ReferralProvider =

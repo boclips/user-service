@@ -8,9 +8,9 @@ class UserConverter {
     fun toUserResource(user: User): UserResource {
         return UserResource(
             id = user.userId.value,
-            firstName = user.identity.firstName,
-            lastName = user.identity.lastName,
-            email = user.identity.email,
+            firstName = user.account.firstName,
+            lastName = user.account.lastName,
+            email = user.account.email,
             analyticsId = user.account.analyticsId?.let { it.value }
         )
     }
