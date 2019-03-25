@@ -1,13 +1,12 @@
 package com.boclips.users.infrastructure.hubspot
 
+import com.boclips.users.application.CreateUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.infrastructure.getContentTypeHeader
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
@@ -21,26 +20,30 @@ class HubSpotClient(
     private val restTemplate = RestTemplate()
 
     override fun update(users: List<User>) {
-        logger.info { "Sychronising contacts with HubSpot" }
-        users
-            .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
-            .forEachIndexed { index, batchOfUsers ->
-                val contacts = batchOfUsers.mapNotNull { user ->
-                    toHubSpotContact(user)
+        try {
+            logger.info { "Sychronising contacts with HubSpot" }
+            users
+                .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
+                .forEachIndexed { index, batchOfUsers ->
+                    val contacts = batchOfUsers.mapNotNull { user ->
+                        toHubSpotContact(user)
+                    }
+
+                    val entity = HttpEntity(objectMapper.writeValueAsString(contacts), getContentTypeHeader())
+
+                    if (contacts.isNotEmpty()) {
+                        restTemplate.postForLocation(
+                            getContactsEndpoint(),
+                            entity
+                        )
+                    }
+
+                    logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
                 }
-
-                val entity = HttpEntity(objectMapper.writeValueAsString(contacts), getContentTypeHeader())
-
-                if (contacts.isNotEmpty()) {
-                    restTemplate.postForLocation(
-                        getContactsEndpoint(),
-                        entity
-                    )
-                }
-
-                logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
-            }
-        logger.info { "Successfully synchronized all valid contacts with HubSpot" }
+            logger.info { "Successfully synchronized all valid contacts with HubSpot" }
+        } catch (ex: Exception) {
+            CreateUser.logger.error { "Could not update user $users as a contact on HubSpot" }
+        }
     }
 
     private fun toHubSpotContact(user: User): HubSpotContact {

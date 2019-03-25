@@ -23,8 +23,9 @@ class UserService(
 ) {
     companion object : KLogging()
 
-    fun activate(userId: UserId): Account {
-        return accountRepository.activate(userId)!!
+    fun activate(userId: UserId): User {
+        val account = accountRepository.activate(userId)!!
+        return findById(id = account.id)
     }
 
     fun findById(id: UserId): User {

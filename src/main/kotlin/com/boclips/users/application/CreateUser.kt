@@ -28,16 +28,8 @@ class CreateUser(
         )
         val createdUser = userService.createUser(newUser = newUser)
 
-        tryToUpdateCRM(createdUser)
+        customerManagementProvider.update(listOf(createdUser))
 
         return createdUser
-    }
-
-    private fun tryToUpdateCRM(createdUser: User) {
-        try {
-            customerManagementProvider.update(users = listOf(createdUser))
-        } catch (ex: Exception) {
-            logger.error { "Could not update user ${createdUser.userId.value} as a contact on HubSpot" }
-        }
     }
 }

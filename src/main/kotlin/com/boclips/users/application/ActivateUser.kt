@@ -3,9 +3,10 @@ package com.boclips.users.application
 import com.boclips.security.utils.User
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
-import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.referrals.NewReferral
+import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserService
 import mu.KLogging
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Component
 @Component
 class ActivateUser(
     private val userService: UserService,
-    private val referralProvider: ReferralProvider
+    private val referralProvider: ReferralProvider,
+    private val customerManagementProvider: CustomerManagementProvider
 ) {
     companion object : KLogging()
 
@@ -23,13 +25,15 @@ class ActivateUser(
 
         val activatedUser = userService.activate(UserId(value = authenticatedUser.id))
 
-        if (activatedUser.isReferral) {
-            registerReferral(activatedUser)
+        if (activatedUser.account.isReferral) {
+            registerReferral(activatedUser.account)
         }
 
-        logger.info { "Activated user ${activatedUser.id}" }
+        customerManagementProvider.update(listOf(activatedUser))
 
-        return activatedUser
+        logger.info { "Activated user ${activatedUser.userId}" }
+
+        return activatedUser.account
     }
 
     private fun registerReferral(activatedUser: Account) {
