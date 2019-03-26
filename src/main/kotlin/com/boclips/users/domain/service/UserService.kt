@@ -2,11 +2,9 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.application.CreateUser
 import com.boclips.users.domain.model.NewUser
-import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.AccountNotFoundException
-import com.boclips.users.domain.model.account.AccountRepository
+import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
@@ -15,38 +13,30 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(
-    val accountRepository: AccountRepository,
+    val userRepository: UserRepository,
     val identityProvider: IdentityProvider,
     val analyticsClient: AnalyticsClient
 ) {
     companion object : KLogging()
 
     fun activate(userId: UserId): User {
-        val account = accountRepository.activate(userId)!!
-        return findById(id = account.id)
+        val user = userRepository.activate(userId)!!
+        return findById(id = user.id)
     }
 
     fun findById(id: UserId): User {
-        val account = accountRepository.findById(UserId(id.value)) ?: throw AccountNotFoundException()
+        val user = userRepository.findById(UserId(id.value)) ?: throw UserNotFoundException()
 
         logger.info { "Fetched user ${id.value}" }
 
-        return User(
-            account = account,
-            userId = UserId(id.value)
-        )
+        return user
     }
 
     fun findAllUsers(): List<User> {
-        val allAccounts = accountRepository.findAll()
-        logger.info { "Fetched ${allAccounts.size} users from database" }
+        val allUsers = userRepository.findAll()
+        logger.info { "Fetched ${allUsers.size} users from database" }
 
-        return allAccounts.mapNotNull { account ->
-            User(
-                account = account,
-                userId = UserId(account.id.value)
-            )
-        }
+        return allUsers
     }
 
     fun createUser(newUser: NewUser): User {
@@ -57,8 +47,8 @@ class UserService(
             password = newUser.password
         )
 
-        val account = accountRepository.save(
-            Account(
+        val user = userRepository.save(
+            User(
                 id = UserId(identity.id.value),
                 activated = false,
                 analyticsId = newUser.analyticsId,
@@ -70,14 +60,11 @@ class UserService(
             )
         )
 
-        CreateUser.logger.info { "Created user ${account.id.value}" }
+        CreateUser.logger.info { "Created user ${user.id.value}" }
 
         trackAccountCreatedEvent(newUser.analyticsId)
 
-        return User(
-            userId = UserId(identity.id.value),
-            account = account
-        )
+        return user
     }
 
     private fun trackAccountCreatedEvent(id: AnalyticsId) {

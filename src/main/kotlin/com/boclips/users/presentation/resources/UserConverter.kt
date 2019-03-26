@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component
 class UserConverter {
     fun toUserResource(user: User): UserResource {
         return UserResource(
-            id = user.userId.value,
-            firstName = user.account.firstName,
-            lastName = user.account.lastName,
-            email = user.account.email,
-            analyticsId = user.account.analyticsId?.let { it.value }
+            id = user.id.value,
+            firstName = user.firstName,
+            lastName = user.lastName,
+            email = user.email,
+            analyticsId = user.analyticsId?.let { it.value }
         )
     }
 }

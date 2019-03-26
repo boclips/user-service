@@ -1,7 +1,7 @@
-package com.boclips.users.infrastructure.account
+package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -19,19 +19,19 @@ data class UserDocument(
     val referralCode: String?
 ) {
     companion object {
-        fun from(account: Account) = UserDocument(
-            id = account.id.value,
-            activated = account.activated,
-            subjects = account.subjects,
-            analyticsId = account.analyticsId?.value,
-            referralCode = account.referralCode,
-            firstName = account.firstName,
-            lastName = account.lastName,
-            email = account.email
+        fun from(user: User) = UserDocument(
+            id = user.id.value,
+            activated = user.activated,
+            subjects = user.subjects,
+            analyticsId = user.analyticsId?.value,
+            referralCode = user.referralCode,
+            firstName = user.firstName,
+            lastName = user.lastName,
+            email = user.email
         )
     }
 
-    fun toAccount() = Account(
+    fun toUser() = User(
         id = UserId(value = id),
         activated = activated,
         subjects = subjects,

@@ -44,7 +44,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
     private fun activatedUser(): User {
         return UserFactory.sample(
-            account = AccountFactory.sample(
+            user = AccountFactory.sample(
                 activated = true,
                 firstName = "Jane",
                 lastName = "Doe",

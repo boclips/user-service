@@ -26,14 +26,14 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val account = accountRepository.findById(createdAccount.account.id)
+        val account = userRepository.findById(createdAccount.id)
         Assertions.assertThat(account).isNotNull
         Assertions.assertThat(account!!.isReferral()).isFalse()
         Assertions.assertThat(account.referralCode).isEmpty()
         Assertions.assertThat(account.subjects).isEmpty()
         Assertions.assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
 
-        val identity = identityProvider.getUserById(createdAccount.account.id)
+        val identity = identityProvider.getUserById(createdAccount.id)
         Assertions.assertThat(identity).isNotNull
         Assertions.assertThat(identity!!.firstName).isEqualTo("Hans")
         Assertions.assertThat(identity.lastName).isEqualTo("Muster")
@@ -50,7 +50,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val persistedAccount = accountRepository.findById(user.account.id)!!
+        val persistedAccount = userRepository.findById(user.id)!!
 
         Assertions.assertThat(persistedAccount.isReferral()).isTrue()
         Assertions.assertThat(persistedAccount.referralCode).isEqualTo("referral-code-123")

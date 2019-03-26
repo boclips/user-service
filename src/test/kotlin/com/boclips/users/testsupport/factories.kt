@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.presentation.requests.CreateUserRequest
@@ -18,7 +18,7 @@ class AccountFactory {
             firstName: String = "Joe",
             lastName: String = "Dough",
             email: String = "joe@dough.com"
-        ) = Account(
+        ) = User(
             id = UserId(value = id),
             activated = activated,
             subjects = subjects,

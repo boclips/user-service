@@ -1,10 +1,9 @@
 package com.boclips.users.application
 
-import com.boclips.security.utils.User
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
@@ -20,23 +19,24 @@ class ActivateUser(
 ) {
     companion object : KLogging()
 
-    operator fun invoke(): Account {
-        val authenticatedUser: User = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
+    operator fun invoke(): User {
+        val authenticatedUser: com.boclips.security.utils.User =
+            UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
 
         val activatedUser = userService.activate(UserId(value = authenticatedUser.id))
 
-        if (activatedUser.account.isReferral()) {
-            registerReferral(activatedUser.account)
+        if (activatedUser.isReferral()) {
+            registerReferral(activatedUser)
         }
 
         customerManagementProvider.update(listOf(activatedUser))
 
-        logger.info { "Activated user ${activatedUser.userId}" }
+        logger.info { "Activated user $activatedUser" }
 
-        return activatedUser.account
+        return activatedUser
     }
 
-    private fun registerReferral(activatedUser: Account) {
+    private fun registerReferral(activatedUser: User) {
         val referral = NewReferral(
             referralCode = activatedUser.referralCode!!,
             firstName = activatedUser.firstName,

@@ -26,7 +26,7 @@ class CreateUser(
             subjects = createUserRequest.subjects.orEmpty(),
             referralCode = createUserRequest.referralCode.orEmpty()
         )
-        
+
         val createdUser = userService.createUser(newUser = newUser)
 
         customerManagementProvider.update(listOf(createdUser))

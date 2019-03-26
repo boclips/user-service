@@ -3,7 +3,6 @@ package com.boclips.users.application
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
@@ -26,8 +25,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         saveUser(
             UserFactory.sample(
-                userId = UserId(value = userId),
-                account = AccountFactory.sample(
+                user = AccountFactory.sample(
                     id = userId,
                     analyticsId = AnalyticsId(value = "123"),
                     firstName = "Jane",

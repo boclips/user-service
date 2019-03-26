@@ -28,7 +28,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user`() {
         setSecurityContext("a-user-id")
 
-        accountRepository.save(
+        userRepository.save(
             AccountFactory.sample(
                 id = "a-user-id",
                 activated = false,
@@ -49,7 +49,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `activated user`() {
         setSecurityContext("a-user-id")
 
-        accountRepository.save(
+        userRepository.save(
             AccountFactory.sample(
                 id = "a-user-id",
                 activated = true,

@@ -69,7 +69,7 @@ class UserController(
         val resource = Resource(
             "",
             createUserLink(),
-            getUserLink(createdUser.userId.value)
+            getUserLink(createdUser.id.value)
         )
 
         val headers = HttpHeaders()

@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.account.AccountRepository
+import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
@@ -31,7 +31,7 @@ abstract class AbstractSpringIntegrationTest {
     protected lateinit var mvc: MockMvc
 
     @Autowired
-    lateinit var accountRepository: AccountRepository
+    lateinit var userRepository: UserRepository
 
     @Autowired
     lateinit var identityProvider: KeycloakClientFake
@@ -56,18 +56,18 @@ abstract class AbstractSpringIntegrationTest {
     }
 
     fun saveUser(user: User): String {
-        accountRepository.save(user.account)
+        userRepository.save(user)
 
         identityProvider.createUser(
             Identity(
-                id = user.userId,
-                firstName = user.account.firstName,
-                lastName = user.account.lastName,
-                email = user.account.email,
+                id = user.id,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                email = user.email,
                 isVerified = false
             )
         )
 
-        return user.userId.value
+        return user.id.value
     }
 }

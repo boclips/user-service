@@ -17,26 +17,26 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     fun `can find all users`() {
         val savedUsers = listOf(
             saveUser(
-                UserFactory.sample(account = AccountFactory.sample(id = "1"))
+                UserFactory.sample(user = AccountFactory.sample(id = "1"))
             ),
             saveUser(
-                UserFactory.sample(account = AccountFactory.sample(id = "2"))
+                UserFactory.sample(user = AccountFactory.sample(id = "2"))
             ),
             saveUser(
-                UserFactory.sample(account = AccountFactory.sample(id = "3"))
+                UserFactory.sample(user = AccountFactory.sample(id = "3"))
             ),
             saveUser(
-                UserFactory.sample(account = AccountFactory.sample(id = "4"))
+                UserFactory.sample(user = AccountFactory.sample(id = "4"))
             ),
             saveUser(
-                UserFactory.sample(account = AccountFactory.sample(id = "5"))
+                UserFactory.sample(user = AccountFactory.sample(id = "5"))
             )
         )
 
         val users = userService.findAllUsers()
 
         assertThat(users.size).isEqualTo(savedUsers.size)
-        assertThat(users.map { it.account.id.value }).contains("1", "2", "3", "4", "5")
+        assertThat(users.map { it.id.value }).contains("1", "2", "3", "4", "5")
     }
 
     @Test
@@ -53,11 +53,11 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = userService.createUser(newUser)
 
-        assertThat(persistedUser.account.firstName).isEqualTo("Joe")
-        assertThat(persistedUser.account.lastName).isEqualTo("Dough")
-        assertThat(persistedUser.account.email).isEqualTo("joe@dough.com")
-        assertThat(persistedUser.account.subjects).isEqualTo("subject")
-        assertThat(persistedUser.account.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
-        assertThat(persistedUser.account.referralCode).isEqualTo("abc-a123")
+        assertThat(persistedUser.firstName).isEqualTo("Joe")
+        assertThat(persistedUser.lastName).isEqualTo("Dough")
+        assertThat(persistedUser.email).isEqualTo("joe@dough.com")
+        assertThat(persistedUser.subjects).isEqualTo("subject")
+        assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
+        assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
     }
 }
