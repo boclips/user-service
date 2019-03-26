@@ -33,6 +33,10 @@ class KeycloakClientFake : IdentityProvider {
         return fakeUsers.values.toList()
     }
 
+    override fun count(): Int {
+        return fakeUsers.count()
+    }
+
     @Synchronized
     fun clear() {
         fakeUsers.clear()

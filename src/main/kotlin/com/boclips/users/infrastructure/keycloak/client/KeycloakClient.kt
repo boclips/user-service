@@ -14,6 +14,7 @@ class KeycloakClient(
     private val userConverter: KeycloakUserToUserIdentityConverter
 ) : IdentityProvider {
     companion object : KLogging() {
+
         const val REALM = "boclips"
     }
 
@@ -66,5 +67,9 @@ class KeycloakClient(
                 null
             }
         }
+    }
+
+    override fun count(): Int {
+        return keycloak.countUsers()
     }
 }

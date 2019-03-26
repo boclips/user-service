@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
 import org.springframework.stereotype.Component
 
@@ -33,5 +33,9 @@ class MongoUserRepository(
     override fun save(user: User) = userDocumentMongoRepository
         .save(UserDocument.from(user))
         .toUser()
+
+    override fun count(): Int {
+        return userDocumentMongoRepository.count().toInt()
+    }
 }
 

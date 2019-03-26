@@ -9,4 +9,5 @@ interface UserRepository {
     fun findById(id: UserId): User?
     fun findAll(ids: List<UserId>): List<User>
     fun findAll(): List<User>
+    fun count(): Int
 }

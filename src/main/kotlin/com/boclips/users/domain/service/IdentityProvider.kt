@@ -7,4 +7,5 @@ interface IdentityProvider {
     fun getUserById(id: UserId): Identity?
     fun getUsers(): List<Identity>
     fun createUser(firstName: String, lastName: String, email: String, password: String): Identity
+    fun count(): Int
 }
