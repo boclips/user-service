@@ -39,7 +39,7 @@ class ContextConfig(
     fun keycloak(properties: KeycloakProperties): Keycloak {
         return Keycloak.getInstance(
             properties.url,
-            KeycloakClient.REALM,
+            KeycloakWrapper.REALM,
             properties.username,
             properties.password,
             "admin-cli"

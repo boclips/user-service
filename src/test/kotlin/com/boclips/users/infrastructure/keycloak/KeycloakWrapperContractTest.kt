@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.keycloak
 
-import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -16,7 +15,7 @@ import java.util.UUID
 class KeycloakWrapperContractTest {
     private val keycloakInstance: Keycloak = Keycloak.getInstance(
         "https://login.testing-boclips.com/auth",
-        KeycloakClient.REALM,
+        KeycloakWrapper.REALM,
         readSecret("KEYCLOAK_USERNAME"),
         readSecret("KEYCLOAK_PASSWORD"),
         "admin-cli"

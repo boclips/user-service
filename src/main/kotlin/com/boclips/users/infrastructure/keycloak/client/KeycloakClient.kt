@@ -13,10 +13,7 @@ class KeycloakClient(
     private val keycloak: KeycloakWrapper,
     private val userConverter: KeycloakUserToUserIdentityConverter
 ) : IdentityProvider {
-    companion object : KLogging() {
-
-        const val REALM = "boclips"
-    }
+    companion object : KLogging()
 
     override fun createUser(firstName: String, lastName: String, email: String, password: String): Identity {
         val createdUser = keycloak.createUser(
