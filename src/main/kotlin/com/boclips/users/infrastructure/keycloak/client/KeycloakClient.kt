@@ -26,9 +26,6 @@ class KeycloakClient(
         )
         logger.info { "Created user ${createdUser.id} in Keycloak" }
 
-        keycloak.sendVerificationEmail(createdUser.id)
-        logger.info { "Sent verification email to user ${createdUser.id}" }
-
         return Identity(
             id = UserId(value = createdUser.id),
             firstName = createdUser.firstName,

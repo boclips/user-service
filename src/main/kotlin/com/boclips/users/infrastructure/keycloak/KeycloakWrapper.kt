@@ -70,14 +70,6 @@ class KeycloakWrapper(private val keycloak: Keycloak) {
         return newUser[0]
     }
 
-    fun sendVerificationEmail(id: String) {
-        try {
-            keycloak.realm(REALM).users().get(id).sendVerifyEmail(CLIENT)
-        } catch (ex: Exception) {
-            logger.warn { "Did not send verification email for user $id" }
-        }
-    }
-
     fun removeUser(id: String?) {
         keycloak.realm(REALM).users().delete(id)
     }
