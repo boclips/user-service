@@ -60,6 +60,7 @@ class KeycloakWrapper(private val keycloak: Keycloak) {
                     isTemporary = false
                 })
                 isEmailVerified = false
+                isEnabled = true
             })
 
         if (response.status == 409) throw UserAlreadyExistsException()
