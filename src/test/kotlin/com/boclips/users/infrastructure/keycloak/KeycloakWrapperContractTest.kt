@@ -9,7 +9,6 @@ import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.util.ResourceUtils
 import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
-import java.time.LocalDate
 import java.util.UUID
 
 class KeycloakWrapperContractTest {
@@ -140,31 +139,6 @@ class KeycloakWrapperContractTest {
             val user: UserRepresentation? = wrapper.getUserByUsername("this should not exist")
 
             assertThat(user).isNull()
-        }
-    }
-
-    @Nested
-    inner class Events {
-        @Test
-        fun `gets REGISTER events`() {
-            val wrapper = KeycloakWrapper(keycloakInstance)
-
-            val events = wrapper.getRegisterEvents(LocalDate.now().minusDays(100))
-
-            assertThat(events.size).isGreaterThanOrEqualTo(1)
-        }
-    }
-
-    @Nested
-    inner class Groups {
-        @Test
-        fun `can the groups of a user`() {
-            val wrapper = KeycloakWrapper(keycloakInstance)
-
-            val aUser = wrapper.users().first()
-            val groups = wrapper.getGroupsOfUser(aUser.id)
-
-            assertThat(groups.size).isGreaterThanOrEqualTo(1)
         }
     }
 }
