@@ -4,7 +4,6 @@ import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
-import org.springframework.retry.annotation.Retryable
 import javax.ws.rs.core.Response
 
 open class KeycloakWrapper(private val keycloak: Keycloak) {
@@ -47,7 +46,6 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
             ?: throw UserNotCreatedException("User was created but could not be found.")
     }
 
-    @Retryable(maxAttempts = 2)
     private fun postUser(keycloak: Keycloak, keycloakUser: KeycloakUser): Response {
         return keycloak.realm(REALM)
             .users()
