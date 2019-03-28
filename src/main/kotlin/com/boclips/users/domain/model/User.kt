@@ -15,4 +15,8 @@ data class User(
     fun isReferral(): Boolean {
         return !referralCode.isNullOrEmpty()
     }
+
+    override fun toString(): String {
+        return "User(id=$id)"
+    }
 }

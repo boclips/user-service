@@ -36,7 +36,7 @@ class HubSpotClient(
                 }
             logger.info { "Successfully synchronized all valid contacts with HubSpot" }
         } catch (ex: Exception) {
-            logger.error { "Could not update user $users as a contact on HubSpot" }
+            logger.error { "Could not update user ${users.size} as a contact on HubSpot: $users" }
         }
     }
 
