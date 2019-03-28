@@ -4,9 +4,6 @@ import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.UserRepository
 import io.micrometer.core.instrument.MeterRegistry
 import mu.KLogging
-import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
@@ -17,10 +14,8 @@ class MetricsUpdater(
 ) {
     companion object : KLogging() {
         const val PREFIX = "boclips_"
-        const val ONCE_A_DAY_MS = "43200000"
     }
 
-    @Scheduled(fixedDelayString = ONCE_A_DAY_MS)
     fun update() {
         val identityCount = identityProvider.count()
         registry.gauge("${PREFIX}identities_count", identityCount)
@@ -31,7 +26,3 @@ class MetricsUpdater(
         logger.info { "Updated metrics" }
     }
 }
-
-@Configuration
-@EnableScheduling
-class SchedulerConfig
