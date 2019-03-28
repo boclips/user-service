@@ -7,7 +7,7 @@ import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.retry.annotation.Retryable
 import javax.ws.rs.NotAuthorizedException
 
-class KeycloakWrapper(private val keycloak: Keycloak) {
+open class KeycloakWrapper(private val keycloak: Keycloak) {
     companion object : KLogging() {
         const val REALM = "boclips"
     }
