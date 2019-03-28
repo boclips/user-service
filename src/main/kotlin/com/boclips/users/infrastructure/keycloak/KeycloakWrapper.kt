@@ -4,6 +4,8 @@ import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
+import org.springframework.retry.annotation.Retryable
+import javax.ws.rs.NotAuthorizedException
 
 class KeycloakWrapper(private val keycloak: Keycloak) {
     companion object : KLogging() {
@@ -34,6 +36,7 @@ class KeycloakWrapper(private val keycloak: Keycloak) {
         return search.firstOrNull { it.username == usernameLowercase }
     }
 
+    @Retryable(maxAttempts = 3, value = [UserNotCreatedException::class, NotAuthorizedException::class])
     fun createUser(keycloakUser: KeycloakUser): UserRepresentation {
         val response = keycloak.realm(REALM)
             .users()
