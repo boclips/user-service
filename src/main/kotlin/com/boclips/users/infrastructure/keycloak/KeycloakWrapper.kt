@@ -36,18 +36,8 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
     }
 
     fun createUser(keycloakUser: KeycloakUser): UserRepresentation {
-        val response: Response = postUser(keycloak, keycloakUser)
-
-        if (response.status == 409) throw UserAlreadyExistsException()
-
-        if (response.status != 201) throw UserNotCreatedException("User could not be created, Keycloak returned ${response.status}")
-
-        return getUserByUsername(keycloakUser.email)
-            ?: throw UserNotCreatedException("User was created but could not be found.")
-    }
-
-    private fun postUser(keycloak: Keycloak, keycloakUser: KeycloakUser): Response {
-        return keycloak.realm(REALM)
+        logger.info { "Attempt to create user" }
+        val response: Response = keycloak.realm(REALM)
             .users()
             .create(UserRepresentation().apply {
                 username = keycloakUser.email
@@ -62,6 +52,13 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
                 isEmailVerified = false
                 isEnabled = true
             })
+
+        if (response.status == 409) throw UserAlreadyExistsException()
+
+        if (response.status != 201) throw UserNotCreatedException("User could not be created, Keycloak returned ${response.status}")
+
+        return getUserByUsername(keycloakUser.email)
+            ?: throw UserNotCreatedException("User was created but could not be found.")
     }
 
     fun removeUser(id: String?) {

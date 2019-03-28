@@ -5,16 +5,19 @@ import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakUser
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
+import com.boclips.users.infrastructure.keycloak.UserNotCreatedException
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import mu.KLogging
 import org.keycloak.representations.idm.UserRepresentation
+import org.springframework.retry.annotation.Retryable
 
-class KeycloakClient(
+open class KeycloakClient(
     private val keycloak: KeycloakWrapper,
     private val userConverter: KeycloakUserToUserIdentityConverter
 ) : IdentityProvider {
     companion object : KLogging()
 
+    @Retryable(value = [UserNotCreatedException::class], maxAttempts = 2)
     override fun createUser(firstName: String, lastName: String, email: String, password: String): Identity {
         val createdUser = keycloak.createUser(
             KeycloakUser(
