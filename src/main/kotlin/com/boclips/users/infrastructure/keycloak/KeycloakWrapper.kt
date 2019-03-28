@@ -5,7 +5,7 @@ import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.retry.annotation.Retryable
-import javax.ws.rs.NotAuthorizedException
+import javax.ws.rs.core.Response
 
 open class KeycloakWrapper(private val keycloak: Keycloak) {
     companion object : KLogging() {
@@ -36,9 +36,20 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
         return search.firstOrNull { it.username == usernameLowercase }
     }
 
-    @Retryable(maxAttempts = 3, value = [UserNotCreatedException::class, NotAuthorizedException::class])
     fun createUser(keycloakUser: KeycloakUser): UserRepresentation {
-        val response = keycloak.realm(REALM)
+        val response: Response = postUser(keycloak, keycloakUser)
+
+        if (response.status == 409) throw UserAlreadyExistsException()
+
+        if (response.status != 201) throw UserNotCreatedException("User could not be created, Keycloak returned ${response.status}")
+
+        return getUserByUsername(keycloakUser.email)
+            ?: throw UserNotCreatedException("User was created but could not be found.")
+    }
+
+    @Retryable(maxAttempts = 2)
+    private fun postUser(keycloak: Keycloak, keycloakUser: KeycloakUser): Response {
+        return keycloak.realm(REALM)
             .users()
             .create(UserRepresentation().apply {
                 username = keycloakUser.email
@@ -53,13 +64,6 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
                 isEmailVerified = false
                 isEnabled = true
             })
-
-        if (response.status == 409) throw UserAlreadyExistsException()
-
-        if (response.status != 201) throw UserNotCreatedException("User could not be created, Keycloak returned ${response.status}")
-
-        return getUserByUsername(keycloakUser.email)
-            ?: throw UserNotCreatedException("User was created but could not be found.")
     }
 
     fun removeUser(id: String?) {
