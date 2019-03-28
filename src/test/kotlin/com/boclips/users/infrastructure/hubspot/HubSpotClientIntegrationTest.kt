@@ -15,6 +15,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
+import org.springframework.web.client.RestTemplate
 
 class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
@@ -23,7 +24,8 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             this.host = "http://localhost:9999"
             this.apiKey = "some-api-key"
             this.batchSize = 100
-        }
+        },
+        RestTemplate()
     )
 
     @Test

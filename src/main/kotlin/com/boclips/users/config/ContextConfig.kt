@@ -17,6 +17,7 @@ import org.keycloak.admin.client.Keycloak
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.web.client.RestTemplate
 
 @Profile("!test")
 @Configuration
@@ -48,7 +49,7 @@ class ContextConfig(
 
     @Bean
     fun customerManagement(properties: HubSpotProperties): CustomerManagementProvider =
-        HubSpotClient(objectMapper = objectMapper, hubspotProperties = properties)
+        HubSpotClient(objectMapper = objectMapper, hubspotProperties = properties, restTemplate = RestTemplate())
 
     @Bean
     fun referralProvider(referralRockProperties: ReferralRockProperties): ReferralProvider =

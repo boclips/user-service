@@ -25,7 +25,7 @@ class UserService(
     }
 
     fun findById(id: UserId): User {
-        val user = userRepository.findById(UserId(id.value)) ?: throw UserNotFoundException()
+        val user = userRepository.findById(UserId(id.value)) ?: throw UserNotFoundException(id)
 
         logger.info { "Fetched user ${id.value}" }
 

@@ -12,16 +12,16 @@ import java.net.URI
 
 class HubSpotClient(
     val objectMapper: ObjectMapper,
-    val hubspotProperties: HubSpotProperties
+    val hubspotProperties: HubSpotProperties,
+    val restTemplate: RestTemplate
 ) : CustomerManagementProvider {
     companion object : KLogging()
-
-    private val restTemplate = RestTemplate()
 
     override fun update(users: List<User>) {
         try {
             logger.info { "Sychronising contacts with HubSpot" }
             users
+                .filter { isRealUser(it) }
                 .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
                 .forEachIndexed { index, batchOfUsers ->
                     val contacts = batchOfUsers.map { user ->
@@ -39,6 +39,9 @@ class HubSpotClient(
             logger.error { "Could not update user ${users.size} as a contact on HubSpot: $users. Reason: $ex" }
         }
     }
+
+    private fun isRealUser(anyUser: User) =
+        anyUser.firstName.isNotEmpty() && anyUser.lastName.isNotEmpty() && anyUser.email.isNotEmpty()
 
     private fun toHubSpotContact(user: User): HubSpotContact {
         return HubSpotContact(
