@@ -5,6 +5,7 @@ import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.infrastructure.getContentTypeHeader
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
+import org.apache.commons.validator.routines.EmailValidator
 import org.springframework.http.HttpEntity
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
@@ -20,8 +21,9 @@ class HubSpotClient(
     override fun update(users: List<User>) {
         try {
             logger.info { "Sychronising contacts with HubSpot" }
-            users
-                .filter { isRealUser(it) }
+            val allValidContacts = users.filter { isRealUser(it) }
+
+            allValidContacts
                 .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
                 .forEachIndexed { index, batchOfUsers ->
                     val contacts = batchOfUsers.map { user ->
@@ -34,14 +36,17 @@ class HubSpotClient(
 
                     logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
                 }
-            logger.info { "Successfully synchronized all valid contacts with HubSpot" }
+            logger.info { "Successfully synchronized ${allValidContacts.size} contacts with HubSpot" }
         } catch (ex: Exception) {
-            logger.error { "Could not update user ${users.size} as a contact on HubSpot: $users. Reason: $ex" }
+            logger.error { "Could not update some users as a contact on HubSpot. Reason: $ex" }
         }
     }
 
     private fun isRealUser(anyUser: User) =
-        anyUser.firstName.isNotEmpty() && anyUser.lastName.isNotEmpty() && anyUser.email.isNotEmpty()
+        anyUser.firstName.isNotEmpty() &&
+            anyUser.lastName.isNotEmpty() &&
+            anyUser.email.isNotEmpty() &&
+            EmailValidator.getInstance().isValid(anyUser.email)
 
     private fun toHubSpotContact(user: User): HubSpotContact {
         return HubSpotContact(
