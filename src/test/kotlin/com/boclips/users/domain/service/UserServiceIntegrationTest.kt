@@ -48,7 +48,8 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             password = "thisisapassword",
             subjects = "subject",
             analyticsId = AnalyticsId(value = "analytics"),
-            referralCode = "abc-a123"
+            referralCode = "abc-a123",
+            hasOptedIntoMarketing = true
         )
 
         val persistedUser = userService.createUser(newUser)
@@ -59,5 +60,6 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.subjects).isEqualTo("subject")
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
+        assertThat(persistedUser.hasOptedIntoMarketing).isTrue()
     }
 }

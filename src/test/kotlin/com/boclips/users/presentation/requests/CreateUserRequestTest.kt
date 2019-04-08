@@ -143,6 +143,16 @@ class CreateUserRequestTest {
     }
 
     @Nested
+    inner class OptInMarketing{
+        @Test
+        fun `validates optInMarketing for null`() {
+            val violations = validator.validate(CreateUserRequestFactory.sample(hasOptedIntoMarketing = null))
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("Marketing preferences must not be null")
+        }
+    }
+
+    @Nested
     inner class OptionalFields {
         @Test
         fun `referral code cannot be longer than 50 characters`() {

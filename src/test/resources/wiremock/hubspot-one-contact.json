@@ -17,6 +17,10 @@
       {
         "property": "b2t_is_activated",
         "value": "true"
+      },
+      {
+        "property": "hs_email_optout",
+        "value": "true"
       }
     ]
   }

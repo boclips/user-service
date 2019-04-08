@@ -56,7 +56,8 @@ class UserService(
                 referralCode = newUser.referralCode,
                 firstName = newUser.firstName,
                 lastName = newUser.lastName,
-                email = newUser.email
+                email = newUser.email,
+                hasOptedIntoMarketing = newUser.hasOptedIntoMarketing
             )
         )
 

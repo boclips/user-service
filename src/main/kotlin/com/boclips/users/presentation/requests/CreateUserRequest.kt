@@ -31,5 +31,8 @@ open class CreateUserRequest(
     var subjects: String? = null,
 
     @field:Size(max = 50, message = "Referral code cannot be longer than 50 characters")
-    var referralCode: String? = null
+    var referralCode: String? = null,
+
+    @field:NotNull(message = "Marketing preferences must not be null")
+    var hasOptedIntoMarketing: Boolean? = null
 )

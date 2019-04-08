@@ -50,7 +50,8 @@ class HubSpotClient(
                 HubSpotProperty("firstname", user.firstName),
                 HubSpotProperty("lastname", user.lastName),
                 HubSpotProperty("is_b2t", "true"),
-                HubSpotProperty("b2t_is_activated", user.activated.toString())
+                HubSpotProperty("b2t_is_activated", user.activated.toString()),
+                HubSpotProperty("hs_email_optout", (!user.hasOptedIntoMarketing).toString())
             )
         )
     }

@@ -10,7 +10,8 @@ data class User(
     val referralCode: String?,
     val firstName: String,
     val lastName: String,
-    val email: String
+    val email: String,
+    val hasOptedIntoMarketing: Boolean
 ) {
     fun isReferral(): Boolean {
         return !referralCode.isNullOrEmpty()

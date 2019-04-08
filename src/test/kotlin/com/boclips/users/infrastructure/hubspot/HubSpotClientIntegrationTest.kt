@@ -50,7 +50,8 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                 activated = true,
                 firstName = "Jane",
                 lastName = "Doe",
-                email = "jane@doe.com"
+                email = "jane@doe.com",
+                hasOptedIntoMarketing = false
             )
 
         )
