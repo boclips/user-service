@@ -25,7 +25,11 @@ class HubSpotClient(
                 .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
                 .forEachIndexed { index, batchOfUsers ->
                     val contacts = batchOfUsers.map { user ->
-                        toHubSpotContact(user)
+                        toHubSpotContact(user).also {
+                            if (!user.hasOptedIntoMarketing) {
+                                unsubscribeFromAll(user)
+                            }
+                        }
                     }
 
                     if (contacts.isNotEmpty()) {
@@ -50,8 +54,7 @@ class HubSpotClient(
                 HubSpotProperty("firstname", user.firstName),
                 HubSpotProperty("lastname", user.lastName),
                 HubSpotProperty("is_b2t", "true"),
-                HubSpotProperty("b2t_is_activated", user.activated.toString()),
-                HubSpotProperty("hs_email_optout", (!user.hasOptedIntoMarketing).toString())
+                HubSpotProperty("b2t_is_activated", user.activated.toString())
             )
         )
     }
@@ -71,4 +74,19 @@ class HubSpotClient(
             .build()
             .toUri()
     }
+
+    private fun getEmailEndPointForUser(user: User): URI =
+        UriComponentsBuilder.fromUriString("${hubspotProperties.host}/email/public/v1/subscriptions/${user.email}")
+            .queryParam("hapikey", hubspotProperties.apiKey)
+            .build()
+            .toUri()
+
+    fun unsubscribeFromAll(user: User) {
+        restTemplate.put(
+            getEmailEndPointForUser(user),
+            UnsubscribeFromAllEmails()
+        )
+    }
 }
+
+class UnsubscribeFromAllEmails(val unsubscribeFromAll: Boolean = true)

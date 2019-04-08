@@ -143,7 +143,7 @@ class CreateUserRequestTest {
     }
 
     @Nested
-    inner class OptInMarketing{
+    inner class OptInMarketing {
         @Test
         fun `validates optInMarketing for null`() {
             val violations = validator.validate(CreateUserRequestFactory.sample(hasOptedIntoMarketing = null))
