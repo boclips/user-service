@@ -1,3 +1,3 @@
 package com.boclips.users.domain.model
 
-class UserNotFoundException(userId: UserId) : RuntimeException("User $userId not found")
+class UserNotFoundException(val userId: UserId) : RuntimeException("User $userId not found")

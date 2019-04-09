@@ -3,6 +3,7 @@ package com.boclips.users.presentation
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.presentation.controllers.PresentationPackageMarker
 import mu.KLogging
@@ -37,5 +38,11 @@ class ExceptionHandling {
     @ExceptionHandler(CaptchaScoreBelowThresholdException::class)
     fun handleIOException(ex: CaptchaScoreBelowThresholdException) {
         logger.info { "It is assumed ${ex.identifier} is a robot" }
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "User not found")
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleIOException(ex: UserNotFoundException) {
+        logger.info { "User ${ex.userId} not found" }
     }
 }
