@@ -4,3 +4,8 @@ app:
 hubspot:
   host: http://localhost:9999
   apiKey: some-api-key
+
+googlerecaptcha:
+  host: http://localhost:9999
+  threshold: 0.5
+  secretKey: secret-key

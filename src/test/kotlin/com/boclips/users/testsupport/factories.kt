@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.presentation.requests.CreateUserRequest
@@ -58,7 +58,8 @@ class CreateUserRequestFactory {
             password: String? = "heidiisgreat",
             subjects: String? = "argriculture",
             analyticsId: String? = "mixpanel-123",
-            referralCode: String? = "referralCode-123"
+            referralCode: String? = "referralCode-123",
+            recaptchaToken: String? = "03AOLTBLRK4xnVft-qESRgTGxK_4WAE..."
         ): CreateUserRequest {
             return CreateUserRequest(
                 firstName = firstName,
@@ -67,7 +68,8 @@ class CreateUserRequestFactory {
                 password = password,
                 subjects = subjects,
                 analyticsId = analyticsId,
-                referralCode = referralCode
+                referralCode = referralCode,
+                recaptchaToken = recaptchaToken
             )
         }
     }

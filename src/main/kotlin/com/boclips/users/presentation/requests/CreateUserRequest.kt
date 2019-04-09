@@ -31,5 +31,9 @@ open class CreateUserRequest(
     var subjects: String? = null,
 
     @field:Size(max = 50, message = "Referral code cannot be longer than 50 characters")
-    var referralCode: String? = null
+    var referralCode: String? = null,
+
+    @field:NotNull(message = "recaptchaToken is required")
+    @field:NotEmpty(message = "recaptchaToken must be set")
+    var recaptchaToken: String? = null
 )

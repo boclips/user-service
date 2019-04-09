@@ -1,11 +1,14 @@
 package com.boclips.users.testsupport
 
+import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
+import com.boclips.users.domain.service.UserRepository
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -43,6 +46,9 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var referralProvider: ReferralProvider
 
     @Autowired
+    lateinit var captchaProvider: CaptchaProvider
+
+    @Autowired
     lateinit var customerManagementProvider: CustomerManagementProvider
 
     @BeforeEach
@@ -52,7 +58,10 @@ abstract class AbstractSpringIntegrationTest {
         wireMockServer.resetAll()
 
         Mockito.reset(referralProvider)
+        Mockito.reset(captchaProvider)
         Mockito.reset(customerManagementProvider)
+
+        whenever(captchaProvider.validateCaptchaToken(any(), any())).thenReturn(true)
     }
 
     fun saveUser(user: User): String {

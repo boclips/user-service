@@ -1,5 +1,6 @@
 package com.boclips.users.config
 
+import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
@@ -10,6 +11,8 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToUserIdentityConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
+import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
+import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -54,4 +57,8 @@ class ContextConfig(
     @Bean
     fun referralProvider(referralRockProperties: ReferralRockProperties): ReferralProvider =
         ReferralRockClient(properties = referralRockProperties, objectMapper = objectMapper)
+
+    @Bean
+    fun captchaProvider(googleRecaptchaProperties: GoogleRecaptchaProperties): CaptchaProvider =
+        GoogleRecaptchaClient(properties = googleRecaptchaProperties)
 }

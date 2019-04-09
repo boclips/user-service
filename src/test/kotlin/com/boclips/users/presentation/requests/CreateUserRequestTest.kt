@@ -143,6 +143,24 @@ class CreateUserRequestTest {
     }
 
     @Nested
+    inner class RecaptchaToken {
+        @Test
+        fun `validates recaptchaToken for null`() {
+            val violations = validator.validate(CreateUserRequestFactory.sample(recaptchaToken = null))
+            assertThat(violations).hasSize(2)
+            assertThat(violations.map { it.message }).contains("recaptchaToken is required")
+            assertThat(violations.map { it.message }).contains("recaptchaToken must be set")
+        }
+
+        @Test
+        fun `validates recaptchaToken for empty string`() {
+            val violations = validator.validate(CreateUserRequestFactory.sample(recaptchaToken = ""))
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("recaptchaToken must be set")
+        }
+    }
+
+    @Nested
     inner class OptionalFields {
         @Test
         fun `referral code cannot be longer than 50 characters`() {

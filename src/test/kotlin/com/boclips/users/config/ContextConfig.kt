@@ -1,9 +1,11 @@
 package com.boclips.users.config
 
+import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
+import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.testsupport.KeycloakClientFake
 import org.mockito.Mockito
 import org.springframework.context.annotation.Bean
@@ -27,4 +29,8 @@ class ContextConfig {
     @Bean
     fun referralProvider(properties: HubSpotProperties): ReferralProvider =
         Mockito.mock(ReferralProvider::class.java)
+
+    @Bean
+    fun captchaProvider(properties: GoogleRecaptchaProperties): CaptchaProvider =
+        Mockito.mock(CaptchaProvider::class.java)
 }

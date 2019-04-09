@@ -28,7 +28,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
-                     "referralCode": "RR-123"
+                     "referralCode": "RR-123",
+                     "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
                 )
@@ -48,7 +49,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "lastName": "doe",
                      "subjects": "some subjects",
                      "email": "jane@doe.com",
-                     "password": "Champagn3"
+                     "password": "Champagn3",
+                     "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
                 )
@@ -66,7 +68,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
-                     "referralCode": "RR-123"
+                     "referralCode": "RR-123",
+                     "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
 

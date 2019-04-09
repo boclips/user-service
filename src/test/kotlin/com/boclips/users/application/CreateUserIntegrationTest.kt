@@ -1,5 +1,6 @@
 package com.boclips.users.application
 
+import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -7,8 +8,10 @@ import com.boclips.users.testsupport.CreateUserRequestFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 
 class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
@@ -22,7 +25,8 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 firstName = "Hans",
                 lastName = "Muster",
                 email = "hans@muster.com",
-                password = "hansli"
+                password = "hansli",
+                recaptchaToken = "SOMERECAPTCHATOKENHERE"
             )
         )
 
@@ -56,6 +60,15 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(persistedAccount.referralCode).isEqualTo("referral-code-123")
         Assertions.assertThat(persistedAccount.subjects).isEqualTo("maths")
         Assertions.assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
+    }
+
+    @Test
+    fun `throw an exception when the captcha verification fails`() {
+        whenever(captchaProvider.validateCaptchaToken(any(), any())).thenReturn(false)
+
+        assertThrows<CaptchaScoreBelowThresholdException> {
+            createUser(CreateUserRequestFactory.sample())
+        }
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.boclips.users.application
 
+import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.domain.model.NewUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -12,11 +13,16 @@ import org.springframework.stereotype.Component
 @Component
 class CreateUser(
     private val userService: UserService,
-    private val customerManagementProvider: CustomerManagementProvider
+    private val customerManagementProvider: CustomerManagementProvider,
+    private val captchaProvider: CaptchaProvider
 ) {
     companion object : KLogging()
 
     operator fun invoke(createUserRequest: CreateUserRequest): User {
+        if (!this.captchaProvider.validateCaptchaToken(createUserRequest.recaptchaToken!!, createUserRequest.email!!)) {
+            throw CaptchaScoreBelowThresholdException()
+        }
+
         val newUser = NewUser(
             firstName = createUserRequest.firstName!!,
             lastName = createUserRequest.lastName!!,
