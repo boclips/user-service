@@ -42,7 +42,7 @@ class ReferralRockClient(
 
             throw ReferralRockException("ReferralRock returned ${createdReferral.statusCode} but should have returned ${HttpStatus.CREATED}")
         } catch (ex: Exception) {
-            logger.error { "Failed to create referral $newReferral" }
+            logger.info { "Failed to create referral $newReferral, because $ex" }
             throw ReferralRockException("Failed to create referral for ${newReferral.externalIdentifier} with referral code ${newReferral.referralCode}")
         }
     }
