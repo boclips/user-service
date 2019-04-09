@@ -1,5 +1,6 @@
 package com.boclips.users.presentation
 
+import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
@@ -17,18 +18,24 @@ class ExceptionHandling {
     @ResponseStatus(value = HttpStatus.CONFLICT, reason = "User already exists")
     @ExceptionHandler(UserAlreadyExistsException::class)
     fun handleIOException(ex: UserAlreadyExistsException) {
-        logger.error { "User already exists $ex" }
+        logger.info { "User already exists $ex" }
     }
 
     @ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "User permission denied")
     @ExceptionHandler(PermissionDeniedException::class)
     fun handleIOException(ex: PermissionDeniedException) {
-        logger.error { "User has no permissions to access resource $ex" }
+        logger.info { "User has no permissions to access resource $ex" }
     }
 
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "User not authenticated")
     @ExceptionHandler(NotAuthenticatedException::class)
     fun handleIOException(ex: NotAuthenticatedException) {
-        logger.error { "Resource requires user to be authenticated $ex" }
+        logger.info { "Resource requires user to be authenticated $ex" }
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "User failed Captcha challenge")
+    @ExceptionHandler(CaptchaScoreBelowThresholdException::class)
+    fun handleIOException(ex: CaptchaScoreBelowThresholdException) {
+        logger.info { "It is assumed ${ex.identifier} is a robot" }
     }
 }

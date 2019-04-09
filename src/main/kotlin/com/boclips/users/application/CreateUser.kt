@@ -19,8 +19,8 @@ class CreateUser(
     companion object : KLogging()
 
     operator fun invoke(createUserRequest: CreateUserRequest): User {
-        if (!this.captchaProvider.validateCaptchaToken(createUserRequest.recaptchaToken!!, createUserRequest.email!!)) {
-            throw CaptchaScoreBelowThresholdException()
+        if (!this.captchaProvider.validateCaptchaToken(createUserRequest.recaptchaToken!!)) {
+            throw CaptchaScoreBelowThresholdException(createUserRequest.email!!)
         }
 
         val newUser = NewUser(

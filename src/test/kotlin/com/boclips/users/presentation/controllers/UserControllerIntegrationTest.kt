@@ -4,6 +4,8 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.asUser
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.whenever
 import org.hamcrest.Matchers.endsWith
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -99,6 +101,31 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "lastName": "doe",
                      "subjects": "some subjects",
                      "email": "jane@doe.com",
+                     }
+                    """.trimIndent()
+                )
+        )
+            .andExpect(status().is4xxClientError)
+    }
+
+    @Test
+    fun `cannot create account as a robot`() {
+
+        whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
+
+        mvc.perform(
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {"firstName": "jane",
+                     "lastName": "doe",
+                     "subjects": "some subjects",
+                     "email": "jane@doe.com",
+                     "password": "Champagn3",
+                     "analyticsId": "mxp-123",
+                     "referralCode": "RR-123",
+                     "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
                 )

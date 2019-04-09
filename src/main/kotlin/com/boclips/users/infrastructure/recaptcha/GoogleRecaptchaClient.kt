@@ -14,7 +14,7 @@ class GoogleRecaptchaClient(
 
     private val restTemplate = RestTemplate()
 
-    override fun validateCaptchaToken(token: String, identifier: String): Boolean {
+    override fun validateCaptchaToken(token: String): Boolean {
         val request = HttpEntity<Void>(getContentTypeHeader())
 
         try {
@@ -35,13 +35,9 @@ class GoogleRecaptchaClient(
                     return false
                 }
 
-                return if (response.score!! > this.properties.threshold) {
-                    logger.info { "Google reCaptcha score was above the threshold ${response.score} > ${this.properties.threshold}" }
-                    true
-                } else {
-                    logger.warn { "Google reCaptcha score was below the threshold ${response.score} < ${this.properties.threshold}" }
-                    false
-                }
+                logger.info { "User's reCaptcha score: ${response.score}. Threshold Score: ${this.properties.threshold}" }
+
+                return response.score!! > this.properties.threshold
             }
 
             throw GoogleRecaptchaException("Google reCaptcha returned ${validationResponse.statusCode} but should have returned ${HttpStatus.OK}")

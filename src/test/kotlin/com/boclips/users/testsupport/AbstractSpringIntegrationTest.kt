@@ -61,7 +61,7 @@ abstract class AbstractSpringIntegrationTest {
         Mockito.reset(captchaProvider)
         Mockito.reset(customerManagementProvider)
 
-        whenever(captchaProvider.validateCaptchaToken(any(), any())).thenReturn(true)
+        whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(true)
     }
 
     fun saveUser(user: User): String {

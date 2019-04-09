@@ -64,7 +64,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `throw an exception when the captcha verification fails`() {
-        whenever(captchaProvider.validateCaptchaToken(any(), any())).thenReturn(false)
+        whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
 
         assertThrows<CaptchaScoreBelowThresholdException> {
             createUser(CreateUserRequestFactory.sample())

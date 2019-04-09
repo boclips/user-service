@@ -7,7 +7,6 @@ import com.github.tomakehurst.wiremock.matching.EqualToPattern
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class GoogleRecaptchaClientTest : AbstractSpringIntegrationTest() {
 
@@ -38,7 +37,7 @@ class GoogleRecaptchaClientTest : AbstractSpringIntegrationTest() {
                 )
         )
 
-        val response = googleRecaptchaClient.validateCaptchaToken("SomeToken", "AnIdentity")
+        val response = googleRecaptchaClient.validateCaptchaToken("SomeToken")
 
         assertThat(response).isTrue()
 
@@ -61,7 +60,7 @@ class GoogleRecaptchaClientTest : AbstractSpringIntegrationTest() {
                 )
         )
 
-        val response = googleRecaptchaClient.validateCaptchaToken("SomeToken", "AnIdentity")
+        val response = googleRecaptchaClient.validateCaptchaToken("SomeToken")
 
         assertThat(response).isFalse()
 
@@ -91,7 +90,7 @@ class GoogleRecaptchaClientTest : AbstractSpringIntegrationTest() {
                 )
         )
 
-        assertThat(googleRecaptchaClient.validateCaptchaToken("SomeToken", "AnIdentity")).isFalse()
+        assertThat(googleRecaptchaClient.validateCaptchaToken("SomeToken")).isFalse()
 
         wireMockServer.verify(
             WireMock.postRequestedFor(WireMock.urlPathEqualTo("/recaptcha/api/siteverify"))
@@ -112,7 +111,7 @@ class GoogleRecaptchaClientTest : AbstractSpringIntegrationTest() {
                 )
         )
 
-        assertThat(googleRecaptchaClient.validateCaptchaToken("", "AnIdentity")).isFalse()
+        assertThat(googleRecaptchaClient.validateCaptchaToken("")).isFalse()
 
         wireMockServer.verify(
             WireMock.postRequestedFor(WireMock.urlPathEqualTo("/recaptcha/api/siteverify"))
@@ -133,7 +132,7 @@ class GoogleRecaptchaClientTest : AbstractSpringIntegrationTest() {
                 )
         )
 
-        assertThat(googleRecaptchaClient.validateCaptchaToken("SomeToken", "AnIdentity")).isFalse()
+        assertThat(googleRecaptchaClient.validateCaptchaToken("SomeToken")).isFalse()
 
         wireMockServer.verify(
             WireMock.postRequestedFor(WireMock.urlPathEqualTo("/recaptcha/api/siteverify"))
