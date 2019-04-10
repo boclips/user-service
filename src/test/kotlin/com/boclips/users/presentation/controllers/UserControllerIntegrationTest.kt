@@ -31,7 +31,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
                      "referralCode": "RR-123",
-                     "recaptchaToken": "captcha-123"
+                     "recaptchaToken": "captcha-123",
+                     "hasOptedIntoMarketing": true
                      }
                     """.trimIndent()
                 )
@@ -52,6 +53,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "subjects": "some subjects",
                      "email": "jane@doe.com",
                      "password": "Champagn3",
+                     "hasOptedIntoMarketing": true,
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
@@ -71,6 +73,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
                      "referralCode": "RR-123",
+                     "hasOptedIntoMarketing": true,
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()

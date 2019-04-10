@@ -26,8 +26,10 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 lastName = "Muster",
                 email = "hans@muster.com",
                 password = "hansli",
-                recaptchaToken = "SOMERECAPTCHATOKENHERE"
+                recaptchaToken = "SOMERECAPTCHATOKENHERE",
+                hasOptedIntoMarketing = true
             )
+
         )
 
         val account = userRepository.findById(createdAccount.id)
@@ -36,6 +38,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(account.referralCode).isEmpty()
         Assertions.assertThat(account.subjects).isEmpty()
         Assertions.assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
+        Assertions.assertThat(account.hasOptedIntoMarketing).isTrue()
 
         val identity = identityProvider.getUserById(createdAccount.id)
         Assertions.assertThat(identity).isNotNull

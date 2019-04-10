@@ -35,5 +35,8 @@ open class CreateUserRequest(
 
     @field:NotNull(message = "recaptchaToken is required")
     @field:NotEmpty(message = "recaptchaToken must be set")
-    var recaptchaToken: String? = null
+    var recaptchaToken: String? = null,
+
+    @field:NotNull(message = "Marketing preferences must not be null")
+    var hasOptedIntoMarketing: Boolean? = null
 )

@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.infrastructure.user.UserDocument
 import com.boclips.users.presentation.requests.CreateUserRequest
 import java.util.UUID
 
@@ -17,16 +18,18 @@ class AccountFactory {
             referralCode: String? = null,
             firstName: String = "Joe",
             lastName: String = "Dough",
-            email: String = "joe@dough.com"
+            email: String = "joe@dough.com",
+            hasOptedIntoMarketing: Boolean = true
         ) = User(
             id = UserId(value = id),
             activated = activated,
-            subjects = subjects,
             analyticsId = analyticsId,
+            subjects = subjects,
             referralCode = referralCode,
             firstName = firstName,
             lastName = lastName,
-            email = email
+            email = email,
+            hasOptedIntoMarketing = hasOptedIntoMarketing
         )
     }
 }
@@ -59,7 +62,8 @@ class CreateUserRequestFactory {
             subjects: String? = "argriculture",
             analyticsId: String? = "mixpanel-123",
             referralCode: String? = "referralCode-123",
-            recaptchaToken: String? = "03AOLTBLRK4xnVft-qESRgTGxK_4WAE..."
+            recaptchaToken: String? = "03AOLTBLRK4xnVft-qESRgTGxK_4WAE...",
+            hasOptedIntoMarketing: Boolean? = false
         ): CreateUserRequest {
             return CreateUserRequest(
                 firstName = firstName,
@@ -69,8 +73,35 @@ class CreateUserRequestFactory {
                 subjects = subjects,
                 analyticsId = analyticsId,
                 referralCode = referralCode,
+                hasOptedIntoMarketing = hasOptedIntoMarketing,
                 recaptchaToken = recaptchaToken
             )
         }
+    }
+}
+
+class UserDocumentFactory {
+    companion object {
+        fun sample(
+            id: String = UUID.randomUUID().toString(),
+            firstName: String? = "Monty",
+            lastName: String? = "Python",
+            email: String? = "monty@python.com",
+            activated: Boolean = false,
+            analyticsId: String = "1233",
+            referralCode: String? = "code",
+            subjects: String? = "maths",
+            hasOptedIntoMarketing: Boolean? = false
+        ): UserDocument = UserDocument(
+            id = id,
+            firstName = firstName,
+            lastName = lastName,
+            activated = activated,
+            analyticsId = analyticsId,
+            referralCode = referralCode,
+            subjects = subjects,
+            email = email,
+            hasOptedIntoMarketing = hasOptedIntoMarketing
+        )
     }
 }

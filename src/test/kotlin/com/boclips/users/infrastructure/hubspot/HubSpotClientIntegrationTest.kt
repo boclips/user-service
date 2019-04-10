@@ -11,6 +11,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.put
+import com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.junit.jupiter.api.Test
@@ -44,13 +46,36 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         )
     }
 
+    @Test
+    fun `unsubscribes contacts from all emails`() {
+        setUpHubSpotStub()
+
+        val optedOutOfMarketingUser = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = false))
+
+        hubSpotClient.update(listOf(optedOutOfMarketingUser))
+
+        wireMockServer.verify(
+            putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${optedOutOfMarketingUser.email}.*"))
+                .withQueryParam("hapikey", matching("some-api-key"))
+                .withRequestBody(
+                    equalToJson(
+                        """{
+                            "unsubscribeFromAll": true
+                            }
+                        """.trimIndent()
+                    )
+                )
+        )
+    }
+
     private fun activatedUser(): User {
         return UserFactory.sample(
             user = AccountFactory.sample(
                 activated = true,
                 firstName = "Jane",
                 lastName = "Doe",
-                email = "jane@doe.com"
+                email = "jane@doe.com",
+                hasOptedIntoMarketing = true
             )
 
         )
@@ -59,6 +84,11 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
     private fun setUpHubSpotStub() {
         wireMockServer.stubFor(
             post(urlPathEqualTo("/contacts/v1/contact/batch"))
+                .willReturn(aResponse().withStatus(202))
+        )
+
+        wireMockServer.stubFor(
+            put(urlPathEqualTo("/email/public/v1/subscriptions/"))
                 .willReturn(aResponse().withStatus(202))
         )
     }

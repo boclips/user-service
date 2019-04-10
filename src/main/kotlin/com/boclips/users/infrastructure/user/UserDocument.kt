@@ -16,7 +16,8 @@ data class UserDocument(
     val activated: Boolean,
     val subjects: String?,
     val analyticsId: String?,
-    val referralCode: String?
+    val referralCode: String?,
+    val hasOptedIntoMarketing: Boolean?
 ) {
     companion object {
         fun from(user: User) = UserDocument(
@@ -27,18 +28,20 @@ data class UserDocument(
             referralCode = user.referralCode,
             firstName = user.firstName,
             lastName = user.lastName,
-            email = user.email
+            email = user.email,
+            hasOptedIntoMarketing = user.hasOptedIntoMarketing
         )
     }
 
     fun toUser() = User(
         id = UserId(value = id),
         activated = activated,
-        subjects = subjects,
         analyticsId = analyticsId?.let { AnalyticsId(value = it) },
+        subjects = subjects,
         referralCode = referralCode?.let { it },
         firstName = firstName.orEmpty(),
         lastName = lastName.orEmpty(),
-        email = email.orEmpty()
+        email = email.orEmpty(),
+        hasOptedIntoMarketing = hasOptedIntoMarketing ?: true
     )
 }

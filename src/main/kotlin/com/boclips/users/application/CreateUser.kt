@@ -30,7 +30,8 @@ class CreateUser(
             password = createUserRequest.password!!,
             analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
             subjects = createUserRequest.subjects.orEmpty(),
-            referralCode = createUserRequest.referralCode.orEmpty()
+            referralCode = createUserRequest.referralCode.orEmpty(),
+            hasOptedIntoMarketing = createUserRequest.hasOptedIntoMarketing!!
         )
 
         val createdUser = userService.createUser(newUser = newUser)
