@@ -9,4 +9,5 @@ class HubSpotProperties {
     lateinit var host: String
     lateinit var apiKey: String
     var batchSize: Int = 100
+    var marketingSubscriptionId: Long = -1
 }

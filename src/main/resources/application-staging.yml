@@ -2,3 +2,5 @@ keycloak:
   configurationFile: 'classpath:keycloak-staging.json'
 mixpanel:
   token: 4290d60e0956507222103ffd8cdfad35
+hubspot:
+  marketingSubscriptionId: 5911726

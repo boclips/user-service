@@ -26,6 +26,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             this.host = "http://localhost:9999"
             this.apiKey = "some-api-key"
             this.batchSize = 100
+            this.marketingSubscriptionId = 123
         },
         RestTemplate()
     )
@@ -60,8 +61,13 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                 .withRequestBody(
                     equalToJson(
                         """{
-                            "unsubscribeFromAll": true
-                            }
+                            "subscriptionStatuses": [
+                                {
+                                    "id": 123,
+                                    "subscribed": false
+                                }
+                            ]
+                        }
                         """.trimIndent()
                     )
                 )

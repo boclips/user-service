@@ -29,7 +29,7 @@ class HubSpotClient(
                     val contacts = batchOfUsers.map { user ->
                         toHubSpotContact(user).also {
                             if (!user.hasOptedIntoMarketing) {
-                                unsubscribeFromAll(user)
+                                unsubscribeFromMarketingEmails(user)
                             }
                         }
                     }
@@ -86,12 +86,15 @@ class HubSpotClient(
             .build()
             .toUri()
 
-    fun unsubscribeFromAll(user: User) {
+    fun unsubscribeFromMarketingEmails(user: User) {
         restTemplate.put(
             getEmailEndPointForUser(user),
-            UnsubscribeFromAllEmails()
+            UnsubscribeFromMarketingEmails(
+                listOf(SubscriptionStatus(id = hubspotProperties.marketingSubscriptionId))
+            )
         )
     }
 }
 
-class UnsubscribeFromAllEmails(val unsubscribeFromAll: Boolean = true)
+class UnsubscribeFromMarketingEmails(val subscriptionStatuses: List<SubscriptionStatus>)
+class SubscriptionStatus(val id: Long, val subscribed: Boolean = false)

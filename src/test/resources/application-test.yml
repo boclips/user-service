@@ -4,6 +4,7 @@ app:
 hubspot:
   host: http://localhost:9999
   apiKey: some-api-key
+  marketingSubscriptionId: 5911726
 
 googlerecaptcha:
   host: http://localhost:9999
