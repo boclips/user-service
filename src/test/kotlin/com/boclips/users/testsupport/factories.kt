@@ -13,7 +13,7 @@ class AccountFactory {
         fun sample(
             id: String = "user-id",
             activated: Boolean = false,
-            subjects: String? = "maths english netflix",
+            subjects: List<String> = listOf("maths-1", "english-2", "netflix-3"),
             analyticsId: AnalyticsId? = AnalyticsId(value = "1234567"),
             referralCode: String? = null,
             firstName: String = "Joe",
@@ -59,7 +59,7 @@ class CreateUserRequestFactory {
             lastName: String? = "Muster",
             email: String? = "hans@muster.ch",
             password: String? = "heidiisgreat",
-            subjects: String? = "argriculture",
+            subjects: List<String>? = listOf("argriculture"),
             analyticsId: String? = "mixpanel-123",
             referralCode: String? = "referralCode-123",
             recaptchaToken: String? = "03AOLTBLRK4xnVft-qESRgTGxK_4WAE...",
@@ -90,7 +90,7 @@ class UserDocumentFactory {
             activated: Boolean = false,
             analyticsId: String = "1233",
             referralCode: String? = "code",
-            subjects: String? = "maths",
+            subjects: List<String> = listOf("maths"),
             hasOptedIntoMarketing: Boolean? = false
         ): UserDocument = UserDocument(
             id = id,
@@ -99,7 +99,7 @@ class UserDocumentFactory {
             activated = activated,
             analyticsId = analyticsId,
             referralCode = referralCode,
-            subjects = subjects,
+            subjectIds = subjects,
             email = email,
             hasOptedIntoMarketing = hasOptedIntoMarketing
         )

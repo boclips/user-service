@@ -46,7 +46,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             lastName = "Dough",
             email = "joe@dough.com",
             password = "thisisapassword",
-            subjects = "subject",
+            subjects = listOf("subject"),
             analyticsId = AnalyticsId(value = "analytics"),
             referralCode = "abc-a123",
             hasOptedIntoMarketing = true
@@ -57,7 +57,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.firstName).isEqualTo("Joe")
         assertThat(persistedUser.lastName).isEqualTo("Dough")
         assertThat(persistedUser.email).isEqualTo("joe@dough.com")
-        assertThat(persistedUser.subjects).isEqualTo("subject")
+        assertThat(persistedUser.subjects).containsExactly("subject")
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
         assertThat(persistedUser.hasOptedIntoMarketing).isTrue()

@@ -7,7 +7,7 @@ data class NewUser(
     val lastName: String,
     val email: String,
     val password: String,
-    val subjects: String,
+    val subjects: List<String>,
     val analyticsId: AnalyticsId,
     val referralCode: String,
     val hasOptedIntoMarketing: Boolean

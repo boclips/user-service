@@ -51,7 +51,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun `create account with referral, subject and analytics information`() {
         val user = createUser(
             CreateUserRequestFactory.sample(
-                subjects = "maths",
+                subjects = listOf("maths"),
                 referralCode = "referral-code-123",
                 analyticsId = "123"
             )
@@ -61,7 +61,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         Assertions.assertThat(persistedAccount.isReferral()).isTrue()
         Assertions.assertThat(persistedAccount.referralCode).isEqualTo("referral-code-123")
-        Assertions.assertThat(persistedAccount.subjects).isEqualTo("maths")
+        Assertions.assertThat(persistedAccount.subjects).containsExactly("maths")
         Assertions.assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
     }
 

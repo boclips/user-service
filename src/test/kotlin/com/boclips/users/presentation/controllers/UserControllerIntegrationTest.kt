@@ -26,7 +26,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     """
                     {"firstName": "jane",
                      "lastName": "doe",
-                     "subjects": "some subjects",
+                     "subjects": ["Maths", "French"],
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
@@ -50,7 +50,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     """
                     {"firstName": "jane",
                      "lastName": "doe",
-                     "subjects": "some subjects",
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "hasOptedIntoMarketing": true,
@@ -68,7 +67,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val payload = """
                     {"firstName": "jane",
                      "lastName": "doe",
-                     "subjects": "some subjects",
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
@@ -113,7 +111,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `cannot create account as a robot`() {
-
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
 
         mvc.perform(
@@ -123,7 +120,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     """
                     {"firstName": "jane",
                      "lastName": "doe",
-                     "subjects": "some subjects",
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",

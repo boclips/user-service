@@ -14,7 +14,7 @@ data class UserDocument(
     val lastName: String?,
     val email: String?,
     val activated: Boolean,
-    val subjects: String?,
+    val subjectIds: List<String>?,
     val analyticsId: String?,
     val referralCode: String?,
     val hasOptedIntoMarketing: Boolean?
@@ -23,7 +23,7 @@ data class UserDocument(
         fun from(user: User) = UserDocument(
             id = user.id.value,
             activated = user.activated,
-            subjects = user.subjects,
+            subjectIds = user.subjects,
             analyticsId = user.analyticsId?.value,
             referralCode = user.referralCode,
             firstName = user.firstName,
@@ -37,7 +37,7 @@ data class UserDocument(
         id = UserId(value = id),
         activated = activated,
         analyticsId = analyticsId?.let { AnalyticsId(value = it) },
-        subjects = subjects,
+        subjects = subjectIds.orEmpty(),
         referralCode = referralCode?.let { it },
         firstName = firstName.orEmpty(),
         lastName = lastName.orEmpty(),

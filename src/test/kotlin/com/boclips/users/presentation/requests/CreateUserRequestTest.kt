@@ -193,16 +193,5 @@ class CreateUserRequestTest {
             assertThat(violations).hasSize(1)
             assertThat(violations.map { it.message }).contains("Analytics ID cannot be longer than 100 characters")
         }
-
-        @Test
-        fun `subjects cannot be longer than 101 characters`() {
-            val violations = validator.validate(
-                CreateUserRequestFactory.sample(
-                    subjects = StringUtils.repeat("X", 101)
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Subjects cannot be longer than 100 characters")
-        }
     }
 }

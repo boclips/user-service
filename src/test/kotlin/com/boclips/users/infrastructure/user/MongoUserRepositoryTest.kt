@@ -18,10 +18,9 @@ MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `saving null fields is all good`() {
+    fun `saving analytics id as null is all good`() {
         val account = AccountFactory.sample(
-            analyticsId = null,
-            subjects = null
+            analyticsId = null
         )
 
         userRepository.save(account)
@@ -47,7 +46,6 @@ MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `activate an account`() {
         val account = AccountFactory.sample(
             analyticsId = null,
-            subjects = null,
             activated = false
         )
 
