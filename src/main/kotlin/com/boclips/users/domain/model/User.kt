@@ -7,6 +7,7 @@ data class User(
     val activated: Boolean,
     val analyticsId: AnalyticsId?,
     val subjects: List<String>,
+    val ageRange: List<Int>,
     val referralCode: String?,
     val firstName: String,
     val lastName: String,

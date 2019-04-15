@@ -53,6 +53,7 @@ class UserService(
                 activated = false,
                 analyticsId = newUser.analyticsId,
                 subjects = newUser.subjects,
+                ageRange = newUser.ageRange,
                 referralCode = newUser.referralCode,
                 firstName = newUser.firstName,
                 lastName = newUser.lastName,

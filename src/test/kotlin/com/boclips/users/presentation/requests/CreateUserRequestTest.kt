@@ -21,7 +21,8 @@ class CreateUserRequestTest {
 
     @Test
     fun `validates a valid request`() {
-        val validRequest = CreateUserRequestFactory.sample()
+        val validRequest = CreateUserRequestFactory.sample(
+        )
         val violations = validator.validate(validRequest)
         assertThat(violations).hasSize(0)
     }
@@ -31,8 +32,8 @@ class CreateUserRequestTest {
         val violations = validator.validate(
             CreateUserRequestFactory.sample(
                 subjects = null,
-                analyticsId = null,
-                referralCode = null
+                referralCode = null,
+                analyticsId = null
             )
         )
         assertThat(violations).hasSize(0)
@@ -42,14 +43,22 @@ class CreateUserRequestTest {
     inner class FirstNames {
         @Test
         fun `validates first name for null`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(firstName = null))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    firstName = null
+                )
+            )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("First name is required")
         }
 
         @Test
         fun `validates first name for empty string`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(firstName = ""))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    firstName = ""
+                )
+            )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("First name must be between 1 and 200 characters")
         }
@@ -57,7 +66,11 @@ class CreateUserRequestTest {
         @Test
         fun `validates first name for length`() {
             val violations =
-                validator.validate(CreateUserRequestFactory.sample(firstName = StringUtils.repeat("X", 201)))
+                validator.validate(
+                    CreateUserRequestFactory.sample(
+                        firstName = StringUtils.repeat("X", 201)
+                    )
+                )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("First name must be between 1 and 200 characters")
         }
@@ -67,14 +80,22 @@ class CreateUserRequestTest {
     inner class LastNames {
         @Test
         fun `validates last name for null`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(lastName = null))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    lastName = null
+                )
+            )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("Last name is required")
         }
 
         @Test
         fun `validates last name for empty string`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(lastName = ""))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    lastName = ""
+                )
+            )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("Last name must be between 1 and 200 characters")
         }
@@ -82,7 +103,11 @@ class CreateUserRequestTest {
         @Test
         fun `validates last name for length`() {
             val violations =
-                validator.validate(CreateUserRequestFactory.sample(lastName = StringUtils.repeat("X", 201)))
+                validator.validate(
+                    CreateUserRequestFactory.sample(
+                        lastName = StringUtils.repeat("X", 201)
+                    )
+                )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("Last name must be between 1 and 200 characters")
         }
@@ -92,7 +117,11 @@ class CreateUserRequestTest {
     inner class Emails {
         @Test
         fun `validates email for null`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(email = null))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    email = null
+                )
+            )
             assertThat(violations).hasSize(2)
             assertThat(violations.map { it.message }).contains("Email is required")
             assertThat(violations.map { it.message }).contains("Email must be set")
@@ -100,7 +129,11 @@ class CreateUserRequestTest {
 
         @Test
         fun `validates email for empty string`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(email = ""))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    email = ""
+                )
+            )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("Email must be set")
         }
@@ -109,7 +142,11 @@ class CreateUserRequestTest {
         fun `validates email for format`() {
             val longEmail = "@test.com"
             val violations =
-                validator.validate(CreateUserRequestFactory.sample(email = longEmail))
+                validator.validate(
+                    CreateUserRequestFactory.sample(
+                        email = longEmail
+                    )
+                )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("Email must be valid")
         }
@@ -119,7 +156,11 @@ class CreateUserRequestTest {
     inner class Passwords {
         @Test
         fun `validates password for null`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(password = null))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    password = null
+                )
+            )
             assertThat(violations).hasSize(2)
             assertThat(violations.map { it.message }).contains("Password is required")
             assertThat(violations.map { it.message }).contains("Password must be set")
@@ -127,7 +168,11 @@ class CreateUserRequestTest {
 
         @Test
         fun `validates password for empty string`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(password = ""))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    password = ""
+                )
+            )
             assertThat(violations).hasSize(2)
             assertThat(violations.map { it.message }).contains("Password length must be at least 8")
             assertThat(violations.map { it.message }).contains("Password must be set")
@@ -136,7 +181,11 @@ class CreateUserRequestTest {
         @Test
         fun `validates password for format`() {
             val shortPassword = "1234567"
-            val violations = validator.validate(CreateUserRequestFactory.sample(password = shortPassword))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    password = shortPassword
+                )
+            )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("Password length must be at least 8")
         }
@@ -146,7 +195,11 @@ class CreateUserRequestTest {
     inner class RecaptchaToken {
         @Test
         fun `validates recaptchaToken for null`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(recaptchaToken = null))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    recaptchaToken = null
+                )
+            )
             assertThat(violations).hasSize(2)
             assertThat(violations.map { it.message }).contains("recaptchaToken is required")
             assertThat(violations.map { it.message }).contains("recaptchaToken must be set")
@@ -154,7 +207,11 @@ class CreateUserRequestTest {
 
         @Test
         fun `validates recaptchaToken for empty string`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(recaptchaToken = ""))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    recaptchaToken = ""
+                )
+            )
             assertThat(violations).hasSize(1)
             assertThat(violations.map { it.message }).contains("recaptchaToken must be set")
         }
@@ -164,7 +221,11 @@ class CreateUserRequestTest {
     inner class OptInMarketing {
         @Test
         fun `validates optInMarketing for null`() {
-            val violations = validator.validate(CreateUserRequestFactory.sample(hasOptedIntoMarketing = null))
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    hasOptedIntoMarketing = null
+                )
+            )
             assertThat(violations).hasSize(1)
             assertThat(violations.map { it.message }).contains("Marketing preferences must not be null")
         }
@@ -192,6 +253,28 @@ class CreateUserRequestTest {
             )
             assertThat(violations).hasSize(1)
             assertThat(violations.map { it.message }).contains("Analytics ID cannot be longer than 100 characters")
+        }
+
+        @Test
+        fun `age ranges cannot be more than 18 years`() {
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    ageRange = listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("The age range cannot have more than 19 years")
+        }
+
+        @Test
+        fun `subjects cannot store more than 50 subjects`() {
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    subjects = StringUtils.repeat("subject,", 51).split(',')
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("Cannot have more than 50 subjects")
         }
     }
 }

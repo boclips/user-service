@@ -32,7 +32,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "analyticsId": "mxp-123",
                      "referralCode": "RR-123",
                      "recaptchaToken": "captcha-123",
-                     "hasOptedIntoMarketing": true
+                     "hasOptedIntoMarketing": true,
+                     "ageRange": [4,5,8,10]
                      }
                     """.trimIndent()
                 )

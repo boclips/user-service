@@ -27,7 +27,11 @@ open class CreateUserRequest(
     @field:Size(max = 100, message = "Analytics ID cannot be longer than 100 characters")
     var analyticsId: String? = null,
 
+    @field:Size(max = 50, message = "Cannot have more than 50 subjects")
     var subjects: List<String>? = null,
+
+    @field:Size(max = 19, message = "The age range cannot have more than 19 years")
+    var ageRange: List<Int>? = null,
 
     @field:Size(max = 50, message = "Referral code cannot be longer than 50 characters")
     var referralCode: String? = null,

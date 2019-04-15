@@ -5,8 +5,7 @@ import com.boclips.users.testsupport.AccountFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class
-MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
+class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `save persists provided user`() {

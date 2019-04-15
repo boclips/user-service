@@ -14,6 +14,7 @@ class AccountFactory {
             id: String = "user-id",
             activated: Boolean = false,
             subjects: List<String> = listOf("maths-1", "english-2", "netflix-3"),
+            ageRange: List<Int> = listOf(1, 2),
             analyticsId: AnalyticsId? = AnalyticsId(value = "1234567"),
             referralCode: String? = null,
             firstName: String = "Joe",
@@ -25,6 +26,7 @@ class AccountFactory {
             activated = activated,
             analyticsId = analyticsId,
             subjects = subjects,
+            ageRange = ageRange,
             referralCode = referralCode,
             firstName = firstName,
             lastName = lastName,
@@ -60,10 +62,11 @@ class CreateUserRequestFactory {
             email: String? = "hans@muster.ch",
             password: String? = "heidiisgreat",
             subjects: List<String>? = listOf("argriculture"),
-            analyticsId: String? = "mixpanel-123",
+            ageRange: List<Int>? = listOf(1, 2, 4),
             referralCode: String? = "referralCode-123",
             recaptchaToken: String? = "03AOLTBLRK4xnVft-qESRgTGxK_4WAE...",
-            hasOptedIntoMarketing: Boolean? = false
+            hasOptedIntoMarketing: Boolean? = false,
+            analyticsId: String? = "mixpanel-123"
         ): CreateUserRequest {
             return CreateUserRequest(
                 firstName = firstName,
@@ -71,6 +74,7 @@ class CreateUserRequestFactory {
                 email = email,
                 password = password,
                 subjects = subjects,
+                ageRange = ageRange,
                 analyticsId = analyticsId,
                 referralCode = referralCode,
                 hasOptedIntoMarketing = hasOptedIntoMarketing,
@@ -91,6 +95,7 @@ class UserDocumentFactory {
             analyticsId: String = "1233",
             referralCode: String? = "code",
             subjects: List<String> = listOf("maths"),
+            ageRange: List<Int> = listOf(1, 2),
             hasOptedIntoMarketing: Boolean? = false
         ): UserDocument = UserDocument(
             id = id,
@@ -100,6 +105,7 @@ class UserDocumentFactory {
             analyticsId = analyticsId,
             referralCode = referralCode,
             subjectIds = subjects,
+            ageRange = ageRange,
             email = email,
             hasOptedIntoMarketing = hasOptedIntoMarketing
         )

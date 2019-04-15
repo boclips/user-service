@@ -30,6 +30,7 @@ class CreateUser(
             password = createUserRequest.password!!,
             analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
             subjects = createUserRequest.subjects.orEmpty(),
+            ageRange = createUserRequest.ageRange.orEmpty(),
             referralCode = createUserRequest.referralCode.orEmpty(),
             hasOptedIntoMarketing = createUserRequest.hasOptedIntoMarketing!!
         )

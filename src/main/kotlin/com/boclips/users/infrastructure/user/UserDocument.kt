@@ -15,6 +15,7 @@ data class UserDocument(
     val email: String?,
     val activated: Boolean,
     val subjectIds: List<String>?,
+    val ageRange: List<Int>?,
     val analyticsId: String?,
     val referralCode: String?,
     val hasOptedIntoMarketing: Boolean?
@@ -24,6 +25,7 @@ data class UserDocument(
             id = user.id.value,
             activated = user.activated,
             subjectIds = user.subjects,
+            ageRange = user.ageRange,
             analyticsId = user.analyticsId?.value,
             referralCode = user.referralCode,
             firstName = user.firstName,
@@ -38,6 +40,7 @@ data class UserDocument(
         activated = activated,
         analyticsId = analyticsId?.let { AnalyticsId(value = it) },
         subjects = subjectIds.orEmpty(),
+        ageRange = ageRange.orEmpty(),
         referralCode = referralCode?.let { it },
         firstName = firstName.orEmpty(),
         lastName = lastName.orEmpty(),
