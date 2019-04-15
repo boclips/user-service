@@ -6,7 +6,8 @@ import com.mixpanel.mixpanelapi.ClientDelivery
 import com.mixpanel.mixpanelapi.MessageBuilder
 import com.mixpanel.mixpanelapi.MixpanelAPI
 
-class MixpanelClient(mixpanelPropeties: MixpanelProperties, private val mixpanel: MixpanelAPI = MixpanelAPI()) : AnalyticsClient {
+class MixpanelClient(mixpanelPropeties: MixpanelProperties, private val mixpanel: MixpanelAPI = MixpanelAPI()) :
+    AnalyticsClient {
     private val messageBuilder = MessageBuilder(mixpanelPropeties.token)
 
     override fun track(event: Event) {

@@ -2,8 +2,8 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.application.CreateUser
 import com.boclips.users.domain.model.NewUser
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event

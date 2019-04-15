@@ -9,11 +9,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.keycloak.representations.idm.EventRepresentation
-import org.keycloak.representations.idm.GroupRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import org.mockito.Mockito
-import java.time.LocalDate
 
 internal class KeycloakClientTest {
     lateinit var keycloakClient: KeycloakClient

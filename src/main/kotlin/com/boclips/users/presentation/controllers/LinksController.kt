@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.security.getCurrentUserIfNotAnonymous
 import org.springframework.hateoas.Resource
 import org.springframework.web.bind.annotation.GetMapping

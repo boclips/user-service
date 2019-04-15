@@ -11,7 +11,6 @@ class UserDocumentTest {
     fun `can convert document to user`() {
         val user = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = true))
 
-
         val convertedUser = UserDocument.from(user).toUser()
 
         assertThat(convertedUser).isEqualTo(user)
