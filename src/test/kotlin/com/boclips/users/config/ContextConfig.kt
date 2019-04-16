@@ -3,13 +3,12 @@ package com.boclips.users.config
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
-import com.boclips.users.infrastructure.SubjectValidator
+import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.testsupport.KeycloakClientFake
 import com.boclips.videos.service.client.VideoServiceClient
-import com.boclips.videos.service.client.internal.FakeClient
 import org.mockito.Mockito
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

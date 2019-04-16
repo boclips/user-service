@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure
+package com.boclips.users.infrastructure.subjects
 
 import com.boclips.videos.service.client.VideoServiceClient
 

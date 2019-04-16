@@ -6,9 +6,7 @@ import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.infrastructure.SubjectValidator
-import com.boclips.videos.service.client.VideoServiceClient
-import com.boclips.videos.service.client.internal.FakeClient
+import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any

@@ -17,6 +17,14 @@
       {
         "property": "b2t_is_activated",
         "value": "true"
+      },
+      {
+        "property": "subjects_taught",
+        "value": "Maths, Science"
+      },
+      {
+        "property": "age_range",
+        "value": "3, 4, 5, 6"
       }
     ]
   }

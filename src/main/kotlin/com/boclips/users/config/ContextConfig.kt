@@ -3,7 +3,6 @@ package com.boclips.users.config
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
-import com.boclips.users.infrastructure.SubjectValidator
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
@@ -16,6 +15,8 @@ import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
+import com.boclips.users.infrastructure.subjects.SubjectMapper
+import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
 import com.boclips.videos.service.client.VideoServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -54,8 +55,13 @@ class ContextConfig(
     }
 
     @Bean
-    fun customerManagement(properties: HubSpotProperties): CustomerManagementProvider =
-        HubSpotClient(objectMapper = objectMapper, hubspotProperties = properties, restTemplate = RestTemplate())
+    fun customerManagement(properties: HubSpotProperties, subjectMapper: SubjectMapper): CustomerManagementProvider =
+        HubSpotClient(
+            objectMapper = objectMapper,
+            hubspotProperties = properties,
+            restTemplate = RestTemplate(),
+            subjectMapper = subjectMapper
+        )
 
     @Bean
     fun referralProvider(referralRockProperties: ReferralRockProperties): ReferralProvider =
@@ -66,9 +72,14 @@ class ContextConfig(
         GoogleRecaptchaClient(properties = googleRecaptchaProperties)
 
     @Bean
-    fun subjectValidator(videoServiceClient: VideoServiceClient) = SubjectValidator(videoServiceClient)
+    fun subjectValidator(videoServiceClient: VideoServiceClient) =
+        SubjectValidator(videoServiceClient)
 
     @Bean
     fun videoServiceClient(videoServiceProperties: VideoServiceProperties) =
         VideoServiceClient.getUnauthorisedApiClient(videoServiceProperties.baseUrl)
+
+    @Bean
+    fun subjectMapper(videoServiceClient: VideoServiceClient) =
+        SubjectMapper(videoServiceClient)
 }

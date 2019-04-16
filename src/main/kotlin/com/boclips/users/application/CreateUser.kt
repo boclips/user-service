@@ -7,9 +7,8 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.infrastructure.SubjectValidator
+import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.users.presentation.requests.CreateUserRequest
-import com.boclips.videos.service.client.VideoServiceClient
 import mu.KLogging
 import org.springframework.stereotype.Component
 

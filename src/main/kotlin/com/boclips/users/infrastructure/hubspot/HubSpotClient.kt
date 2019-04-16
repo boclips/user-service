@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.hubspot
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.infrastructure.getContentTypeHeader
+import com.boclips.users.infrastructure.subjects.SubjectMapper
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.apache.commons.validator.routines.EmailValidator
@@ -14,7 +15,8 @@ import java.net.URI
 class HubSpotClient(
     val objectMapper: ObjectMapper,
     val hubspotProperties: HubSpotProperties,
-    val restTemplate: RestTemplate
+    val restTemplate: RestTemplate,
+    val subjectMapper: SubjectMapper
 ) : CustomerManagementProvider {
     companion object : KLogging()
 
@@ -59,7 +61,9 @@ class HubSpotClient(
                 HubSpotProperty("firstname", user.firstName),
                 HubSpotProperty("lastname", user.lastName),
                 HubSpotProperty("is_b2t", "true"),
-                HubSpotProperty("b2t_is_activated", user.activated.toString())
+                HubSpotProperty("b2t_is_activated", user.activated.toString()),
+                HubSpotProperty("subjects_taught", subjectMapper.getNames(user.subjects).joinToString()),
+                HubSpotProperty("age_range", user.ageRange.joinToString())
             )
         )
     }

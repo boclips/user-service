@@ -1,10 +1,14 @@
 package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.User
+import com.boclips.users.infrastructure.subjects.SubjectMapper
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.loadWireMockStub
+import com.boclips.videos.service.client.Subject
+import com.boclips.videos.service.client.VideoServiceClient
+import com.boclips.videos.service.client.internal.FakeClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
@@ -21,6 +25,8 @@ import org.springframework.web.client.RestTemplate
 
 class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
+    val fakeVideoServiceClient = FakeClient()
+
     var hubSpotClient: HubSpotClient = HubSpotClient(
         ObjectMapper(), HubSpotProperties().apply {
             this.host = "http://localhost:9999"
@@ -28,12 +34,15 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             this.batchSize = 100
             this.marketingSubscriptionId = 123
         },
-        RestTemplate()
+        RestTemplate(),
+        subjectMapper = SubjectMapper(fakeVideoServiceClient)
     )
 
     @Test
     fun `updates contacts in hubspot`() {
         setUpHubSpotStub()
+        fakeVideoServiceClient.addSubject(Subject.builder().id("1").name("Maths").build())
+        fakeVideoServiceClient.addSubject(Subject.builder().id("2").name("Science").build())
 
         val users = listOf(activatedUser())
 
@@ -81,7 +90,9 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                 firstName = "Jane",
                 lastName = "Doe",
                 email = "jane@doe.com",
-                hasOptedIntoMarketing = true
+                hasOptedIntoMarketing = true,
+                subjects = listOf("1", "2"),
+                ageRange = listOf(3, 4, 5, 6)
             )
 
         )
