@@ -16,6 +16,7 @@ import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
+import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
 import com.boclips.videos.service.client.VideoServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.keycloak.admin.client.Keycloak
@@ -66,4 +67,8 @@ class ContextConfig(
 
     @Bean
     fun subjectValidator(videoServiceClient: VideoServiceClient) = SubjectValidator(videoServiceClient)
+
+    @Bean
+    fun videoServiceClient(videoServiceProperties: VideoServiceProperties) =
+        VideoServiceClient.getUnauthorisedApiClient(videoServiceProperties.baseUrl)
 }
