@@ -6,6 +6,10 @@ import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.infrastructure.SubjectValidator
+import com.boclips.videos.service.client.VideoServiceClient
+import com.boclips.videos.service.client.internal.FakeClient
+import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -26,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 9999)
+@MockVideoServiceClient
 abstract class AbstractSpringIntegrationTest {
     @Autowired
     protected lateinit var wireMockServer: WireMockServer
@@ -51,6 +56,9 @@ abstract class AbstractSpringIntegrationTest {
     @Autowired
     lateinit var customerManagementProvider: CustomerManagementProvider
 
+    @Autowired
+    lateinit var subjectValidator: SubjectValidator
+
     @BeforeEach
     fun resetState() {
         repositories.forEach { it.deleteAll() }
@@ -62,6 +70,7 @@ abstract class AbstractSpringIntegrationTest {
         Mockito.reset(customerManagementProvider)
 
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(true)
+        whenever(subjectValidator.isValid(any())).thenReturn(true)
     }
 
     fun saveUser(user: User): String {

@@ -1,6 +1,7 @@
 package com.boclips.users.application
 
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
+import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -82,5 +83,14 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         createUser(CreateUserRequestFactory.sample())
 
         verify(customerManagementProvider, times(1)).update(any())
+    }
+
+    @Test
+    fun `throw exception for invalid subject`() {
+        whenever(subjectValidator.isValid(any())).thenReturn(false)
+
+        assertThrows<InvalidSubjectException> {
+            createUser(CreateUserRequestFactory.sample(subjects = listOf("invalid")))
+        }
     }
 }

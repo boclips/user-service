@@ -3,6 +3,7 @@ package com.boclips.users.config
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
+import com.boclips.users.infrastructure.SubjectValidator
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
@@ -15,6 +16,7 @@ import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
+import com.boclips.videos.service.client.VideoServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.keycloak.admin.client.Keycloak
 import org.springframework.context.annotation.Bean
@@ -61,4 +63,7 @@ class ContextConfig(
     @Bean
     fun captchaProvider(googleRecaptchaProperties: GoogleRecaptchaProperties): CaptchaProvider =
         GoogleRecaptchaClient(properties = googleRecaptchaProperties)
+
+    @Bean
+    fun subjectValidator(videoServiceClient: VideoServiceClient) = SubjectValidator(videoServiceClient)
 }
