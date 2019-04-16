@@ -62,7 +62,7 @@ class HubSpotClient(
                 HubSpotProperty("lastname", user.lastName),
                 HubSpotProperty("is_b2t", "true"),
                 HubSpotProperty("b2t_is_activated", user.activated.toString()),
-                HubSpotProperty("subjects_taught", subjectMapper.getNames(user.subjects).joinToString()),
+                HubSpotProperty("subjects_taught", user.subjects.joinToString { it.name }),
                 HubSpotProperty("age_range", user.ageRange.joinToString())
             )
         )

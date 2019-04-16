@@ -17,6 +17,7 @@ import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
 import com.boclips.users.infrastructure.subjects.SubjectMapper
 import com.boclips.users.infrastructure.subjects.SubjectValidator
+import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
 import com.boclips.videos.service.client.VideoServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -82,4 +83,9 @@ class ContextConfig(
     @Bean
     fun subjectMapper(videoServiceClient: VideoServiceClient) =
         SubjectMapper(videoServiceClient)
+
+    @Bean
+    fun userDocumentConverter(subjectMapper: SubjectMapper): UserDocumentConverter {
+        return UserDocumentConverter(subjectMapper)
+    }
 }

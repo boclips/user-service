@@ -3,10 +3,12 @@ package com.boclips.users.config
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
-import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
+import com.boclips.users.infrastructure.subjects.SubjectMapper
+import com.boclips.users.infrastructure.subjects.SubjectValidator
+import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.testsupport.KeycloakClientFake
 import com.boclips.videos.service.client.VideoServiceClient
 import org.mockito.Mockito
@@ -38,4 +40,10 @@ class ContextConfig {
 
     @Bean
     fun subjectValidator(videoServiceClient: VideoServiceClient) = Mockito.mock(SubjectValidator::class.java)
+
+    @Bean
+    fun subjectMapper(videoServiceClient: VideoServiceClient) = Mockito.mock(SubjectMapper::class.java)
+
+    @Bean
+    fun userDocumentConverter(subjectMapper: SubjectMapper) = UserDocumentConverter(subjectMapper)
 }

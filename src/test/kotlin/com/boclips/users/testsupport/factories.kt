@@ -1,5 +1,7 @@
 package com.boclips.users.testsupport
 
+import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -13,7 +15,10 @@ class AccountFactory {
         fun sample(
             id: String = "user-id",
             activated: Boolean = false,
-            subjects: List<String> = listOf("maths-1", "english-2", "netflix-3"),
+            subjects: List<Subject> = listOf(
+                Subject(id = SubjectId(value = "123"), name = "Maths"),
+                Subject(id = SubjectId(value = "456"), name = "Netflix")
+            ),
             ageRange: List<Int> = listOf(1, 2),
             analyticsId: AnalyticsId? = AnalyticsId(value = "1234567"),
             referralCode: String? = null,

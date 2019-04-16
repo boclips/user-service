@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.hubspot
 
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.infrastructure.subjects.SubjectMapper
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -91,7 +92,10 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                 lastName = "Doe",
                 email = "jane@doe.com",
                 hasOptedIntoMarketing = true,
-                subjects = listOf("1", "2"),
+                subjects = listOf(
+                    com.boclips.users.domain.model.Subject(id = SubjectId("1"), name = "Maths"),
+                    com.boclips.users.domain.model.Subject(id = SubjectId("2"), name = "Science")
+                ),
                 ageRange = listOf(3, 4, 5, 6)
             )
 

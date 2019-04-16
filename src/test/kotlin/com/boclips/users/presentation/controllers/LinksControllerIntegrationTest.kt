@@ -32,7 +32,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             AccountFactory.sample(
                 id = "a-user-id",
                 activated = false,
-                subjects = listOf("irrelevant"),
+                subjects = emptyList(),
                 analyticsId = AnalyticsId(value = "irrelevant"),
                 referralCode = null
             )
@@ -53,7 +53,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             AccountFactory.sample(
                 id = "a-user-id",
                 activated = true,
-                subjects = listOf("irrelevant"),
+                subjects = emptyList(),
                 analyticsId = AnalyticsId(value = "irrelevant"),
                 referralCode = null
             )

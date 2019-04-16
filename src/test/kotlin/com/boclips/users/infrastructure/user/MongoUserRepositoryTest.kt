@@ -1,5 +1,7 @@
 package com.boclips.users.infrastructure.user
 
+import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -9,7 +11,9 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `save persists provided user`() {
-        val user = AccountFactory.sample()
+        val user = AccountFactory.sample(
+            subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths"))
+        )
 
         userRepository.save(user)
 
@@ -19,7 +23,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `saving analytics id as null is all good`() {
         val account = AccountFactory.sample(
-            analyticsId = null
+            analyticsId = null,
+            subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths"))
         )
 
         userRepository.save(account)

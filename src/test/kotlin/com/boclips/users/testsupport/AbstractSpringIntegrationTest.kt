@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.infrastructure.subjects.SubjectMapper
 import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
@@ -57,6 +58,9 @@ abstract class AbstractSpringIntegrationTest {
     @Autowired
     lateinit var subjectValidator: SubjectValidator
 
+    @Autowired
+    lateinit var subjectMapper: SubjectMapper
+
     @BeforeEach
     fun resetState() {
         repositories.forEach { it.deleteAll() }
@@ -69,6 +73,7 @@ abstract class AbstractSpringIntegrationTest {
 
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(true)
         whenever(subjectValidator.isValid(any())).thenReturn(true)
+        whenever(subjectMapper.getName(any())).thenReturn("Maths")
     }
 
     fun saveUser(user: User): String {

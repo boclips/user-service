@@ -58,7 +58,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.firstName).isEqualTo("Joe")
         assertThat(persistedUser.lastName).isEqualTo("Dough")
         assertThat(persistedUser.email).isEqualTo("joe@dough.com")
-        assertThat(persistedUser.subjects).containsExactly("subject")
+        assertThat(persistedUser.subjects).hasSize(1)
         assertThat(persistedUser.ageRange).containsExactly(1, 2)
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")

@@ -2,18 +2,22 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.application.CreateUser
 import com.boclips.users.domain.model.NewUser
+import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
+import com.boclips.users.infrastructure.subjects.SubjectMapper
 import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
     val userRepository: UserRepository,
+    val subjectMapper: SubjectMapper,
     val identityProvider: IdentityProvider,
     val analyticsClient: AnalyticsClient
 ) {
@@ -52,7 +56,14 @@ class UserService(
                 id = UserId(identity.id.value),
                 activated = false,
                 analyticsId = newUser.analyticsId,
-                subjects = newUser.subjects,
+                subjects = newUser.subjects.mapNotNull { id ->
+                    subjectMapper.getName(id)?.let {
+                        Subject(
+                            id = SubjectId(value = id),
+                            name = it
+                        )
+                    }
+                },
                 ageRange = newUser.ageRange,
                 referralCode = newUser.referralCode,
                 firstName = newUser.firstName,

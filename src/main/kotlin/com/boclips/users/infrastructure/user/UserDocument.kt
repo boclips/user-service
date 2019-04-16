@@ -24,7 +24,7 @@ data class UserDocument(
         fun from(user: User) = UserDocument(
             id = user.id.value,
             activated = user.activated,
-            subjectIds = user.subjects,
+            subjectIds = user.subjects.map { it.id.value },
             ageRange = user.ageRange,
             analyticsId = user.analyticsId?.value,
             referralCode = user.referralCode,
@@ -34,17 +34,4 @@ data class UserDocument(
             hasOptedIntoMarketing = user.hasOptedIntoMarketing
         )
     }
-
-    fun toUser() = User(
-        id = UserId(value = id),
-        activated = activated,
-        analyticsId = analyticsId?.let { AnalyticsId(value = it) },
-        subjects = subjectIds.orEmpty(),
-        ageRange = ageRange.orEmpty(),
-        referralCode = referralCode?.let { it },
-        firstName = firstName.orEmpty(),
-        lastName = lastName.orEmpty(),
-        email = email.orEmpty(),
-        hasOptedIntoMarketing = hasOptedIntoMarketing ?: true
-    )
 }
