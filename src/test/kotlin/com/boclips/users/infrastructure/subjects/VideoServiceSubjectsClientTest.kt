@@ -36,7 +36,8 @@ class VideoServiceSubjectsClientTest {
     fun `maps a list of ids to a list of names`() {
         videoServiceClient.addSubject(com.boclips.videos.service.client.Subject.builder().id("1").name("maths").build())
 
-        val subjects = videoServiceSubjectsClient.getSubjectsById(listOf(SubjectId(value = "1"), SubjectId(value = "2")))
+        val subjects =
+            videoServiceSubjectsClient.getSubjectsById(listOf(SubjectId(value = "1"), SubjectId(value = "2")))
         assertThat(subjects).hasSize(1)
         assertThat(subjects.first().id.value).isEqualTo("1")
     }
@@ -44,5 +45,49 @@ class VideoServiceSubjectsClientTest {
     @Test
     fun `returns empty list of cannot for missing ids`() {
         assertThat(videoServiceSubjectsClient.getSubjectsById(listOf(SubjectId(value = "1")))).isEmpty()
+    }
+
+    @Test
+    fun `returns true for empty list`() {
+        assertThat(videoServiceSubjectsClient.allSubjectsExist(emptyList())).isTrue()
+    }
+
+    @Test
+    fun `returns true if all are valid in the list`() {
+        videoServiceClient.addSubject(com.boclips.videos.service.client.Subject.builder().id("1").build())
+        videoServiceClient.addSubject(com.boclips.videos.service.client.Subject.builder().id("2").build())
+
+        assertThat(
+            videoServiceSubjectsClient.allSubjectsExist(
+                listOf(
+                    SubjectId(value = "1"), SubjectId(value = "2")
+                )
+            )
+        ).isTrue()
+    }
+
+    @Test
+    fun `returns false for invalid subject`() {
+        assertThat(
+            videoServiceSubjectsClient.allSubjectsExist(
+                listOf(
+                    SubjectId(value = "Invalid")
+                )
+            )
+        ).isFalse()
+    }
+
+    @Test
+    fun `returns false if any are invalid in the list`() {
+        videoServiceClient.addSubject(com.boclips.videos.service.client.Subject.builder().id("1").build())
+
+        assertThat(
+            videoServiceSubjectsClient.allSubjectsExist(
+                listOf(
+                    SubjectId(value = "1"),
+                    SubjectId(value = "Invalid")
+                )
+            )
+        ).isFalse()
     }
 }

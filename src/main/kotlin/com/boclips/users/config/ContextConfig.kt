@@ -15,7 +15,6 @@ import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
-import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
@@ -73,10 +72,6 @@ class ContextConfig(
     @Bean
     fun captchaProvider(googleRecaptchaProperties: GoogleRecaptchaProperties): CaptchaProvider =
         GoogleRecaptchaClient(properties = googleRecaptchaProperties)
-
-    @Bean
-    fun subjectValidator(videoServiceClient: VideoServiceClient) =
-        SubjectValidator(videoServiceClient)
 
     @Bean
     fun videoServiceClient(videoServiceProperties: VideoServiceProperties) =

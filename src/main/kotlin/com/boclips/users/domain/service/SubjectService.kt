@@ -5,4 +5,5 @@ import com.boclips.users.domain.model.SubjectId
 
 interface SubjectService {
     fun getSubjectsById(subjectIds: List<SubjectId>): List<Subject>
+    fun allSubjectsExist(subjectIds: List<SubjectId>): Boolean
 }

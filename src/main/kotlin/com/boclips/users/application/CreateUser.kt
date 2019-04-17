@@ -3,11 +3,12 @@ package com.boclips.users.application
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.NewUser
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.users.presentation.requests.CreateUserRequest
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -17,7 +18,7 @@ class CreateUser(
     private val userService: UserService,
     private val customerManagementProvider: CustomerManagementProvider,
     private val captchaProvider: CaptchaProvider,
-    private val subjectValidator: SubjectValidator
+    private val subjectService: SubjectService
 ) {
     companion object : KLogging()
 
@@ -26,7 +27,10 @@ class CreateUser(
             throw CaptchaScoreBelowThresholdException(createUserRequest.email!!)
         }
 
-        if (!subjectValidator.isValid(createUserRequest.subjects.orEmpty())) {
+        if (!subjectService.allSubjectsExist(
+                createUserRequest.subjects.orEmpty().map { SubjectId(value = it) }
+            )
+        ) {
             throw InvalidSubjectException(createUserRequest.subjects.orEmpty())
         }
 

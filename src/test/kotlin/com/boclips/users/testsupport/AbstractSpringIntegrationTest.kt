@@ -9,7 +9,6 @@ import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
-import com.boclips.users.infrastructure.subjects.SubjectValidator
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
@@ -58,9 +57,6 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var customerManagementProvider: CustomerManagementProvider
 
     @Autowired
-    lateinit var subjectValidator: SubjectValidator
-
-    @Autowired
     lateinit var subjectService: VideoServiceSubjectsClient
 
     @BeforeEach
@@ -74,7 +70,7 @@ abstract class AbstractSpringIntegrationTest {
         Mockito.reset(customerManagementProvider)
 
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(true)
-        whenever(subjectValidator.isValid(any())).thenReturn(true)
+        whenever(subjectService.allSubjectsExist(any())).thenReturn(true)
         whenever(subjectService.getSubjectsById(any())).thenReturn(
             listOf(
                 Subject(

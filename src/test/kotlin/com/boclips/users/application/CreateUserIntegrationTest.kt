@@ -93,7 +93,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `throw exception for invalid subject`() {
-        whenever(subjectValidator.isValid(any())).thenReturn(false)
+        whenever(subjectService.allSubjectsExist(any())).thenReturn(false)
 
         assertThrows<InvalidSubjectException> {
             createUser(CreateUserRequestFactory.sample(subjects = listOf("invalid")))
