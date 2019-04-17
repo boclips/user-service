@@ -1,7 +1,8 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.infrastructure.subjects.SubjectMapper
+import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserDocumentFactory
 import com.boclips.users.testsupport.UserFactory
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 class UserDocumentTest {
     private val fakeClient = FakeClient()
-    private var userDocumentConverter = UserDocumentConverter(SubjectMapper(fakeClient))
+    private var userDocumentConverter = UserDocumentConverter(VideoServiceSubjectsClient(fakeClient))
 
     @BeforeEach
     internal fun setUp() {

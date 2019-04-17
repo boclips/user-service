@@ -15,8 +15,8 @@ import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
-import com.boclips.users.infrastructure.subjects.SubjectMapper
 import com.boclips.users.infrastructure.subjects.SubjectValidator
+import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
 import com.boclips.videos.service.client.VideoServiceClient
@@ -56,12 +56,14 @@ class ContextConfig(
     }
 
     @Bean
-    fun customerManagement(properties: HubSpotProperties, subjectMapper: SubjectMapper): CustomerManagementProvider =
+    fun customerManagement(
+        properties: HubSpotProperties,
+        subjectService: VideoServiceSubjectsClient
+    ): CustomerManagementProvider =
         HubSpotClient(
             objectMapper = objectMapper,
             hubspotProperties = properties,
-            restTemplate = RestTemplate(),
-            subjectMapper = subjectMapper
+            restTemplate = RestTemplate()
         )
 
     @Bean
@@ -81,11 +83,11 @@ class ContextConfig(
         VideoServiceClient.getUnauthorisedApiClient(videoServiceProperties.baseUrl)
 
     @Bean
-    fun subjectMapper(videoServiceClient: VideoServiceClient) =
-        SubjectMapper(videoServiceClient)
+    fun subjectService(videoServiceClient: VideoServiceClient) =
+        VideoServiceSubjectsClient(videoServiceClient)
 
     @Bean
-    fun userDocumentConverter(subjectMapper: SubjectMapper): UserDocumentConverter {
-        return UserDocumentConverter(subjectMapper)
+    fun userDocumentConverter(subjectService: VideoServiceSubjectsClient): UserDocumentConverter {
+        return UserDocumentConverter(subjectService)
     }
 }

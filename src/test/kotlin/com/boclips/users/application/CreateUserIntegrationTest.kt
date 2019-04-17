@@ -21,6 +21,10 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `create account without optional values`() {
+        whenever(subjectService.getSubjectsById(any())).thenReturn(
+            emptyList()
+        )
+        
         val createdAccount = createUser(
             CreateUserRequest(
                 firstName = "Hans",

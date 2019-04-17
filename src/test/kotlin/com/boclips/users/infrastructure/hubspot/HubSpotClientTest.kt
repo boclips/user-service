@@ -1,9 +1,7 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.infrastructure.subjects.SubjectMapper
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
-import com.boclips.videos.service.client.VideoServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
@@ -16,8 +14,7 @@ import org.springframework.web.client.RestTemplate
 class HubSpotClientTest {
     val hubspotClient: HubSpotClient = HubSpotClient(
         ObjectMapper(), HubSpotProperties(),
-        RestTemplate(),
-        SubjectMapper(VideoServiceClient.getFakeClient())
+        RestTemplate()
     )
 
     @Test

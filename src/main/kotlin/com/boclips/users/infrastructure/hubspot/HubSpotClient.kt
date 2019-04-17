@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.hubspot
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.infrastructure.getContentTypeHeader
-import com.boclips.users.infrastructure.subjects.SubjectMapper
+import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.apache.commons.validator.routines.EmailValidator
@@ -15,8 +15,7 @@ import java.net.URI
 class HubSpotClient(
     val objectMapper: ObjectMapper,
     val hubspotProperties: HubSpotProperties,
-    val restTemplate: RestTemplate,
-    val subjectMapper: SubjectMapper
+    val restTemplate: RestTemplate
 ) : CustomerManagementProvider {
     companion object : KLogging()
 

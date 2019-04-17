@@ -2,13 +2,12 @@ package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
-import com.boclips.users.infrastructure.subjects.SubjectMapper
+import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.users.testsupport.loadWireMockStub
 import com.boclips.videos.service.client.Subject
-import com.boclips.videos.service.client.VideoServiceClient
 import com.boclips.videos.service.client.internal.FakeClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -35,8 +34,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             this.batchSize = 100
             this.marketingSubscriptionId = 123
         },
-        RestTemplate(),
-        subjectMapper = SubjectMapper(fakeVideoServiceClient)
+        RestTemplate()
     )
 
     @Test
