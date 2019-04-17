@@ -17,3 +17,7 @@ management:
     export:
       prometheus:
         enabled: true
+
+subjects:
+  cache:
+    timetolive: 300000

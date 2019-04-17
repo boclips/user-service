@@ -10,3 +10,7 @@ googlerecaptcha:
   host: http://localhost:9999
   threshold: 0.5
   secretKey: secret-key
+
+subjects:
+  cache:
+    timetolive: 5000

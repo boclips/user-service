@@ -15,7 +15,7 @@ class VideoServiceSubjectsClientTest {
 
     @BeforeEach
     fun setup() {
-        videoServiceSubjectsClient = VideoServiceSubjectsClient(videoServiceClient)
+        videoServiceSubjectsClient = VideoServiceSubjectsClient(CacheableSubjectsClient(videoServiceClient))
         videoServiceClient.clear()
     }
 

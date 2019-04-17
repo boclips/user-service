@@ -15,6 +15,7 @@ import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
+import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
@@ -78,8 +79,11 @@ class ContextConfig(
         VideoServiceClient.getUnauthorisedApiClient(videoServiceProperties.baseUrl)
 
     @Bean
-    fun subjectService(videoServiceClient: VideoServiceClient) =
-        VideoServiceSubjectsClient(videoServiceClient)
+    fun cacheableSubjectsClient(videoServiceClient: VideoServiceClient) = CacheableSubjectsClient(videoServiceClient)
+
+    @Bean
+    fun subjectService(cacheableSubjectsClient: CacheableSubjectsClient) =
+        VideoServiceSubjectsClient(cacheableSubjectsClient)
 
     @Bean
     fun userDocumentConverter(subjectService: VideoServiceSubjectsClient): UserDocumentConverter {

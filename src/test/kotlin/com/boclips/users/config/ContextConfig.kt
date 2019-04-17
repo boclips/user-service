@@ -6,6 +6,7 @@ import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
+import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.testsupport.KeycloakClientFake
@@ -42,4 +43,7 @@ class ContextConfig {
 
     @Bean
     fun userDocumentConverter(subjectService: VideoServiceSubjectsClient) = UserDocumentConverter(subjectService)
+
+    @Bean
+    fun cacheableSubjectsClient(videoServiceClient: VideoServiceClient) = CacheableSubjectsClient(videoServiceClient)
 }
