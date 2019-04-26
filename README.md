@@ -1,6 +1,6 @@
-[![concourse](https://concourse.devboclips.net/api/v1/pipelines/boclips/jobs/build-user-service/badge)]()
-
 # user-service
+
+[![concourse](https://concourse.devboclips.net/api/v1/pipelines/boclips/jobs/build-user-service/badge)]()
 
 The service is in charge of maintaining user profiles. It is powering the teacher app.
 
