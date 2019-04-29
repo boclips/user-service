@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.2.xsd">
+    <suppress>
+        <notes><![CDATA[
+      file name: tomcat-embed-websocket-8.5.35.jar & tomcat-embed-core-8.5.35.jar
+      ]]></notes>
+        <cpe>cpe:/a:apache_software_foundation:tomcat:8.5.35</cpe>
+        <cve>CVE-2019-0232</cve>
+    </suppress>
+</suppressions>
