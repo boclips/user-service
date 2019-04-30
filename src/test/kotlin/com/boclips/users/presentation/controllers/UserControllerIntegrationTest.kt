@@ -7,6 +7,7 @@ import com.boclips.users.testsupport.asUser
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.hamcrest.Matchers.endsWith
+import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -101,13 +102,15 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     """
                     {"firstName": "jane",
                      "lastName": "doe",
-                     "subjects": "some subjects",
-                     "email": "jane@doe.com",
+                     "email": "jane@doe.com"
                      }
                     """.trimIndent()
                 )
         )
             .andExpect(status().is4xxClientError)
+            .andExpect(jsonPath("$.errors", hasSize<Any>(5)))
+            .andExpect(jsonPath("$.errors[0].field").exists())
+            .andExpect(jsonPath("$.errors[0].message").exists())
     }
 
     @Test

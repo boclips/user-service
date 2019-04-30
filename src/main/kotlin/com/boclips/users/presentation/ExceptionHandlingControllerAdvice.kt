@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @ControllerAdvice(basePackageClasses = [PresentationPackageMarker::class])
-class ExceptionHandling {
+class ExceptionHandlingControllerAdvice {
     companion object : KLogging()
 
     @ResponseStatus(value = HttpStatus.CONFLICT, reason = "User already exists")
