@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserCounts
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
 import org.springframework.stereotype.Component
@@ -36,8 +37,10 @@ class MongoUserRepository(
             .save(UserDocument.from(user))
     )
 
-    override fun count(): Int {
-        return userDocumentMongoRepository.count().toInt()
+    override fun count(): UserCounts {
+        val total = userDocumentMongoRepository.count()
+        val activated = userDocumentMongoRepository.countByActivatedTrue()
+        return UserCounts(total = total, activated = activated)
     }
 }
 

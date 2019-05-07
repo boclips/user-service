@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -57,5 +58,25 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         userRepository.activate(account.id)
 
         assertThat(userRepository.findById(account.id)!!.activated).isTrue()
+    }
+
+    @Test
+    fun `count users`() {
+        userRepository.save(AccountFactory.sample(
+                id = "user-1",
+                analyticsId = null,
+                activated = false
+        ))
+        userRepository.save(AccountFactory.sample(
+                id = "user=2",
+                analyticsId = null,
+                activated = false
+        ))
+        userRepository.activate(UserId("user-1"))
+
+        val counts = userRepository.count()
+
+        assertThat(counts.total).isEqualTo(2)
+        assertThat(counts.activated).isEqualTo(1)
     }
 }
