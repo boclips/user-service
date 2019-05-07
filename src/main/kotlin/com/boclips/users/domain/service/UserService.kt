@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
     val userRepository: UserRepository,
-    val SubjectService: VideoServiceSubjectsClient,
+    val subjectService: VideoServiceSubjectsClient,
     val identityProvider: IdentityProvider,
     val analyticsClient: AnalyticsClient
 ) {
@@ -55,7 +55,7 @@ class UserService(
                 id = UserId(identity.id.value),
                 activated = false,
                 analyticsId = newUser.analyticsId,
-                subjects = SubjectService.getSubjectsById(newUser.subjects.map { SubjectId(value = it) }),
+                subjects = subjectService.getSubjectsById(newUser.subjects.map { SubjectId(value = it) }),
                 ageRange = newUser.ageRange,
                 referralCode = newUser.referralCode,
                 firstName = newUser.firstName,

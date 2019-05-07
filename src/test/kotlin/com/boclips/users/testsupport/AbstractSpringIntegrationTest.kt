@@ -24,6 +24,9 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
+import com.boclips.events.config.Subscriptions
+import com.boclips.events.config.Topics
+import org.springframework.cloud.stream.test.binder.MessageCollector
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -58,6 +61,15 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var subjectService: VideoServiceSubjectsClient
+
+    @Autowired
+    lateinit var topics: Topics
+
+    @Autowired
+    lateinit var subscriptions: Subscriptions
+
+    @Autowired
+    lateinit var messageCollector: MessageCollector
 
     @BeforeEach
     fun resetState() {

@@ -14,3 +14,9 @@ googlerecaptcha:
 subjects:
   cache:
     timetolive: 5000
+
+spring:
+  cloud:
+    gcp:
+      pubsub:
+        enabled: false
