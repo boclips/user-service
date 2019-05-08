@@ -1,5 +1,7 @@
 package com.boclips.users.application
 
+import com.boclips.events.config.Topics
+import com.boclips.events.types.UserActivated
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.User
@@ -7,15 +9,19 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
+import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import mu.KLogging
+import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
 
 @Component
 class ActivateUser(
     private val userService: UserService,
+    private val userRepository: UserRepository,
     private val referralProvider: ReferralProvider,
-    private val customerManagementProvider: CustomerManagementProvider
+    private val customerManagementProvider: CustomerManagementProvider,
+    private val topics: Topics
 ) {
     companion object : KLogging()
 
@@ -31,9 +37,23 @@ class ActivateUser(
 
         customerManagementProvider.update(listOf(activatedUser))
 
+        publishUserActivated(activatedUser.id)
+
         logger.info { "Activated user $activatedUser" }
 
         return activatedUser
+    }
+
+    private fun publishUserActivated(id: UserId) {
+        val count = userRepository.count()
+        topics.userActivated().send(MessageBuilder
+                .withPayload(
+                        UserActivated.builder()
+                                .userId(id.value)
+                                .totalUsers(count.total)
+                                .activatedUsers(count.activated)
+                                .build())
+                .build())
     }
 
     private fun registerReferral(activatedUser: User) {

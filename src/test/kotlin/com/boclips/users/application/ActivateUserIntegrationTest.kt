@@ -19,9 +19,30 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `activate user is idempotent`() {
-        setSecurityContext("user@example.com")
+        val identity = UUID.randomUUID().toString()
+        setSecurityContext(identity)
 
-        assertThat(activateUser).isEqualTo(activateUser)
+        saveUser(UserFactory.sample(user = AccountFactory.sample(id = identity)))
+
+        assertThat(activateUser()).isEqualTo(activateUser())
+    }
+
+    @Test
+    fun `activate user publishes an event`() {
+        val identity1 = UUID.randomUUID().toString()
+        setSecurityContext(identity1)
+        saveUser(UserFactory.sample(user = AccountFactory.sample(id = identity1)))
+
+        val identity2 = UUID.randomUUID().toString()
+        setSecurityContext(identity2)
+        saveUser(UserFactory.sample(user = AccountFactory.sample(id = identity2)))
+
+        activateUser()
+
+        val message = messageCollector.forChannel(topics.userActivated()).poll()
+
+        assertThat(message.toString()).contains("\"totalUsers\":2")
+        assertThat(message.toString()).contains("\"activatedUsers\":1")
     }
 
     @Test

@@ -91,6 +91,8 @@ abstract class AbstractSpringIntegrationTest {
                 )
             )
         )
+
+        messageCollector.forChannel(topics.userActivated()).clear()
     }
 
     fun saveUser(user: User): String {
