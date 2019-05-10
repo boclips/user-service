@@ -37,19 +37,23 @@ class ActivateUser(
 
         customerManagementProvider.update(listOf(activatedUser))
 
-        publishUserActivated(activatedUser.id)
+        publishUserActivated(activatedUser)
 
         logger.info { "Activated user $activatedUser" }
 
         return activatedUser
     }
 
-    private fun publishUserActivated(id: UserId) {
+    private fun publishUserActivated(user: User) {
         val count = userRepository.count()
         topics.userActivated().send(MessageBuilder
                 .withPayload(
                         UserActivated.builder()
-                                .userId(id.value)
+                                .user(com.boclips.events.types.User.builder()
+                                        .id(user.id.value)
+                                        .email(user.email)
+                                        .build()
+                                )
                                 .totalUsers(count.total)
                                 .activatedUsers(count.activated)
                                 .build())
