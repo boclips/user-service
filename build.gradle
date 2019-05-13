@@ -69,7 +69,7 @@ dependencies {
 
     implementation("com.github.boclips:events:0.34.0")
     implementation('com.github.boclips:boclips-spring-web:0.1.0')
-    implementation('com.github.boclips:boclips-spring-security:0.48.0')
+    implementation('com.github.boclips:boclips-spring-security:0.93.0')
     implementation('com.github.boclips:videos:0.0.619')
 
     implementation('com.jayway.jsonpath:json-path:2.3.0')
