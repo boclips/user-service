@@ -46,6 +46,15 @@ class HubSpotClient(
         }
     }
 
+    fun unsubscribeFromMarketingEmails(crmProfile: CrmProfile) {
+        restTemplate.put(
+            getEmailEndPointForUser(crmProfile),
+            UnsubscribeFromMarketingEmails(
+                listOf(SubscriptionStatus(id = hubspotProperties.marketingSubscriptionId))
+            )
+        )
+    }
+
     private fun isRealUser(anyUser: CrmProfile) =
         anyUser.firstName.isNotEmpty() &&
             anyUser.lastName.isNotEmpty() &&
@@ -61,7 +70,8 @@ class HubSpotClient(
                 HubSpotProperty("is_b2t", "true"),
                 HubSpotProperty("b2t_is_activated", crmProfile.activated.toString()),
                 HubSpotProperty("subjects_taught", crmProfile.subjects.joinToString { it.name }),
-                HubSpotProperty("age_range", crmProfile.ageRange.joinToString())
+                HubSpotProperty("age_range", crmProfile.ageRange.joinToString()),
+                HubSpotProperty("b2t_last_logged_in", crmProfile.lastLoggedIn?.epochSecond?.toString() ?: "")
             )
         )
     }
@@ -82,19 +92,11 @@ class HubSpotClient(
             .toUri()
     }
 
-    private fun getEmailEndPointForUser(crmProfile: CrmProfile): URI =
-        UriComponentsBuilder.fromUriString("${hubspotProperties.host}/email/public/v1/subscriptions/${crmProfile.email}")
+    private fun getEmailEndPointForUser(crmProfile: CrmProfile): URI {
+        return UriComponentsBuilder.fromUriString("${hubspotProperties.host}/email/public/v1/subscriptions/${crmProfile.email}")
             .queryParam("hapikey", hubspotProperties.apiKey)
             .build()
             .toUri()
-
-    fun unsubscribeFromMarketingEmails(crmProfile: CrmProfile) {
-        restTemplate.put(
-            getEmailEndPointForUser(crmProfile),
-            UnsubscribeFromMarketingEmails(
-                listOf(SubscriptionStatus(id = hubspotProperties.marketingSubscriptionId))
-            )
-        )
     }
 }
 

@@ -25,6 +25,10 @@
       {
         "property": "age_range",
         "value": "3, 4, 5, 6"
+      },
+      {
+        "property": "b2t_last_logged_in",
+        "value": "1502150400"
       }
     ]
   }

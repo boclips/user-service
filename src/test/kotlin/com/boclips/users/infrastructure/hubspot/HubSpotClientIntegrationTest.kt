@@ -23,6 +23,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestTemplate
+import java.time.Instant
 
 class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
@@ -44,7 +45,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         fakeVideoServiceClient.addSubject(Subject.builder().id("1").name("Maths").build())
         fakeVideoServiceClient.addSubject(Subject.builder().id("2").name("Science").build())
 
-        val crmProfiles = listOf(userToCrmProfile(activatedUser(), UserSessionsFactory.sample()))
+        val crmProfiles = listOf(userToCrmProfile(activatedUser(), UserSessionsFactory.sample(lastAccess = Instant.parse("2017-08-08T00:00:00Z"))))
 
         hubSpotClient.update(crmProfiles)
 
