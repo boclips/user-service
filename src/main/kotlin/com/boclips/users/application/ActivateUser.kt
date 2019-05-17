@@ -6,6 +6,7 @@ import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
@@ -15,6 +16,7 @@ import com.boclips.users.domain.service.userToCrmProfile
 import mu.KLogging
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
+import java.time.Instant
 
 @Component
 class ActivateUser(
@@ -36,7 +38,7 @@ class ActivateUser(
             registerReferral(activatedUser)
         }
 
-        val crmProfile = userToCrmProfile(activatedUser)
+        val crmProfile = userToCrmProfile(activatedUser, UserSessions(Instant.now()))
         customerManagementProvider.update(listOf(crmProfile))
 
         publishUserActivated(activatedUser)

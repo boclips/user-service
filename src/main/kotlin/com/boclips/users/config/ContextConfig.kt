@@ -2,7 +2,9 @@ package com.boclips.users.config
 
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
+import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
@@ -39,10 +41,16 @@ class ContextConfig(
     fun keycloakWrapper(keycloak: Keycloak) = KeycloakWrapper(keycloak)
 
     @Bean
-    fun identityProvider(keycloakWrapper: KeycloakWrapper) = KeycloakClient(
+    fun keycloakClient(keycloakWrapper: KeycloakWrapper) = KeycloakClient(
         keycloakWrapper,
         KeycloakUserToUserIdentityConverter()
     )
+
+    @Bean
+    fun identityProvider(keycloakClient: KeycloakClient): IdentityProvider = keycloakClient
+
+    @Bean
+    fun sessionProvider(keycloakClient: KeycloakClient): SessionProvider = keycloakClient
 
     @Bean
     fun keycloak(properties: KeycloakProperties): Keycloak {

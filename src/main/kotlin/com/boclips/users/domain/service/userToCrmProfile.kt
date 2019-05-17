@@ -3,8 +3,9 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.CrmProfile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.UserSessions
 
-fun userToCrmProfile(user: User): CrmProfile {
+fun userToCrmProfile(user: User, sessions: UserSessions): CrmProfile {
     return CrmProfile(
         id = UserId(user.id.value),
         activated = user.activated,
@@ -13,6 +14,7 @@ fun userToCrmProfile(user: User): CrmProfile {
         firstName = user.firstName,
         lastName = user.lastName,
         email = user.email,
-        hasOptedIntoMarketing = user.hasOptedIntoMarketing
+        hasOptedIntoMarketing = user.hasOptedIntoMarketing,
+        lastLoggedIn = sessions.lastAccess
     )
 }

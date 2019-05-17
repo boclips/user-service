@@ -1,11 +1,13 @@
 package com.boclips.users.testsupport
 
+import com.boclips.events.config.Topics
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
@@ -20,13 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
+import org.springframework.cloud.stream.test.binder.MessageCollector
 import org.springframework.data.repository.CrudRepository
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
-import com.boclips.events.config.Subscriptions
-import com.boclips.events.config.Topics
-import org.springframework.cloud.stream.test.binder.MessageCollector
+import java.time.Instant
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -45,7 +46,10 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var userRepository: UserRepository
 
     @Autowired
-    lateinit var identityProvider: KeycloakClientFake
+    lateinit var keycloakClientFake: KeycloakClientFake
+
+    @Autowired
+    lateinit var identityProvider: IdentityProvider
 
     @Autowired
     lateinit var repositories: Collection<CrudRepository<*, *>>
@@ -66,15 +70,12 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var topics: Topics
 
     @Autowired
-    lateinit var subscriptions: Subscriptions
-
-    @Autowired
     lateinit var messageCollector: MessageCollector
 
     @BeforeEach
     fun resetState() {
         repositories.forEach { it.deleteAll() }
-        identityProvider.clear()
+        keycloakClientFake.clear()
         wireMockServer.resetAll()
 
         Mockito.reset(referralProvider)
@@ -98,7 +99,7 @@ abstract class AbstractSpringIntegrationTest {
     fun saveUser(user: User): String {
         userRepository.save(user)
 
-        identityProvider.createUser(
+        keycloakClientFake.createUser(
             Identity(
                 id = user.id,
                 firstName = user.firstName,
@@ -107,6 +108,8 @@ abstract class AbstractSpringIntegrationTest {
                 isVerified = false
             )
         )
+
+        keycloakClientFake.addUserSession(Instant.now())
 
         return user.id.value
     }

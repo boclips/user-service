@@ -2,7 +2,9 @@ package com.boclips.users.config
 
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
+import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
@@ -24,7 +26,13 @@ class ContextConfig {
     fun analyticsClient() = MixpanelClientFake()
 
     @Bean
-    fun identityProvider() = KeycloakClientFake()
+    fun keycloakClientFake(): KeycloakClientFake = KeycloakClientFake()
+
+    @Bean
+    fun identityProvider(keycloakClientFake: KeycloakClientFake): IdentityProvider = keycloakClientFake
+
+    @Bean
+    fun sessionProvider(keycloakClientFake: KeycloakClientFake): SessionProvider = keycloakClientFake
 
     @Bean
     fun customerManagement(properties: HubSpotProperties): CustomerManagementProvider =

@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.hubspot
 import com.boclips.users.domain.service.userToCrmProfile
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
+import com.boclips.users.testsupport.UserSessionsFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
@@ -24,7 +25,7 @@ class HubSpotClientTest {
 
         val optedInUser = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = true))
 
-        hubspotClientMock.update(listOf(userToCrmProfile(optedInUser)))
+        hubspotClientMock.update(listOf(userToCrmProfile(optedInUser, UserSessionsFactory.sample())))
 
         verify(hubspotClientMock, never()).unsubscribeFromMarketingEmails(any())
     }
@@ -35,7 +36,7 @@ class HubSpotClientTest {
 
         val optedInUser = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = false))
 
-        hubspotClientMock.update(listOf(userToCrmProfile(optedInUser)))
+        hubspotClientMock.update(listOf(userToCrmProfile(optedInUser, UserSessionsFactory.sample())))
 
         verify(hubspotClientMock, times(1)).unsubscribeFromMarketingEmails(any())
     }

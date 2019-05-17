@@ -50,7 +50,7 @@ class CreateUser(
 
         val createdUser = userService.createUser(newUser = newUser)
 
-        val crmProfile = userToCrmProfile(createdUser)
+        val crmProfile = userToCrmProfile(createdUser, UserSessions(lastAccess = null))
         customerManagementProvider.update(listOf(crmProfile))
 
         return createdUser
