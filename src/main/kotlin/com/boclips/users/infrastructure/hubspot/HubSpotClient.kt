@@ -1,9 +1,8 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.CrmProfile
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.infrastructure.getContentTypeHeader
-import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.apache.commons.validator.routines.EmailValidator
@@ -19,18 +18,18 @@ class HubSpotClient(
 ) : CustomerManagementProvider {
     companion object : KLogging()
 
-    override fun update(users: List<User>) {
+    override fun update(crmProfiles: List<CrmProfile>) {
         try {
             logger.info { "Sychronising contacts with HubSpot" }
-            val allValidContacts = users.filter { isRealUser(it) }
+            val allValidContacts = crmProfiles.filter { isRealUser(it) }
 
             allValidContacts
                 .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
                 .forEachIndexed { index, batchOfUsers ->
-                    val contacts = batchOfUsers.map { user ->
-                        toHubSpotContact(user).also {
-                            if (!user.hasOptedIntoMarketing) {
-                                unsubscribeFromMarketingEmails(user)
+                    val contacts = batchOfUsers.map { crmProfile ->
+                        toHubSpotContact(crmProfile).also {
+                            if (!crmProfile.hasOptedIntoMarketing) {
+                                unsubscribeFromMarketingEmails(crmProfile)
                             }
                         }
                     }
@@ -47,22 +46,22 @@ class HubSpotClient(
         }
     }
 
-    private fun isRealUser(anyUser: User) =
+    private fun isRealUser(anyUser: CrmProfile) =
         anyUser.firstName.isNotEmpty() &&
             anyUser.lastName.isNotEmpty() &&
             anyUser.email.isNotEmpty() &&
             EmailValidator.getInstance().isValid(anyUser.email)
 
-    private fun toHubSpotContact(user: User): HubSpotContact {
+    private fun toHubSpotContact(crmProfile: CrmProfile): HubSpotContact {
         return HubSpotContact(
-            email = user.email,
+            email = crmProfile.email,
             properties = listOfNotNull(
-                HubSpotProperty("firstname", user.firstName),
-                HubSpotProperty("lastname", user.lastName),
+                HubSpotProperty("firstname", crmProfile.firstName),
+                HubSpotProperty("lastname", crmProfile.lastName),
                 HubSpotProperty("is_b2t", "true"),
-                HubSpotProperty("b2t_is_activated", user.activated.toString()),
-                HubSpotProperty("subjects_taught", user.subjects.joinToString { it.name }),
-                HubSpotProperty("age_range", user.ageRange.joinToString())
+                HubSpotProperty("b2t_is_activated", crmProfile.activated.toString()),
+                HubSpotProperty("subjects_taught", crmProfile.subjects.joinToString { it.name }),
+                HubSpotProperty("age_range", crmProfile.ageRange.joinToString())
             )
         )
     }
@@ -83,15 +82,15 @@ class HubSpotClient(
             .toUri()
     }
 
-    private fun getEmailEndPointForUser(user: User): URI =
-        UriComponentsBuilder.fromUriString("${hubspotProperties.host}/email/public/v1/subscriptions/${user.email}")
+    private fun getEmailEndPointForUser(crmProfile: CrmProfile): URI =
+        UriComponentsBuilder.fromUriString("${hubspotProperties.host}/email/public/v1/subscriptions/${crmProfile.email}")
             .queryParam("hapikey", hubspotProperties.apiKey)
             .build()
             .toUri()
 
-    fun unsubscribeFromMarketingEmails(user: User) {
+    fun unsubscribeFromMarketingEmails(crmProfile: CrmProfile) {
         restTemplate.put(
-            getEmailEndPointForUser(user),
+            getEmailEndPointForUser(crmProfile),
             UnsubscribeFromMarketingEmails(
                 listOf(SubscriptionStatus(id = hubspotProperties.marketingSubscriptionId))
             )

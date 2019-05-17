@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserSessions
 import org.springframework.stereotype.Component
 
 @Component

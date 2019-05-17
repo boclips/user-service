@@ -11,6 +11,7 @@ import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
+import com.boclips.users.domain.service.userToCrmProfile
 import mu.KLogging
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
@@ -35,7 +36,8 @@ class ActivateUser(
             registerReferral(activatedUser)
         }
 
-        customerManagementProvider.update(listOf(activatedUser))
+        val crmProfile = userToCrmProfile(activatedUser)
+        customerManagementProvider.update(listOf(crmProfile))
 
         publishUserActivated(activatedUser)
 

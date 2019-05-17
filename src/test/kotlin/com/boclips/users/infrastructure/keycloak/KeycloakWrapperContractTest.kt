@@ -94,13 +94,33 @@ class KeycloakWrapperContractTest {
     @DisplayName("Testing sessions and last login")
     inner class Sessions {
         @Test
+        fun `cannot fetch user session for a user that does not exist`() {
+            val wrapper = KeycloakWrapper(keycloakInstance)
+
+            val userSessionRepresentation = wrapper.getLastUserSession("x")
+
+            assertThat(userSessionRepresentation).isNull()
+        }
+
+        @Test
         fun `cannot fetch user session for a user that has never logged in`() {
             val wrapper = KeycloakWrapper(keycloakInstance)
 
-            val aUser = wrapper.users().first()
-            val userSessionRepresentation = wrapper.getLastUserSession(aUser.id)
+            val randomUsername = UUID.randomUUID().toString()
+            val createdUser = wrapper.createUser(
+                KeycloakUser(
+                    firstName = "Hans",
+                    lastName = "Muster",
+                    email = "notloggedin+$randomUsername@boclips.com",
+                    password = "123"
+                )
+            )
+
+            val userSessionRepresentation = wrapper.getLastUserSession(createdUser.id)
 
             assertThat(userSessionRepresentation).isNull()
+
+            wrapper.removeUser(createdUser.id)
         }
 
         @Test

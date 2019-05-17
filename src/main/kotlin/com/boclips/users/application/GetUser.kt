@@ -4,6 +4,8 @@ import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.presentation.resources.UserConverter
 import com.boclips.users.presentation.resources.UserResource

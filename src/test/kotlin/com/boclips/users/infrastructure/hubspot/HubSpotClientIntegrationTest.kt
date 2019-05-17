@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
-import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.domain.service.userToCrmProfile
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.UserFactory
@@ -43,9 +43,9 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         fakeVideoServiceClient.addSubject(Subject.builder().id("1").name("Maths").build())
         fakeVideoServiceClient.addSubject(Subject.builder().id("2").name("Science").build())
 
-        val users = listOf(activatedUser())
+        val crmProfiles = listOf(userToCrmProfile(activatedUser()))
 
-        hubSpotClient.update(users)
+        hubSpotClient.update(crmProfiles)
 
         wireMockServer.verify(
             postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*"))
@@ -61,7 +61,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
         val optedOutOfMarketingUser = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = false))
 
-        hubSpotClient.update(listOf(optedOutOfMarketingUser))
+        hubSpotClient.update(listOf(userToCrmProfile(optedOutOfMarketingUser)))
 
         wireMockServer.verify(
             putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${optedOutOfMarketingUser.email}.*"))

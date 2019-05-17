@@ -5,10 +5,12 @@ import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.NewUser
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserService
+import com.boclips.users.domain.service.userToCrmProfile
 import com.boclips.users.presentation.requests.CreateUserRequest
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -48,7 +50,8 @@ class CreateUser(
 
         val createdUser = userService.createUser(newUser = newUser)
 
-        customerManagementProvider.update(listOf(createdUser))
+        val crmProfile = userToCrmProfile(createdUser)
+        customerManagementProvider.update(listOf(crmProfile))
 
         return createdUser
     }
