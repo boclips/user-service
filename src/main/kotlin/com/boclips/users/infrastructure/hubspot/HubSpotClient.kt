@@ -10,6 +10,8 @@ import org.springframework.http.HttpEntity
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 class HubSpotClient(
     val objectMapper: ObjectMapper,
@@ -71,9 +73,17 @@ class HubSpotClient(
                 HubSpotProperty("b2t_is_activated", crmProfile.activated.toString()),
                 HubSpotProperty("subjects_taught", crmProfile.subjects.joinToString { it.name }),
                 HubSpotProperty("age_range", crmProfile.ageRange.joinToString()),
-                HubSpotProperty("b2t_last_logged_in", crmProfile.lastLoggedIn?.toEpochMilli()?.toString() ?: "")
+                HubSpotProperty("b2t_last_logged_in", convertToInstantAtMidnight(crmProfile))
             )
         )
+    }
+
+    private fun convertToInstantAtMidnight(crmProfile: CrmProfile): String {
+        val lastLoggedIn = crmProfile.lastLoggedIn?.let {
+            LocalDateTime.ofInstant(it, ZoneId.of("UTC")).toLocalDate().atStartOfDay(ZoneId.of("UTC")).toInstant()
+                .toEpochMilli().toString()
+        } ?: ""
+        return lastLoggedIn
     }
 
     private fun postContacts(contacts: List<HubSpotContact>) {
