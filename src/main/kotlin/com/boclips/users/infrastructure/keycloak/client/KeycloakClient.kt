@@ -1,8 +1,10 @@
 package com.boclips.users.infrastructure.keycloak.client
 
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakUser
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.UserNotCreatedException
@@ -10,11 +12,12 @@ import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRe
 import mu.KLogging
 import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.retry.annotation.Retryable
+import java.time.Instant
 
 open class KeycloakClient(
     private val keycloak: KeycloakWrapper,
     private val userConverter: KeycloakUserToUserIdentityConverter
-) : IdentityProvider {
+) : IdentityProvider, SessionProvider {
     companion object : KLogging()
 
     @Retryable(value = [UserNotCreatedException::class], maxAttempts = 2)
@@ -42,6 +45,7 @@ open class KeycloakClient(
         val user: UserRepresentation?
         return try {
             user = keycloak.getUser(id.value)!!
+
             userConverter.convert(user)
         } catch (e: javax.ws.rs.NotFoundException) {
             logger.warn { "Could not find user: ${id.value}, omitting user" }
@@ -68,5 +72,13 @@ open class KeycloakClient(
 
     override fun count(): Int {
         return keycloak.countUsers()
+    }
+
+    override fun getUserSessions(id: UserId): UserSessions {
+        val userSessionRepresentation = keycloak.getLastUserSession(id.value)
+
+        return UserSessions(lastAccess = userSessionRepresentation?.let {
+            Instant.ofEpochMilli(userSessionRepresentation.lastAccess)
+        })
     }
 }
