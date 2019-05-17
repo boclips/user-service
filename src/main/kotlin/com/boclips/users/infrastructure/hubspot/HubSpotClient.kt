@@ -71,7 +71,7 @@ class HubSpotClient(
                 HubSpotProperty("b2t_is_activated", crmProfile.activated.toString()),
                 HubSpotProperty("subjects_taught", crmProfile.subjects.joinToString { it.name }),
                 HubSpotProperty("age_range", crmProfile.ageRange.joinToString()),
-                HubSpotProperty("b2t_last_logged_in", crmProfile.lastLoggedIn?.epochSecond?.toString() ?: "")
+                HubSpotProperty("b2t_last_logged_in", crmProfile.lastLoggedIn?.toEpochMilli()?.toString() ?: "")
             )
         )
     }
