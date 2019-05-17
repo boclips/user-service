@@ -1,9 +1,11 @@
 package com.boclips.users.infrastructure.keycloak
 
+import com.boclips.users.infrastructure.keycloak.KeycloakWrapper.Companion.REALM
 import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
+import org.keycloak.representations.idm.UserSessionRepresentation
 import javax.ws.rs.core.Response
 
 open class KeycloakWrapper(private val keycloak: Keycloak) {
@@ -24,6 +26,16 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
             keycloak.realm(REALM).users().get(id).toRepresentation()
         } catch (ex: Exception) {
             logger.warn { "Could not find user: $id" }
+            null
+        }
+    }
+
+    fun getLastUserSession(id: String) : UserSessionRepresentation? {
+        return try {
+            keycloak.realm(REALM).users().get(id).userSessions.last()
+        }
+        catch (ex: Exception) {
+            logger.warn { "$ex" }
             null
         }
     }

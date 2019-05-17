@@ -1,11 +1,13 @@
 package com.boclips.users.infrastructure.keycloak
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.UserRepresentation
+import org.keycloak.representations.idm.UserSessionRepresentation
 import org.springframework.util.ResourceUtils
 import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
@@ -86,6 +88,31 @@ class KeycloakWrapperContractTest {
         val users: List<UserRepresentation> = wrapper.users()
 
         assertThat(users.size).isGreaterThan(1)
+    }
+
+    @Nested
+    @DisplayName("Testing sessions and last login")
+    inner class Sessions {
+        @Test
+        fun `cannot fetch user session for a user that has never logged in`() {
+            val wrapper = KeycloakWrapper(keycloakInstance)
+
+            val aUser = wrapper.users().first()
+            val userSessionRepresentation = wrapper.getLastUserSession(aUser.id)
+
+            assertThat(userSessionRepresentation).isNull()
+        }
+
+        @Test
+        fun `can fetch user session for a user that has logged in`() {
+            val wrapper = KeycloakWrapper(keycloakInstance)
+
+            val aUser = wrapper.getUserByUsername("user-service@boclips.com")
+            val userSessionRepresentation: UserSessionRepresentation? = wrapper.getLastUserSession(aUser!!.id)
+
+            assertThat(userSessionRepresentation).isNotNull
+            assertThat(userSessionRepresentation!!.lastAccess).isGreaterThan(1558080047000)
+        }
     }
 
     @Test
