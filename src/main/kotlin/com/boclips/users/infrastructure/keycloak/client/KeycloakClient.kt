@@ -75,10 +75,12 @@ open class KeycloakClient(
     }
 
     override fun getUserSessions(id: UserId): UserSessions {
-        val userSessionRepresentation = keycloak.getLastUserSession(id.value)
+        val loginEventRepresentations = keycloak.getLastUserSession(id.value)
 
-        return UserSessions(lastAccess = userSessionRepresentation?.let {
-            Instant.ofEpochMilli(userSessionRepresentation.lastAccess)
-        })
+        if (loginEventRepresentations.isEmpty()) {
+            return UserSessions(lastAccess = null)
+        }
+
+        return UserSessions(lastAccess = Instant.ofEpochMilli(loginEventRepresentations.first().time))
     }
 }

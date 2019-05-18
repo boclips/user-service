@@ -3,8 +3,8 @@ package com.boclips.users.infrastructure.keycloak
 import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
+import org.keycloak.representations.idm.EventRepresentation
 import org.keycloak.representations.idm.UserRepresentation
-import org.keycloak.representations.idm.UserSessionRepresentation
 import javax.ws.rs.core.Response
 
 open class KeycloakWrapper(private val keycloak: Keycloak) {
@@ -29,11 +29,11 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
         }
     }
 
-    fun getLastUserSession(id: String): UserSessionRepresentation? {
+    fun getLastUserSession(id: String): List<EventRepresentation> {
         return try {
-            keycloak.realm(REALM).users().get(id).userSessions.last()
+            return keycloak.realm(REALM).getEvents(listOf("LOGIN"), null, id, null, null, null, null, 5)
         } catch (ex: Exception) {
-            null
+            emptyList()
         }
     }
 

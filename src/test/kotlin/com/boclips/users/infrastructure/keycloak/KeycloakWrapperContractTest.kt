@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.UserRepresentation
-import org.keycloak.representations.idm.UserSessionRepresentation
 import org.springframework.util.ResourceUtils
 import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
@@ -99,7 +98,7 @@ class KeycloakWrapperContractTest {
 
             val userSessionRepresentation = wrapper.getLastUserSession("x")
 
-            assertThat(userSessionRepresentation).isNull()
+            assertThat(userSessionRepresentation).isEmpty()
         }
 
         @Test
@@ -118,7 +117,7 @@ class KeycloakWrapperContractTest {
 
             val userSessionRepresentation = wrapper.getLastUserSession(createdUser.id)
 
-            assertThat(userSessionRepresentation).isNull()
+            assertThat(userSessionRepresentation).isEmpty()
 
             wrapper.removeUser(createdUser.id)
         }
@@ -128,10 +127,10 @@ class KeycloakWrapperContractTest {
             val wrapper = KeycloakWrapper(keycloakInstance)
 
             val aUser = wrapper.getUserByUsername("user-service@boclips.com")
-            val userSessionRepresentation: UserSessionRepresentation? = wrapper.getLastUserSession(aUser!!.id)
+            val lastLoginEvents = wrapper.getLastUserSession(aUser!!.id)
 
-            assertThat(userSessionRepresentation).isNotNull
-            assertThat(userSessionRepresentation!!.lastAccess).isGreaterThan(1558080047000)
+            assertThat(lastLoginEvents).isNotEmpty
+            assertThat(lastLoginEvents.first().time).isGreaterThan(1558080047000)
         }
     }
 

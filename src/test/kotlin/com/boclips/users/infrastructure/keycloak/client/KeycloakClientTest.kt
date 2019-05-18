@@ -10,8 +10,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.keycloak.representations.idm.EventRepresentation
 import org.keycloak.representations.idm.UserRepresentation
-import org.keycloak.representations.idm.UserSessionRepresentation
 import org.mockito.Mockito
 import java.time.Instant
 
@@ -71,12 +71,12 @@ internal class KeycloakClientTest {
     inner class getUserSessions {
         @Test
         fun `fetch user session`() {
-            whenever(keycloakWrapperMock.getLastUserSession(any())).thenReturn(UserSessionRepresentation().apply {
-                this.id = "x"
-                this.lastAccess = 1558080047000
-            })
+            whenever(keycloakWrapperMock.getLastUserSession(any())).thenReturn(listOf(EventRepresentation().apply {
+                this.time = 1558080047000
+                this.type = "LOGIN"
+            }))
 
-            val lastUserSession : UserSessions = keycloakClient.getUserSessions(UserId(value = "x"))
+            val lastUserSession: UserSessions = keycloakClient.getUserSessions(UserId(value = "x"))
 
             assertThat(lastUserSession.hasLoggedIn()).isTrue()
             assertThat(lastUserSession.lastAccess).isEqualTo(Instant.ofEpochMilli(1558080047000))
@@ -84,7 +84,7 @@ internal class KeycloakClientTest {
 
         @Test
         fun `returns null when user has not logged in`() {
-            whenever(keycloakWrapperMock.getLastUserSession(any())).thenReturn(null)
+            whenever(keycloakWrapperMock.getLastUserSession(any())).thenReturn(emptyList())
 
             val lastUserSession = keycloakClient.getUserSessions(UserId(value = "x"))
 
@@ -92,7 +92,6 @@ internal class KeycloakClientTest {
             assertThat(lastUserSession.hasLoggedIn()).isFalse()
         }
     }
-
 
     @Test
     fun getUsers() {
