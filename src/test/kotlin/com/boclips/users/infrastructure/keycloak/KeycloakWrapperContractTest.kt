@@ -60,6 +60,26 @@ class KeycloakWrapperContractTest {
     }
 
     @Test
+    fun `new users are granted the ROLE_TEACHER composite role`() {
+        val wrapper = KeycloakWrapper(keycloakInstance)
+
+        val randomUsername = UUID.randomUUID().toString()
+
+        val createdUser = wrapper.createUser(
+            KeycloakUser(
+                firstName = "Hans",
+                lastName = "Muster",
+                email = "ben+$randomUsername@boclips.com",
+                password = "123"
+            )
+        )
+
+        assertThat(createdUser.realmRoles).contains("ROLE_TEACHER")
+
+        wrapper.removeUser(createdUser.id)
+    }
+
+    @Test
     fun `throws when user already exists`() {
         val wrapper = KeycloakWrapper(keycloakInstance)
 

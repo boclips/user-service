@@ -66,11 +66,27 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
 
         if (response.status != 201) throw UserNotCreatedException("User could not be created, Keycloak returned ${response.status}")
 
-        return getUserByUsername(keycloakUser.email)
-            ?: throw UserNotCreatedException("User was created but could not be found.")
+        return getUserByUsername(keycloakUser.email)?.let { user ->
+            attachRealmRoleToUser("ROLE_TEACHER", user.id)
+            getUserByUsername(keycloakUser.email)?.apply {
+                realmRoles =
+                    keycloak.realm(REALM).users().get(user.id).roles().realmLevel().listEffective().map { it.name }
+            }
+        } ?: throw UserNotCreatedException("User was created but could not be found.")
     }
 
     fun removeUser(id: String?) {
         keycloak.realm(REALM).users().delete(id)
+    }
+
+    private fun attachRealmRoleToUser(
+        teacherRole: String,
+        userId: String?
+    ) {
+        keycloak.realm(REALM).users().get(userId).roles().realmLevel().listAvailable()
+            .firstOrNull { it.name == teacherRole }
+            ?.let {
+                keycloak.realm(REALM).users().get(userId).roles().realmLevel().add(listOf(it))
+            }
     }
 }
