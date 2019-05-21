@@ -55,7 +55,7 @@ class ActivateUser(
                         UserActivated.builder()
                                 .user(com.boclips.events.types.User.builder()
                                         .id(user.id.value)
-                                        .email(user.email)
+                                        .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
                                         .build()
                                 )
                                 .totalUsers(count.total)
