@@ -4,6 +4,7 @@ import com.boclips.users.application.ActivateUser
 import com.boclips.users.application.CreateUser
 import com.boclips.users.application.GetUser
 import com.boclips.users.application.UpdateContacts
+import com.boclips.users.application.UpdateTeachers
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.resources.UserResource
 import mu.KLogging
@@ -28,6 +29,7 @@ import javax.validation.Valid
 class UserController(
     private val createUser: CreateUser,
     private val activateUser: ActivateUser,
+    private val updateTeachers: UpdateTeachers,
     private val getUser: GetUser,
     private val updateContacts: UpdateContacts
 ) {
@@ -97,5 +99,10 @@ class UserController(
     @PostMapping("/sync")
     fun syncUsers() {
         updateContacts()
+    }
+
+    @PostMapping("/migrate")
+    fun migrateTeachersToRoles() {
+        updateTeachers()
     }
 }

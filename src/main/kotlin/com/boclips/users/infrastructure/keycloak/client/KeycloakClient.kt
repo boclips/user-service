@@ -44,7 +44,7 @@ open class KeycloakClient(
     override fun getUserById(id: UserId): Identity? {
         val user: UserRepresentation?
         return try {
-            user = keycloak.getUser(id.value)!!
+            user = keycloak.getUserById(id.value)!!
 
             userConverter.convert(user)
         } catch (e: javax.ws.rs.NotFoundException) {

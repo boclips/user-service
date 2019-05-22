@@ -32,7 +32,7 @@ internal class KeycloakClientTest {
     inner class getUserById {
         @Test
         fun `can fetch a valid user`() {
-            whenever(keycloakWrapperMock.getUser(any())).thenReturn(UserRepresentation().apply {
+            whenever(keycloakWrapperMock.getUserById(any())).thenReturn(UserRepresentation().apply {
                 this.id = "x"
                 this.firstName = "Odete"
                 this.email = "abc@def.xyz"
@@ -56,7 +56,7 @@ internal class KeycloakClientTest {
 
         @Test
         fun `returns null when user is missing required fields`() {
-            whenever(keycloakWrapperMock.getUser(any())).thenReturn(UserRepresentation().apply {
+            whenever(keycloakWrapperMock.getUserById(any())).thenReturn(UserRepresentation().apply {
                 this.id = "x"
             })
 
