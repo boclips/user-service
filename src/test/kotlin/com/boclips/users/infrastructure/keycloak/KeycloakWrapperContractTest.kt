@@ -163,13 +163,37 @@ class KeycloakWrapperContractTest {
         assertThat(count).isGreaterThan(1)
     }
 
+    @Test
+    fun `add and remove group for user`() {
+        val wrapper = KeycloakWrapper(keycloakInstance)
+
+        val aUser = wrapper.users().first()
+
+        wrapper.addToGroup(aUser.id, "teachers")
+        assertThat(wrapper.isInGroup(aUser.id, "teachers")).isTrue()
+
+        wrapper.removeFromGroup(aUser.id, "teachers")
+        assertThat(wrapper.isInGroup(aUser.id, "teachers")).isFalse()
+    }
+
+    @Test
+    fun `add role to user`() {
+        val wrapper = KeycloakWrapper(keycloakInstance)
+
+        val aUser = wrapper.users().first()
+
+        wrapper.addRealmRoleToUser("ROLE_TEACHER", aUser.id)
+
+        assertThat(wrapper.getUserByUsername(aUser.username)!!.realmRoles.contains("ROLE_TEACHER")).isTrue()
+    }
+
     @Nested
     inner class GetUserTest {
         @Test
         fun `returns null when user does not exist`() {
             val wrapper = KeycloakWrapper(keycloakInstance)
 
-            val user: UserRepresentation? = wrapper.getUser("4567890")
+            val user: UserRepresentation? = wrapper.getUserById("4567890")
 
             assertThat(user).isNull()
         }
@@ -179,7 +203,7 @@ class KeycloakWrapperContractTest {
             val wrapper = KeycloakWrapper(keycloakInstance)
             val aUser = wrapper.users().first()
 
-            val user: UserRepresentation = wrapper.getUser(aUser.id)!!
+            val user: UserRepresentation = wrapper.getUserById(aUser.id)!!
 
             assertThat(user.id).isEqualTo(aUser.id)
         }
