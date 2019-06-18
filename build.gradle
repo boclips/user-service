@@ -16,7 +16,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.owasp.dependencycheck' version '4.0.2'
+    id 'org.owasp.dependencycheck' version '5.0.0'
 }
 
 apply plugin: 'kotlin'
@@ -119,4 +119,6 @@ dependencyCheck {
     }
 
     suppressionFile = './dependency-check-suppressions.xml'
+
+    outputDirectory = 'security-report'
 }
