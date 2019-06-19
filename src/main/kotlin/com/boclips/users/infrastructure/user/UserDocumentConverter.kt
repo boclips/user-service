@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.user
 
+import com.boclips.users.domain.model.MarketingTracking
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
@@ -17,6 +18,13 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
         firstName = userDocument.firstName.orEmpty(),
         lastName = userDocument.lastName.orEmpty(),
         email = userDocument.email.orEmpty(),
-        hasOptedIntoMarketing = userDocument.hasOptedIntoMarketing ?: true
+        hasOptedIntoMarketing = userDocument.hasOptedIntoMarketing ?: true,
+        marketingTracking = MarketingTracking(
+            utmSource = userDocument.marketing?.utmSource ?: "",
+            utmContent = userDocument.marketing?.utmContent?: "",
+            utmMedium = userDocument.marketing?.utmMedium ?: "",
+            utmTerm = userDocument.marketing?.utmTerm ?: "",
+            utmCampaign= userDocument.marketing?.utmCampaign ?: ""
+        )
     )
 }

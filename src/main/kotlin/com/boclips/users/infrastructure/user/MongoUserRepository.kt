@@ -32,10 +32,10 @@ class MongoUserRepository(
             ?.let { userDocumentConverter.convertToUser(it) }
     }
 
-    override fun save(user: User) = userDocumentConverter.convertToUser(
-        userDocumentMongoRepository
-            .save(UserDocument.from(user))
-    )
+    override fun save(user: User): User {
+        val document = UserDocument.from(user)
+        return userDocumentConverter.convertToUser(userDocumentMongoRepository.save(document))
+    }
 
     override fun count(): UserCounts {
         val total = userDocumentMongoRepository.count()

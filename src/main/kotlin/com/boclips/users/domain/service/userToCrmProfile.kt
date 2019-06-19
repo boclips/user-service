@@ -15,6 +15,7 @@ fun userToCrmProfile(user: User, sessions: UserSessions): CrmProfile {
         lastName = user.lastName,
         email = user.email,
         hasOptedIntoMarketing = user.hasOptedIntoMarketing,
-        lastLoggedIn = sessions.lastAccess
+        lastLoggedIn = sessions.lastAccess,
+        marketingTracking = user.marketingTracking
     )
 }

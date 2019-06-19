@@ -50,7 +50,12 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             ageRange = listOf(1, 2),
             analyticsId = AnalyticsId(value = "analytics"),
             referralCode = "abc-a123",
-            hasOptedIntoMarketing = true
+            hasOptedIntoMarketing = true,
+            utmCampaign = "",
+            utmSource = "",
+            utmContent = "",
+            utmTerm = "",
+            utmMedium = ""
         )
 
         val persistedUser = userService.createUser(newUser)
@@ -63,5 +68,10 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
         assertThat(persistedUser.hasOptedIntoMarketing).isTrue()
+        assertThat(persistedUser.marketingTracking.utmSource).isBlank()
+        assertThat(persistedUser.marketingTracking.utmCampaign).isBlank()
+        assertThat(persistedUser.marketingTracking.utmContent).isBlank()
+        assertThat(persistedUser.marketingTracking.utmTerm).isBlank()
+        assertThat(persistedUser.marketingTracking.utmMedium).isBlank()
     }
 }

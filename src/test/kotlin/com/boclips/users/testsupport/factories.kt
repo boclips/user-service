@@ -1,11 +1,13 @@
 package com.boclips.users.testsupport
 
+import com.boclips.users.domain.model.MarketingTracking
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import com.boclips.users.presentation.requests.CreateUserRequest
 import java.util.UUID
@@ -25,7 +27,8 @@ class AccountFactory {
             firstName: String = "Joe",
             lastName: String = "Dough",
             email: String = "joe@dough.com",
-            hasOptedIntoMarketing: Boolean = true
+            hasOptedIntoMarketing: Boolean = true,
+            marketing: MarketingTracking = MarketingTrackingFactory.sample()
         ) = User(
             id = UserId(value = id),
             activated = activated,
@@ -36,7 +39,8 @@ class AccountFactory {
             firstName = firstName,
             lastName = lastName,
             email = email,
-            hasOptedIntoMarketing = hasOptedIntoMarketing
+            hasOptedIntoMarketing = hasOptedIntoMarketing,
+            marketingTracking = marketing
         )
     }
 }
@@ -71,7 +75,12 @@ class CreateUserRequestFactory {
             referralCode: String? = "referralCode-123",
             recaptchaToken: String? = "03AOLTBLRK4xnVft-qESRgTGxK_4WAE...",
             hasOptedIntoMarketing: Boolean? = false,
-            analyticsId: String? = "mixpanel-123"
+            analyticsId: String? = "mixpanel-123",
+            utmCampaign: String? = null,
+            utmContent: String? = null,
+            utmMedium: String? = null,
+            utmSource: String? = null,
+            utmTerm: String? = null
         ): CreateUserRequest {
             return CreateUserRequest(
                 firstName = firstName,
@@ -83,7 +92,12 @@ class CreateUserRequestFactory {
                 analyticsId = analyticsId,
                 referralCode = referralCode,
                 hasOptedIntoMarketing = hasOptedIntoMarketing,
-                recaptchaToken = recaptchaToken
+                recaptchaToken = recaptchaToken,
+                utmCampaign = utmCampaign,
+                utmContent = utmContent,
+                utmMedium = utmMedium,
+                utmSource = utmSource,
+                utmTerm = utmTerm
             )
         }
     }
@@ -112,7 +126,34 @@ class UserDocumentFactory {
             subjectIds = subjects,
             ageRange = ageRange,
             email = email,
-            hasOptedIntoMarketing = hasOptedIntoMarketing
+            hasOptedIntoMarketing = hasOptedIntoMarketing,
+            marketing = MarketingTrackingDocument(
+                utmCampaign = null,
+                utmSource = null,
+                utmMedium = null,
+                utmTerm = null,
+                utmContent = null
+            )
         )
+    }
+}
+
+class MarketingTrackingFactory {
+    companion object {
+        fun sample(
+            utmTerm: String = "",
+            utmContent: String = "",
+            utmMedium: String = "",
+            utmSource: String = "",
+            utmCampaign: String = ""
+        ): MarketingTracking {
+            return MarketingTracking(
+                utmTerm = utmTerm,
+                utmContent = utmContent,
+                utmMedium = utmMedium,
+                utmSource = utmSource,
+                utmCampaign = utmCampaign
+            )
+        }
     }
 }

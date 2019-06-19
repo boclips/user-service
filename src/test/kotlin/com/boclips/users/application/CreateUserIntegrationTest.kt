@@ -24,7 +24,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         whenever(subjectService.getSubjectsById(any())).thenReturn(
             emptyList()
         )
-        
+
         val createdAccount = createUser(
             CreateUserRequest(
                 firstName = "Hans",
@@ -60,7 +60,12 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 subjects = listOf("1"),
                 ageRange = listOf(0, 1, 2, 3, 4),
                 referralCode = "referral-code-123",
-                analyticsId = "123"
+                analyticsId = "123",
+                utmMedium = "utm-medium",
+                utmSource = "facebook",
+                utmTerm = "utm-term",
+                utmContent = "utm-content",
+                utmCampaign = "utm-campaign"
             )
         )
 
@@ -73,6 +78,11 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(persistedAccount.subjects.first().name).isEqualTo("Maths")
         Assertions.assertThat(persistedAccount.ageRange).containsExactly(0, 1, 2, 3, 4)
         Assertions.assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
+        Assertions.assertThat(persistedAccount.marketingTracking.utmSource).isEqualTo("facebook")
+        Assertions.assertThat(persistedAccount.marketingTracking.utmContent).isEqualTo("utm-content")
+        Assertions.assertThat(persistedAccount.marketingTracking.utmTerm).isEqualTo("utm-term")
+        Assertions.assertThat(persistedAccount.marketingTracking.utmMedium).isEqualTo("utm-medium")
+        Assertions.assertThat(persistedAccount.marketingTracking.utmCampaign).isEqualTo("utm-campaign")
     }
 
     @Test

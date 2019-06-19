@@ -1,6 +1,6 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.application.CreateUser
+import com.boclips.users.domain.model.MarketingTracking
 import com.boclips.users.domain.model.NewUser
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
@@ -61,17 +61,25 @@ class UserService(
                 firstName = newUser.firstName,
                 lastName = newUser.lastName,
                 email = newUser.email,
-                hasOptedIntoMarketing = newUser.hasOptedIntoMarketing
+                hasOptedIntoMarketing = newUser.hasOptedIntoMarketing,
+                marketingTracking = MarketingTracking(
+                    utmCampaign = newUser.utmCampaign,
+                    utmSource = newUser.utmSource,
+                    utmMedium = newUser.utmMedium,
+                    utmContent = newUser.utmContent,
+                    utmTerm = newUser.utmTerm
+                )
             )
         )
 
-        CreateUser.logger.info { "Created user ${user.id.value}" }
+        logger.info { "Created user ${user.id.value}" }
 
         trackAccountCreatedEvent(newUser.analyticsId)
 
         return user
     }
 
+    // TODO: Move to application layer
     private fun trackAccountCreatedEvent(id: AnalyticsId) {
         if (id.value.isNotEmpty()) {
             analyticsClient.track(

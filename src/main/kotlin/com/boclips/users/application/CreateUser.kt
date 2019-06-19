@@ -29,10 +29,7 @@ class CreateUser(
             throw CaptchaScoreBelowThresholdException(createUserRequest.email!!)
         }
 
-        if (!subjectService.allSubjectsExist(
-                createUserRequest.subjects.orEmpty().map { SubjectId(value = it) }
-            )
-        ) {
+        if (invalidSubjects(createUserRequest.subjects)) {
             throw InvalidSubjectException(createUserRequest.subjects.orEmpty())
         }
 
@@ -45,7 +42,13 @@ class CreateUser(
             subjects = createUserRequest.subjects.orEmpty(),
             ageRange = createUserRequest.ageRange.orEmpty(),
             referralCode = createUserRequest.referralCode.orEmpty(),
-            hasOptedIntoMarketing = createUserRequest.hasOptedIntoMarketing!!
+            hasOptedIntoMarketing = createUserRequest.hasOptedIntoMarketing!!,
+            utmSource = createUserRequest.utmSource ?: "",
+            utmContent = createUserRequest.utmContent ?: "",
+            utmTerm = createUserRequest.utmTerm ?: "",
+            utmMedium = createUserRequest.utmMedium ?: "",
+            utmCampaign = createUserRequest.utmCampaign ?: ""
+
         )
 
         val createdUser = userService.createUser(newUser = newUser)
@@ -55,4 +58,7 @@ class CreateUser(
 
         return createdUser
     }
+
+    private fun invalidSubjects(subjects: List<String>?) =
+        !subjectService.allSubjectsExist(subjects.orEmpty().map { SubjectId(value = it) })
 }

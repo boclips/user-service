@@ -27,6 +27,26 @@
         "value": "3, 4, 5, 6"
       },
       {
+        "property": "b2t_utm_source",
+        "value": "utm-source-1"
+      },
+      {
+        "property": "b2t_utm_term",
+        "value": "utm-term-1"
+      },
+      {
+        "property": "b2t_utm_content",
+        "value": "utm-content-1"
+      },
+      {
+        "value": "utm-medium-1",
+        "property": "b2t_utm_medium"
+      },
+      {
+        "property": "b2t_utm_campaign",
+        "value": "utm-campaign-1"
+      },
+      {
         "property": "b2t_last_logged_in",
         "value": "1502150400000"
       }

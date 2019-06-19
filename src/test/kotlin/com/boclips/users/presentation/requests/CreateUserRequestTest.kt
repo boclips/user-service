@@ -21,8 +21,7 @@ class CreateUserRequestTest {
 
     @Test
     fun `validates a valid request`() {
-        val validRequest = CreateUserRequestFactory.sample(
-        )
+        val validRequest = CreateUserRequestFactory.sample()
         val violations = validator.validate(validRequest)
         assertThat(violations).hasSize(0)
     }
@@ -214,6 +213,64 @@ class CreateUserRequestTest {
             )
             assertThat(violations).hasSize(1)
             assertThat(violations.map { it.message }).contains("recaptchaToken must be set")
+        }
+    }
+
+    @Nested
+    inner class MarketingInformation {
+        @Test
+        fun `validates utmContent for length of characters`() {
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    utmContent = "some info".repeat(210)
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("utmContent cannot be longer than 200 characters")
+        }
+
+        @Test
+        fun `validates utmCampaign for length of characters`() {
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    utmCampaign = "some info".repeat(210)
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("utmCampaign cannot be longer than 200 characters")
+        }
+
+        @Test
+        fun `validates utmMedium for length of characters`() {
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    utmMedium = "some info".repeat(210)
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("utmMedium cannot be longer than 200 characters")
+        }
+
+        @Test
+        fun `validates utmTerm for length of characters`() {
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    utmTerm = "some info".repeat(210)
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("utmTerm cannot be longer than 200 characters")
+        }
+
+        @Test
+        fun `validates utmSource for length of characters`() {
+            val violations = validator.validate(
+                CreateUserRequestFactory.sample(
+                    utmSource = "some info".repeat(210)
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("utmSource cannot be longer than 200 characters")
         }
     }
 

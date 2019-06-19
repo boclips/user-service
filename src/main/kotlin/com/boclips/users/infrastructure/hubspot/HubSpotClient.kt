@@ -50,9 +50,9 @@ class HubSpotClient(
 
     fun unsubscribeFromMarketingEmails(crmProfile: CrmProfile) {
         restTemplate.put(
-            getEmailEndPointForUser(crmProfile),
+            getEmailEndPointForUser(crmProfile.email),
             UnsubscribeFromMarketingEmails(
-                listOf(SubscriptionStatus(id = hubspotProperties.marketingSubscriptionId))
+                subscriptionStatuses = listOf(SubscriptionStatus(id = hubspotProperties.marketingSubscriptionId))
             )
         )
     }
@@ -73,17 +73,26 @@ class HubSpotClient(
                 HubSpotProperty("b2t_is_activated", crmProfile.activated.toString()),
                 HubSpotProperty("subjects_taught", crmProfile.subjects.joinToString { it.name }),
                 HubSpotProperty("age_range", crmProfile.ageRange.joinToString()),
+                HubSpotProperty("b2t_utm_source", crmProfile.marketingTracking.utmSource),
+                HubSpotProperty("b2t_utm_term", crmProfile.marketingTracking.utmTerm),
+                HubSpotProperty("b2t_utm_content", crmProfile.marketingTracking.utmContent),
+                HubSpotProperty("b2t_utm_medium", crmProfile.marketingTracking.utmMedium),
+                HubSpotProperty("b2t_utm_campaign", crmProfile.marketingTracking.utmCampaign),
                 HubSpotProperty("b2t_last_logged_in", convertToInstantAtMidnight(crmProfile))
             )
         )
     }
 
     private fun convertToInstantAtMidnight(crmProfile: CrmProfile): String {
-        val lastLoggedIn = crmProfile.lastLoggedIn?.let {
-            LocalDateTime.ofInstant(it, ZoneId.of("UTC")).toLocalDate().atStartOfDay(ZoneId.of("UTC")).toInstant()
-                .toEpochMilli().toString()
+        return crmProfile.lastLoggedIn?.let { lastLogin ->
+            LocalDateTime
+                .ofInstant(lastLogin, ZoneId.of("UTC"))
+                .toLocalDate()
+                .atStartOfDay(ZoneId.of("UTC"))
+                .toInstant()
+                .toEpochMilli()
+                .toString()
         } ?: ""
-        return lastLoggedIn
     }
 
     private fun postContacts(contacts: List<HubSpotContact>) {
@@ -102,13 +111,13 @@ class HubSpotClient(
             .toUri()
     }
 
-    private fun getEmailEndPointForUser(crmProfile: CrmProfile): URI {
-        return UriComponentsBuilder.fromUriString("${hubspotProperties.host}/email/public/v1/subscriptions/${crmProfile.email}")
+    private fun getEmailEndPointForUser(email: String): URI {
+        return UriComponentsBuilder.fromUriString("${hubspotProperties.host}/email/public/v1/subscriptions/$email")
             .queryParam("hapikey", hubspotProperties.apiKey)
             .build()
             .toUri()
     }
 }
 
-class UnsubscribeFromMarketingEmails(val subscriptionStatuses: List<SubscriptionStatus>)
-class SubscriptionStatus(val id: Long, val subscribed: Boolean = false)
+data class UnsubscribeFromMarketingEmails(val subscriptionStatuses: List<SubscriptionStatus>)
+data class SubscriptionStatus(val id: Long, val subscribed: Boolean = false)

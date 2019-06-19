@@ -6,7 +6,6 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.Instant
 
 class UpdateContactsIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired

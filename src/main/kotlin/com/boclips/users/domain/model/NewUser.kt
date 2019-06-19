@@ -11,5 +11,10 @@ data class NewUser(
     val ageRange: List<Int>,
     val analyticsId: AnalyticsId,
     val referralCode: String,
-    val hasOptedIntoMarketing: Boolean
+    val hasOptedIntoMarketing: Boolean,
+    val utmSource: String,
+    val utmContent: String,
+    val utmTerm: String,
+    val utmMedium: String,
+    val utmCampaign: String
 )

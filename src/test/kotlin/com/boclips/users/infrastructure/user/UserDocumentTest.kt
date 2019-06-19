@@ -3,8 +3,8 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
-import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
+import com.boclips.users.testsupport.MarketingTrackingFactory
 import com.boclips.users.testsupport.UserDocumentFactory
 import com.boclips.users.testsupport.UserFactory
 import com.boclips.videos.service.client.Subject
@@ -15,7 +15,8 @@ import org.junit.jupiter.api.Test
 
 class UserDocumentTest {
     private val fakeClient = FakeClient()
-    private var userDocumentConverter = UserDocumentConverter(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))
+    private var userDocumentConverter =
+        UserDocumentConverter(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))
 
     @BeforeEach
     internal fun setUp() {
@@ -27,8 +28,9 @@ class UserDocumentTest {
     fun `can convert document to user`() {
         val user = UserFactory.sample(
             user = AccountFactory.sample(
+                subjects = listOf(com.boclips.users.domain.model.Subject(id = SubjectId(value = "1"), name = "maths")),
                 hasOptedIntoMarketing = true,
-                subjects = listOf(com.boclips.users.domain.model.Subject(id = SubjectId(value = "1"), name = "maths"))
+                marketing = MarketingTrackingFactory.sample()
             )
         )
 

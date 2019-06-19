@@ -14,9 +14,9 @@ class UpdateContacts(
 ) {
     operator fun invoke() {
         val allCrmProfiles = userService.findAllUsers()
-            .map {
-                val sessions = sessionProvider.getUserSessions(it.id)
-                userToCrmProfile(it, sessions)
+            .map { user ->
+                val sessions = sessionProvider.getUserSessions(user.id)
+                return@map userToCrmProfile(user, sessions)
             }
 
         customerManagementProvider.update(allCrmProfiles)
