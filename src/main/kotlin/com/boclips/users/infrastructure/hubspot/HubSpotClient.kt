@@ -29,11 +29,13 @@ class HubSpotClient(
                 .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
                 .forEachIndexed { index, batchOfUsers ->
                     val contacts = batchOfUsers.map { crmProfile ->
-                        toHubSpotContact(crmProfile).also {
-                            if (!crmProfile.hasOptedIntoMarketing) {
-                                unsubscribeFromMarketingEmails(crmProfile)
-                            }
+                        val hubSpotContact = toHubSpotContact(crmProfile)
+
+                        if (!crmProfile.hasOptedIntoMarketing) {
+                            unsubscribe(crmProfile)
                         }
+
+                        return@map hubSpotContact
                     }
 
                     if (contacts.isNotEmpty()) {
@@ -48,9 +50,17 @@ class HubSpotClient(
         }
     }
 
-    fun unsubscribeFromMarketingEmails(crmProfile: CrmProfile) {
+    private fun unsubscribe(crmProfile: CrmProfile) {
+        try {
+            unsubscribeFromMarketingEmails(crmProfile.email)
+        } catch (ex: Exception) {
+            logger.info { "Could not unsubscribe contact ${crmProfile.id}" }
+        }
+    }
+
+    fun unsubscribeFromMarketingEmails(email: String) {
         restTemplate.put(
-            getEmailEndPointForUser(crmProfile.email),
+            getEmailEndPointForUser(email),
             UnsubscribeFromMarketingEmails(
                 subscriptionStatuses = listOf(SubscriptionStatus(id = hubspotProperties.marketingSubscriptionId))
             )
