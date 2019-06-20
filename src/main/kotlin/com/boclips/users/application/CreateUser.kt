@@ -53,10 +53,18 @@ class CreateUser(
 
         val createdUser = userService.createUser(newUser = newUser)
 
-        val crmProfile = userToCrmProfile(createdUser, UserSessions(lastAccess = null))
-        customerManagementProvider.update(listOf(crmProfile))
+        attemptToUpdateProfile(createdUser)
 
         return createdUser
+    }
+
+    private fun attemptToUpdateProfile(createdUser: User) {
+        try {
+            val crmProfile = userToCrmProfile(createdUser, UserSessions(lastAccess = null))
+            customerManagementProvider.update(listOf(crmProfile))
+        } catch (ex: Exception) {
+            logger.info { "Failed to update contact $ex" }
+        }
     }
 
     private fun invalidSubjects(subjects: List<String>?) =
