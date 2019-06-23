@@ -7,6 +7,9 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.analytics.Event
+import com.boclips.users.domain.model.analytics.EventType
+import com.boclips.users.domain.service.AnalyticsClient
 import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserService
@@ -20,7 +23,8 @@ class CreateUser(
     private val userService: UserService,
     private val customerManagementProvider: CustomerManagementProvider,
     private val captchaProvider: CaptchaProvider,
-    private val subjectService: SubjectService
+    private val subjectService: SubjectService,
+    private val analyticsClient: AnalyticsClient
 ) {
     companion object : KLogging()
 
@@ -54,6 +58,7 @@ class CreateUser(
         val createdUser = userService.createUser(newUser = newUser)
 
         attemptToUpdateProfile(createdUser)
+        trackAccountCreatedEvent(createdUser.analyticsId)
 
         return createdUser
     }
@@ -69,4 +74,11 @@ class CreateUser(
 
     private fun invalidSubjects(subjects: List<String>?) =
         !subjectService.allSubjectsExist(subjects.orEmpty().map { SubjectId(value = it) })
+
+    private fun trackAccountCreatedEvent(id: AnalyticsId?) {
+        id?.let {
+            analyticsClient.track(Event(eventType = EventType.ACCOUNT_CREATED, userId = id.value))
+            logger.info { "Send MixPanel event ACCOUNT_CREATED for MixPanel ID $id" }
+        }
+    }
 }

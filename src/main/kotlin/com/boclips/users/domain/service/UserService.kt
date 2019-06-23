@@ -6,9 +6,6 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserNotFoundException
-import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.analytics.Event
-import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -17,8 +14,7 @@ import org.springframework.stereotype.Service
 class UserService(
     val userRepository: UserRepository,
     val subjectService: VideoServiceSubjectsClient,
-    val identityProvider: IdentityProvider,
-    val analyticsClient: AnalyticsClient
+    val identityProvider: IdentityProvider
 ) {
     companion object : KLogging()
 
@@ -74,21 +70,6 @@ class UserService(
 
         logger.info { "Created user ${user.id.value}" }
 
-        trackAccountCreatedEvent(newUser.analyticsId)
-
         return user
-    }
-
-    // TODO: Move to application layer
-    private fun trackAccountCreatedEvent(id: AnalyticsId) {
-        if (id.value.isNotEmpty()) {
-            analyticsClient.track(
-                Event(
-                    eventType = EventType.ACCOUNT_CREATED,
-                    userId = id.value
-                )
-            )
-            logger.info { "Send MixPanel event ACCOUNT_CREATED for MixPanel ID $id" }
-        }
     }
 }
