@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.hubspot
+package com.boclips.users.infrastructure.hubspot.resources
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component

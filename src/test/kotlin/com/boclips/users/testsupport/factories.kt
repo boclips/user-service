@@ -1,5 +1,6 @@
 package com.boclips.users.testsupport
 
+import com.boclips.users.domain.model.CrmProfile
 import com.boclips.users.domain.model.MarketingTracking
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
@@ -10,6 +11,7 @@ import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import com.boclips.users.presentation.requests.CreateUserRequest
+import java.time.Instant
 import java.util.UUID
 
 class AccountFactory {
@@ -153,6 +155,29 @@ class MarketingTrackingFactory {
                 utmMedium = utmMedium,
                 utmSource = utmSource,
                 utmCampaign = utmCampaign
+            )
+        }
+    }
+}
+
+class CrmProfileFactory {
+    companion object {
+        fun sample(
+            ageRanges: List<Int> = emptyList(),
+            subjects: List<Subject> = emptyList(),
+            pointInTime: Instant? = Instant.now()
+        ): CrmProfile {
+            return CrmProfile(
+                id = UserId(value = "some-id"),
+                activated = true,
+                subjects = subjects,
+                ageRange = ageRanges,
+                firstName = "",
+                lastName = "",
+                lastLoggedIn = pointInTime,
+                email = "email@internet.com",
+                hasOptedIntoMarketing = true,
+                marketingTracking = MarketingTrackingFactory.sample()
             )
         }
     }

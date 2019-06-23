@@ -6,7 +6,7 @@ import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
-import com.boclips.users.infrastructure.hubspot.HubSpotProperties
+import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient

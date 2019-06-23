@@ -1,5 +1,6 @@
 package com.boclips.users.domain.model
 
+import org.apache.commons.validator.routines.EmailValidator
 import java.time.Instant
 
 class CrmProfile(
@@ -14,6 +15,13 @@ class CrmProfile(
     val lastLoggedIn: Instant?,
     val marketingTracking: MarketingTracking
 ) {
+    fun isValid(): Boolean {
+        return this.firstName.isNotEmpty() &&
+            this.lastName.isNotEmpty() &&
+            this.email.isNotEmpty() &&
+            EmailValidator.getInstance().isValid(this.email)
+    }
+
     override fun toString(): String {
         return "CrmProfile(id=$id)"
     }

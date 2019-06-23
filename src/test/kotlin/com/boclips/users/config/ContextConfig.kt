@@ -5,7 +5,7 @@ import com.boclips.users.domain.service.CustomerManagementProvider
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
-import com.boclips.users.infrastructure.hubspot.HubSpotProperties
+import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
