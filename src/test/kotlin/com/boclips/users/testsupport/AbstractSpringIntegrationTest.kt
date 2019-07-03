@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.identity.Identity
-import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
@@ -61,7 +61,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var captchaProvider: CaptchaProvider
 
     @Autowired
-    lateinit var customerManagementProvider: CustomerManagementProvider
+    lateinit var marketingService: MarketingService
 
     @Autowired
     lateinit var subjectService: VideoServiceSubjectsClient
@@ -80,7 +80,7 @@ abstract class AbstractSpringIntegrationTest {
 
         Mockito.reset(referralProvider)
         Mockito.reset(captchaProvider)
-        Mockito.reset(customerManagementProvider)
+        Mockito.reset(marketingService)
 
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(true)
         whenever(subjectService.allSubjectsExist(any())).thenReturn(true)

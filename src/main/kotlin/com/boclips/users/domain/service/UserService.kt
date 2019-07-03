@@ -1,6 +1,6 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.MarketingTracking
+import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.NewUser
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User

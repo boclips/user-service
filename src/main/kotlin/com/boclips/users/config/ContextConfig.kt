@@ -1,7 +1,7 @@
 package com.boclips.users.config
 
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
@@ -67,7 +67,7 @@ class ContextConfig(
     fun customerManagement(
         properties: HubSpotProperties,
         subjectService: VideoServiceSubjectsClient
-    ): CustomerManagementProvider =
+    ): MarketingService =
         HubSpotClient(
             objectMapper = objectMapper,
             hubspotProperties = properties,

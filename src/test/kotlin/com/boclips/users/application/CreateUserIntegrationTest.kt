@@ -98,7 +98,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun `update contact on hubspot after user creation`() {
         createUser(CreateUserRequestFactory.sample())
 
-        verify(customerManagementProvider, times(1)).update(any())
+        verify(marketingService, times(1)).updateProfile(any())
     }
 
     @Test

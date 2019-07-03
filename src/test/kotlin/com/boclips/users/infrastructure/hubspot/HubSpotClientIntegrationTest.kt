@@ -54,7 +54,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        hubSpotClient.update(crmProfiles)
+        hubSpotClient.updateProfile(crmProfiles)
 
         wireMockServer.verify(
             postRequestedFor(urlMatching(".*/contacts/v1/contact/batch.*"))
@@ -65,15 +65,15 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `unsubscribes contacts from all emails`() {
+    fun `a contact has opted out of marketing emails`() {
         setUpHubSpotStub()
 
-        val optedOutOfMarketingUser = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = false))
+        val user = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = false))
 
-        hubSpotClient.update(listOf(userToCrmProfile(optedOutOfMarketingUser, UserSessionsFactory.sample())))
+        hubSpotClient.updateSubscription(userToCrmProfile(user, UserSessionsFactory.sample()))
 
         wireMockServer.verify(
-            putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${optedOutOfMarketingUser.email}.*"))
+            putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.email}.*"))
                 .withQueryParam("hapikey", matching("some-api-key"))
                 .withRequestBody(
                     equalToJson(
@@ -82,6 +82,33 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                                 {
                                     "id": 123,
                                     "subscribed": false
+                                }
+                            ]
+                        }
+                        """.trimIndent()
+                    )
+                )
+        )
+    }
+
+    @Test
+    fun `a contact has opted in to marketing emails`() {
+        setUpHubSpotStub()
+
+        val user = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = true))
+
+        hubSpotClient.updateSubscription(userToCrmProfile(user, UserSessionsFactory.sample()))
+
+        wireMockServer.verify(
+            putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.email}.*"))
+                .withQueryParam("hapikey", matching("some-api-key"))
+                .withRequestBody(
+                    equalToJson(
+                        """{
+                            "subscriptionStatuses": [
+                                {
+                                    "id": 123,
+                                    "subscribed": true
                                 }
                             ]
                         }

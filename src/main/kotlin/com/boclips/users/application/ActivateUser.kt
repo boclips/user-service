@@ -8,7 +8,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.referrals.NewReferral
-import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
@@ -23,7 +23,7 @@ class ActivateUser(
     private val userService: UserService,
     private val userRepository: UserRepository,
     private val referralProvider: ReferralProvider,
-    private val customerManagementProvider: CustomerManagementProvider,
+    private val marketingService: MarketingService,
     private val topics: Topics
 ) {
     companion object : KLogging()
@@ -39,7 +39,7 @@ class ActivateUser(
         }
 
         val crmProfile = userToCrmProfile(activatedUser, UserSessions(Instant.now()))
-        customerManagementProvider.update(listOf(crmProfile))
+        marketingService.updateProfile(listOf(crmProfile))
 
         publishUserActivated(activatedUser)
 

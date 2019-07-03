@@ -1,6 +1,7 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.model.marketing.CrmProfile
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.userToCrmProfile
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component
 @Component
 class UpdateContacts(
     val userService: UserService,
-    val customerManagementProvider: CustomerManagementProvider,
+    val marketingService: MarketingService,
     val sessionProvider: SessionProvider
 ) {
     operator fun invoke() {
@@ -19,6 +20,14 @@ class UpdateContacts(
                 return@map userToCrmProfile(user, sessions)
             }
 
-        customerManagementProvider.update(allCrmProfiles)
+        marketingService.updateProfile(allCrmProfiles)
+
+        updateSubscriptions(allCrmProfiles)
+    }
+
+    private fun updateSubscriptions(allCrmProfiles: List<CrmProfile>) {
+        allCrmProfiles.forEach { crmProfile ->
+            marketingService.updateSubscription(crmProfile)
+        }
     }
 }

@@ -17,6 +17,6 @@ class UpdateContactsIntegrationTest : AbstractSpringIntegrationTest() {
 
         updateContacts()
 
-        verify(customerManagementProvider).update(any())
+        verify(marketingService).updateProfile(any())
     }
 }

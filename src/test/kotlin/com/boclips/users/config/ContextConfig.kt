@@ -1,7 +1,7 @@
 package com.boclips.users.config
 
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
@@ -35,8 +35,8 @@ class ContextConfig {
     fun sessionProvider(keycloakClientFake: KeycloakClientFake): SessionProvider = keycloakClientFake
 
     @Bean
-    fun customerManagement(properties: HubSpotProperties): CustomerManagementProvider =
-        Mockito.mock(CustomerManagementProvider::class.java)
+    fun customerManagement(properties: HubSpotProperties): MarketingService =
+        Mockito.mock(MarketingService::class.java)
 
     @Bean
     fun referralProvider(properties: HubSpotProperties): ReferralProvider =

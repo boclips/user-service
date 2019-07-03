@@ -1,4 +1,4 @@
-package com.boclips.users.domain.model
+package com.boclips.users.domain.model.marketing
 
 data class MarketingTracking(
     val utmSource: String,

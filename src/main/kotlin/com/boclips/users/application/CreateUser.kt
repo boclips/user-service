@@ -10,7 +10,7 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.service.AnalyticsClient
-import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.userToCrmProfile
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 @Component
 class CreateUser(
     private val userService: UserService,
-    private val customerManagementProvider: CustomerManagementProvider,
+    private val marketingService: MarketingService,
     private val captchaProvider: CaptchaProvider,
     private val subjectService: SubjectService,
     private val analyticsClient: AnalyticsClient
@@ -66,7 +66,7 @@ class CreateUser(
     private fun attemptToUpdateProfile(createdUser: User) {
         try {
             val crmProfile = userToCrmProfile(createdUser, UserSessions(lastAccess = null))
-            customerManagementProvider.update(listOf(crmProfile))
+            marketingService.updateProfile(listOf(crmProfile))
         } catch (ex: Exception) {
             logger.info { "Failed to update contact $ex" }
         }

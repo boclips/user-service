@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.CrmProfile
+import com.boclips.users.domain.model.marketing.CrmProfile
 import java.time.LocalDateTime
 import java.time.ZoneId
 

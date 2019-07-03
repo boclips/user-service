@@ -1,11 +1,11 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.CrmProfile
-import com.boclips.users.domain.service.CustomerManagementProvider
+import com.boclips.users.domain.model.marketing.CrmProfile
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.infrastructure.getContentTypeHeader
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
+import com.boclips.users.infrastructure.hubspot.resources.MarketingEmailSubscriptions
 import com.boclips.users.infrastructure.hubspot.resources.SubscriptionStatus
-import com.boclips.users.infrastructure.hubspot.resources.UnsubscribeFromMarketingEmails
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.springframework.http.HttpEntity
@@ -17,10 +17,10 @@ class HubSpotClient(
     val objectMapper: ObjectMapper,
     val hubspotProperties: HubSpotProperties,
     val restTemplate: RestTemplate
-) : CustomerManagementProvider {
+) : MarketingService {
     companion object : KLogging()
 
-    override fun update(crmProfiles: List<CrmProfile>) {
+    override fun updateProfile(crmProfiles: List<CrmProfile>) {
         try {
             val allValidContacts = crmProfiles.filter { it.isValid() }
 
@@ -37,25 +37,26 @@ class HubSpotClient(
         }
     }
 
-    override fun unsubscribe(crmProfile: CrmProfile) {
+    override fun updateSubscription(crmProfile: CrmProfile) {
         try {
             restTemplate.put(
                 getEmailEndPointForUser(crmProfile.email),
-                UnsubscribeFromMarketingEmails(
-                    subscriptionStatuses = listOf(SubscriptionStatus(id = hubspotProperties.marketingSubscriptionId))
+                MarketingEmailSubscriptions(
+                    subscriptionStatuses = listOf(
+                        SubscriptionStatus(
+                            id = hubspotProperties.marketingSubscriptionId,
+                            subscribed = crmProfile.hasOptedIntoMarketing
+                        )
+                    )
                 )
             )
         } catch (ex: Exception) {
-            logger.info { "Could not unsubscribe contact ${crmProfile.id}" }
+            logger.info { "Could not modify subscriptions of contact ${crmProfile.id}" }
         }
     }
 
     private fun updateContacts(batchOfUsers: List<CrmProfile>): List<HubSpotContact> {
         val contacts = batchOfUsers.map { crmProfile ->
-            if (!crmProfile.hasOptedIntoMarketing) {
-                unsubscribe(crmProfile)
-            }
-
             return@map HubSpotContactConverter().convert(crmProfile)
         }
 

@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.CrmProfile
-import com.boclips.users.domain.model.MarketingTracking
+import com.boclips.users.domain.model.marketing.CrmProfile
+import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User

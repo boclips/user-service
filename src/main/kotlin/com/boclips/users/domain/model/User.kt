@@ -1,6 +1,7 @@
 package com.boclips.users.domain.model
 
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.marketing.MarketingTracking
 
 data class User(
     val id: UserId,
