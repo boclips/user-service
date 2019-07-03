@@ -81,39 +81,12 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
     fun removeUser(id: String?) {
         keycloak.realm(REALM).users().delete(id)
     }
-
-    fun isInGroup(id: String, groupName: String): Boolean {
-        try {
-            val groupNames = keycloak.realm(REALM).users().get(id).groups().map { it.name }
-
-            if (groupNames.isEmpty()) return false
-
-            return groupNames.contains(groupName)
-        } catch (ex: Exception) {
-            return false
-        }
-    }
-
-    fun removeFromGroup(id: String, groupName: String) {
-        val toBeRemovedFromGroup = findGroup(groupName)
-        keycloak.realm(REALM).users().get(id).leaveGroup(toBeRemovedFromGroup!!.id)
-    }
-
-    fun addToGroup(id: String, groupName: String) {
-        val toBeAddedToGroup = findGroup(groupName)
-        keycloak.realm(REALM).users().get(id).joinGroup(toBeAddedToGroup!!.id)
-    }
-
+    
     fun addRealmRoleToUser(role: String, userId: String?) {
         keycloak.realm(REALM).users().get(userId).roles().realmLevel().listAvailable()
             .firstOrNull { it.name == role }
             ?.let {
                 keycloak.realm(REALM).users().get(userId).roles().realmLevel().add(listOf(it))
             }
-    }
-
-    private fun findGroup(groupName: String): GroupRepresentation? {
-        return keycloak.realm(REALM).groups().groups()
-            .first { groupRepresentation -> groupRepresentation.name == groupName }
     }
 }

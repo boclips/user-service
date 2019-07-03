@@ -164,19 +164,6 @@ class KeycloakWrapperContractTest {
     }
 
     @Test
-    fun `add and remove group for user`() {
-        val wrapper = KeycloakWrapper(keycloakInstance)
-
-        val aUser = wrapper.users().first()
-
-        wrapper.addToGroup(aUser.id, "teachers")
-        assertThat(wrapper.isInGroup(aUser.id, "teachers")).isTrue()
-
-        wrapper.removeFromGroup(aUser.id, "teachers")
-        assertThat(wrapper.isInGroup(aUser.id, "teachers")).isFalse()
-    }
-
-    @Test
     fun `add role to user`() {
         val wrapper = KeycloakWrapper(keycloakInstance)
 
