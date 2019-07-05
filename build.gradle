@@ -67,7 +67,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-gcp-starter-pubsub")
     implementation("org.springframework.cloud:spring-cloud-gcp-pubsub-stream-binder")
 
-    implementation("com.github.boclips:events:0.50.0")
+    implementation("com.github.boclips:events:0.63.0")
     implementation('com.github.boclips:boclips-spring-web:0.1.0')
     implementation('com.github.boclips:boclips-spring-security:0.93.0')
     implementation('com.github.boclips:videos:0.0.619')
