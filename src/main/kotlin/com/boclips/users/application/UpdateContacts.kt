@@ -19,6 +19,7 @@ class UpdateContacts(
                 val sessions = sessionProvider.getUserSessions(user.id)
                 return@map userToCrmProfile(user, sessions)
             }
+            .filter { it.isValid() }
 
         marketingService.updateProfile(allCrmProfiles)
 
