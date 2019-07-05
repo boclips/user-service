@@ -1,6 +1,5 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserService
@@ -22,13 +21,5 @@ class UpdateContacts(
             .filter { it.isValid() }
 
         marketingService.updateProfile(allCrmProfiles)
-
-        updateSubscriptions(allCrmProfiles)
-    }
-
-    private fun updateSubscriptions(allCrmProfiles: List<CrmProfile>) {
-        allCrmProfiles.forEach { crmProfile ->
-            marketingService.updateSubscription(crmProfile)
-        }
     }
 }

@@ -67,6 +67,7 @@ class CreateUser(
         try {
             val crmProfile = userToCrmProfile(createdUser, UserSessions(lastAccess = null))
             marketingService.updateProfile(listOf(crmProfile))
+            marketingService.updateSubscription(crmProfile)
         } catch (ex: Exception) {
             logger.info { "Failed to update contact $ex" }
         }

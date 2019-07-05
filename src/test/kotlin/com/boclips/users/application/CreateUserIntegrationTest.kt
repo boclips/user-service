@@ -102,6 +102,13 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `update subscription on hubspot after user creation`() {
+        createUser(CreateUserRequestFactory.sample())
+
+        verify(marketingService, times(1)).updateSubscription(any())
+    }
+
+    @Test
     fun `throw exception for invalid subject`() {
         whenever(subjectService.allSubjectsExist(any())).thenReturn(false)
 
