@@ -2,13 +2,6 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.2.xsd">
     <suppress>
         <notes><![CDATA[
-      file name: tomcat-embed-websocket-8.5.35.jar & tomcat-embed-core-8.5.35.jar
-      ]]></notes>
-        <cpe>cpe:/a:apache_software_foundation:tomcat:8.5.35</cpe>
-        <cve>CVE-2019-0232</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
       file name: emailaddress-rfc2822-1.1.2.jar
       ]]></notes>
         <gav regex="true">^com\.github\.bbottema:emailaddress-rfc2822:.*$</gav>
@@ -48,13 +41,6 @@
    ]]></notes>
         <gav regex="true">^org\.springframework.integration:spring-integration-tuple:.*$</gav>
         <cve>CVE-2019-3772</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-      file name: tomcat-embed-websocket-9.0.16.jar & tomcat-embed-core-9.0.16.jar
-      ]]></notes>
-        <cpe>cpe:/a:apache:tomcat:9.0.16</cpe>
-        <cve>CVE-2019-0232</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
