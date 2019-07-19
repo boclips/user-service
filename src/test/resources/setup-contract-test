@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
-extract () {
-    echo "$1" | awk -F'=' "/^$2/ { print \$2 }"
-}
+cwd="$(cd "$(dirname "$0")" && pwd)"
+output="$cwd/contract-test-setup.yml"
 
-user_service_env="$(lpass show --notes user-service-testing-env)"
-
-echo "KEYCLOAK_USERNAME: $(lpass show --username "e2e-admin-testing")" > contract-test-setup.yml
-echo "KEYCLOAK_PASSWORD: $(lpass show --password "e2e-admin-testing")" >> contract-test-setup.yml
-echo "HUBSPOT_API_KEY: $(extract "$user_service_env" HUBSPOT_API_KEY)" >> contract-test-setup.yml
+echo "KEYCLOAK_USERNAME: $(get-k8s-concourse-secret boclips e2e admin-username)"            > "$output"
+echo "KEYCLOAK_PASSWORD: $(get-k8s-concourse-secret boclips e2e admin-password)"            >> "$output"
+echo "HUBSPOT_API_KEY: $(decoded-secret user-service testing | jq -r '.HUBSPOT_API_KEY')"   >> "$output"
