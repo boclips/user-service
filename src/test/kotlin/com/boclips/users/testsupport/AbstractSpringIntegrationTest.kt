@@ -1,13 +1,13 @@
 package com.boclips.users.testsupport
 
-import com.boclips.events.config.Topics
+import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.identity.Identity
-import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
-import org.springframework.cloud.stream.test.binder.MessageCollector
 import org.springframework.data.repository.CrudRepository
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -38,6 +37,9 @@ import java.time.Instant
 abstract class AbstractSpringIntegrationTest {
     @Autowired
     protected lateinit var wireMockServer: WireMockServer
+
+    @Autowired
+    lateinit var eventBus: SynchronousFakeEventBus
 
     @Autowired
     protected lateinit var mvc: MockMvc
@@ -66,12 +68,6 @@ abstract class AbstractSpringIntegrationTest {
     @Autowired
     lateinit var subjectService: VideoServiceSubjectsClient
 
-    @Autowired
-    lateinit var topics: Topics
-
-    @Autowired
-    lateinit var messageCollector: MessageCollector
-
     @BeforeEach
     fun resetState() {
         repositories.forEach { it.deleteAll() }
@@ -93,7 +89,7 @@ abstract class AbstractSpringIntegrationTest {
             )
         )
 
-        messageCollector.forChannel(topics.userActivated()).clear()
+        eventBus.clearState()
     }
 
     fun saveUser(user: User): String {

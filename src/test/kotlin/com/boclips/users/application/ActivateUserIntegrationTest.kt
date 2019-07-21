@@ -1,5 +1,6 @@
 package com.boclips.users.application
 
+import com.boclips.eventbus.events.UserActivated
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -39,10 +40,10 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         activateUser()
 
-        val message = messageCollector.forChannel(topics.userActivated()).poll()
+        val event = eventBus.getEventOfType(UserActivated::class.java)
 
-        assertThat(message.toString()).contains("\"totalUsers\":2")
-        assertThat(message.toString()).contains("\"activatedUsers\":1")
+        assertThat(event.totalUsers).isEqualTo(2)
+        assertThat(event.activatedUsers).isEqualTo(1)
     }
 
     @Test

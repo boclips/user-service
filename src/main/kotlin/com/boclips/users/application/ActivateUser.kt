@@ -1,7 +1,7 @@
 package com.boclips.users.application
 
-import com.boclips.events.config.Topics
-import com.boclips.events.types.UserActivated
+import com.boclips.eventbus.EventBus
+import com.boclips.eventbus.events.UserActivated
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.User
@@ -14,7 +14,6 @@ import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.userToCrmProfile
 import mu.KLogging
-import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
 import java.time.Instant
 
@@ -24,7 +23,7 @@ class ActivateUser(
     private val userRepository: UserRepository,
     private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
-    private val topics: Topics
+    private val eventBus: EventBus
 ) {
     companion object : KLogging()
 
@@ -50,18 +49,18 @@ class ActivateUser(
 
     private fun publishUserActivated(user: User) {
         val count = userRepository.count()
-        topics.userActivated().send(MessageBuilder
-                .withPayload(
-                        UserActivated.builder()
-                                .user(com.boclips.events.types.User.builder()
-                                        .id(user.id.value)
-                                        .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
-                                        .build()
-                                )
-                                .totalUsers(count.total)
-                                .activatedUsers(count.activated)
-                                .build())
-                .build())
+        eventBus.publish(
+            UserActivated.builder()
+                .user(
+                    com.boclips.eventbus.events.User.builder()
+                        .id(user.id.value)
+                        .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
+                        .build()
+                )
+                .totalUsers(count.total)
+                .activatedUsers(count.activated)
+                .build()
+        )
     }
 
     private fun registerReferral(activatedUser: User) {

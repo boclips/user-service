@@ -1,5 +1,6 @@
 package com.boclips.users.config
 
+import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.IdentityProvider
@@ -54,4 +55,9 @@ class ContextConfig {
 
     @Bean
     fun cacheableSubjectsClient(videoServiceClient: VideoServiceClient) = CacheableSubjectsClient(videoServiceClient)
+
+    @Bean
+    fun eventBus(): SynchronousFakeEventBus {
+        return SynchronousFakeEventBus()
+    }
 }
