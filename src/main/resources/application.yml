@@ -21,3 +21,6 @@ management:
 subjects:
   cache:
     timetolive: 300000
+
+pubsub:
+  consumerGroup: user-service
