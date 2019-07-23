@@ -31,7 +31,7 @@ class GoogleRecaptchaClient(
 
                 if (!response.success) {
                     val errors = response.errorCodes!!.joinToString(",")
-                    logger.error { "The reCaptcha validation has failed. [$errors]" }
+                    logger.info(errors) { "The reCaptcha validation has failed." }
                     return false
                 }
 
