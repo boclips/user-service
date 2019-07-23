@@ -1,7 +1,7 @@
 package com.boclips.users.application
 
 import com.boclips.eventbus.EventBus
-import com.boclips.eventbus.events.UserActivated
+import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.User
@@ -52,7 +52,7 @@ class ActivateUser(
         eventBus.publish(
             UserActivated.builder()
                 .user(
-                    com.boclips.eventbus.events.User.builder()
+                    com.boclips.eventbus.events.user.User.builder()
                         .id(user.id.value)
                         .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
                         .build()

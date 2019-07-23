@@ -1,6 +1,6 @@
 package com.boclips.users.application
 
-import com.boclips.eventbus.events.UserActivated
+import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
