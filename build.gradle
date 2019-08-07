@@ -72,7 +72,7 @@ dependencies {
     implementation('com.jayway.jsonpath:json-path:2.3.0')
     implementation('io.github.microutils:kotlin-logging:1.6.22')
     implementation('com.fasterxml.jackson.module:jackson-module-kotlin')
-    implementation('com.fasterxml.jackson.core:jackson-databind:2.9.8')
+    implementation('com.fasterxml.jackson.core:jackson-databind:2.9.9.2')
     implementation('org.keycloak:keycloak-admin-client:4.8.3.Final')
     implementation('org.jboss.resteasy:resteasy-jackson2-provider:3.6.2.Final')
     implementation('org.jboss.resteasy:resteasy-client:3.6.2.Final')
