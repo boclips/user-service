@@ -24,3 +24,9 @@ subjects:
 
 pubsub:
   consumerGroup: user-service
+
+user-service:
+  test: 'ok'
+  organisation-mappings:
+    - role: 'TEACHER'
+      organisation-name: 'Boclips for Teachers'
