@@ -1,26 +1,24 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `persists an organisation`() {
-        val organisation = OrganisationFactory.sample()
+        val organisationName = "Persist Organisation"
 
-        val persisted = organisationRepository.save(organisation)
+        val persisted = organisationRepository.save(organisationName)
 
-        assertThat(persisted).isEqualTo(organisation)
+        assertThat(persisted.id).isNotNull
+        assertThat(persisted.name).isEqualTo(organisationName)
     }
 
     @Test
     fun `looks an organisation up by name`() {
         val organisationName = "Lookup Organisation"
-        val organisation = organisationRepository.save(OrganisationFactory.sample(
-            name = organisationName
-        ))
+        val organisation = organisationRepository.save(organisationName)
 
         val foundOrganisation = organisationRepository.findByName(organisationName)
 

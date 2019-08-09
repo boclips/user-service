@@ -1,11 +1,12 @@
 package com.boclips.users.infrastructure.user
 
-import org.springframework.data.annotation.Id
+import org.bson.codecs.pojo.annotations.BsonId
+import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "organisations")
 data class OrganisationDocument(
-    @Id
-    val id: String,
+    @BsonId
+    val id: ObjectId,
     val name: String
 )
