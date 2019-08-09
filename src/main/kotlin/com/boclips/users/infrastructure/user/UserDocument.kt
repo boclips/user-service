@@ -1,8 +1,6 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.analytics.AnalyticsId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -19,7 +17,8 @@ data class UserDocument(
     val analyticsId: String?,
     val referralCode: String?,
     val hasOptedIntoMarketing: Boolean?,
-    val marketing: MarketingTrackingDocument?
+    val marketing: MarketingTrackingDocument?,
+    val organisationId: String?
 ) {
     companion object {
         fun from(user: User): UserDocument {
@@ -40,7 +39,8 @@ data class UserDocument(
                     utmMedium = user.marketingTracking.utmMedium,
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
-                )
+                ),
+                organisationId = user.organisationId?.value
             )
         }
     }

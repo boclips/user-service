@@ -52,8 +52,9 @@ class ActivateUser(
         eventBus.publish(
             UserActivated.builder()
                 .user(
-                    com.boclips.eventbus.events.user.User.builder()
+                    com.boclips.eventbus.domain.user.User.builder()
                         .id(user.id.value)
+                        .organisationId(user.organisationId?.value)
                         .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
                         .build()
                 )

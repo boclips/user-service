@@ -5,6 +5,7 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
+import com.boclips.users.testsupport.OrganisationIdFactory
 import com.boclips.users.testsupport.UserFactory
 import com.nhaarman.mockitokotlin2.verify
 import org.assertj.core.api.Assertions
@@ -44,6 +45,47 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(event.totalUsers).isEqualTo(2)
         assertThat(event.activatedUsers).isEqualTo(1)
+    }
+
+    @Test
+    fun `activate user does not pass organisation to an event if given user does not belong to one`() {
+        val userId = UUID.randomUUID().toString()
+        setSecurityContext(userId)
+        saveUser(
+            UserFactory.sample(
+                user = AccountFactory.sample(
+                    id = userId,
+                    organisationId = null
+                )
+            )
+        )
+
+        activateUser()
+
+        val event = eventBus.getEventOfType(UserActivated::class.java)
+
+        assertThat(event.user.organisationId).isNull()
+    }
+
+    @Test
+    fun `activate user passes organisation to an event if given user belongs to organisation`() {
+        val userId = UUID.randomUUID().toString()
+        val organisationId = UUID.randomUUID().toString()
+        setSecurityContext(userId)
+        saveUser(
+            UserFactory.sample(
+                user = AccountFactory.sample(
+                    id = userId,
+                    organisationId = OrganisationIdFactory.sample(id = organisationId)
+                )
+            )
+        )
+
+        activateUser()
+
+        val event = eventBus.getEventOfType(UserActivated::class.java)
+
+        assertThat(event.user.organisationId).isEqualTo(organisationId)
     }
 
     @Test

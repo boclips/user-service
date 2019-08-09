@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
 import com.boclips.users.testsupport.MarketingTrackingFactory
+import com.boclips.users.testsupport.OrganisationIdFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -25,6 +26,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists optional information`() {
+        val organisationId = OrganisationIdFactory.sample()
         val user = AccountFactory.sample(
             marketing = MarketingTrackingFactory.sample(
                 utmCampaign = "campaign",
@@ -34,12 +36,31 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 utmTerm = "term"
             ),
             referralCode = "referral-123",
-            analyticsId = AnalyticsId(value = "analytics-123")
+            analyticsId = AnalyticsId(value = "analytics-123"),
+            organisationId = organisationId
         )
 
         userRepository.save(user)
 
-        assertThat(userRepository.findById(user.id)).isEqualTo(user)
+        val fetchedUser = userRepository.findById(user.id)
+
+        assertThat(fetchedUser).isEqualTo(user)
+        assertThat(fetchedUser!!.organisationId).isEqualTo(organisationId)
+    }
+
+    @Test
+    fun `saving organisation id as null is all good`() {
+        val account = AccountFactory.sample(
+            subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
+            organisationId = null
+        )
+
+        userRepository.save(account)
+
+        val fetchedUser = userRepository.findById(account.id)
+
+        assertThat(fetchedUser).isEqualTo(account)
+        assertThat(fetchedUser!!.organisationId).isNull()
     }
 
     @Test

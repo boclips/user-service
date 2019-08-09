@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.SubjectService
 
 data class UserDocumentConverter(private val subjectService: SubjectService) {
@@ -25,6 +26,7 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
             utmMedium = userDocument.marketing?.utmMedium ?: "",
             utmTerm = userDocument.marketing?.utmTerm ?: "",
             utmCampaign = userDocument.marketing?.utmCampaign ?: ""
-        )
+        ),
+        organisationId = userDocument.organisationId?.let { OrganisationId(userDocument.organisationId) }
     )
 }

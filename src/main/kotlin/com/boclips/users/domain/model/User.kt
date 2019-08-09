@@ -2,6 +2,7 @@ package com.boclips.users.domain.model
 
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.OrganisationId
 
 data class User(
     val id: UserId,
@@ -14,7 +15,8 @@ data class User(
     val lastName: String,
     val email: String,
     val hasOptedIntoMarketing: Boolean,
-    val marketingTracking: MarketingTracking
+    val marketingTracking: MarketingTracking,
+    val organisationId: OrganisationId? = null
 ) {
     fun isReferral(): Boolean {
         return !referralCode.isNullOrEmpty()

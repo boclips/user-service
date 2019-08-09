@@ -1,13 +1,14 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.marketing.CrmProfile
-import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.marketing.CrmProfile
+import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import com.boclips.users.presentation.requests.CreateUserRequest
@@ -30,7 +31,8 @@ class AccountFactory {
             lastName: String = "Dough",
             email: String = "joe@dough.com",
             hasOptedIntoMarketing: Boolean = true,
-            marketing: MarketingTracking = MarketingTrackingFactory.sample()
+            marketing: MarketingTracking = MarketingTrackingFactory.sample(),
+            organisationId: OrganisationId? = null
         ) = User(
             id = UserId(value = id),
             activated = activated,
@@ -42,8 +44,17 @@ class AccountFactory {
             lastName = lastName,
             email = email,
             hasOptedIntoMarketing = hasOptedIntoMarketing,
-            marketingTracking = marketing
+            marketingTracking = marketing,
+            organisationId = organisationId
         )
+    }
+}
+
+class OrganisationIdFactory {
+    companion object {
+        fun sample(
+            id: String = UUID.randomUUID().toString()
+        ) = OrganisationId(value = id)
     }
 }
 
@@ -117,7 +128,8 @@ class UserDocumentFactory {
             referralCode: String? = "code",
             subjects: List<String> = listOf("maths"),
             ageRange: List<Int> = listOf(1, 2),
-            hasOptedIntoMarketing: Boolean? = false
+            hasOptedIntoMarketing: Boolean? = false,
+            organisationId: String? = null
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
@@ -135,7 +147,8 @@ class UserDocumentFactory {
                 utmMedium = null,
                 utmTerm = null,
                 utmContent = null
-            )
+            ),
+            organisationId = organisationId
         )
     }
 }
