@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
+import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
@@ -46,6 +47,9 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var organisationRepository: OrganisationRepository
 
     @Autowired
     lateinit var keycloakClientFake: KeycloakClientFake

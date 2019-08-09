@@ -1,3 +1,6 @@
 package com.boclips.users.domain.model.organisation
 
-data class Organisation(val id: OrganisationId)
+data class Organisation(
+    val id: OrganisationId,
+    val name: String
+)

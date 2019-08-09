@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
@@ -47,14 +48,6 @@ class AccountFactory {
             marketingTracking = marketing,
             organisationId = organisationId
         )
-    }
-}
-
-class OrganisationIdFactory {
-    companion object {
-        fun sample(
-            id: String = UUID.randomUUID().toString()
-        ) = OrganisationId(value = id)
     }
 }
 
@@ -150,6 +143,23 @@ class UserDocumentFactory {
             ),
             organisationId = organisationId
         )
+    }
+}
+
+class OrganisationIdFactory {
+    companion object {
+        fun sample(
+            id: String = UUID.randomUUID().toString()
+        ) = OrganisationId(value = id)
+    }
+}
+
+class OrganisationFactory {
+    companion object {
+        fun sample(
+            id: OrganisationId = OrganisationIdFactory.sample(),
+            name: String = "The Best Organisation"
+        ) = Organisation(id, name)
     }
 }
 
