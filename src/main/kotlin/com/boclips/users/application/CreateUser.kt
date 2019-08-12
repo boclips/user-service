@@ -3,6 +3,7 @@ package com.boclips.users.application
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.NewUser
+import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserSessions
@@ -33,17 +34,13 @@ class CreateUser(
             throw CaptchaScoreBelowThresholdException(createUserRequest.email!!)
         }
 
-        if (invalidSubjects(createUserRequest.subjects)) {
-            throw InvalidSubjectException(createUserRequest.subjects.orEmpty())
-        }
-
         val newUser = NewUser(
             firstName = createUserRequest.firstName!!,
             lastName = createUserRequest.lastName!!,
             email = createUserRequest.email!!,
             password = createUserRequest.password!!,
             analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
-            subjects = createUserRequest.subjects.orEmpty(),
+            subjects = convertSubjects(createUserRequest),
             ageRange = createUserRequest.ageRange.orEmpty(),
             referralCode = createUserRequest.referralCode.orEmpty(),
             hasOptedIntoMarketing = createUserRequest.hasOptedIntoMarketing!!,
@@ -62,6 +59,17 @@ class CreateUser(
         return createdUser
     }
 
+    private fun convertSubjects(createUserRequest: CreateUserRequest): List<Subject> {
+        return if (containsInvalidSubjects(createUserRequest.subjects)) {
+            throw InvalidSubjectException(createUserRequest.subjects.orEmpty())
+        } else {
+            subjectService.getSubjectsById(createUserRequest.subjects.orEmpty().map { SubjectId(value = it) })
+        }
+    }
+
+    private fun containsInvalidSubjects(subjects: List<String>?) =
+        !subjectService.allSubjectsExist(subjects.orEmpty().map { SubjectId(value = it) })
+
     private fun attemptToUpdateProfile(createdUser: User) {
         try {
             val crmProfile = convertUserToCrmProfile(createdUser, UserSessions(lastAccess = null))
@@ -71,9 +79,6 @@ class CreateUser(
             logger.info { "Failed to update contact $ex" }
         }
     }
-
-    private fun invalidSubjects(subjects: List<String>?) =
-        !subjectService.allSubjectsExist(subjects.orEmpty().map { SubjectId(value = it) })
 
     private fun trackAccountCreatedEvent(id: AnalyticsId?) {
         id?.let {

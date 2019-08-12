@@ -1,6 +1,8 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.NewUser
+import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
@@ -46,7 +48,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
             lastName = "Dough",
             email = "joe@dough.com",
             password = "thisisapassword",
-            subjects = listOf("subject"),
+            subjects = listOf(Subject(id = SubjectId("test"), name = "subject")),
             ageRange = listOf(1, 2),
             analyticsId = AnalyticsId(value = "analytics"),
             referralCode = "abc-a123",

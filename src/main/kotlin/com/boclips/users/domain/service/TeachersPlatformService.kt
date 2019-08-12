@@ -1,20 +1,16 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.NewUser
-import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserNotFoundException
-import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.domain.model.marketing.MarketingTracking
 import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
 class TeachersPlatformService(
     val userRepository: UserRepository,
-    // TODO: move subjects service out
-    val subjectService: VideoServiceSubjectsClient,
     val identityProvider: IdentityProvider,
     val organisationRepository: OrganisationRepository
 ) {
@@ -53,7 +49,7 @@ class TeachersPlatformService(
                 id = UserId(identity.id.value),
                 activated = false,
                 analyticsId = newUser.analyticsId,
-                subjects = subjectService.getSubjectsById(newUser.subjects.map { SubjectId(value = it) }),
+                subjects = newUser.subjects,
                 ageRange = newUser.ageRange,
                 referralCode = newUser.referralCode,
                 firstName = newUser.firstName,
