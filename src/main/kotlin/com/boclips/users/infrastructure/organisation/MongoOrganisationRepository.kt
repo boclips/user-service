@@ -7,7 +7,7 @@ import org.bson.types.ObjectId
 import org.springframework.stereotype.Repository
 
 @Repository
-class MongoOrganisationRepository(private val repository: OrganisationDocumentRepository) : OrganisationRepository {
+class MongoOrganisationRepository(private val repository: OrganisationSpringDataRepository) : OrganisationRepository {
     override fun findByName(organisationName: String): Organisation? {
         return repository.findByName(organisationName)?.let { fromDocument(it) }
     }
