@@ -5,8 +5,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.AccountFactory
-import com.boclips.users.testsupport.UserFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,21 +17,11 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can find all users`() {
         val savedUsers = listOf(
-            saveUser(
-                UserFactory.sample(user = AccountFactory.sample(id = "1"))
-            ),
-            saveUser(
-                UserFactory.sample(user = AccountFactory.sample(id = "2"))
-            ),
-            saveUser(
-                UserFactory.sample(user = AccountFactory.sample(id = "3"))
-            ),
-            saveUser(
-                UserFactory.sample(user = AccountFactory.sample(id = "4"))
-            ),
-            saveUser(
-                UserFactory.sample(user = AccountFactory.sample(id = "5"))
-            )
+            saveUser(UserFactory.sample(id = "1")),
+            saveUser(UserFactory.sample(id = "2")),
+            saveUser(UserFactory.sample(id = "3")),
+            saveUser(UserFactory.sample(id = "4")),
+            saveUser(UserFactory.sample(id = "5"))
         )
 
         val users = teachersPlatformService.findAllUsers()

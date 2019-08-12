@@ -7,8 +7,7 @@ import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.AccountFactory
-import com.boclips.users.testsupport.UserFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Nested
@@ -29,7 +28,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         val organisationId = ObjectId().toHexString()
         saveUser(
-            AccountFactory.sample(
+            UserFactory.sample(
                 id = userId,
                 analyticsId = AnalyticsId(value = "123"),
                 firstName = "Jane",
@@ -81,7 +80,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)
 
-            saveIdentity(AccountFactory.sample(id = userId))
+            saveIdentity(UserFactory.sample(id = userId))
 
             val resource = getUser(userId)
 
@@ -95,7 +94,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId, "TEACHER")
             val organisation = saveOrganisation("Boclips for Teachers")
 
-            saveIdentity(AccountFactory.sample(id = userId))
+            saveIdentity(UserFactory.sample(id = userId))
 
             val resource = getUser(userId)
 

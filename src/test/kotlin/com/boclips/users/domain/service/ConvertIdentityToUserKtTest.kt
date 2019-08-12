@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.testsupport.UserIdentityFactory
+import com.boclips.users.testsupport.factories.UserIdentityFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

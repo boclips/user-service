@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.testsupport.UserFactory
-import com.boclips.users.testsupport.UserSessionsFactory
+import com.boclips.users.testsupport.factories.UserFactory
+import com.boclips.users.testsupport.factories.UserSessionsFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant

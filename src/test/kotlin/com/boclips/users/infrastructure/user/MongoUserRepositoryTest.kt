@@ -5,9 +5,9 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.AccountFactory
-import com.boclips.users.testsupport.MarketingTrackingFactory
-import com.boclips.users.testsupport.OrganisationIdFactory
+import com.boclips.users.testsupport.factories.MarketingTrackingFactory
+import com.boclips.users.testsupport.factories.OrganisationIdFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,7 +15,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists compulsory information`() {
-        val user = AccountFactory.sample(organisationId = OrganisationIdFactory.sample())
+        val user = UserFactory.sample(organisationId = OrganisationIdFactory.sample())
 
         userRepository.save(user)
 
@@ -31,7 +31,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists optional information`() {
-        val user = AccountFactory.sample(
+        val user = UserFactory.sample(
             subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
             ageRange = listOf(1, 2, 3, 4),
             marketing = MarketingTrackingFactory.sample(
@@ -42,7 +42,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 utmTerm = "term"
             ),
             referralCode = "referral-123",
-            analyticsId = AnalyticsId(value = "analytics-123")
+            analyticsId = AnalyticsId(value = "analytics-123"),
+            organisationId = OrganisationIdFactory.sample()
         )
 
         userRepository.save(user)
@@ -59,7 +60,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `saving organisation id as null is all good`() {
-        val account = AccountFactory.sample(
+        val account = UserFactory.sample(
             subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
             organisationId = null
         )
@@ -74,7 +75,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `saving analytics id as null is all good`() {
-        val account = AccountFactory.sample(
+        val account = UserFactory.sample(
             subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
             analyticsId = null
         )
@@ -87,12 +88,12 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can get all accounts`() {
         val savedUsers = listOf(
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample()),
-            userRepository.save(AccountFactory.sample())
+            userRepository.save(UserFactory.sample()),
+            userRepository.save(UserFactory.sample()),
+            userRepository.save(UserFactory.sample()),
+            userRepository.save(UserFactory.sample()),
+            userRepository.save(UserFactory.sample()),
+            userRepository.save(UserFactory.sample())
         )
 
         assertThat(userRepository.findAll(savedUsers.map { it.id })).containsAll(savedUsers)
@@ -100,7 +101,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `activate an account`() {
-        val account = AccountFactory.sample(
+        val account = UserFactory.sample(
             activated = false,
             analyticsId = null
         )
@@ -114,14 +115,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `count users`() {
         userRepository.save(
-            AccountFactory.sample(
+            UserFactory.sample(
                 id = "user-1",
                 activated = false,
                 analyticsId = null
             )
         )
         userRepository.save(
-            AccountFactory.sample(
+            UserFactory.sample(
                 id = "user=2",
                 activated = false,
                 analyticsId = null

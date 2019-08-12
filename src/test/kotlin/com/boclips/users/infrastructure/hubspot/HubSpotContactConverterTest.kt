@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.testsupport.CrmProfileFactory
+import com.boclips.users.testsupport.factories.CrmProfileFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant

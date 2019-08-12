@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.AccountFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,7 +23,7 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         setSecurityContext(userId.value)
 
-        saveIdentity(AccountFactory.sample(id = userId.value))
+        saveIdentity(UserFactory.sample(id = userId.value))
 
         userImportService.importFromIdentityProvider(userId = userId)
 
@@ -34,11 +34,11 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `throws when a user already exists`() {
-        val user = AccountFactory.sample(id = "some-id", firstName = "Bob")
+        val user = UserFactory.sample(id = "some-id", firstName = "Bob")
         val savedUser = userRepository.save(user)
         setSecurityContext(savedUser.id.value)
 
-        saveIdentity(AccountFactory.sample(id = "some-id"))
+        saveIdentity(UserFactory.sample(id = "some-id"))
 
         assertThrows<UserAlreadyExistsException> { userImportService.importFromIdentityProvider(userId = savedUser.id) }
     }
@@ -51,8 +51,8 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext(userId1)
         setSecurityContext(userId2)
 
-        saveIdentity(AccountFactory.sample(id = userId1))
-        saveIdentity(AccountFactory.sample(id = userId2))
+        saveIdentity(UserFactory.sample(id = userId1))
+        saveIdentity(UserFactory.sample(id = userId2))
 
         userImportService.importFromIdentityProvider(listOf(UserId(userId1), UserId(userId2)))
 

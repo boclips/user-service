@@ -5,7 +5,7 @@ import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.CreateUserRequestFactory
+import com.boclips.users.testsupport.factories.CreateUserRequestFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -34,7 +34,6 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 recaptchaToken = "SOMERECAPTCHATOKENHERE",
                 hasOptedIntoMarketing = true
             )
-
         )
 
         val account = userRepository.findById(createdAccount.id)

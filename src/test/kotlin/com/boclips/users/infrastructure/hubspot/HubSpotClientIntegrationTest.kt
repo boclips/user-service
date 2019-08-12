@@ -5,10 +5,9 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.AccountFactory
-import com.boclips.users.testsupport.MarketingTrackingFactory
-import com.boclips.users.testsupport.UserFactory
-import com.boclips.users.testsupport.UserSessionsFactory
+import com.boclips.users.testsupport.factories.MarketingTrackingFactory
+import com.boclips.users.testsupport.factories.UserFactory
+import com.boclips.users.testsupport.factories.UserSessionsFactory
 import com.boclips.users.testsupport.loadWireMockStub
 import com.boclips.videos.service.client.Subject
 import com.boclips.videos.service.client.internal.FakeClient
@@ -68,7 +67,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
     fun `a contact has opted out of marketing emails`() {
         setUpHubSpotStub()
 
-        val user = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = false))
+        val user = UserFactory.sample(hasOptedIntoMarketing = false)
 
         hubSpotClient.updateSubscription(convertUserToCrmProfile(user, UserSessionsFactory.sample()))
 
@@ -95,7 +94,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
     fun `a contact has opted in to marketing emails`() {
         setUpHubSpotStub()
 
-        val user = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = true))
+        val user = UserFactory.sample(hasOptedIntoMarketing = true)
 
         hubSpotClient.updateSubscription(convertUserToCrmProfile(user, UserSessionsFactory.sample()))
 
@@ -120,26 +119,23 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
     private fun activatedUser(): User {
         return UserFactory.sample(
-            user = AccountFactory.sample(
-                activated = true,
-                subjects = listOf(
-                    com.boclips.users.domain.model.Subject(id = SubjectId("1"), name = "Maths"),
-                    com.boclips.users.domain.model.Subject(id = SubjectId("2"), name = "Science")
-                ),
-                ageRange = listOf(3, 4, 5, 6),
-                firstName = "Jane",
-                lastName = "Doe",
-                email = "jane@doe.com",
-                hasOptedIntoMarketing = true,
-                marketing = MarketingTrackingFactory.sample(
-                    utmContent = "utm-content-1",
-                    utmTerm = "utm-term-1",
-                    utmMedium = "utm-medium-1",
-                    utmSource = "utm-source-1",
-                    utmCampaign = "utm-campaign-1"
-                )
+            activated = true,
+            subjects = listOf(
+                com.boclips.users.domain.model.Subject(id = SubjectId("1"), name = "Maths"),
+                com.boclips.users.domain.model.Subject(id = SubjectId("2"), name = "Science")
+            ),
+            ageRange = listOf(3, 4, 5, 6),
+            firstName = "Jane",
+            lastName = "Doe",
+            email = "jane@doe.com",
+            hasOptedIntoMarketing = true,
+            marketing = MarketingTrackingFactory.sample(
+                utmContent = "utm-content-1",
+                utmTerm = "utm-term-1",
+                utmMedium = "utm-medium-1",
+                utmSource = "utm-source-1",
+                utmCampaign = "utm-campaign-1"
             )
-
         )
     }
 

@@ -1,4 +1,4 @@
-package com.boclips.users.testsupport
+package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.UserSessions
 import java.time.Instant

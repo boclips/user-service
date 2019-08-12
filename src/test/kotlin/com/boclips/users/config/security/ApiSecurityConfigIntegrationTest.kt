@@ -1,7 +1,7 @@
 package com.boclips.users.config.security
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.UserFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
 import org.junit.jupiter.api.Test

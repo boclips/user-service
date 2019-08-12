@@ -3,10 +3,9 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
-import com.boclips.users.testsupport.AccountFactory
-import com.boclips.users.testsupport.MarketingTrackingFactory
-import com.boclips.users.testsupport.UserDocumentFactory
-import com.boclips.users.testsupport.UserFactory
+import com.boclips.users.testsupport.factories.MarketingTrackingFactory
+import com.boclips.users.testsupport.factories.UserDocumentFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.videos.service.client.Subject
 import com.boclips.videos.service.client.internal.FakeClient
 import org.assertj.core.api.Assertions.assertThat
@@ -27,11 +26,9 @@ class UserDocumentTest {
     @Test
     fun `can convert document to user`() {
         val user = UserFactory.sample(
-            user = AccountFactory.sample(
-                subjects = listOf(com.boclips.users.domain.model.Subject(id = SubjectId(value = "1"), name = "maths")),
-                hasOptedIntoMarketing = true,
-                marketing = MarketingTrackingFactory.sample()
-            )
+            subjects = listOf(com.boclips.users.domain.model.Subject(id = SubjectId(value = "1"), name = "maths")),
+            hasOptedIntoMarketing = true,
+            marketing = MarketingTrackingFactory.sample()
         )
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))

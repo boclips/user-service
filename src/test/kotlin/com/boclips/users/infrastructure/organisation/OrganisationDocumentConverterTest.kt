@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.testsupport.OrganisationDocumentFactory
+import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

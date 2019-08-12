@@ -4,9 +4,8 @@ import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.AccountFactory
-import com.boclips.users.testsupport.OrganisationIdFactory
-import com.boclips.users.testsupport.UserFactory
+import com.boclips.users.testsupport.factories.OrganisationIdFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.verify
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -24,7 +23,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
         val identity = UUID.randomUUID().toString()
         setSecurityContext(identity)
 
-        saveUser(UserFactory.sample(user = AccountFactory.sample(id = identity)))
+        saveUser(UserFactory.sample(id = identity))
 
         assertThat(activateUser()).isEqualTo(activateUser())
     }
@@ -33,11 +32,11 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun `activate user publishes an event`() {
         val identity1 = UUID.randomUUID().toString()
         setSecurityContext(identity1)
-        saveUser(UserFactory.sample(user = AccountFactory.sample(id = identity1)))
+        saveUser(UserFactory.sample(id = identity1))
 
         val identity2 = UUID.randomUUID().toString()
         setSecurityContext(identity2)
-        saveUser(UserFactory.sample(user = AccountFactory.sample(id = identity2)))
+        saveUser(UserFactory.sample(id = identity2))
 
         activateUser()
 
@@ -53,10 +52,8 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext(userId)
         saveUser(
             UserFactory.sample(
-                user = AccountFactory.sample(
-                    id = userId,
-                    organisationId = null
-                )
+                id = userId,
+                organisationId = null
             )
         )
 
@@ -74,10 +71,8 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext(userId)
         saveUser(
             UserFactory.sample(
-                user = AccountFactory.sample(
-                    id = userId,
-                    organisationId = OrganisationIdFactory.sample(id = organisationId)
-                )
+                id = userId,
+                organisationId = OrganisationIdFactory.sample(id = organisationId)
             )
         )
 
@@ -95,13 +90,11 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         saveUser(
             UserFactory.sample(
-                user = AccountFactory.sample(
-                    id = identity,
-                    referralCode = "it-is-a-referral",
-                    firstName = "Jane",
-                    lastName = "Doe",
-                    email = "jane@doe.com"
-                )
+                id = identity,
+                referralCode = "it-is-a-referral",
+                firstName = "Jane",
+                lastName = "Doe",
+                email = "jane@doe.com"
             )
         )
 

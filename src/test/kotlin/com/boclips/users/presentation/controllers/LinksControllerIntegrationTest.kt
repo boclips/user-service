@@ -3,7 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.AccountFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.asUser
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -29,7 +29,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         userRepository.save(
-            AccountFactory.sample(
+            UserFactory.sample(
                 id = "a-user-id",
                 activated = false,
                 subjects = emptyList(),
@@ -50,7 +50,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         userRepository.save(
-            AccountFactory.sample(
+            UserFactory.sample(
                 id = "a-user-id",
                 activated = true,
                 subjects = emptyList(),
