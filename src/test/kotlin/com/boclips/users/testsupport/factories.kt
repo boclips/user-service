@@ -10,7 +10,7 @@ import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
-import com.boclips.users.infrastructure.user.OrganisationDocument
+import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import com.boclips.users.presentation.requests.CreateUserRequest
 import org.bson.types.ObjectId

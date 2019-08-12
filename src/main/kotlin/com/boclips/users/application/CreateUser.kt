@@ -52,7 +52,6 @@ class CreateUser(
             utmTerm = createUserRequest.utmTerm ?: "",
             utmMedium = createUserRequest.utmMedium ?: "",
             utmCampaign = createUserRequest.utmCampaign ?: ""
-
         )
 
         val createdUser = userService.createUser(newUser = newUser)

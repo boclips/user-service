@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.user
+package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.testsupport.OrganisationDocumentFactory
 import org.assertj.core.api.Assertions.assertThat

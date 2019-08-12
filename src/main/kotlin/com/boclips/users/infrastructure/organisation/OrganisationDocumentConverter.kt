@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.user
+package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId

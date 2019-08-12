@@ -24,3 +24,14 @@ subjects:
 
 pubsub:
   consumerGroup: user-service
+
+user-service:
+  organisation-mappings:
+    - role: 'TEACHER'
+      organisation-name: 'Boclips for Teachers'
+    - role: 'VIEWSONIC'
+      organisation-name: 'ViewSonic MyViewBoard'
+    - role: 'PEARSON_MYREALIZE'
+      organisation-name: 'Pearson MyRealize'
+    - role: 'BACKOFFICE'
+      organisation-name: 'Boclips Backoffice'

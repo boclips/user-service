@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
     val userRepository: UserRepository,
+    // TODO: move subjects service out
     val subjectService: VideoServiceSubjectsClient,
     val identityProvider: IdentityProvider
 ) {

@@ -2,6 +2,8 @@ package com.boclips.users.testsupport
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
+import com.boclips.users.application.OrganisationMatcher
+import com.boclips.users.config.UserServiceProperties
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
@@ -71,6 +73,12 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var subjectService: VideoServiceSubjectsClient
+
+    @Autowired
+    lateinit var userServiceProperties: UserServiceProperties
+
+    @Autowired
+    lateinit var organisationMatcher: OrganisationMatcher
 
     @BeforeEach
     fun resetState() {

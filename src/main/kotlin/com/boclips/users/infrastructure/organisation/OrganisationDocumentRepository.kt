@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.user
+package com.boclips.users.infrastructure.organisation
 
 import org.springframework.data.mongodb.repository.MongoRepository
 

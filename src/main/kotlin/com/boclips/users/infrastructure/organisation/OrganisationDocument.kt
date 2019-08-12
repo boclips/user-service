@@ -1,4 +1,4 @@
-package com.boclips.users.infrastructure.user
+package com.boclips.users.infrastructure.organisation
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
