@@ -62,10 +62,11 @@ class UserIdentityFactory {
             isVerified: Boolean = true
         ) = Identity(
             id = UserId(value = id),
-            email = email,
             firstName = firstName,
             lastName = lastName,
-            isVerified = isVerified
+            email = email,
+            isVerified = isVerified,
+            roles = emptyList()
         )
     }
 }

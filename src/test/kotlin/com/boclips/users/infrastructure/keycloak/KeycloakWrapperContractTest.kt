@@ -104,9 +104,23 @@ class KeycloakWrapperContractTest {
     fun `can fetch users`() {
         val wrapper = KeycloakWrapper(keycloakInstance)
 
+        wrapper.createUser(
+            KeycloakUser(
+                firstName = "Hans",
+                lastName = "Muster",
+                email = "ben+${UUID.randomUUID()}@boclips.com",
+                password = "123"
+            )
+        )
+
         val users: List<UserRepresentation> = wrapper.users()
 
-        assertThat(users.size).isGreaterThan(1)
+        assertThat(users.size).isGreaterThan(2)
+        assertThat(users.first().id).isNotNull()
+        assertThat(users.first().firstName).isNotNull()
+        assertThat(users.first().lastName).isNotNull()
+        assertThat(users.first().email).isNotNull()
+        assertThat(users.first().realmRoles).contains("ROLE_TEACHER")
     }
 
     @Nested
@@ -193,6 +207,7 @@ class KeycloakWrapperContractTest {
             val user: UserRepresentation = wrapper.getUserById(aUser.id)!!
 
             assertThat(user.id).isEqualTo(aUser.id)
+            // TODO improve assertion
         }
     }
 
@@ -207,10 +222,11 @@ class KeycloakWrapperContractTest {
             val user: UserRepresentation = wrapper.getUserByUsername(aUser.username)!!
 
             assertThat(user.id).isEqualTo(aUser.id)
+            // TODO improve assertion
         }
 
         @Test
-        fun `returns null for non-existant username`() {
+        fun `returns null for non-existent username`() {
             val wrapper = KeycloakWrapper(keycloakInstance)
 
             val user: UserRepresentation? = wrapper.getUserByUsername("this should not exist")

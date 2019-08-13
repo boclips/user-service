@@ -45,7 +45,6 @@ open class KeycloakClient(
         val user: UserRepresentation?
         return try {
             user = keycloak.getUserById(id.value)!!
-
             userConverter.convert(user)
         } catch (e: javax.ws.rs.NotFoundException) {
             logger.warn { "Could not find user: ${id.value}, omitting user" }
@@ -60,9 +59,9 @@ open class KeycloakClient(
     }
 
     override fun getUsers(): List<Identity> {
-        return keycloak.users().mapNotNull {
+        return keycloak.users().mapNotNull { userRepresentation ->
             try {
-                userConverter.convert(it)
+                userConverter.convert(userRepresentation)
             } catch (e: InvalidUserRepresentation) {
                 logger.warn { "Could not convert external keycloak user as email address is invalid" }
                 null
