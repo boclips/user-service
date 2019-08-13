@@ -67,7 +67,7 @@ class TeachersPlatformService(
                     utmContent = newUser.utmContent,
                     utmTerm = newUser.utmTerm
                 ),
-                organisationId = organisationRepository.findByName("Boclips For Teachers")?.let { it.id }
+                organisationId = organisationRepository.findByName("Boclips for Teachers")?.let { it.id }
             )
         )
 

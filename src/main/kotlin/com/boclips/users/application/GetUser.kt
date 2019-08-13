@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component
 class GetUser(
     private val userRepository: UserRepository,
     private val userConverter: UserConverter,
-    private val identityProvider: IdentityProvider
+    private val identityProvider: IdentityProvider,
+    private val organisationMatcher: OrganisationMatcher
 ) {
     operator fun invoke(requestedUserId: String): UserResource {
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
@@ -46,7 +47,7 @@ class GetUser(
                     utmMedium = "",
                     utmTerm = ""
                 ),
-                organisationId = null
+                organisationId = organisationMatcher.match(authenticatedUser)?.id
             )
 
             userRepository.save(newUser)

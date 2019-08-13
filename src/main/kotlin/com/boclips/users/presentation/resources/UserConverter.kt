@@ -1,7 +1,6 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserSessions
 import org.springframework.stereotype.Component
 
 @Component
@@ -12,7 +11,8 @@ class UserConverter {
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
-            analyticsId = user.analyticsId?.let { it.value }
+            analyticsId = user.analyticsId?.value,
+            organisationId = user.organisationId?.value
         )
     }
 }

@@ -58,7 +58,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
             utmMedium = ""
         )
 
-        val organisation = saveOrganisation("Boclips For Teachers")
+        val organisation = saveOrganisation("Boclips for Teachers")
 
         val persistedUser = teachersPlatformService.createUser(newUser)
 

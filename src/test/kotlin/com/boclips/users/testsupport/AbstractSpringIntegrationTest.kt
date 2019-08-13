@@ -129,7 +129,7 @@ abstract class AbstractSpringIntegrationTest {
         return user.id.value
     }
 
-    fun saveOrganisation(organisationName: String = "Boclips For Teachers"): Organisation {
+    fun saveOrganisation(organisationName: String = "Boclips for Teachers"): Organisation {
         return organisationRepository.save(organisationName = organisationName)
     }
 }
