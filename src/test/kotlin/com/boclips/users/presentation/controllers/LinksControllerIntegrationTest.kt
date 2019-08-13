@@ -41,7 +41,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile").exists())
-            .andExpect(jsonPath("$._links.activate.href", endsWith("/users/activate")))
+            .andExpect(jsonPath("$._links.activate.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
     }
 
@@ -70,6 +70,16 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `links use proto headers`() {
         setSecurityContext("a-user-id")
+
+        userRepository.save(
+            AccountFactory.sample(
+                id = "a-user-id",
+                activated = false,
+                subjects = emptyList(),
+                analyticsId = AnalyticsId(value = "irrelevant"),
+                referralCode = null
+            )
+        )
 
         mvc.perform(get("/v1/").asUser("unknown-user").header("x-forwarded-proto", "https"))
             .andExpect(status().isOk)
