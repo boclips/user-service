@@ -3,6 +3,7 @@ package com.boclips.users.application
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
@@ -24,14 +25,12 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext(userId)
 
         saveUser(
-            UserFactory.sample(
-                user = AccountFactory.sample(
-                    id = userId,
-                    analyticsId = AnalyticsId(value = "123"),
-                    firstName = "Jane",
-                    lastName = "Doe",
-                    email = "jane@doe.com"
-                )
+            AccountFactory.sample(
+                id = userId,
+                analyticsId = AnalyticsId(value = "123"),
+                firstName = "Jane",
+                lastName = "Doe",
+                email = "jane@doe.com"
             )
         )
 
@@ -59,5 +58,25 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThrows<NotAuthenticatedException> {
             getUser("abc")
         }
+    }
+
+    @Test
+    fun `attempts to synchronise user with identity provider`() {
+        val userId = UUID.randomUUID().toString()
+        setSecurityContext(userId)
+
+        saveIdentity(AccountFactory.sample(id = userId))
+
+        val resource = getUser(userId)
+
+        assertThat(resource.id).isEqualTo(userId)
+    }
+
+    @Test
+    fun `get user throws when user doesn't exist anywhere`() {
+        val userId = UUID.randomUUID().toString()
+        setSecurityContext(userId)
+
+        assertThrows<UserNotFoundException> { getUser(userId) }
     }
 }

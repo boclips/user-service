@@ -107,6 +107,12 @@ abstract class AbstractSpringIntegrationTest {
     fun saveUser(user: User): String {
         userRepository.save(user)
 
+        saveIdentity(user)
+
+        return user.id.value
+    }
+
+    fun saveIdentity(user: User): String {
         keycloakClientFake.createUser(
             Identity(
                 id = user.id,
