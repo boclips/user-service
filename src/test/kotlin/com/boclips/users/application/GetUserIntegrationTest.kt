@@ -93,13 +93,13 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             val userId = UUID.randomUUID().toString()
 
             setSecurityContext(userId, "TEACHER")
-            saveOrganisation("Boclips for Teachers")
+            val organisation = saveOrganisation("Boclips for Teachers")
 
             saveIdentity(AccountFactory.sample(id = userId))
 
             val resource = getUser(userId)
 
-            assertThat(resource.organisationId).isNotNull()
+            assertThat(resource.organisationId).isEqualTo(organisation.id.value)
         }
     }
 }
