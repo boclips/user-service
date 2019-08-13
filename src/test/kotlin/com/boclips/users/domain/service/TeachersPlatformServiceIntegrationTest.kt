@@ -9,9 +9,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
+class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var userService: UserService
+    lateinit var teachersPlatformService: TeachersPlatformService
 
     @Test
     fun `can find all users`() {
@@ -33,7 +33,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val users = userService.findAllUsers()
+        val users = teachersPlatformService.findAllUsers()
 
         assertThat(users.size).isEqualTo(savedUsers.size)
         assertThat(users.map { it.id.value }).contains("1", "2", "3", "4", "5")
@@ -58,7 +58,9 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             utmMedium = ""
         )
 
-        val persistedUser = userService.createUser(newUser)
+        val organisation = saveOrganisation("Boclips For Teachers")
+
+        val persistedUser = teachersPlatformService.createUser(newUser)
 
         assertThat(persistedUser.firstName).isEqualTo("Joe")
         assertThat(persistedUser.lastName).isEqualTo("Dough")
@@ -73,5 +75,6 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.marketingTracking.utmContent).isBlank()
         assertThat(persistedUser.marketingTracking.utmTerm).isBlank()
         assertThat(persistedUser.marketingTracking.utmMedium).isBlank()
+        assertThat(persistedUser.organisationId).isEqualTo(organisation.id)
     }
 }

@@ -11,11 +11,12 @@ import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(
+class TeachersPlatformService(
     val userRepository: UserRepository,
     // TODO: move subjects service out
     val subjectService: VideoServiceSubjectsClient,
-    val identityProvider: IdentityProvider
+    val identityProvider: IdentityProvider,
+    val organisationRepository: OrganisationRepository
 ) {
     companion object : KLogging()
 
@@ -65,7 +66,8 @@ class UserService(
                     utmMedium = newUser.utmMedium,
                     utmContent = newUser.utmContent,
                     utmTerm = newUser.utmTerm
-                )
+                ),
+                organisationId = organisationRepository.findByName("Boclips For Teachers")?.let { it.id }
             )
         )
 

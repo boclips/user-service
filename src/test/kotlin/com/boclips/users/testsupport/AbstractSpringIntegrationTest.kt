@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.identity.Identity
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationRepository
@@ -126,5 +127,9 @@ abstract class AbstractSpringIntegrationTest {
         keycloakClientFake.addUserSession(Instant.now())
 
         return user.id.value
+    }
+
+    fun saveOrganisation(organisationName: String = "Boclips For Teachers"): Organisation {
+        return organisationRepository.save(organisationName = organisationName)
     }
 }

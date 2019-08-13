@@ -11,7 +11,7 @@ import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserService
+import com.boclips.users.domain.service.TeachersPlatformService
 import com.boclips.users.domain.service.userToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -19,7 +19,7 @@ import java.time.Instant
 
 @Component
 class ActivateUser(
-    private val userService: UserService,
+    private val teachersPlatformService: TeachersPlatformService,
     private val userRepository: UserRepository,
     private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
@@ -31,7 +31,7 @@ class ActivateUser(
         val authenticatedUser: com.boclips.security.utils.User =
             UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
 
-        val activatedUser = userService.activate(UserId(value = authenticatedUser.id))
+        val activatedUser = teachersPlatformService.activate(UserId(value = authenticatedUser.id))
 
         if (activatedUser.isReferral()) {
             registerReferral(activatedUser)
