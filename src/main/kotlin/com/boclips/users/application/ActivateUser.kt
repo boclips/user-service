@@ -12,7 +12,7 @@ import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.TeachersPlatformService
-import com.boclips.users.domain.service.userToCrmProfile
+import com.boclips.users.domain.service.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -37,7 +37,7 @@ class ActivateUser(
             registerReferral(activatedUser)
         }
 
-        val crmProfile = userToCrmProfile(activatedUser, UserSessions(Instant.now()))
+        val crmProfile = convertUserToCrmProfile(activatedUser, UserSessions(Instant.now()))
         marketingService.updateProfile(listOf(crmProfile))
 
         publishUserActivated(activatedUser)

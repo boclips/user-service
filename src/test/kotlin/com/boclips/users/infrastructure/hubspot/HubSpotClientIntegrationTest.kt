@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.service.userToCrmProfile
+import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.AccountFactory
@@ -48,7 +48,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         fakeVideoServiceClient.addSubject(Subject.builder().id("2").name("Science").build())
 
         val crmProfiles = listOf(
-            userToCrmProfile(
+            convertUserToCrmProfile(
                 activatedUser(),
                 UserSessionsFactory.sample(lastAccess = Instant.parse("2017-08-08T00:00:00Z"))
             )
@@ -70,7 +70,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
         val user = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = false))
 
-        hubSpotClient.updateSubscription(userToCrmProfile(user, UserSessionsFactory.sample()))
+        hubSpotClient.updateSubscription(convertUserToCrmProfile(user, UserSessionsFactory.sample()))
 
         wireMockServer.verify(
             putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.email}.*"))
@@ -97,7 +97,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
         val user = UserFactory.sample(user = AccountFactory.sample(hasOptedIntoMarketing = true))
 
-        hubSpotClient.updateSubscription(userToCrmProfile(user, UserSessionsFactory.sample()))
+        hubSpotClient.updateSubscription(convertUserToCrmProfile(user, UserSessionsFactory.sample()))
 
         wireMockServer.verify(
             putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.email}.*"))

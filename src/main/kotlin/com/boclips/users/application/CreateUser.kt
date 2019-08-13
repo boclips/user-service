@@ -13,7 +13,7 @@ import com.boclips.users.domain.service.AnalyticsClient
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.TeachersPlatformService
-import com.boclips.users.domain.service.userToCrmProfile
+import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.presentation.requests.CreateUserRequest
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -64,7 +64,7 @@ class CreateUser(
 
     private fun attemptToUpdateProfile(createdUser: User) {
         try {
-            val crmProfile = userToCrmProfile(createdUser, UserSessions(lastAccess = null))
+            val crmProfile = convertUserToCrmProfile(createdUser, UserSessions(lastAccess = null))
             marketingService.updateProfile(listOf(crmProfile))
             marketingService.updateSubscription(crmProfile)
         } catch (ex: Exception) {

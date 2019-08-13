@@ -1,11 +1,11 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.marketing.CrmProfile
 
-fun userToCrmProfile(user: User, sessions: UserSessions): CrmProfile {
+fun convertUserToCrmProfile(user: User, sessions: UserSessions): CrmProfile {
     return CrmProfile(
         id = UserId(user.id.value),
         activated = user.activated,

@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.ActivateUser
 import com.boclips.users.application.CreateUser
 import com.boclips.users.application.GetUser
+import com.boclips.users.application.SynchronisationService
 import com.boclips.users.application.UpdateContacts
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.resources.UserResource
@@ -29,7 +30,8 @@ class UserController(
     private val createUser: CreateUser,
     private val activateUser: ActivateUser,
     private val getUser: GetUser,
-    private val updateContacts: UpdateContacts
+    private val updateContacts: UpdateContacts,
+    private val synchronisationService: SynchronisationService
 ) {
     companion object : KLogging() {
         fun activateUserLink(): Link {

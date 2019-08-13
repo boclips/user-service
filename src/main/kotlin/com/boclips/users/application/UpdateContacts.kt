@@ -3,7 +3,7 @@ package com.boclips.users.application
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.TeachersPlatformService
-import com.boclips.users.domain.service.userToCrmProfile
+import com.boclips.users.domain.service.convertUserToCrmProfile
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,7 +16,7 @@ class UpdateContacts(
         val allCrmProfiles = teachersPlatformService.findAllUsers()
             .map { user ->
                 val sessions = sessionProvider.getUserSessions(user.id)
-                return@map userToCrmProfile(user, sessions)
+                return@map convertUserToCrmProfile(user, sessions)
             }
             .filter { it.isValid() }
 

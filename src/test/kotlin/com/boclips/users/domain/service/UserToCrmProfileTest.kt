@@ -14,7 +14,7 @@ class UserToCrmProfileTest {
         val sessions = UserSessionsFactory.sample(lastAccess = lastAccess)
         val user = UserFactory.sample()
 
-        val crmProfile = userToCrmProfile(user, sessions)
+        val crmProfile = convertUserToCrmProfile(user, sessions)
 
         assertThat(crmProfile.id).isEqualTo(user.id)
         assertThat(crmProfile.activated).isEqualTo(user.activated)
@@ -32,7 +32,7 @@ class UserToCrmProfileTest {
     fun `includes some session for users that have not logged in`() {
         val user = UserFactory.sample()
         val sessions = UserSessionsFactory.sample(lastAccess = null)
-        val crmProfile = userToCrmProfile(user, sessions)
+        val crmProfile = convertUserToCrmProfile(user, sessions)
 
         assertThat(crmProfile.lastLoggedIn).isNull()
     }
