@@ -4,7 +4,6 @@ import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.EventRepresentation
-import org.keycloak.representations.idm.GroupRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import javax.ws.rs.core.Response
 
@@ -14,13 +13,23 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
         const val TEACHER_ROLE = "ROLE_TEACHER"
     }
 
-    fun users(): List<UserRepresentation> =
-        keycloak
+    fun users(): List<UserRepresentation> {
+        val allUsers = keycloak
             .realm(REALM)
             .users()
             .list(0, countUsers())
 
-    fun countUsers(): Int = keycloak.realm(REALM).users().count()
+        allUsers.forEach { user ->
+            user.realmRoles = keycloak.realm(REALM).users().get(user.id).roles().realmLevel().listEffective()
+                .map { role -> role.name }
+        }
+
+        return allUsers
+    }
+
+    fun countUsers(): Int {
+        return keycloak.realm(REALM).users().count()
+    }
 
     fun getLastUserSession(id: String): List<EventRepresentation> {
         return try {
@@ -33,6 +42,10 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
     fun getUserById(id: String): UserRepresentation? {
         return try {
             keycloak.realm(REALM).users().get(id).toRepresentation()
+                .apply {
+                    realmRoles =
+                        keycloak.realm(REALM).users().get(this.id).roles().realmLevel().listEffective().map { it.name }
+                }
         } catch (ex: Exception) {
             logger.info { "Could not find user: $id" }
             null
@@ -81,7 +94,7 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
     fun removeUser(id: String?) {
         keycloak.realm(REALM).users().delete(id)
     }
-    
+
     fun addRealmRoleToUser(role: String, userId: String?) {
         keycloak.realm(REALM).users().get(userId).roles().realmLevel().listAvailable()
             .firstOrNull { it.name == role }

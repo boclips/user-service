@@ -7,7 +7,8 @@ data class Identity(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val isVerified: Boolean
+    val isVerified: Boolean,
+    val roles: List<String> = emptyList()
 ) {
     override fun toString(): String {
         return "Identity(id=$id, isVerified=$isVerified)"

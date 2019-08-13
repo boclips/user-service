@@ -1,6 +1,5 @@
-package com.boclips.users.infrastructure.keycloak
+package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToUserIdentityConverter
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -10,7 +9,7 @@ import org.keycloak.representations.idm.UserRepresentation
 import java.util.UUID
 
 class KeycloakUserToIdentityConverterTest {
-    private val userConverter = KeycloakUserToUserIdentityConverter()
+    private val userConverter = KeycloakUserToIdentityConverter()
 
     lateinit var keycloakUser: UserRepresentation
 
@@ -22,6 +21,7 @@ class KeycloakUserToIdentityConverterTest {
             this.firstName = "Shane"
             this.lastName = "Williams"
             this.isEmailVerified = true
+            this.realmRoles = listOf("SOME_ROLE")
         }
     }
 
@@ -34,6 +34,7 @@ class KeycloakUserToIdentityConverterTest {
         assertThat(convertedUser.firstName).isEqualTo(keycloakUser.firstName)
         assertThat(convertedUser.lastName).isEqualTo(keycloakUser.lastName)
         assertThat(convertedUser.isVerified).isEqualTo(keycloakUser.isEmailVerified)
+        assertThat(convertedUser.roles).containsExactly("SOME_ROLE")
     }
 
     @Test

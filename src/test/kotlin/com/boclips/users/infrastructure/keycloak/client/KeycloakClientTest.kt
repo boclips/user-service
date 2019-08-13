@@ -24,7 +24,7 @@ internal class KeycloakClientTest {
         keycloakWrapperMock = Mockito.mock(KeycloakWrapper::class.java)
         keycloakClient = KeycloakClient(
             keycloakWrapperMock,
-            KeycloakUserToUserIdentityConverter()
+            KeycloakUserToIdentityConverter()
         )
     }
 
@@ -38,6 +38,7 @@ internal class KeycloakClientTest {
                 this.email = "abc@def.xyz"
                 this.lastName = "Portugal"
                 this.isEmailVerified = true
+                this.realmRoles = emptyList()
             })
 
             val id = UserId(value = "x")
@@ -101,6 +102,7 @@ internal class KeycloakClientTest {
             this.email = "test@gmail.com"
             this.firstName = "test"
             this.lastName = "test"
+            this.realmRoles = emptyList()
 
         }
         val user2 = UserRepresentation().apply {
@@ -109,6 +111,7 @@ internal class KeycloakClientTest {
             this.email = "test2@gmail.com"
             this.firstName = "test2"
             this.lastName = "test2"
+            this.realmRoles = emptyList()
         }
 
         whenever(keycloakWrapperMock.countUsers()).thenReturn(2)

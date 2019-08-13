@@ -6,8 +6,7 @@ import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRe
 import org.apache.commons.validator.routines.EmailValidator
 import org.keycloak.representations.idm.UserRepresentation
 
-class KeycloakUserToUserIdentityConverter {
-
+class KeycloakUserToIdentityConverter {
     private val emailValidator = EmailValidator.getInstance()
 
     fun convert(userRepresentation: UserRepresentation): Identity {
@@ -16,7 +15,8 @@ class KeycloakUserToUserIdentityConverter {
             email = getEmailIfValid(userRepresentation.email),
             firstName = getValueIfValid("firstName", userRepresentation.firstName),
             lastName = getValueIfValid("lastName", userRepresentation.lastName),
-            isVerified = userRepresentation.isEmailVerified
+            isVerified = userRepresentation.isEmailVerified,
+            roles = userRepresentation.realmRoles
         )
     }
 

@@ -11,7 +11,6 @@ import com.boclips.users.domain.service.convertIdentityToUser
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import mu.KLogging
 import org.springframework.stereotype.Component
-import java.lang.RuntimeException
 
 @Component
 class UserImportService(
@@ -19,7 +18,6 @@ class UserImportService(
     private val identityProvider: IdentityProvider,
     private val organisationMatcher: OrganisationMatcher
 ) {
-
     companion object : KLogging()
 
     fun importFromIdentityProvider(userIds: List<UserId>) {

@@ -10,7 +10,7 @@ import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
-import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToUserIdentityConverter
+import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToIdentityConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
@@ -43,7 +43,7 @@ class ContextConfig(
     @Bean
     fun keycloakClient(keycloakWrapper: KeycloakWrapper) = KeycloakClient(
         keycloakWrapper,
-        KeycloakUserToUserIdentityConverter()
+        KeycloakUserToIdentityConverter()
     )
 
     @Bean
