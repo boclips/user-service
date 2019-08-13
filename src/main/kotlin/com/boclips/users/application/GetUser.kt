@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component
 class GetUser(
     private val userRepository: UserRepository,
     private val userConverter: UserConverter,
-    private val synchronisationService: SynchronisationService
+    private val userImportService: UserImportService
 ) {
     operator fun invoke(requestedUserId: String): UserResource {
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
         if (authenticatedUser.id != requestedUserId) throw PermissionDeniedException()
 
         val userId = UserId(value = requestedUserId)
-        val user = userRepository.findById(id = userId) ?: synchronisationService.synchronise(userId = userId)
+        val user = userRepository.findById(id = userId) ?: userImportService.importFromIdentityProvider(userId = userId)
 
         return userConverter.toUserResource(user)
     }

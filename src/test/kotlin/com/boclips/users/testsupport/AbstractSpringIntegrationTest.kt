@@ -105,12 +105,12 @@ abstract class AbstractSpringIntegrationTest {
         eventBus.clearState()
     }
 
-    fun saveUser(user: User): String {
+    fun saveUser(user: User): User {
         userRepository.save(user)
 
         saveIdentity(user)
 
-        return user.id.value
+        return user
     }
 
     fun saveIdentity(user: User): String {

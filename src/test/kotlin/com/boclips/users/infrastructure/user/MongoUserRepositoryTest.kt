@@ -15,19 +15,25 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists compulsory information`() {
-        val user = AccountFactory.sample(
-            subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths"))
-        )
+        val user = AccountFactory.sample(organisationId = OrganisationIdFactory.sample())
 
         userRepository.save(user)
 
-        assertThat(userRepository.findById(user.id)).isEqualTo(user)
+        val fetchedUser = userRepository.findById(user.id)!!
+
+        assertThat(fetchedUser.id).isNotNull()
+        assertThat(fetchedUser.firstName).isNotNull()
+        assertThat(fetchedUser.lastName).isNotNull()
+        assertThat(fetchedUser.email).isNotNull()
+        assertThat(fetchedUser.activated).isNotNull()
+        assertThat(fetchedUser.organisationId).isNotNull()
     }
 
     @Test
     fun `persists optional information`() {
-        val organisationId = OrganisationIdFactory.sample()
         val user = AccountFactory.sample(
+            subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
+            ageRange = listOf(1, 2, 3, 4),
             marketing = MarketingTrackingFactory.sample(
                 utmCampaign = "campaign",
                 utmSource = "source",
@@ -36,16 +42,19 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 utmTerm = "term"
             ),
             referralCode = "referral-123",
-            analyticsId = AnalyticsId(value = "analytics-123"),
-            organisationId = organisationId
+            analyticsId = AnalyticsId(value = "analytics-123")
         )
 
         userRepository.save(user)
 
-        val fetchedUser = userRepository.findById(user.id)
+        val fetchedUser = userRepository.findById(user.id)!!
 
-        assertThat(fetchedUser).isEqualTo(user)
-        assertThat(fetchedUser!!.organisationId).isEqualTo(organisationId)
+        assertThat(fetchedUser.hasOptedIntoMarketing).isNotNull()
+        assertThat(fetchedUser.ageRange).isNotNull()
+        assertThat(fetchedUser.subjects).isNotNull()
+        assertThat(fetchedUser.marketingTracking).isNotNull()
+        assertThat(fetchedUser.referralCode).isNotNull()
+        assertThat(fetchedUser.analyticsId).isNotNull()
     }
 
     @Test

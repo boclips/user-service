@@ -149,16 +149,16 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `get user`() {
-        val userId = saveUser(UserFactory.sample())
+        val user = saveUser(UserFactory.sample())
 
         mvc.perform(
-            get("/v1/users/$userId").asUser(userId)
+            get("/v1/users/${user.id.value}").asUser(user.id.value)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.firstName").exists())
             .andExpect(jsonPath("$.lastName").exists())
             .andExpect(jsonPath("$.analyticsId").exists())
-            .andExpect(jsonPath("$._links.self.href", endsWith("/users/$userId")))
+            .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
     }
 }
