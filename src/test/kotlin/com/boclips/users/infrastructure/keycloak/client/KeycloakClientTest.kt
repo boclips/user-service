@@ -1,10 +1,12 @@
 package com.boclips.users.infrastructure.keycloak.client
 
+import com.boclips.users.application.OrganisationMatcher
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.testsupport.factories.UserIdentityFactory
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -24,7 +26,7 @@ internal class KeycloakClientTest {
         keycloakWrapperMock = Mockito.mock(KeycloakWrapper::class.java)
         keycloakClient = KeycloakClient(
             keycloakWrapperMock,
-            KeycloakUserToIdentityConverter()
+            KeycloakUserToIdentityConverter(mock<OrganisationMatcher>())
         )
     }
 

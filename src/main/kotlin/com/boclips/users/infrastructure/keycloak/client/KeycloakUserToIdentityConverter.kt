@@ -1,12 +1,15 @@
 package com.boclips.users.infrastructure.keycloak.client
 
+import com.boclips.users.application.OrganisationMatcher
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import org.apache.commons.validator.routines.EmailValidator
 import org.keycloak.representations.idm.UserRepresentation
 
-class KeycloakUserToIdentityConverter {
+class KeycloakUserToIdentityConverter(
+    private val organisationMatcher: OrganisationMatcher
+) {
     private val emailValidator = EmailValidator.getInstance()
 
     fun convert(userRepresentation: UserRepresentation): Identity {
@@ -16,7 +19,7 @@ class KeycloakUserToIdentityConverter {
             firstName = getValueIfValid("firstName", userRepresentation.firstName),
             lastName = getValueIfValid("lastName", userRepresentation.lastName),
             isVerified = userRepresentation.isEmailVerified,
-            roles = userRepresentation.realmRoles
+            associatedTo = organisationMatcher.match(userRepresentation.realmRoles)?.id
         )
     }
 

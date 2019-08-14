@@ -94,7 +94,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId, "TEACHER")
             val organisation = saveOrganisation("Boclips for Teachers")
 
-            saveIdentity(UserFactory.sample(id = userId))
+            saveIdentity(UserFactory.sample(id = userId, associatedTo = organisation.id))
 
             val resource = getUser(userId)
 

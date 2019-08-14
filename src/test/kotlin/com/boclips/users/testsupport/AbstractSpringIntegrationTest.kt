@@ -121,7 +121,7 @@ abstract class AbstractSpringIntegrationTest {
                 lastName = user.lastName,
                 email = user.email,
                 isVerified = false,
-                roles = listOf("ROLE_TEACHER")
+                associatedTo = user.associatedTo
             )
         )
 

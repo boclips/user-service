@@ -1,6 +1,11 @@
 package com.boclips.users.infrastructure.keycloak.client
 
+import com.boclips.users.application.OrganisationMatcher
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
+import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -9,12 +14,15 @@ import org.keycloak.representations.idm.UserRepresentation
 import java.util.UUID
 
 class KeycloakUserToIdentityConverterTest {
-    private val userConverter = KeycloakUserToIdentityConverter()
-
     lateinit var keycloakUser: UserRepresentation
+    lateinit var userConverter: KeycloakUserToIdentityConverter
 
     @BeforeEach
     fun setup() {
+        val organisationMatcherMock = mock<OrganisationMatcher>()
+        whenever(organisationMatcherMock.match(any())).thenReturn(OrganisationFactory.sample())
+
+        userConverter = KeycloakUserToIdentityConverter(organisationMatcherMock)
         keycloakUser = UserRepresentation().apply {
             this.id = UUID.randomUUID().toString()
             this.email = "test@gmail.com"
@@ -34,12 +42,7 @@ class KeycloakUserToIdentityConverterTest {
         assertThat(convertedUser.firstName).isEqualTo(keycloakUser.firstName)
         assertThat(convertedUser.lastName).isEqualTo(keycloakUser.lastName)
         assertThat(convertedUser.isVerified).isEqualTo(keycloakUser.isEmailVerified)
-        assertThat(convertedUser.roles).containsExactly(
-            "ROLE_VIEWSONIC",
-            "ROLE_TEACHER",
-            "ROLE_BACKOFFICE",
-            "uma_something"
-        )
+        assertThat(convertedUser.associatedTo).isNotNull()
     }
 
     @Test

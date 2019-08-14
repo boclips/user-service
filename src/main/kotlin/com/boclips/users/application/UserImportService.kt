@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component
 @Component
 class UserImportService(
     private val userRepository: UserRepository,
-    private val identityProvider: IdentityProvider,
-    private val organisationMatcher: OrganisationMatcher
+    private val identityProvider: IdentityProvider
 ) {
     companion object : KLogging()
 
@@ -33,7 +32,7 @@ class UserImportService(
 
         return identityProvider.getUserById(userId)?.let { identity ->
             val newUser = userRepository.save(
-                convertIdentityToUser(identity, organisationMatcher.match(identity.roles)?.id)
+                convertIdentityToUser(identity, identity.associatedTo)
             )
 
             logger.info { "Could not find user $userId, imported from identity provider" }
