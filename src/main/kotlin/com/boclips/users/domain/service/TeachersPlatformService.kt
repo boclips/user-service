@@ -59,7 +59,7 @@ class TeachersPlatformService(
                     utmContent = newUser.utmContent,
                     utmTerm = newUser.utmTerm
                 ),
-                associatedTo = organisationRepository.findByName("Boclips for Teachers")?.let { it.id }
+                associatedTo = null
             )
         )
 

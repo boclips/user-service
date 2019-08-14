@@ -51,8 +51,6 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
             utmMedium = ""
         )
 
-        val organisation = saveOrganisation("Boclips for Teachers")
-
         val persistedUser = teachersPlatformService.createUser(newUser)
 
         assertThat(persistedUser.firstName).isEqualTo("Joe")
@@ -68,7 +66,30 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.marketingTracking.utmContent).isBlank()
         assertThat(persistedUser.marketingTracking.utmTerm).isBlank()
         assertThat(persistedUser.marketingTracking.utmMedium).isBlank()
-        assertThat(persistedUser.associatedTo).isEqualTo(organisation.id)
+    }
+
+    @Test
+    fun `an individual teacher user is not associated to organisation`() {
+        val newUser = NewUser(
+            firstName = "Joe",
+            lastName = "Dough",
+            email = "joe@dough.com",
+            password = "thisisapassword",
+            subjects = listOf(Subject(id = SubjectId("test"), name = "subject")),
+            ageRange = listOf(1, 2),
+            analyticsId = AnalyticsId(value = "analytics"),
+            referralCode = "abc-a123",
+            hasOptedIntoMarketing = true,
+            utmCampaign = "",
+            utmSource = "",
+            utmContent = "",
+            utmTerm = "",
+            utmMedium = ""
+        )
+
+        val persistedUser = teachersPlatformService.createUser(newUser)
+
+        assertThat(persistedUser.associatedTo).isEqualTo(null)
     }
 
     @Test
