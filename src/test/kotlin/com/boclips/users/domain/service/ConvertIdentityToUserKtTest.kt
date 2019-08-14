@@ -1,6 +1,6 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.testsupport.factories.UserIdentityFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 class ConvertIdentityToUserKtTest {
     @Test
     fun `converts identity to user`() {
-        val identity = UserIdentityFactory.sample()
+        val identity = IdentityFactory.sample()
 
         val userSource = UserSourceFactory.apiClientSample(organisationId = "test")
         val user = convertIdentityToUser(

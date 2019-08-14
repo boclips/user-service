@@ -3,8 +3,9 @@ package com.boclips.users.presentation.controllers
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.asUser
+import com.boclips.users.testsupport.factories.IdentityFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
@@ -156,10 +157,11 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         setSecurityContext("user-id")
 
-        mvc.perform(put("/v1/users/user-id").asUser("user-id")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(
-                """
+        mvc.perform(
+            put("/v1/users/user-id").asUser("user-id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
                     {"firstName": "jane",
                      "lastName": "doe",
                      "subjects": ["Maths"],
@@ -167,7 +169,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "ages": [4,5,6]
                      }
                     """.trimIndent()
-            ))
+                )
+        )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
 
@@ -176,7 +179,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.firstName).isEqualTo("jane")
         assertThat(user.lastName).isEqualTo("doe")
         assertThat(user.hasOptedIntoMarketing).isTrue()
-        assertThat(user.ages).containsExactly(4,5,6)
+        assertThat(user.ages).containsExactly(4, 5, 6)
         assertThat(user.subjects).hasSize(1)
     }
 
@@ -193,5 +196,12 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.lastName").exists())
             .andExpect(jsonPath("$.analyticsId").exists())
             .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
+    }
+
+    @Test
+    fun `synchronise identies`() {
+        keycloakClientFake.createUser(IdentityFactory.sample())
+        keycloakClientFake.createUser(IdentityFactory.sample())
+        keycloakClientFake.createUser(IdentityFactory.sample())
     }
 }

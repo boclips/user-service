@@ -4,7 +4,7 @@ import com.boclips.users.application.UserSourceResolver
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
-import com.boclips.users.testsupport.factories.UserIdentityFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -132,14 +132,14 @@ internal class KeycloakClientTest {
 
         assertThat(users).hasSize(2)
         assertThat(users).containsExactly(
-            UserIdentityFactory.sample(
+            IdentityFactory.sample(
                 id = user1.id,
                 isVerified = user1.isEmailVerified,
                 email = user1.email,
                 firstName = user1.firstName,
                 lastName = user1.lastName
             ),
-            UserIdentityFactory.sample(
+            IdentityFactory.sample(
                 id = user2.id,
                 isVerified = user2.isEmailVerified,
                 email = user2.email,

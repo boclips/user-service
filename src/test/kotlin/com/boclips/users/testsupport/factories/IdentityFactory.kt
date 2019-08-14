@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.identity.Identity
 import java.util.UUID
 
-class UserIdentityFactory {
+class IdentityFactory {
     companion object {
         fun sample(
             id: String = UUID.randomUUID().toString(),
