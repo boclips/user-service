@@ -1,11 +1,13 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.asUser
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
@@ -146,6 +148,36 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(put("/v1/users/user-id").asUser("user-id"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
+    }
+
+    @Test
+    fun `updates a user`() {
+        saveUser(UserFactory.sample())
+
+        setSecurityContext("user-id")
+
+        mvc.perform(put("/v1/users/user-id").asUser("user-id")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                """
+                    {"firstName": "jane",
+                     "lastName": "doe",
+                     "subjects": ["Maths"],
+                     "hasOptedIntoMarketing": true,
+                     "ages": [4,5,6]
+                     }
+                    """.trimIndent()
+            ))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
+
+        val user = userRepository.findById(UserId("user-id"))!!
+
+        assertThat(user.firstName).isEqualTo("jane")
+        assertThat(user.lastName).isEqualTo("doe")
+        assertThat(user.hasOptedIntoMarketing).isTrue()
+        assertThat(user.ages).containsExactly(4,5,6)
+        assertThat(user.subjects).hasSize(1)
     }
 
     @Test

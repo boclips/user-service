@@ -33,7 +33,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `persists optional information`() {
         val user = UserFactory.sample(
             subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
-            ageRange = listOf(1, 2, 3, 4),
+            ages = listOf(1, 2, 3, 4),
             marketing = MarketingTrackingFactory.sample(
                 utmCampaign = "campaign",
                 utmSource = "source",
@@ -51,7 +51,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         val fetchedUser = userRepository.findById(user.id)!!
 
         assertThat(fetchedUser.hasOptedIntoMarketing).isNotNull()
-        assertThat(fetchedUser.ageRange).isNotNull()
+        assertThat(fetchedUser.ages).isNotNull()
         assertThat(fetchedUser.subjects).isNotNull()
         assertThat(fetchedUser.marketingTracking).isNotNull()
         assertThat(fetchedUser.referralCode).isNotNull()

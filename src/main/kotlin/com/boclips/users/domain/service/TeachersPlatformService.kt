@@ -1,6 +1,7 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.NewUser
+import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserNotFoundException
@@ -15,11 +16,6 @@ class TeachersPlatformService(
     val organisationRepository: OrganisationRepository
 ) {
     companion object : KLogging()
-
-    fun activate(userId: UserId): User {
-        val user = userRepository.activate(userId) ?: throw UserNotFoundException(userId)
-        return findById(id = user.id)
-    }
 
     fun findById(id: UserId): User {
         val user = userRepository.findById(UserId(id.value)) ?: throw UserNotFoundException(id)
@@ -50,7 +46,7 @@ class TeachersPlatformService(
                 activated = false,
                 analyticsId = newUser.analyticsId,
                 subjects = newUser.subjects,
-                ageRange = newUser.ageRange,
+                ages = newUser.ageRange,
                 referralCode = newUser.referralCode,
                 firstName = newUser.firstName,
                 lastName = newUser.lastName,
@@ -68,6 +64,22 @@ class TeachersPlatformService(
         )
 
         logger.info { "Created user ${user.id.value}" }
+
+        return user
+    }
+
+    fun updateUserDetails(updatedUser: UpdatedUser): User {
+        val originalUser = userRepository.findById(updatedUser.userId) ?: throw UserNotFoundException(updatedUser.userId)
+
+        val user = userRepository.save(originalUser.copy(
+            firstName = updatedUser.firstName,
+            lastName = updatedUser.lastName,
+            hasOptedIntoMarketing = updatedUser.hasOptedIntoMarketing,
+            subjects = updatedUser.subjects,
+            ages = updatedUser.ages
+        ))
+
+        logger.info { "Updated user ${user.id.value}" }
 
         return user
     }

@@ -29,38 +29,73 @@ class UpdateUserRequestTest {
 
     @Nested
     inner class Names {
+
         @Test
-        fun `validates first name for null`() {
+        fun `validates first firstName for null`() {
             val violations = validator.validate(
                 UpdateUserRequestFactory.sample(
-                    name = null
+                    firstName = null
                 )
             )
             assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("Name is required")
+            assertThat(violations.first().message).isEqualTo("First name is required")
         }
 
         @Test
-        fun `validates first name for empty string`() {
+        fun `validates first firstName for empty string`() {
             val violations = validator.validate(
                 UpdateUserRequestFactory.sample(
-                    name = ""
+                    firstName = ""
                 )
             )
             assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("Name must be between 1 and 400 characters")
+            assertThat(violations.first().message).isEqualTo("First name must be between 1 and 200 characters")
         }
 
         @Test
-        fun `validates name for length`() {
+        fun `validates firstName for length`() {
             val violations =
                 validator.validate(
                     UpdateUserRequestFactory.sample(
-                        name = StringUtils.repeat("X", 401)
+                        firstName = StringUtils.repeat("X", 201)
                     )
                 )
             assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("Name must be between 1 and 400 characters")
+            assertThat(violations.first().message).isEqualTo("First name must be between 1 and 200 characters")
+        }
+
+        @Test
+        fun `validates first lastName for null`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(
+                    lastName = null
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.first().message).isEqualTo("Last name is required")
+        }
+
+        @Test
+        fun `validates first lastName for empty string`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(
+                    lastName = ""
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.first().message).isEqualTo("Last name must be between 1 and 200 characters")
+        }
+
+        @Test
+        fun `validates lastName for length`() {
+            val violations =
+                validator.validate(
+                    UpdateUserRequestFactory.sample(
+                        lastName = StringUtils.repeat("X", 201)
+                    )
+                )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.first().message).isEqualTo("Last name must be between 1 and 200 characters")
         }
     }
 

@@ -10,7 +10,7 @@ fun convertUserToCrmProfile(user: User, sessions: UserSessions): CrmProfile {
         id = UserId(user.id.value),
         activated = user.activated,
         subjects = user.subjects,
-        ageRange = user.ageRange,
+        ageRange = user.ages,
         firstName = user.firstName,
         lastName = user.lastName,
         email = user.email,

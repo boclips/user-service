@@ -18,7 +18,7 @@ class UserToCrmProfileTest {
 
         assertThat(crmProfile.id).isEqualTo(user.id)
         assertThat(crmProfile.activated).isEqualTo(user.activated)
-        assertThat(crmProfile.ageRange).isEqualTo(user.ageRange)
+        assertThat(crmProfile.ageRange).isEqualTo(user.ages)
         assertThat(crmProfile.subjects).isEqualTo(user.subjects)
         assertThat(crmProfile.email).isEqualTo(user.email)
         assertThat(crmProfile.firstName).isEqualTo(user.firstName)

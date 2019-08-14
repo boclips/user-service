@@ -1,13 +1,13 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.ActivateUser
+import com.boclips.users.application.UpdateUser
 import com.boclips.users.application.CreateUser
 import com.boclips.users.application.GetUser
 import com.boclips.users.application.UpdateContacts
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateUserRequest
+import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.UserResource
-import com.google.api.ResourceProto.resource
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Resource
 import org.springframework.http.HttpHeaders
@@ -27,7 +27,7 @@ import javax.validation.Valid
 @RequestMapping("/v1/users")
 class UserController(
     private val createUser: CreateUser,
-    private val activateUser: ActivateUser,
+    private val updateUser: UpdateUser,
     private val getUser: GetUser,
     private val userLinkBuilder: UserLinkBuilder,
     private val updateContacts: UpdateContacts
@@ -43,9 +43,10 @@ class UserController(
         return ResponseEntity(headers, HttpStatus.CREATED)
     }
 
+    //TODO enable validation once payload is mandatory
     @PutMapping("/{id}")
-    fun activateAUser(@PathVariable id: String): Resource<UserResource> {
-        activateUser(id)
+    fun updateAUser(@PathVariable id: String, @RequestBody updateUserRequest: UpdateUserRequest?): Resource<UserResource> {
+        updateUser(id, updateUserRequest)
         return getAUser(id)
     }
 

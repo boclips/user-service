@@ -11,7 +11,7 @@ fun convertIdentityToUser(identity: Identity, organisationId: OrganisationId?): 
         activated = false,
         analyticsId = null,
         subjects = emptyList(),
-        ageRange = emptyList(),
+        ages = emptyList(),
         referralCode = null,
         firstName = identity.firstName,
         lastName = identity.lastName,

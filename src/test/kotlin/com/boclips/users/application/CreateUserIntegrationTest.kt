@@ -41,7 +41,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(account!!.isReferral()).isFalse()
         Assertions.assertThat(account.referralCode).isEmpty()
         Assertions.assertThat(account.subjects).isEmpty()
-        Assertions.assertThat(account.ageRange).isEmpty()
+        Assertions.assertThat(account.ages).isEmpty()
         Assertions.assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
         Assertions.assertThat(account.hasOptedIntoMarketing).isTrue()
 
@@ -75,7 +75,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(persistedAccount.subjects).hasSize(1)
         Assertions.assertThat(persistedAccount.subjects.first().id.value).isEqualTo("1")
         Assertions.assertThat(persistedAccount.subjects.first().name).isEqualTo("Maths")
-        Assertions.assertThat(persistedAccount.ageRange).containsExactly(0, 1, 2, 3, 4)
+        Assertions.assertThat(persistedAccount.ages).containsExactly(0, 1, 2, 3, 4)
         Assertions.assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
         Assertions.assertThat(persistedAccount.marketingTracking.utmSource).isEqualTo("facebook")
         Assertions.assertThat(persistedAccount.marketingTracking.utmContent).isEqualTo("utm-content")

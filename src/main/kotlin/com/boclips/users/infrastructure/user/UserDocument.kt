@@ -26,7 +26,7 @@ data class UserDocument(
                 id = user.id.value,
                 activated = user.activated,
                 subjectIds = user.subjects.map { it.id.value },
-                ageRange = user.ageRange,
+                ageRange = user.ages,
                 analyticsId = user.analyticsId?.value,
                 referralCode = user.referralCode,
                 firstName = user.firstName,

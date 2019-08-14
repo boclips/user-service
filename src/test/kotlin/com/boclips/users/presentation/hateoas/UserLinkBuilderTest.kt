@@ -34,7 +34,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val activateUserLink = userLinkBuilder.activateUserLink()
+        val activateUserLink = userLinkBuilder.updateUserLink()
 
         assertThat(activateUserLink).isNotNull()
         assertThat(activateUserLink!!.href).endsWith("/users/lovely-user")
@@ -45,7 +45,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `activate link when authenticated and but not in the database`() {
         setSecurityContext("sso-first-time-user")
 
-        val activateUserLink = userLinkBuilder.activateUserLink()
+        val activateUserLink = userLinkBuilder.updateUserLink()
 
         assertThat(activateUserLink).isNotNull()
         assertThat(activateUserLink!!.href).endsWith("/users/sso-first-time-user")
@@ -63,14 +63,14 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val activateUserLink = userLinkBuilder.activateUserLink()
+        val activateUserLink = userLinkBuilder.updateUserLink()
 
         assertThat(activateUserLink).isNull()
     }
 
     @Test
     fun `no activate link when not authenticated`() {
-        val activateUserLink = userLinkBuilder.activateUserLink()
+        val activateUserLink = userLinkBuilder.updateUserLink()
 
         assertThat(activateUserLink).isNull()
     }

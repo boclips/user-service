@@ -14,7 +14,7 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
         activated = userDocument.activated,
         analyticsId = userDocument.analyticsId?.let { AnalyticsId(value = it) },
         subjects = subjectService.getSubjectsById(userDocument.subjectIds.orEmpty().map { SubjectId(value = it) }),
-        ageRange = userDocument.ageRange.orEmpty(),
+        ages = userDocument.ageRange.orEmpty(),
         referralCode = userDocument.referralCode?.let { it },
         firstName = userDocument.firstName.orEmpty(),
         lastName = userDocument.lastName.orEmpty(),

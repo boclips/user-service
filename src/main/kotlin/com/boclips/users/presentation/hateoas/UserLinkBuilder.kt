@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component
 @Component
 class UserLinkBuilder(private val userRepository: UserRepository) : KLogging() {
 
-    fun activateUserLink(): Link? {
+    fun updateUserLink(): Link? {
         return getIfAuthenticated { currentUserId ->
             if (userRepository.findById(UserId(value = currentUserId))?.activated == true)
                 null
             else
                 ControllerLinkBuilder.linkTo(
                     ControllerLinkBuilder.methodOn(UserController::class.java)
-                        .activateAUser(currentUserId)
+                        .updateAUser(currentUserId, null)
                 ).withRel("activate")
         }
     }

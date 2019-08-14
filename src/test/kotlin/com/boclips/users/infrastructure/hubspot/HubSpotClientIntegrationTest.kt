@@ -124,7 +124,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                 com.boclips.users.domain.model.Subject(id = SubjectId("1"), name = "Maths"),
                 com.boclips.users.domain.model.Subject(id = SubjectId("2"), name = "Science")
             ),
-            ageRange = listOf(3, 4, 5, 6),
+            ages = listOf(3, 4, 5, 6),
             firstName = "Jane",
             lastName = "Doe",
             email = "jane@doe.com",

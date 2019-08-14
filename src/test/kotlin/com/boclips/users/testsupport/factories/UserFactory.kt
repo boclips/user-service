@@ -23,7 +23,7 @@ class UserFactory {
                     name = "Netflix"
                 )
             ),
-            ageRange: List<Int> = listOf(1, 2),
+            ages: List<Int> = listOf(1, 2),
             analyticsId: AnalyticsId? = AnalyticsId(
                 value = "1234567"
             ),
@@ -39,7 +39,7 @@ class UserFactory {
             activated = activated,
             analyticsId = analyticsId,
             subjects = subjects,
-            ageRange = ageRange,
+            ages = ages,
             referralCode = referralCode,
             firstName = firstName,
             lastName = lastName,

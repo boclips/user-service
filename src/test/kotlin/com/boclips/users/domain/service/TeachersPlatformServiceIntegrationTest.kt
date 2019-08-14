@@ -3,6 +3,8 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.NewUser
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.UpdatedUser
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
@@ -57,7 +59,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.lastName).isEqualTo("Dough")
         assertThat(persistedUser.email).isEqualTo("joe@dough.com")
         assertThat(persistedUser.subjects).hasSize(1)
-        assertThat(persistedUser.ageRange).containsExactly(1, 2)
+        assertThat(persistedUser.ages).containsExactly(1, 2)
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
         assertThat(persistedUser.hasOptedIntoMarketing).isTrue()
@@ -67,5 +69,28 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.marketingTracking.utmTerm).isBlank()
         assertThat(persistedUser.marketingTracking.utmMedium).isBlank()
         assertThat(persistedUser.associatedTo).isEqualTo(organisation.id)
+    }
+
+    @Test
+    fun `update user details`() {
+        saveUser(UserFactory.sample(id = "user-id"))
+
+        val newUserDetails = UpdatedUser(
+            userId = UserId("user-id"),
+            firstName = "Joe",
+            lastName = "Dough",
+            subjects = listOf(Subject(id = SubjectId("test"), name = "subject")),
+            ages = listOf(1, 2),
+            hasOptedIntoMarketing = true
+        )
+
+        val persistedUser = teachersPlatformService.updateUserDetails(newUserDetails)
+
+        assertThat(persistedUser.firstName).isEqualTo("Joe")
+        assertThat(persistedUser.lastName).isEqualTo("Dough")
+        assertThat(persistedUser.email).isEqualTo("joe@dough.com")
+        assertThat(persistedUser.subjects).hasSize(1)
+        assertThat(persistedUser.ages).containsExactly(1, 2)
+        assertThat(persistedUser.hasOptedIntoMarketing).isTrue()
     }
 }

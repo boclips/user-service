@@ -15,7 +15,7 @@ class LinksController(
     fun getLinks() = Resource(
         "", listOfNotNull(
             userLinkBuilder.createUserLink(),
-            userLinkBuilder.activateUserLink(),
+            userLinkBuilder.updateUserLink(),
             userLinkBuilder.profileLink()
         )
     )
