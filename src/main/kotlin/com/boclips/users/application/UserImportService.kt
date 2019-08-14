@@ -36,7 +36,7 @@ class UserImportService(
                 convertIdentityToUser(identity, organisationMatcher.match(identity.roles)?.id)
             )
 
-            logger.info { "Imported user $userId" }
+            logger.info { "Could not find user $userId, imported from identity provider" }
 
             newUser
         } ?: throw UserNotFoundException(userId)
