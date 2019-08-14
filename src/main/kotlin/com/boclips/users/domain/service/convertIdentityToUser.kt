@@ -16,13 +16,7 @@ fun convertIdentityToUser(identity: Identity): User {
         lastName = identity.lastName,
         email = identity.email,
         hasOptedIntoMarketing = false,
-        marketingTracking = MarketingTracking(
-            utmCampaign = "",
-            utmSource = "",
-            utmContent = "",
-            utmMedium = "",
-            utmTerm = ""
-        ),
+        marketingTracking = MarketingTracking(),
         associatedTo = identity.associatedTo
     )
 }

@@ -6,7 +6,6 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
-import com.boclips.users.testsupport.factories.OrganisationIdFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
