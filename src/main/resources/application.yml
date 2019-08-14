@@ -27,11 +27,11 @@ pubsub:
 
 user-service:
   organisation-mappings:
-    - role: 'TEACHER'
+    - role: 'ROLE_TEACHER'
       organisation-name: 'Boclips for Teachers'
-    - role: 'VIEWSONIC'
+    - role: 'ROLE_VIEWSONIC'
       organisation-name: 'ViewSonic MyViewBoard'
-    - role: 'PEARSON_MYREALIZE'
+    - role: 'ROLE_PEARSON_MYREALIZE'
       organisation-name: 'Pearson MyRealize'
-    - role: 'BACKOFFICE'
+    - role: 'ROLE_BACKOFFICE'
       organisation-name: 'Boclips Backoffice'

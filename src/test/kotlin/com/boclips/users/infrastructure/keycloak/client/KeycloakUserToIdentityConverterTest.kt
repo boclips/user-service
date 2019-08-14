@@ -21,7 +21,7 @@ class KeycloakUserToIdentityConverterTest {
             this.firstName = "Shane"
             this.lastName = "Williams"
             this.isEmailVerified = true
-            this.realmRoles = listOf("SOME_ROLE")
+            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
         }
     }
 
@@ -34,7 +34,12 @@ class KeycloakUserToIdentityConverterTest {
         assertThat(convertedUser.firstName).isEqualTo(keycloakUser.firstName)
         assertThat(convertedUser.lastName).isEqualTo(keycloakUser.lastName)
         assertThat(convertedUser.isVerified).isEqualTo(keycloakUser.isEmailVerified)
-        assertThat(convertedUser.roles).containsExactly("SOME_ROLE")
+        assertThat(convertedUser.roles).containsExactly(
+            "ROLE_VIEWSONIC",
+            "ROLE_TEACHER",
+            "ROLE_BACKOFFICE",
+            "uma_something"
+        )
     }
 
     @Test

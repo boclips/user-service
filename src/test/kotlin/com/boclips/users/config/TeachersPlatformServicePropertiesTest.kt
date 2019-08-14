@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class TeachersPlatformServicePropertiesTest : AbstractSpringIntegrationTest() {
     @Test
     fun `configuration properties are initialised`() {
-        assertThat(userServiceProperties.organisationMappings.component1().role).isEqualTo("TEACHER")
+        assertThat(userServiceProperties.organisationMappings.component1().role).isEqualTo("ROLE_TEACHER")
         assertThat(userServiceProperties.organisationMappings.component1().organisationName).isEqualTo("Boclips for Teachers")
     }
 }

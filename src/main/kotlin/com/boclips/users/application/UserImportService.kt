@@ -1,7 +1,5 @@
 package com.boclips.users.application
 
-import com.boclips.security.utils.UserExtractor
-import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserNotFoundException
@@ -29,15 +27,13 @@ class UserImportService(
     }
 
     fun importFromIdentityProvider(userId: UserId): User {
-        val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
-
         if (userRepository.findById(userId) !== null) {
             throw UserAlreadyExistsException()
         }
 
         return identityProvider.getUserById(userId)?.let { identity ->
             val newUser = userRepository.save(
-                convertIdentityToUser(identity, organisationMatcher.match(authenticatedUser)?.id)
+                convertIdentityToUser(identity, organisationMatcher.match(identity.roles)?.id)
             )
 
             logger.info { "Imported user $userId" }
