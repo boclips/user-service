@@ -20,8 +20,7 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
             .list(0, countUsers())
 
         allUsers.forEach { user ->
-            user.realmRoles = keycloak.realm(REALM).users().get(user.id).roles().realmLevel().listEffective()
-                .map { role -> role.name }
+            user.realmRoles = getRolesOfUser(user.id)
         }
 
         return allUsers
@@ -43,8 +42,7 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
         return try {
             keycloak.realm(REALM).users().get(id).toRepresentation()
                 .apply {
-                    realmRoles =
-                        keycloak.realm(REALM).users().get(this.id).roles().realmLevel().listEffective().map { it.name }
+                    realmRoles = getRolesOfUser(id)
                 }
         } catch (ex: Exception) {
             logger.info { "Could not find user: $id" }
@@ -58,8 +56,7 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
 
         return search.firstOrNull { it.username == usernameLowercase }
             ?.apply {
-                realmRoles =
-                    keycloak.realm(REALM).users().get(this.id).roles().realmLevel().listEffective().map { it.name }
+                realmRoles = getRolesOfUser(this.id)
             }
     }
 
@@ -101,5 +98,9 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
             ?.let {
                 keycloak.realm(REALM).users().get(userId).roles().realmLevel().add(listOf(it))
             }
+    }
+
+    private fun getRolesOfUser(userId: String): List<String> {
+        return keycloak.realm(REALM).users().get(userId).roles().realmLevel().listEffective().map { it.name }
     }
 }
