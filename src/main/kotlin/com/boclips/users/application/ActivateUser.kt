@@ -4,6 +4,7 @@ import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.NotAuthenticatedException
+import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
@@ -27,9 +28,9 @@ class ActivateUser(
 ) {
     companion object : KLogging()
 
-    operator fun invoke(): User {
-        val authenticatedUser: com.boclips.security.utils.User =
-            UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
+    operator fun invoke(userId: String): User {
+        val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
+        if (authenticatedUser.id != userId) throw PermissionDeniedException()
 
         val activatedUser = teachersPlatformService.activate(UserId(value = authenticatedUser.id))
 

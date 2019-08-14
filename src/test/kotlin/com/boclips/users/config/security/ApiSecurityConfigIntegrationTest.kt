@@ -44,11 +44,11 @@ class ApiSecurityConfigIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `only authenticated users can activate accounts`() {
-        mvc.perform(MockMvcRequestBuilders.post("/v1/users/activate"))
+        mvc.perform(MockMvcRequestBuilders.post("/v1/users/user-id"))
             .andExpect(MockMvcResultMatchers.status().isForbidden)
 
-        saveUser(UserFactory.sample())
-        mvc.perform(MockMvcRequestBuilders.post("/v1/users/activate").asUser("user-id"))
+        saveUser(UserFactory.sample(id = "user-id"))
+        mvc.perform(MockMvcRequestBuilders.put("/v1/users/user-id").asUser("user-id"))
             .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
     }
 }

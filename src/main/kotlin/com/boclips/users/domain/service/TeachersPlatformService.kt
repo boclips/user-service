@@ -17,7 +17,7 @@ class TeachersPlatformService(
     companion object : KLogging()
 
     fun activate(userId: UserId): User {
-        val user = userRepository.activate(userId)!!
+        val user = userRepository.activate(userId) ?: throw UserNotFoundException(userId)
         return findById(id = user.id)
     }
 

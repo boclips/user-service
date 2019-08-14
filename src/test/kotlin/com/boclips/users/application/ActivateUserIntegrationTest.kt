@@ -3,6 +3,8 @@ package com.boclips.users.application
 import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
+import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationIdFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -20,25 +22,25 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `activate user is idempotent`() {
-        val identity = UUID.randomUUID().toString()
-        setSecurityContext(identity)
+        val userId = UUID.randomUUID().toString()
+        setSecurityContext(userId)
 
-        saveUser(UserFactory.sample(id = identity))
+        saveUser(UserFactory.sample(id = userId))
 
-        assertThat(activateUser()).isEqualTo(activateUser())
+        assertThat(activateUser(userId)).isEqualTo(activateUser(userId))
     }
 
     @Test
     fun `activate user publishes an event`() {
-        val identity1 = UUID.randomUUID().toString()
-        setSecurityContext(identity1)
-        saveUser(UserFactory.sample(id = identity1))
+        val userId1 = UUID.randomUUID().toString()
+        setSecurityContext(userId1)
+        saveUser(UserFactory.sample(id = userId1))
 
-        val identity2 = UUID.randomUUID().toString()
-        setSecurityContext(identity2)
-        saveUser(UserFactory.sample(id = identity2))
+        val userId2 = UUID.randomUUID().toString()
+        setSecurityContext(userId2)
+        saveUser(UserFactory.sample(id = userId2))
 
-        activateUser()
+        activateUser(userId2)
 
         val event = eventBus.getEventOfType(UserActivated::class.java)
 
@@ -57,7 +59,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        activateUser()
+        activateUser(userId)
 
         val event = eventBus.getEventOfType(UserActivated::class.java)
 
@@ -76,7 +78,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        activateUser()
+        activateUser(userId)
 
         val event = eventBus.getEventOfType(UserActivated::class.java)
 
@@ -85,12 +87,12 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `activate user marks referral`() {
-        val identity = UUID.randomUUID().toString()
-        setSecurityContext(identity)
+        val userId = UUID.randomUUID().toString()
+        setSecurityContext(userId)
 
         saveUser(
             UserFactory.sample(
-                id = identity,
+                id = userId,
                 referralCode = "it-is-a-referral",
                 firstName = "Jane",
                 lastName = "Doe",
@@ -98,7 +100,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        activateUser()
+        activateUser(userId)
 
         verify(referralProvider).createReferral(com.nhaarman.mockitokotlin2.check {
             Assertions.assertThat(it.referralCode).isEqualTo("it-is-a-referral")
@@ -106,14 +108,32 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
             Assertions.assertThat(it.lastName).isEqualTo("Doe")
             Assertions.assertThat(it.email).isEqualTo("jane@doe.com")
             Assertions.assertThat(it.status).isEqualTo("qualified")
-            Assertions.assertThat(it.externalIdentifier).isEqualTo(identity)
+            Assertions.assertThat(it.externalIdentifier).isEqualTo(userId)
         })
     }
 
     @Test
     fun `cannot activate user when security context not populated`() {
         assertThrows<NotAuthenticatedException> {
-            activateUser()
+            activateUser("peanuts")
         }
+    }
+
+    @Test
+    fun `cannot obtain user information of another user`() {
+        val userId = UUID.randomUUID().toString()
+        setSecurityContext("different-user")
+
+        saveUser(UserFactory.sample())
+
+        assertThrows<PermissionDeniedException> { activateUser(userId) }
+    }
+
+    @Test
+    fun `get user throws when user doesn't exist anywhere`() {
+        val userId = UUID.randomUUID().toString()
+        setSecurityContext(userId)
+
+        assertThrows<UserNotFoundException> { activateUser(userId) }
     }
 }

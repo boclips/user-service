@@ -20,7 +20,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(get("/v1/"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.activate").doesNotExist())
-            .andExpect(jsonPath("$._links.profile").doesNotExist())
+//    TODO include when frontend is refactored        .andExpect(jsonPath("$._links.profile").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").exists())
     }
 
@@ -41,7 +41,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile").exists())
-            .andExpect(jsonPath("$._links.activate.href", endsWith("/users/activate")))
+            .andExpect(jsonPath("$._links.activate.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
     }
 
@@ -63,16 +63,13 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.activate").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
-            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/{id}")))
-            .andExpect(jsonPath("$._links.profile.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
     }
 
     @Test
     fun `links use proto headers`() {
-        setSecurityContext("a-user-id")
-
-        mvc.perform(get("/v1/").asUser("unknown-user").header("x-forwarded-proto", "https"))
+        mvc.perform(get("/v1/").header("x-forwarded-proto", "https"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.activate.href", startsWith("https")))
+            .andExpect(jsonPath("$._links.createAccount.href", startsWith("https")))
     }
 }
