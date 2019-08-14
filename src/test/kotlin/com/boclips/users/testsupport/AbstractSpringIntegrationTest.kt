@@ -2,6 +2,7 @@ package com.boclips.users.testsupport
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
+import com.boclips.users.application.UserImportService
 import com.boclips.users.application.UserSourceResolver
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
@@ -17,6 +18,7 @@ import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
