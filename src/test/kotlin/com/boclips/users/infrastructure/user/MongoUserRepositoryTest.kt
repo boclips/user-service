@@ -15,7 +15,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists compulsory information`() {
-        val user = UserFactory.sample(organisationId = OrganisationIdFactory.sample())
+        val user = UserFactory.sample(associatedTo = OrganisationIdFactory.sample())
 
         userRepository.save(user)
 
@@ -26,7 +26,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(fetchedUser.lastName).isNotNull()
         assertThat(fetchedUser.email).isNotNull()
         assertThat(fetchedUser.activated).isNotNull()
-        assertThat(fetchedUser.organisationId).isNotNull()
+        assertThat(fetchedUser.associatedTo).isNotNull()
     }
 
     @Test
@@ -43,7 +43,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             ),
             referralCode = "referral-123",
             analyticsId = AnalyticsId(value = "analytics-123"),
-            organisationId = OrganisationIdFactory.sample()
+            associatedTo = OrganisationIdFactory.sample()
         )
 
         userRepository.save(user)
@@ -62,7 +62,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `saving organisation id as null is all good`() {
         val account = UserFactory.sample(
             subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
-            organisationId = null
+            associatedTo = null
         )
 
         userRepository.save(account)
@@ -70,7 +70,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         val fetchedUser = userRepository.findById(account.id)
 
         assertThat(fetchedUser).isEqualTo(account)
-        assertThat(fetchedUser!!.organisationId).isNull()
+        assertThat(fetchedUser!!.associatedTo).isNull()
     }
 
     @Test

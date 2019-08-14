@@ -17,6 +17,6 @@ class ConvertIdentityToUserKtTest {
         assertThat(user.firstName).isEqualTo(identity.firstName)
         assertThat(user.lastName).isEqualTo(identity.lastName)
         assertThat(user.email).isEqualTo(identity.email)
-        assertThat(user.organisationId).isEqualTo(organisationId)
+        assertThat(user.associatedTo).isEqualTo(organisationId)
     }
 }

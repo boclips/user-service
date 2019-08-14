@@ -54,7 +54,7 @@ class ActivateUser(
                 .user(
                     com.boclips.eventbus.domain.user.User.builder()
                         .id(user.id.value)
-                        .organisationId(user.organisationId?.value)
+                        .organisationId(user.associatedTo?.value)
                         .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
                         .build()
                 )

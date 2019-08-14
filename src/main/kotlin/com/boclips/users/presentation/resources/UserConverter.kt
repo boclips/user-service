@@ -12,7 +12,7 @@ class UserConverter {
             lastName = user.lastName,
             email = user.email,
             analyticsId = user.analyticsId?.value,
-            organisationId = user.organisationId?.value
+            organisationId = user.associatedTo?.value
         )
     }
 }

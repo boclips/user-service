@@ -40,7 +40,7 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = user.organisationId?.value
+                organisationId = user.associatedTo?.value
             )
         }
     }

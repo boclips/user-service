@@ -33,7 +33,7 @@ class UserFactory {
             email: String = "joe@dough.com",
             hasOptedIntoMarketing: Boolean = true,
             marketing: MarketingTracking = MarketingTrackingFactory.sample(),
-            organisationId: OrganisationId? = null
+            associatedTo: OrganisationId? = null
         ) = User(
             id = UserId(value = id),
             activated = activated,
@@ -46,7 +46,7 @@ class UserFactory {
             email = email,
             hasOptedIntoMarketing = hasOptedIntoMarketing,
             marketingTracking = marketing,
-            organisationId = organisationId
+            associatedTo = associatedTo
         )
     }
 }

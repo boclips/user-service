@@ -66,6 +66,6 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.marketingTracking.utmContent).isBlank()
         assertThat(persistedUser.marketingTracking.utmTerm).isBlank()
         assertThat(persistedUser.marketingTracking.utmMedium).isBlank()
-        assertThat(persistedUser.organisationId).isEqualTo(organisation.id)
+        assertThat(persistedUser.associatedTo).isEqualTo(organisation.id)
     }
 }

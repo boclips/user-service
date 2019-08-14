@@ -53,7 +53,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
         saveUser(
             UserFactory.sample(
                 id = userId,
-                organisationId = null
+                associatedTo = null
             )
         )
 
@@ -72,7 +72,7 @@ class ActivateUserIntegrationTest : AbstractSpringIntegrationTest() {
         saveUser(
             UserFactory.sample(
                 id = userId,
-                organisationId = OrganisationIdFactory.sample(id = organisationId)
+                associatedTo = OrganisationIdFactory.sample(id = organisationId)
             )
         )
 

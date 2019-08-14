@@ -16,7 +16,7 @@ class UserConverterTest {
                     lastName = "Henry",
                     email = "thierry@henry.fr",
                     activated = true,
-                    organisationId = OrganisationId(value = "some-org-id"),
+                    associatedTo = OrganisationId(value = "some-org-id"),
                     analyticsId = AnalyticsId(value = "some-analytics-id")
                 )
             )

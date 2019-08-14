@@ -16,7 +16,7 @@ data class User(
     val email: String,
     val hasOptedIntoMarketing: Boolean,
     val marketingTracking: MarketingTracking,
-    val organisationId: OrganisationId? = null
+    val associatedTo: OrganisationId? = null
 ) {
     fun isReferral(): Boolean {
         return !referralCode.isNullOrEmpty()

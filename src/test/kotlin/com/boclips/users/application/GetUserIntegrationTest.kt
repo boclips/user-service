@@ -34,7 +34,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
                 firstName = "Jane",
                 lastName = "Doe",
                 email = "jane@doe.com",
-                organisationId = OrganisationId(value = organisationId)
+                associatedTo = OrganisationId(value = organisationId)
             )
         )
 

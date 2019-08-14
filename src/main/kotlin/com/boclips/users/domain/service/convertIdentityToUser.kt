@@ -24,6 +24,6 @@ fun convertIdentityToUser(identity: Identity, organisationId: OrganisationId?): 
             utmMedium = "",
             utmTerm = ""
         ),
-        organisationId = organisationId
+        associatedTo = organisationId
     )
 }

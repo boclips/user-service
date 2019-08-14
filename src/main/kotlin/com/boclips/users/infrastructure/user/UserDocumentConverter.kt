@@ -27,6 +27,6 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
             utmTerm = userDocument.marketing?.utmTerm ?: "",
             utmCampaign = userDocument.marketing?.utmCampaign ?: ""
         ),
-        organisationId = userDocument.organisationId?.let { OrganisationId(value = userDocument.organisationId) }
+        associatedTo = userDocument.organisationId?.let { OrganisationId(value = userDocument.organisationId) }
     )
 }
