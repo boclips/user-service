@@ -13,7 +13,7 @@ class SynchronisationService(
     val sessionProvider: SessionProvider
 ) {
     fun synchroniseTeachers() {
-        val allCrmProfiles = teachersPlatformService.findAllUsers()
+        val allCrmProfiles = teachersPlatformService.findAllTeachers()
             .map { user ->
                 val sessions = sessionProvider.getUserSessions(user.id)
                 return@map convertUserToCrmProfile(user, sessions)

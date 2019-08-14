@@ -13,22 +13,24 @@ import org.springframework.stereotype.Service
 @Service
 class TeachersPlatformService(
     val userRepository: UserRepository,
-    val identityProvider: IdentityProvider,
-    val organisationRepository: OrganisationRepository
+    val identityProvider: IdentityProvider
 ) {
     companion object : KLogging()
 
-    fun findById(id: UserId): User {
-        val user = userRepository.findById(UserId(id.value)) ?: throw UserNotFoundException(id)
+    fun findTeacherById(id: UserId): User {
+        val retrievedUser = userRepository.findById(UserId(id.value))
+        val user = retrievedUser ?: throw UserNotFoundException(id)
+
+        if (retrievedUser.associatedTo != UserSource.Boclips) throw UserNotFoundException(id)
 
         logger.info { "Fetched user ${id.value}" }
 
         return user
     }
 
-    fun findAllUsers(): List<User> {
-        val allUsers = userRepository.findAll()
-        logger.info { "Fetched ${allUsers.size} users from database" }
+    fun findAllTeachers(): List<User> {
+        val allUsers = userRepository.findAll().filter { it.associatedTo == UserSource.Boclips }
+        logger.info { "Fetched ${allUsers.size} teacher users from database" }
 
         return allUsers
     }
@@ -70,15 +72,18 @@ class TeachersPlatformService(
     }
 
     fun updateUserDetails(updatedUser: UpdatedUser): User {
-        val originalUser = userRepository.findById(updatedUser.userId) ?: throw UserNotFoundException(updatedUser.userId)
+        val originalUser =
+            userRepository.findById(updatedUser.userId) ?: throw UserNotFoundException(updatedUser.userId)
 
-        val user = userRepository.save(originalUser.copy(
-            firstName = updatedUser.firstName,
-            lastName = updatedUser.lastName,
-            hasOptedIntoMarketing = updatedUser.hasOptedIntoMarketing,
-            subjects = updatedUser.subjects,
-            ages = updatedUser.ages
-        ))
+        val user = userRepository.save(
+            originalUser.copy(
+                firstName = updatedUser.firstName,
+                lastName = updatedUser.lastName,
+                hasOptedIntoMarketing = updatedUser.hasOptedIntoMarketing,
+                subjects = updatedUser.subjects,
+                ages = updatedUser.ages
+            )
+        )
 
         logger.info { "Updated user ${user.id.value}" }
 

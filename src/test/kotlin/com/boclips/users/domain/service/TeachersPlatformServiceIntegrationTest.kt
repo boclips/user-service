@@ -5,12 +5,15 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.UserNotFoundException
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
+import com.boclips.users.testsupport.factories.UserSourceFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 
 class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
@@ -18,19 +21,26 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var teachersPlatformService: TeachersPlatformService
 
     @Test
-    fun `can find all users`() {
-        val savedUsers = listOf(
-            saveUser(UserFactory.sample(id = "1")),
-            saveUser(UserFactory.sample(id = "2")),
-            saveUser(UserFactory.sample(id = "3")),
-            saveUser(UserFactory.sample(id = "4")),
-            saveUser(UserFactory.sample(id = "5"))
+    fun `can find all teachers`() {
+        listOf(
+            saveUser(UserFactory.sample(id = "1", userSource = UserSourceFactory.apiClientSample())),
+            saveUser(UserFactory.sample(id = "2", userSource = UserSourceFactory.apiClientSample())),
+            saveUser(UserFactory.sample(id = "3", userSource = UserSourceFactory.apiClientSample())),
+            saveUser(UserFactory.sample(id = "4", userSource = UserSourceFactory.apiClientSample())),
+            saveUser(UserFactory.sample(id = "5", userSource = UserSource.Boclips))
         )
 
-        val users = teachersPlatformService.findAllUsers()
+        val users = teachersPlatformService.findAllTeachers()
 
-        assertThat(users.size).isEqualTo(savedUsers.size)
-        assertThat(users.map { it.id.value }).contains("1", "2", "3", "4", "5")
+        assertThat(users).hasSize(1)
+        assertThat(users.map { it.id.value }).containsExactly("5")
+    }
+
+    @Test
+    fun `fails to find teacher if user is not teacher`() {
+        saveUser(UserFactory.sample(id = "1", userSource = UserSourceFactory.apiClientSample()))
+
+        assertThrows<UserNotFoundException> { teachersPlatformService.findTeacherById(UserId("1")) }
     }
 
     @Test
@@ -70,7 +80,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `an individual teacher user is not associated to organisation`() {
+    fun `an individual teacher user is not associated to external organisation`() {
         val newUser = NewUser(
             firstName = "Joe",
             lastName = "Dough",

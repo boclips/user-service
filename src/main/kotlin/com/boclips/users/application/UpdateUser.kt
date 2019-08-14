@@ -39,7 +39,7 @@ class UpdateUser(
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
         if (authenticatedUser.id != userId) throw PermissionDeniedException()
 
-        val user = teachersPlatformService.findById(UserId(authenticatedUser.id))
+        val user = teachersPlatformService.findTeacherById(UserId(authenticatedUser.id))
 
         updateUserRequest?.run {
             teachersPlatformService.updateUserDetails(UpdatedUser(
@@ -54,7 +54,7 @@ class UpdateUser(
 
         if(!user.activated) activate(user)
 
-        return teachersPlatformService.findById(UserId(authenticatedUser.id))
+        return teachersPlatformService.findTeacherById(UserId(authenticatedUser.id))
     }
 
     private fun activate(user: User) {
