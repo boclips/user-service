@@ -1,9 +1,9 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.UpdateUser
 import com.boclips.users.application.CreateUser
 import com.boclips.users.application.GetUser
 import com.boclips.users.application.SynchronisationService
+import com.boclips.users.application.UpdateUser
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
@@ -53,7 +53,8 @@ class UserController(
     @GetMapping("/{id}")
     fun getAUser(@PathVariable id: String?): Resource<UserResource> {
         val user = getUser(id!!)
-        return Resource(user,
+        return Resource(
+            user,
             userLinkBuilder.selfLink(),
             userLinkBuilder.profileLink()
         )
@@ -62,5 +63,10 @@ class UserController(
     @PostMapping("/sync")
     fun syncCrmContacts() {
         synchronisationService.synchroniseTeachers()
+    }
+
+    @PostMapping("/sync-identities")
+    fun syncIdentities() {
+        synchronisationService.synchroniseIdentities()
     }
 }

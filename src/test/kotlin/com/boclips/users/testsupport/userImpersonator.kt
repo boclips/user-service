@@ -11,5 +11,5 @@ fun MockHttpServletRequestBuilder.asBackofficeUser() =
     this.with(
         SecurityMockMvcRequestPostProcessors
             .user("user-service")
-            .roles(UserRoles.SYNCHRONIZE_USERS_HUBSPOT)
+            .roles(UserRoles.SYNCHRONIZE_USERS_HUBSPOT, UserRoles.SYNCHRONIZE_USERS_KEYCLOAK)
     )

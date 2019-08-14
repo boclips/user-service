@@ -3,8 +3,8 @@ package com.boclips.users.presentation.controllers
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
-import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -199,9 +199,14 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `synchronise identies`() {
-        keycloakClientFake.createUser(IdentityFactory.sample())
-        keycloakClientFake.createUser(IdentityFactory.sample())
-        keycloakClientFake.createUser(IdentityFactory.sample())
+    fun `synchronise identities`() {
+        mvc.perform(post("/v1/users/sync-identities").asBackofficeUser())
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `synchronise crm profiles`() {
+        mvc.perform(post("/v1/users/sync").asBackofficeUser())
+            .andExpect(status().isOk)
     }
 }

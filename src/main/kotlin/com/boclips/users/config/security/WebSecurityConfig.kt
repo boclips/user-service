@@ -29,6 +29,7 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
             .antMatchers(HttpMethod.PUT, "/v1/users/*").authenticated()
             .antMatchers(HttpMethod.POST, "/v1/users/sync").hasRole(UserRoles.SYNCHRONIZE_USERS_HUBSPOT)
+            .antMatchers(HttpMethod.POST, "/v1/users/sync-identities").hasRole(UserRoles.SYNCHRONIZE_USERS_KEYCLOAK)
 
             .anyRequest().authenticated()
     }
