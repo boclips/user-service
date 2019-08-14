@@ -7,15 +7,15 @@ import com.nhaarman.mockitokotlin2.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class UpdateContactsIntegrationTest : AbstractSpringIntegrationTest() {
+class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var updateContacts: UpdateContacts
+    lateinit var synchronisationService: SynchronisationService
 
     @Test
     fun `updates contacts including session information`() {
         saveUser(UserFactory.sample())
 
-        updateContacts()
+        synchronisationService.synchroniseTeachers()
 
         verify(marketingService).updateProfile(any())
     }

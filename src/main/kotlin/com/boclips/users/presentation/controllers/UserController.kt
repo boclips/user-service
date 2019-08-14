@@ -3,7 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.UpdateUser
 import com.boclips.users.application.CreateUser
 import com.boclips.users.application.GetUser
-import com.boclips.users.application.UpdateContacts
+import com.boclips.users.application.SynchronisationService
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
@@ -30,7 +30,7 @@ class UserController(
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
     private val userLinkBuilder: UserLinkBuilder,
-    private val updateContacts: UpdateContacts
+    private val synchronisationService: SynchronisationService
 ) {
 
     @PostMapping
@@ -60,7 +60,7 @@ class UserController(
     }
 
     @PostMapping("/sync")
-    fun syncUsers() {
-        updateContacts()
+    fun syncCrmContacts() {
+        synchronisationService.synchroniseTeachers()
     }
 }

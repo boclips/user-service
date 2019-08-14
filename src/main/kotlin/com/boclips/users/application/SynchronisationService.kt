@@ -7,12 +7,12 @@ import com.boclips.users.domain.service.convertUserToCrmProfile
 import org.springframework.stereotype.Component
 
 @Component
-class UpdateContacts(
+class SynchronisationService(
     val teachersPlatformService: TeachersPlatformService,
     val marketingService: MarketingService,
     val sessionProvider: SessionProvider
 ) {
-    operator fun invoke() {
+    fun synchroniseTeachers() {
         val allCrmProfiles = teachersPlatformService.findAllUsers()
             .map { user ->
                 val sessions = sessionProvider.getUserSessions(user.id)
