@@ -1,8 +1,8 @@
 package com.boclips.users.application
 
+import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.convertIdentityToUser
@@ -31,13 +31,7 @@ class UserImportService(
         }
 
         return identityProvider.getUserById(userId)?.let { identity ->
-            val newUser = userRepository.save(
-                convertIdentityToUser(identity, identity.associatedTo)
-            )
-
-            logger.info { "Could not find user $userId, imported from identity provider" }
-
-            newUser
+            userRepository.save(convertIdentityToUser(identity))
         } ?: throw UserNotFoundException(userId)
     }
 }

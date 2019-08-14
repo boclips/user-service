@@ -8,13 +8,10 @@ import org.junit.jupiter.api.Test
 class ConvertIdentityToUserKtTest {
     @Test
     fun `converts identity to user`() {
-        val identity = IdentityFactory.sample()
-
         val userSource = UserSourceFactory.apiClientSample(organisationId = "test")
-        val user = convertIdentityToUser(
-            identity = identity,
-            userSource = userSource
-        )
+        val identity = IdentityFactory.sample(userSource = userSource)
+
+        val user = convertIdentityToUser(identity = identity)
 
         assertThat(user.id).isEqualTo(identity.id)
         assertThat(user.firstName).isEqualTo(identity.firstName)
