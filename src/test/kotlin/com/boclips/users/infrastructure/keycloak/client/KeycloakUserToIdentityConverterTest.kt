@@ -1,8 +1,7 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.application.UserSourceResolver
+import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
-import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock

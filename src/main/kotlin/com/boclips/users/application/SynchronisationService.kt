@@ -20,7 +20,7 @@ class SynchronisationService(
 ) {
     companion object : KLogging()
 
-    fun synchroniseTeachers() {
+    fun synchroniseCrmProfiles() {
         val teacherUsers = teachersPlatformService.findAllTeachers()
         logger.info { "Found ${teacherUsers.size} teacher users to be synchronised" }
 

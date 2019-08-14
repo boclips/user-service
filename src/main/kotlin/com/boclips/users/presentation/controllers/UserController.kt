@@ -62,7 +62,7 @@ class UserController(
 
     @PostMapping("/sync")
     fun syncCrmContacts() {
-        synchronisationService.synchroniseTeachers()
+        synchronisationService.synchroniseCrmProfiles()
     }
 
     @PostMapping("/sync-identities")

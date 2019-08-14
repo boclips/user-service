@@ -1,4 +1,4 @@
-package com.boclips.users.application
+package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.UserSource
 

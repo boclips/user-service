@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.UserNotFoundException
+import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest

@@ -2,7 +2,7 @@ package com.boclips.users.application
 
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.UserNotFoundException
+import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.convertIdentityToUser

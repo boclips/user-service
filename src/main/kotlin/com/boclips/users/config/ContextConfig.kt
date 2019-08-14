@@ -1,7 +1,7 @@
 package com.boclips.users.config
 
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.application.UserSourceResolver
+import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider

@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.application.UserSourceResolver
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper

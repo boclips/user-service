@@ -14,21 +14,19 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var synchronisationService: SynchronisationService
 
     @Test
-    fun `updates contacts including session information`() {
+    fun `updates CRM profiles including session information`() {
         saveUser(UserFactory.sample())
 
-        synchronisationService.synchroniseTeachers()
+        synchronisationService.synchroniseCrmProfiles()
 
         verify(marketingService).updateProfile(any())
     }
 
     @Test
-    fun `updates new users from identity provider`() {
+    fun `updates new identities from identity provider`() {
         val existingIdentity = IdentityFactory.sample()
         keycloakClientFake.createUser(existingIdentity)
-
         keycloakClientFake.createUser(IdentityFactory.sample())
-
         saveUser(UserFactory.sample(id = existingIdentity.id.value))
 
         synchronisationService.synchroniseIdentities()

@@ -3,7 +3,7 @@ package com.boclips.users.presentation
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
-import com.boclips.users.domain.model.UserNotFoundException
+import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.presentation.controllers.PresentationPackageMarker
 import mu.KLogging
