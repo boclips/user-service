@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserSource
 import org.springframework.stereotype.Component
 
 @Component
@@ -12,7 +13,10 @@ class UserConverter {
             lastName = user.lastName,
             email = user.email,
             analyticsId = user.analyticsId?.value,
-            organisationId = user.associatedTo?.value
+            organisationId = when (user.associatedTo) {
+                UserSource.Boclips -> null
+                is UserSource.ApiClient -> user.associatedTo.organisationId.value
+            }
         )
     }
 }

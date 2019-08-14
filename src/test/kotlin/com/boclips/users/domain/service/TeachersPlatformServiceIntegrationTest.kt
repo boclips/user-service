@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
@@ -89,7 +90,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = teachersPlatformService.createUser(newUser)
 
-        assertThat(persistedUser.associatedTo).isEqualTo(null)
+        assertThat(persistedUser.associatedTo).isEqualTo(UserSource.Boclips)
     }
 
     @Test

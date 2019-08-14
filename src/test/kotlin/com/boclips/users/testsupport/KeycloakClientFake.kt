@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
+import com.boclips.users.testsupport.factories.UserSourceFactory
 import java.time.Instant
 import java.util.UUID
 
@@ -24,7 +25,8 @@ class KeycloakClientFake : IdentityProvider, SessionProvider {
             firstName = firstName,
             lastName = lastName,
             email = email,
-            isVerified = false
+            isVerified = false,
+            associatedTo = UserSourceFactory.boclipsSample()
         )
         return fakeUsers[id]!!
     }

@@ -120,43 +120,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `update user does not pass organisation to an event if given user does not belong to one`() {
-            val userId = UUID.randomUUID().toString()
-            setSecurityContext(userId)
-            saveUser(
-                UserFactory.sample(
-                    id = userId,
-                    associatedTo = null
-                )
-            )
-
-            updateUser(userId)
-
-            val event = eventBus.getEventOfType(UserActivated::class.java)
-
-            assertThat(event.user.organisationId).isNull()
-        }
-
-        @Test
-        fun `update user passes organisation to an event if given user belongs to organisation`() {
-            val userId = UUID.randomUUID().toString()
-            val organisationId = UUID.randomUUID().toString()
-            setSecurityContext(userId)
-            saveUser(
-                UserFactory.sample(
-                    id = userId,
-                    associatedTo = OrganisationIdFactory.sample(id = organisationId)
-                )
-            )
-
-            updateUser(userId)
-
-            val event = eventBus.getEventOfType(UserActivated::class.java)
-
-            assertThat(event.user.organisationId).isEqualTo(organisationId)
-        }
-
-        @Test
         fun `update user marks referral`() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)

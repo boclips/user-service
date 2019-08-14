@@ -12,15 +12,13 @@ import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SubjectService
-import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.TeachersPlatformService
+import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.convertUserToCrmProfile
-import com.boclips.users.presentation.requests.CreateUserRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -81,7 +79,6 @@ class UpdateUser(
                 .user(
                     com.boclips.eventbus.domain.user.User.builder()
                         .id(user.id.value)
-                        .organisationId(user.associatedTo?.value)
                         .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
                         .build()
                 )

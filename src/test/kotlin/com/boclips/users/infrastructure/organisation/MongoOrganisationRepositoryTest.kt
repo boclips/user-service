@@ -16,17 +16,11 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `looks an organisation up by name`() {
-        val organisationName = "Lookup Organisation"
-        val organisation = organisationRepository.save(organisationName)
+    fun `looks up an organisation by associated role`() {
+        val role = "ROLE_VIEWSONIC"
+        val organisation = organisationRepository.save(organisationName = "blah", role = role)
 
-        val foundOrganisation = organisationRepository.findByName(organisationName)
-
-        assertThat(foundOrganisation).isEqualTo(organisation)
-    }
-
-    @Test
-    fun `returns null if organisation is not found by name`() {
-        assertThat(organisationRepository.findByName("This does not exist")).isNull()
+        val foundOrganisation = organisationRepository.findByRole(role)
+        assertThat(organisation).isEqualTo(foundOrganisation)
     }
 }

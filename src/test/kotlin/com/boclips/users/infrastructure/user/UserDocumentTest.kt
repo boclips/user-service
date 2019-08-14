@@ -1,6 +1,8 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.UserSource
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
@@ -34,6 +36,23 @@ class UserDocumentTest {
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
 
         assertThat(convertedUser).isEqualTo(user)
+    }
+
+    @Test
+    fun `can convert boclips user`() {
+        val user = UserFactory.sample(userSource = UserSource.Boclips)
+
+        val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
+        assertThat(convertedUser.associatedTo).isEqualTo(UserSource.Boclips)
+    }
+
+    @Test
+    fun `can convert api client`() {
+        val user = UserFactory.sample(userSource = UserSource.ApiClient(organisationId = OrganisationId("test")))
+
+        val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
+
+        assertThat(convertedUser.associatedTo).isEqualTo(UserSource.ApiClient(organisationId = OrganisationId("test")))
     }
 
     @Test

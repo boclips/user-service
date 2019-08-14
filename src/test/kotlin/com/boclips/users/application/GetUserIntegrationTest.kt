@@ -4,10 +4,11 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.domain.model.UserNotFoundException
+import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
+import com.boclips.users.testsupport.factories.UserSourceFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Nested
@@ -34,7 +35,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
                 firstName = "Jane",
                 lastName = "Doe",
                 email = "jane@doe.com",
-                associatedTo = OrganisationId(value = organisationId)
+                userSource = UserSourceFactory.apiClientSample(organisationId = organisationId)
             )
         )
 
@@ -94,7 +95,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId, "TEACHER")
             val organisation = saveOrganisation("Boclips for Teachers")
 
-            saveIdentity(UserFactory.sample(id = userId, associatedTo = organisation.id))
+            saveIdentity(UserFactory.sample(id = userId, userSource = UserSource.ApiClient(organisation.id)))
 
             val resource = getUser(userId)
 

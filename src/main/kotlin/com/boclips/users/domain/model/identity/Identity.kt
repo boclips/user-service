@@ -1,7 +1,7 @@
 package com.boclips.users.domain.model.identity
 
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.UserSource
 
 data class Identity(
     val id: UserId,
@@ -9,7 +9,7 @@ data class Identity(
     val lastName: String,
     val email: String,
     val isVerified: Boolean,
-    val associatedTo: OrganisationId? = null
+    val associatedTo: UserSource
 ) {
     override fun toString(): String {
         return "Identity(id=$id, isVerified=$isVerified)"

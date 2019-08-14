@@ -6,7 +6,8 @@ import org.bson.types.ObjectId
 class OrganisationDocumentFactory {
     companion object {
         fun sample(
-            name: String = "The Best Organisation"
-        ) = OrganisationDocument(ObjectId(), name)
+            name: String = "The Best Organisation",
+            role: String? = null
+        ) = OrganisationDocument(ObjectId(), name, role)
     }
 }

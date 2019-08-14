@@ -1,10 +1,11 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.application.OrganisationMatcher
+import com.boclips.users.application.UserSourceResolver
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.testsupport.factories.UserIdentityFactory
+import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -24,14 +25,17 @@ internal class KeycloakClientTest {
     @BeforeEach
     fun setUp() {
         keycloakWrapperMock = Mockito.mock(KeycloakWrapper::class.java)
+        val userSourceResolver = mock<UserSourceResolver>()
+        whenever(userSourceResolver.resolve(any())).thenReturn(UserSourceFactory.boclipsSample())
+
         keycloakClient = KeycloakClient(
             keycloakWrapperMock,
-            KeycloakUserToIdentityConverter(mock<OrganisationMatcher>())
+            KeycloakUserToIdentityConverter(userSourceResolver)
         )
     }
 
     @Nested
-    inner class getUserById {
+    inner class GetUserById {
         @Test
         fun `can fetch a valid user`() {
             whenever(keycloakWrapperMock.getUserById(any())).thenReturn(UserRepresentation().apply {

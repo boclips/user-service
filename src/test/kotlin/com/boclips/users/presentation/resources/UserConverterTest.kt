@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.resources
 
+import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -16,7 +16,6 @@ class UserConverterTest {
                     lastName = "Henry",
                     email = "thierry@henry.fr",
                     activated = true,
-                    associatedTo = OrganisationId(value = "some-org-id"),
                     analyticsId = AnalyticsId(value = "some-analytics-id")
                 )
             )
@@ -26,5 +25,26 @@ class UserConverterTest {
         assertThat(userResource.lastName).isEqualTo("Henry")
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
+    }
+
+    @Test
+    fun `converts users with Boclips source accordingly`() {
+        val userResource = UserConverter().toUserResource(user = UserFactory.sample(userSource = UserSource.Boclips))
+
+        assertThat(userResource.organisationId).isNull()
+    }
+
+    @Test
+    fun `converts users with ApiClient source accordingly`() {
+        val userResource =
+            UserConverter().toUserResource(
+                user = UserFactory.sample(
+                    userSource = UserSource.ApiClient(
+                        organisationId = com.boclips.users.domain.model.organisation.OrganisationId("test")
+                    )
+                )
+            )
+
+        assertThat(userResource.organisationId).isEqualTo("test")
     }
 }

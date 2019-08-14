@@ -1,11 +1,11 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationId
 
-fun convertIdentityToUser(identity: Identity, organisationId: OrganisationId?): User {
+fun convertIdentityToUser(identity: Identity, userSource: UserSource): User {
     return User(
         id = identity.id,
         activated = false,
@@ -24,6 +24,6 @@ fun convertIdentityToUser(identity: Identity, organisationId: OrganisationId?): 
             utmMedium = "",
             utmTerm = ""
         ),
-        associatedTo = organisationId
+        associatedTo = userSource
     )
 }

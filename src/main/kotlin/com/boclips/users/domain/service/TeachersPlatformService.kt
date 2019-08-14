@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserNotFoundException
+import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -59,7 +60,7 @@ class TeachersPlatformService(
                     utmContent = newUser.utmContent,
                     utmTerm = newUser.utmTerm
                 ),
-                associatedTo = null
+                associatedTo = UserSource.Boclips
             )
         )
 

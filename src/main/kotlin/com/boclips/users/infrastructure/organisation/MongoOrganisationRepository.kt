@@ -8,16 +8,17 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MongoOrganisationRepository(private val repository: OrganisationSpringDataRepository) : OrganisationRepository {
-    override fun findByName(organisationName: String): Organisation? {
-        return repository.findByName(organisationName)?.let { fromDocument(it) }
+    override fun findByRole(role: String): Organisation? {
+        return repository.findByRole(role)?.let { fromDocument(it) }
     }
 
-    override fun save(organisationName: String): Organisation {
+    override fun save(organisationName: String, role: String?): Organisation {
         return fromDocument(
             repository.save(
                 OrganisationDocument(
                     id = ObjectId(),
-                    name = organisationName
+                    name = organisationName,
+                    role = role
                 )
             )
         )

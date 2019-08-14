@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.application.OrganisationMatcher
+import com.boclips.users.application.UserSourceResolver
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
@@ -8,7 +8,7 @@ import org.apache.commons.validator.routines.EmailValidator
 import org.keycloak.representations.idm.UserRepresentation
 
 class KeycloakUserToIdentityConverter(
-    private val organisationMatcher: OrganisationMatcher
+    private val userSourceResolver: UserSourceResolver
 ) {
     private val emailValidator = EmailValidator.getInstance()
 
@@ -19,7 +19,8 @@ class KeycloakUserToIdentityConverter(
             firstName = getValueIfValid("firstName", userRepresentation.firstName),
             lastName = getValueIfValid("lastName", userRepresentation.lastName),
             isVerified = userRepresentation.isEmailVerified,
-            associatedTo = organisationMatcher.match(userRepresentation.realmRoles)?.id
+            associatedTo = userSourceResolver.resolve(userRepresentation.realmRoles)
+                ?: throw IllegalStateException("Could not resolve roles: ${userRepresentation.realmRoles}")
         )
     }
 

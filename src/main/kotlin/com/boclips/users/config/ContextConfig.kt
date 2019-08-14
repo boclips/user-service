@@ -1,7 +1,7 @@
 package com.boclips.users.config
 
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.application.OrganisationMatcher
+import com.boclips.users.application.UserSourceResolver
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
@@ -42,9 +42,9 @@ class ContextConfig(
     fun keycloakWrapper(keycloak: Keycloak) = KeycloakWrapper(keycloak)
 
     @Bean
-    fun keycloakClient(keycloakWrapper: KeycloakWrapper, organisationMatcher: OrganisationMatcher) = KeycloakClient(
+    fun keycloakClient(keycloakWrapper: KeycloakWrapper, userSourceResolver: UserSourceResolver) = KeycloakClient(
         keycloakWrapper,
-        KeycloakUserToIdentityConverter(organisationMatcher)
+        KeycloakUserToIdentityConverter(userSourceResolver)
     )
 
     @Bean

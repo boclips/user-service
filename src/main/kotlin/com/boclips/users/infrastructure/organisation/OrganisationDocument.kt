@@ -8,5 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class OrganisationDocument(
     @BsonId
     val id: ObjectId,
-    val name: String
+    val name: String,
+    val role: String?
 )

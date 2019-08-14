@@ -32,13 +32,7 @@ open class KeycloakClient(
         )
         logger.info { "Created user ${createdUser.id} in Keycloak" }
 
-        return Identity(
-            id = UserId(value = createdUser.id),
-            firstName = createdUser.firstName,
-            lastName = createdUser.lastName,
-            email = createdUser.email,
-            isVerified = createdUser.isEmailVerified
-        )
+        return userConverter.convert(createdUser)
     }
 
     override fun getUserById(id: UserId): Identity? {

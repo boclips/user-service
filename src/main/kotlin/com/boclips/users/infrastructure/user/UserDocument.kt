@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserSource
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -40,7 +41,10 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = user.associatedTo?.value
+                organisationId = when (user.associatedTo) {
+                    is UserSource.Boclips -> null
+                    is UserSource.ApiClient -> user.associatedTo.organisationId.value
+                }
             )
         }
     }

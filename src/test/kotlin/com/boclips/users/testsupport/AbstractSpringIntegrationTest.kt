@@ -2,7 +2,7 @@ package com.boclips.users.testsupport
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.application.OrganisationMatcher
+import com.boclips.users.application.UserSourceResolver
 import com.boclips.users.config.UserServiceProperties
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
@@ -79,7 +79,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var userServiceProperties: UserServiceProperties
 
     @Autowired
-    lateinit var organisationMatcher: OrganisationMatcher
+    lateinit var userSourceResolver: UserSourceResolver
 
     @BeforeEach
     fun resetState() {

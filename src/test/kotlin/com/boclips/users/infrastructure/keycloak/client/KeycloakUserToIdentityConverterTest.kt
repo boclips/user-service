@@ -1,8 +1,9 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.application.OrganisationMatcher
+import com.boclips.users.application.UserSourceResolver
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -19,8 +20,8 @@ class KeycloakUserToIdentityConverterTest {
 
     @BeforeEach
     fun setup() {
-        val organisationMatcherMock = mock<OrganisationMatcher>()
-        whenever(organisationMatcherMock.match(any())).thenReturn(OrganisationFactory.sample())
+        val organisationMatcherMock = mock<UserSourceResolver>()
+        whenever(organisationMatcherMock.resolve(any())).thenReturn(UserSourceFactory.boclipsSample())
 
         userConverter = KeycloakUserToIdentityConverter(organisationMatcherMock)
         keycloakUser = UserRepresentation().apply {

@@ -4,9 +4,9 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationId
 
 class UserFactory {
     companion object {
@@ -33,7 +33,7 @@ class UserFactory {
             email: String = "joe@dough.com",
             hasOptedIntoMarketing: Boolean = true,
             marketing: MarketingTracking = MarketingTrackingFactory.sample(),
-            associatedTo: OrganisationId? = null
+            userSource: UserSource = UserSource.Boclips
         ) = User(
             id = UserId(value = id),
             activated = activated,
@@ -46,7 +46,7 @@ class UserFactory {
             email = email,
             hasOptedIntoMarketing = hasOptedIntoMarketing,
             marketingTracking = marketing,
-            associatedTo = associatedTo
+            associatedTo = userSource
         )
     }
 }
