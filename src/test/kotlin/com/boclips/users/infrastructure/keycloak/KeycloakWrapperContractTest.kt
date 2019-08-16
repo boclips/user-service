@@ -77,7 +77,7 @@ class KeycloakWrapperContractTest {
 
     @Test
     fun `can fetch users`() {
-        wrapper.createUser(
+        val createdUser = wrapper.createUser(
             KeycloakUser(
                 email = generateRandomEmail(),
                 password = "123"
@@ -86,12 +86,12 @@ class KeycloakWrapperContractTest {
 
         val users: List<UserRepresentation> = wrapper.users()
 
-        assertThat(users.size).isGreaterThan(2)
-        assertThat(users.first().id).isNotNull()
-        assertThat(users.first().firstName).isNotNull()
-        assertThat(users.first().lastName).isNotNull()
-        assertThat(users.first().email).isNotNull()
-        assertThat(users.first().realmRoles).contains("ROLE_TEACHER")
+        val theChosenUser = users.find { (it.id == createdUser.id) }!!
+        assertThat(theChosenUser.id).isNotNull()
+        assertThat(theChosenUser.firstName).isNull()
+        assertThat(theChosenUser.lastName).isNull()
+        assertThat(theChosenUser.email).isNotNull()
+        assertThat(theChosenUser.realmRoles).contains("ROLE_TEACHER")
     }
 
     @Test
