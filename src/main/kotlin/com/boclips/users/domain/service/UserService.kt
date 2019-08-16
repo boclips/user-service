@@ -11,7 +11,7 @@ import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
-class TeachersPlatformService(
+class UserService(
     val userRepository: UserRepository,
     val identityProvider: IdentityProvider
 ) {
@@ -35,7 +35,7 @@ class TeachersPlatformService(
         return allUsers
     }
 
-    fun createUser(newUser: NewUser): User {
+    fun createTeacher(newUser: NewUser): User {
         val identity = identityProvider.createUser(
             firstName = newUser.firstName,
             lastName = newUser.lastName,

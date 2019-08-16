@@ -17,7 +17,7 @@ import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SubjectService
-import com.boclips.users.domain.service.TeachersPlatformService
+import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.presentation.requests.UpdateUserRequest
@@ -27,7 +27,7 @@ import java.time.Instant
 
 @Component
 class UpdateUser(
-    private val teachersPlatformService: TeachersPlatformService,
+    private val userService: UserService,
     private val userRepository: UserRepository,
     private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
@@ -40,10 +40,10 @@ class UpdateUser(
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
         if (authenticatedUser.id != userId) throw PermissionDeniedException()
 
-        val user = teachersPlatformService.findTeacherById(UserId(authenticatedUser.id))
+        val user = userService.findTeacherById(UserId(authenticatedUser.id))
 
         updateUserRequest?.run {
-            teachersPlatformService.updateUserDetails(UpdatedUser(
+            userService.updateUserDetails(UpdatedUser(
                 userId = user.id,
                 firstName = this.firstName!!,
                 lastName = this.lastName!!,
@@ -55,7 +55,7 @@ class UpdateUser(
 
         if(!user.activated) activate(user)
 
-        return teachersPlatformService.findTeacherById(UserId(authenticatedUser.id))
+        return userService.findTeacherById(UserId(authenticatedUser.id))
     }
 
     private fun activate(user: User) {

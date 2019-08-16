@@ -16,9 +16,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 
-class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
+class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var teachersPlatformService: TeachersPlatformService
+    lateinit var userService: UserService
 
     @Test
     fun `can find all teachers`() {
@@ -30,7 +30,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(UserFactory.sample(id = "5", associatedTo = UserSource.Boclips))
         )
 
-        val users = teachersPlatformService.findAllTeachers()
+        val users = userService.findAllTeachers()
 
         assertThat(users).hasSize(1)
         assertThat(users.map { it.id.value }).containsExactly("5")
@@ -40,7 +40,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
     fun `fails to find teacher if user is not teacher`() {
         saveUser(UserFactory.sample(id = "1", associatedTo = UserSourceFactory.apiClientSample()))
 
-        assertThrows<UserNotFoundException> { teachersPlatformService.findTeacherById(UserId("1")) }
+        assertThrows<UserNotFoundException> { userService.findTeacherById(UserId("1")) }
     }
 
     @Test
@@ -62,7 +62,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
             utmMedium = ""
         )
 
-        val persistedUser = teachersPlatformService.createUser(newUser)
+        val persistedUser = userService.createTeacher(newUser)
 
         assertThat(persistedUser.firstName).isEqualTo("Joe")
         assertThat(persistedUser.lastName).isEqualTo("Dough")
@@ -98,7 +98,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
             utmMedium = ""
         )
 
-        val persistedUser = teachersPlatformService.createUser(newUser)
+        val persistedUser = userService.createTeacher(newUser)
 
         assertThat(persistedUser.associatedTo).isEqualTo(UserSource.Boclips)
     }
@@ -116,7 +116,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
             hasOptedIntoMarketing = true
         )
 
-        val persistedUser = teachersPlatformService.updateUserDetails(newUserDetails)
+        val persistedUser = userService.updateUserDetails(newUserDetails)
 
         assertThat(persistedUser.firstName).isEqualTo("Joe")
         assertThat(persistedUser.lastName).isEqualTo("Dough")

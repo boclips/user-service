@@ -13,7 +13,7 @@ import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.service.AnalyticsClient
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SubjectService
-import com.boclips.users.domain.service.TeachersPlatformService
+import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.presentation.requests.CreateUserRequest
 import mu.KLogging
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class CreateUser(
-    private val teachersPlatformService: TeachersPlatformService,
+    private val userService: UserService,
     private val marketingService: MarketingService,
     private val captchaProvider: CaptchaProvider,
     private val subjectService: SubjectService,
@@ -51,7 +51,7 @@ class CreateUser(
             utmCampaign = createUserRequest.utmCampaign ?: ""
         )
 
-        val createdUser = teachersPlatformService.createUser(newUser = newUser)
+        val createdUser = userService.createTeacher(newUser = newUser)
 
         attemptToUpdateProfile(createdUser)
         trackAccountCreatedEvent(createdUser.analyticsId)
