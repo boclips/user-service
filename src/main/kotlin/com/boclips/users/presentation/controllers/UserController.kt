@@ -43,9 +43,8 @@ class UserController(
         return ResponseEntity(headers, HttpStatus.CREATED)
     }
 
-    //TODO enable validation once payload is mandatory
     @PutMapping("/{id}")
-    fun updateAUser(@PathVariable id: String, @RequestBody updateUserRequest: UpdateUserRequest?): Resource<UserResource> {
+    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest?): Resource<UserResource> {
         updateUser(id, updateUserRequest)
         return getAUser(id)
     }

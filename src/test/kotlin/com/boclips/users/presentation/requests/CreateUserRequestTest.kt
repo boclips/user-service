@@ -30,86 +30,11 @@ class CreateUserRequestTest {
     fun `respects optional fields`() {
         val violations = validator.validate(
             CreateUserRequestFactory.sample(
-                subjects = null,
                 referralCode = null,
                 analyticsId = null
             )
         )
         assertThat(violations).hasSize(0)
-    }
-
-    @Nested
-    inner class FirstNames {
-        @Test
-        fun `validates first name for null`() {
-            val violations = validator.validate(
-                CreateUserRequestFactory.sample(
-                    firstName = null
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("First name is required")
-        }
-
-        @Test
-        fun `validates first name for empty string`() {
-            val violations = validator.validate(
-                CreateUserRequestFactory.sample(
-                    firstName = ""
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("First name must be between 1 and 200 characters")
-        }
-
-        @Test
-        fun `validates first name for length`() {
-            val violations =
-                validator.validate(
-                    CreateUserRequestFactory.sample(
-                        firstName = StringUtils.repeat("X", 201)
-                    )
-                )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("First name must be between 1 and 200 characters")
-        }
-    }
-
-    @Nested
-    inner class LastNames {
-        @Test
-        fun `validates last name for null`() {
-            val violations = validator.validate(
-                CreateUserRequestFactory.sample(
-                    lastName = null
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("Last name is required")
-        }
-
-        @Test
-        fun `validates last name for empty string`() {
-            val violations = validator.validate(
-                CreateUserRequestFactory.sample(
-                    lastName = ""
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("Last name must be between 1 and 200 characters")
-        }
-
-        @Test
-        fun `validates last name for length`() {
-            val violations =
-                validator.validate(
-                    CreateUserRequestFactory.sample(
-                        lastName = StringUtils.repeat("X", 201)
-                    )
-                )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("Last name must be between 1 and 200 characters")
-        }
     }
 
     @Nested
@@ -275,20 +200,6 @@ class CreateUserRequestTest {
     }
 
     @Nested
-    inner class OptInMarketing {
-        @Test
-        fun `validates optInMarketing for null`() {
-            val violations = validator.validate(
-                CreateUserRequestFactory.sample(
-                    hasOptedIntoMarketing = null
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Marketing preferences must not be null")
-        }
-    }
-
-    @Nested
     inner class OptionalFields {
         @Test
         fun `referral code cannot be longer than 50 characters`() {
@@ -312,26 +223,5 @@ class CreateUserRequestTest {
             assertThat(violations.map { it.message }).contains("Analytics ID cannot be longer than 100 characters")
         }
 
-        @Test
-        fun `age ranges cannot be more than 18 years`() {
-            val violations = validator.validate(
-                CreateUserRequestFactory.sample(
-                    ageRange = listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("The age range cannot have more than 19 years")
-        }
-
-        @Test
-        fun `subjects cannot store more than 50 subjects`() {
-            val violations = validator.validate(
-                CreateUserRequestFactory.sample(
-                    subjects = StringUtils.repeat("subject,", 51).split(',')
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Cannot have more than 50 subjects")
-        }
     }
 }

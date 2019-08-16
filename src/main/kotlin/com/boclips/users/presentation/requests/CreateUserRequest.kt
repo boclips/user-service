@@ -6,13 +6,6 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 open class CreateUserRequest(
-    @field:Size(min = 1, max = 200, message = "First name must be between 1 and 200 characters")
-    @field:NotNull(message = "First name is required")
-    var firstName: String? = null,
-
-    @field:Size(min = 1, max = 200, message = "Last name must be between 1 and 200 characters")
-    @field:NotNull(message = "Last name is required")
-    var lastName: String? = null,
 
     @field:Email(message = "Email must be valid")
     @field:NotNull(message = "Email is required")
@@ -42,19 +35,11 @@ open class CreateUserRequest(
     @field:Size(max = 200, message = "utmContent cannot be longer than 200 characters")
     var utmContent: String? = null,
 
-    @field:Size(max = 50, message = "Cannot have more than 50 subjects")
-    var subjects: List<String>? = null,
-
-    @field:Size(max = 19, message = "The age range cannot have more than 19 years")
-    var ageRange: List<Int>? = null,
-
     @field:Size(max = 50, message = "Referral code cannot be longer than 50 characters")
     var referralCode: String? = null,
 
     @field:NotNull(message = "recaptchaToken is required")
     @field:NotEmpty(message = "recaptchaToken must be set")
-    var recaptchaToken: String? = null,
+    var recaptchaToken: String? = null
 
-    @field:NotNull(message = "Marketing preferences must not be null")
-    var hasOptedIntoMarketing: Boolean? = null
-)
+    )

@@ -27,12 +27,9 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         val createdAccount = createUser(
             CreateUserRequest(
-                firstName = "Hans",
-                lastName = "Muster",
                 email = "hans@muster.com",
                 password = "hansli",
-                recaptchaToken = "SOMERECAPTCHATOKENHERE",
-                hasOptedIntoMarketing = true
+                recaptchaToken = "SOMERECAPTCHATOKENHERE"
             )
         )
 
@@ -43,21 +40,16 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(account.subjects).isEmpty()
         Assertions.assertThat(account.ages).isEmpty()
         Assertions.assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
-        Assertions.assertThat(account.hasOptedIntoMarketing).isTrue()
 
         val identity = identityProvider.getUserById(createdAccount.id)
         Assertions.assertThat(identity).isNotNull
-        Assertions.assertThat(identity!!.firstName).isEqualTo("Hans")
-        Assertions.assertThat(identity.lastName).isEqualTo("Muster")
-        Assertions.assertThat(identity.email).isEqualTo("hans@muster.com")
+        Assertions.assertThat(identity!!.email).isEqualTo("hans@muster.com")
     }
 
     @Test
-    fun `create account with referral, subject, age ranges and analytics information`() {
+    fun `create account with referral and analytics information`() {
         val user = createUser(
             CreateUserRequestFactory.sample(
-                subjects = listOf("1"),
-                ageRange = listOf(0, 1, 2, 3, 4),
                 referralCode = "referral-code-123",
                 analyticsId = "123",
                 utmMedium = "utm-medium",
@@ -72,10 +64,8 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         Assertions.assertThat(persistedAccount.isReferral()).isTrue()
         Assertions.assertThat(persistedAccount.referralCode).isEqualTo("referral-code-123")
-        Assertions.assertThat(persistedAccount.subjects).hasSize(1)
-        Assertions.assertThat(persistedAccount.subjects.first().id.value).isEqualTo("1")
-        Assertions.assertThat(persistedAccount.subjects.first().name).isEqualTo("Maths")
-        Assertions.assertThat(persistedAccount.ages).containsExactly(0, 1, 2, 3, 4)
+        Assertions.assertThat(persistedAccount.subjects).isEmpty()
+        Assertions.assertThat(persistedAccount.ages).isEmpty()
         Assertions.assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
         Assertions.assertThat(persistedAccount.marketingTracking.utmSource).isEqualTo("facebook")
         Assertions.assertThat(persistedAccount.marketingTracking.utmContent).isEqualTo("utm-content")
@@ -107,12 +97,4 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         verify(marketingService, times(1)).updateSubscription(any())
     }
 
-    @Test
-    fun `throw exception for invalid subject`() {
-        whenever(subjectService.allSubjectsExist(any())).thenReturn(false)
-
-        assertThrows<InvalidSubjectException> {
-            createUser(CreateUserRequestFactory.sample(subjects = listOf("invalid")))
-        }
-    }
 }

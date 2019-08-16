@@ -42,8 +42,6 @@ class UserService(
 
     fun createTeacher(newUser: NewUser): User {
         val identity = identityProvider.createUser(
-            firstName = newUser.firstName,
-            lastName = newUser.lastName,
             email = newUser.email,
             password = newUser.password
         )
@@ -53,13 +51,13 @@ class UserService(
                 id = UserId(identity.id.value),
                 activated = false,
                 analyticsId = newUser.analyticsId,
-                subjects = newUser.subjects,
-                ages = newUser.ageRange,
+                subjects = emptyList(),
+                ages = emptyList(),
                 referralCode = newUser.referralCode,
-                firstName = newUser.firstName,
-                lastName = newUser.lastName,
+                firstName = null,
+                lastName = null,
                 email = newUser.email,
-                hasOptedIntoMarketing = newUser.hasOptedIntoMarketing,
+                hasOptedIntoMarketing = false,
                 marketingTracking = MarketingTracking(
                     utmCampaign = newUser.utmCampaign,
                     utmSource = newUser.utmSource,

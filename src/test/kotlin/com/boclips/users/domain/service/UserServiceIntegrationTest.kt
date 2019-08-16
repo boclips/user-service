@@ -46,15 +46,10 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `create user`() {
         val newUser = NewUser(
-            firstName = "Joe",
-            lastName = "Dough",
             email = "joe@dough.com",
             password = "thisisapassword",
-            subjects = listOf(Subject(id = SubjectId("test"), name = "subject")),
-            ageRange = listOf(1, 2),
             analyticsId = AnalyticsId(value = "analytics"),
             referralCode = "abc-a123",
-            hasOptedIntoMarketing = true,
             utmCampaign = "",
             utmSource = "",
             utmContent = "",
@@ -64,14 +59,9 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = userService.createTeacher(newUser)
 
-        assertThat(persistedUser.firstName).isEqualTo("Joe")
-        assertThat(persistedUser.lastName).isEqualTo("Dough")
         assertThat(persistedUser.email).isEqualTo("joe@dough.com")
-        assertThat(persistedUser.subjects).hasSize(1)
-        assertThat(persistedUser.ages).containsExactly(1, 2)
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
-        assertThat(persistedUser.hasOptedIntoMarketing).isTrue()
         assertThat(persistedUser.marketingTracking.utmSource).isBlank()
         assertThat(persistedUser.marketingTracking.utmCampaign).isBlank()
         assertThat(persistedUser.marketingTracking.utmContent).isBlank()
@@ -82,15 +72,10 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `an individual teacher user is not associated to external organisation`() {
         val newUser = NewUser(
-            firstName = "Joe",
-            lastName = "Dough",
             email = "joe@dough.com",
             password = "thisisapassword",
-            subjects = listOf(Subject(id = SubjectId("test"), name = "subject")),
-            ageRange = listOf(1, 2),
             analyticsId = AnalyticsId(value = "analytics"),
             referralCode = "abc-a123",
-            hasOptedIntoMarketing = true,
             utmCampaign = "",
             utmSource = "",
             utmContent = "",

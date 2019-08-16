@@ -23,8 +23,6 @@ class KeycloakUserToIdentityConverter(
         return Identity(
             id = UserId(value = userId),
             email = getEmailIfValid(userRepresentation.email),
-            firstName = userRepresentation.firstName.orEmpty(),
-            lastName = userRepresentation.lastName.orEmpty(),
             isVerified = userRepresentation.isEmailVerified,
             associatedTo = userRole
         )

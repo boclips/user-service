@@ -22,11 +22,9 @@ open class KeycloakClient(
     companion object : KLogging()
 
     @Retryable(value = [UserNotCreatedException::class], maxAttempts = 2)
-    override fun createUser(firstName: String, lastName: String, email: String, password: String): Identity {
+    override fun createUser(email: String, password: String): Identity {
         val createdUser = keycloak.createUser(
             KeycloakUser(
-                firstName = firstName,
-                lastName = lastName,
                 email = email,
                 password = password
             )

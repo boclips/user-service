@@ -67,8 +67,6 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
             .create(UserRepresentation().apply {
                 username = keycloakUser.email
                 email = keycloakUser.email
-                firstName = keycloakUser.firstName
-                lastName = keycloakUser.lastName
                 credentials = listOf(CredentialRepresentation().apply {
                     type = CredentialRepresentation.PASSWORD
                     value = keycloakUser.password

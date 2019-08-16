@@ -106,8 +106,6 @@ internal class KeycloakClientTest {
             this.id = "1"
             this.isEmailVerified = true
             this.email = "test@gmail.com"
-            this.firstName = "test"
-            this.lastName = "test"
             this.realmRoles = emptyList()
 
         }
@@ -115,8 +113,6 @@ internal class KeycloakClientTest {
             this.id = "2"
             this.isEmailVerified = false
             this.email = "test2@gmail.com"
-            this.firstName = "test2"
-            this.lastName = "test2"
             this.realmRoles = emptyList()
         }
 
@@ -135,16 +131,12 @@ internal class KeycloakClientTest {
             IdentityFactory.sample(
                 id = user1.id,
                 isVerified = user1.isEmailVerified,
-                email = user1.email,
-                firstName = user1.firstName,
-                lastName = user1.lastName
+                email = user1.email
             ),
             IdentityFactory.sample(
                 id = user2.id,
                 isVerified = user2.isEmailVerified,
-                email = user2.email,
-                firstName = user2.firstName,
-                lastName = user2.lastName
+                email = user2.email
             )
         )
     }

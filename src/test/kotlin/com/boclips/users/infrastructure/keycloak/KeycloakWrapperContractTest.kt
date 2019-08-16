@@ -34,16 +34,12 @@ class KeycloakWrapperContractTest {
         val randomEmail = generateRandomEmail()
         val createdUser = wrapper.createUser(
             KeycloakUser(
-                firstName = "Hans",
-                lastName = "Muster",
                 email = randomEmail,
                 password = "123"
             )
         )
 
         assertThat(createdUser.id).isNotNull()
-        assertThat(createdUser.firstName).isEqualTo("Hans")
-        assertThat(createdUser.lastName).isEqualTo("Muster")
         assertThat(createdUser.username).isEqualTo(randomEmail)
         assertThat(createdUser.email).isEqualTo(randomEmail)
 
@@ -54,8 +50,6 @@ class KeycloakWrapperContractTest {
     fun `new users are granted the ROLE_TEACHER composite role`() {
         val createdUser = wrapper.createUser(
             KeycloakUser(
-                firstName = "Hans",
-                lastName = "Muster",
                 email = generateRandomEmail(),
                 password = "123"
             )
@@ -69,8 +63,6 @@ class KeycloakWrapperContractTest {
     @Test
     fun `throws when user already exists`() {
         val user = KeycloakUser(
-            firstName = "Hans",
-            lastName = "Muster",
             email = generateRandomEmail(),
             password = "123"
         )
@@ -87,8 +79,6 @@ class KeycloakWrapperContractTest {
     fun `can fetch users`() {
         wrapper.createUser(
             KeycloakUser(
-                firstName = "Hans",
-                lastName = "Muster",
                 email = generateRandomEmail(),
                 password = "123"
             )
@@ -134,8 +124,6 @@ class KeycloakWrapperContractTest {
         fun `cannot fetch user session for a user that has never logged in`() {
             val createdUser = wrapper.createUser(
                 KeycloakUser(
-                    firstName = "Hans",
-                    lastName = "Muster",
                     email = generateRandomEmail(),
                     password = "123"
                 )
@@ -171,8 +159,6 @@ class KeycloakWrapperContractTest {
         fun `returns user`() {
             val createdUser = wrapper.createUser(
                 KeycloakUser(
-                    firstName = "Hans",
-                    lastName = "Muster",
                     email = generateRandomEmail(),
                     password = "123"
                 )
@@ -181,8 +167,6 @@ class KeycloakWrapperContractTest {
             val retrieved: UserRepresentation = wrapper.getUserById(createdUser.id)!!
 
             assertThat(retrieved.id).isNotNull()
-            assertThat(retrieved.firstName).isNotNull()
-            assertThat(retrieved.lastName).isNotNull()
             assertThat(retrieved.email).isNotNull()
             assertThat(retrieved.realmRoles).contains("ROLE_TEACHER")
         }
@@ -194,8 +178,6 @@ class KeycloakWrapperContractTest {
         fun `gets user by username`() {
             val createdUser = wrapper.createUser(
                 KeycloakUser(
-                    firstName = "Hans",
-                    lastName = "Muster",
                     email = generateRandomEmail(),
                     password = "123"
                 )
@@ -204,8 +186,6 @@ class KeycloakWrapperContractTest {
             val user: UserRepresentation = wrapper.getUserByUsername(createdUser.username)!!
 
             assertThat(user.id).isEqualTo(createdUser.id)
-            assertThat(user.firstName).isNotNull()
-            assertThat(user.lastName).isNotNull()
             assertThat(user.email).isNotNull()
             assertThat(user.realmRoles).contains("ROLE_TEACHER")
         }

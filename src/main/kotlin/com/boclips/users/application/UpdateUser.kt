@@ -100,8 +100,8 @@ class UpdateUser(
     private fun registerReferral(activatedUser: User) {
         val referral = NewReferral(
             referralCode = activatedUser.referralCode!!,
-            firstName = activatedUser.firstName,
-            lastName = activatedUser.lastName,
+            firstName = activatedUser.firstName!!,
+            lastName = activatedUser.lastName!!,
             email = activatedUser.email,
             externalIdentifier = activatedUser.id.value,
             status = "qualified"

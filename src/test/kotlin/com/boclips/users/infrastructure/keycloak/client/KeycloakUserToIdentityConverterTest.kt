@@ -26,8 +26,6 @@ class KeycloakUserToIdentityConverterTest {
         keycloakUser = UserRepresentation().apply {
             this.id = UUID.randomUUID().toString()
             this.email = "test@gmail.com"
-            this.firstName = "Shane"
-            this.lastName = "Williams"
             this.isEmailVerified = true
             this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
         }
@@ -39,8 +37,6 @@ class KeycloakUserToIdentityConverterTest {
 
         assertThat(convertedUser.id.value).isEqualTo(keycloakUser.id)
         assertThat(convertedUser.email).isEqualTo(keycloakUser.email)
-        assertThat(convertedUser.firstName).isEqualTo(keycloakUser.firstName)
-        assertThat(convertedUser.lastName).isEqualTo(keycloakUser.lastName)
         assertThat(convertedUser.isVerified).isEqualTo(keycloakUser.isEmailVerified)
         assertThat(convertedUser.associatedTo).isNotNull()
     }
@@ -59,34 +55,6 @@ class KeycloakUserToIdentityConverterTest {
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
             .isInstanceOf(IllegalStateException::class.java)
-    }
-
-    @Test
-    fun `can deal with null first name`() {
-        keycloakUser.firstName = null
-
-        assertThat(userConverter.convert(keycloakUser).firstName).isEmpty()
-    }
-
-    @Test
-    fun `can deal with empty first name`() {
-        keycloakUser.firstName = ""
-
-        assertThat(userConverter.convert(keycloakUser).firstName).isEmpty()
-    }
-
-    @Test
-    fun `can deal with null last name`() {
-        keycloakUser.lastName = null
-
-        assertThat(userConverter.convert(keycloakUser).lastName).isEmpty()
-    }
-
-    @Test
-    fun `can deal with empty last name`() {
-        keycloakUser.lastName = ""
-
-        assertThat(userConverter.convert(keycloakUser).lastName).isEmpty()
     }
 
     @Test

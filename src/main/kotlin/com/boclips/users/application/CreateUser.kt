@@ -1,10 +1,7 @@
 package com.boclips.users.application
 
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
-import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.NewUser
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -12,7 +9,6 @@ import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.service.AnalyticsClient
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.presentation.requests.CreateUserRequest
@@ -24,7 +20,6 @@ class CreateUser(
     private val userService: UserService,
     private val marketingService: MarketingService,
     private val captchaProvider: CaptchaProvider,
-    private val subjectService: SubjectService,
     private val analyticsClient: AnalyticsClient
 ) {
     companion object : KLogging()
@@ -35,15 +30,10 @@ class CreateUser(
         }
 
         val newUser = NewUser(
-            firstName = createUserRequest.firstName!!,
-            lastName = createUserRequest.lastName!!,
             email = createUserRequest.email!!,
             password = createUserRequest.password!!,
             analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
-            subjects = convertSubjects(createUserRequest),
-            ageRange = createUserRequest.ageRange.orEmpty(),
             referralCode = createUserRequest.referralCode.orEmpty(),
-            hasOptedIntoMarketing = createUserRequest.hasOptedIntoMarketing!!,
             utmSource = createUserRequest.utmSource ?: "",
             utmContent = createUserRequest.utmContent ?: "",
             utmTerm = createUserRequest.utmTerm ?: "",
@@ -58,17 +48,6 @@ class CreateUser(
 
         return createdUser
     }
-
-    private fun convertSubjects(createUserRequest: CreateUserRequest): List<Subject> {
-        return if (containsInvalidSubjects(createUserRequest.subjects)) {
-            throw InvalidSubjectException(createUserRequest.subjects.orEmpty())
-        } else {
-            subjectService.getSubjectsById(createUserRequest.subjects.orEmpty().map { SubjectId(value = it) })
-        }
-    }
-
-    private fun containsInvalidSubjects(subjects: List<String>?) =
-        !subjectService.allSubjectsExist(subjects.orEmpty().map { SubjectId(value = it) })
 
     private fun attemptToUpdateProfile(createdUser: User) {
         try {

@@ -29,16 +29,12 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
-                    {"firstName": "jane",
-                     "lastName": "doe",
-                     "subjects": ["Maths", "French"],
+                    {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
                      "referralCode": "RR-123",
-                     "recaptchaToken": "captcha-123",
-                     "hasOptedIntoMarketing": true,
-                     "ageRange": [4,5,8,10]
+                     "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
                 )
@@ -54,11 +50,9 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
-                    {"firstName": "jane",
-                     "lastName": "doe",
+                    {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
-                     "hasOptedIntoMarketing": true,
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
@@ -71,13 +65,11 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can handle conflicts with valid request`() {
         val payload = """
-                    {"firstName": "jane",
-                     "lastName": "doe",
+                    {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
                      "referralCode": "RR-123",
-                     "hasOptedIntoMarketing": true,
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
@@ -104,15 +96,14 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
-                    {"firstName": "jane",
-                     "lastName": "doe",
+                    {
                      "email": "jane@doe.com"
                      }
                     """.trimIndent()
                 )
         )
             .andExpect(status().is4xxClientError)
-            .andExpect(jsonPath("$.errors", hasSize<Any>(5)))
+            .andExpect(jsonPath("$.errors", hasSize<Any>(4)))
             .andExpect(jsonPath("$.errors[0].field").exists())
             .andExpect(jsonPath("$.errors[0].message").exists())
     }
@@ -126,8 +117,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
-                    {"firstName": "jane",
-                     "lastName": "doe",
+                    {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "analyticsId": "mxp-123",
@@ -181,6 +171,29 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.hasOptedIntoMarketing).isTrue()
         assertThat(user.ages).containsExactly(4, 5, 6)
         assertThat(user.subjects).hasSize(1)
+    }
+
+    @Test
+    fun `cannot update a user with missing fields`() {
+        saveUser(UserFactory.sample())
+
+        setSecurityContext("user-id")
+
+        mvc.perform(
+            put("/v1/users/user-id").asUser("user-id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                     "lastName": "doe",
+                     "subjects": ["Maths"],
+                     "hasOptedIntoMarketing": true,
+                     "ages": [4,5,6]
+                     }
+                    """.trimIndent()
+                )
+        )
+            .andExpect(status().isBadRequest)
     }
 
     @Test
