@@ -43,10 +43,10 @@ open class KeycloakClient(
             logger.warn { "Could not find user: ${id.value}, omitting user" }
             null
         } catch (e: InvalidUserRepresentation) {
-            logger.warn { "Could not convert external keycloak user: ${id.value}, omitting user because: ${e.message}" }
+            logger.info { "Could not convert external keycloak user: ${id.value}, omitting user because: ${e.message}" }
             null
         } catch (e: Exception) {
-            logger.warn(e) { "Unexpected exception happened when looking up user: ${id.value}, omitting user" }
+            logger.info(e) { "Unexpected exception happened when looking up user: ${id.value}, omitting user" }
             null
         }
     }
@@ -56,10 +56,10 @@ open class KeycloakClient(
             try {
                 userConverter.convert(userRepresentation)
             } catch (e: InvalidUserRepresentation) {
-                logger.warn { "Could not convert external keycloak user ${userRepresentation.id} as email address is invalid" }
+                logger.info { "Could not convert external keycloak user ${userRepresentation.id} as email address is invalid" }
                 null
             } catch (e: UnknownUserSourceException) {
-                logger.warn { "Could not convert keycloak user ${userRepresentation.id} as source is unknown" }
+                logger.info { "Could not convert keycloak user ${userRepresentation.id} as source is unknown" }
                 null
             }
         }
