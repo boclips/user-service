@@ -103,7 +103,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @DisplayName("When account not activated")
     inner class AccountNotActivated {
         @Test
-        fun `update user publishes an event`() {
+        fun `update user publishes an event for teacher user`() {
             val userId1 = "${UUID.randomUUID()}@boclips.com"
             setSecurityContext(userId1)
             saveUser(UserFactory.sample(id = userId1, associatedTo = UserSourceFactory.boclipsSample()))
@@ -115,6 +115,26 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             assertThat(event.activatedUsers).isEqualTo(1)
             assertThat(event.user.isBoclipsEmployee).isFalse()
             assertThat(event.user.organisationId).isEqualTo(null)
+        }
+
+        @Test
+        fun `update user publishes an event for api user`() {
+            val userId1 = "${UUID.randomUUID()}@boclips.com"
+            setSecurityContext(userId1)
+            saveUser(
+                UserFactory.sample(
+                    id = userId1,
+                    associatedTo = UserSourceFactory.apiClientSample(organisationId = "org-123")
+                )
+            )
+
+            updateUser(userId1)
+
+            val event = eventBus.getEventOfType(UserActivated::class.java)
+            assertThat(event.totalUsers).isEqualTo(1)
+            assertThat(event.activatedUsers).isEqualTo(1)
+            assertThat(event.user.isBoclipsEmployee).isFalse()
+            assertThat(event.user.organisationId).isEqualTo("org-123")
         }
 
         @Test

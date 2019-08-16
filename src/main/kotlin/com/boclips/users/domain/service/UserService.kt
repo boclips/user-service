@@ -23,7 +23,7 @@ class UserService(
 
         if (retrievedUser.associatedTo != UserSource.Boclips) throw UserNotFoundException(id)
 
-        logger.info { "Fetched user ${id.value}" }
+        logger.info { "Fetched teacher user ${id.value}" }
 
         return user
     }
@@ -33,6 +33,11 @@ class UserService(
         logger.info { "Fetched ${allUsers.size} teacher users from database" }
 
         return allUsers
+    }
+
+    fun findUserById(userId: UserId): User {
+        val retrievedUser = userRepository.findById(UserId(userId.value))
+        return retrievedUser ?: throw UserNotFoundException(userId)
     }
 
     fun createTeacher(newUser: NewUser): User {
