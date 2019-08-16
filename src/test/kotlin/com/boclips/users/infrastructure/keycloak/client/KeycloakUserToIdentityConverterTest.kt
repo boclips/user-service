@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
+import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -46,30 +46,11 @@ class KeycloakUserToIdentityConverterTest {
     }
 
     @Test
-    fun `throws when id is null`() {
+    fun `throws should id ever be null`() {
         keycloakUser.id = null
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-            .isInstanceOf(InvalidUserRepresentation::class.java)
-            .hasMessage("missing id")
-    }
-
-    @Test
-    fun `throws when firstname is null`() {
-        keycloakUser.firstName = null
-
-        assertThatThrownBy { userConverter.convert(keycloakUser) }
-            .isInstanceOf(InvalidUserRepresentation::class.java)
-            .hasMessage("missing firstName")
-    }
-
-    @Test
-    fun `throws when lastname is null`() {
-        keycloakUser.lastName = null
-
-        assertThatThrownBy { userConverter.convert(keycloakUser) }
-            .isInstanceOf(InvalidUserRepresentation::class.java)
-            .hasMessage("missing lastName")
+            .isInstanceOf(IllegalStateException::class.java)
     }
 
     @Test
@@ -77,26 +58,35 @@ class KeycloakUserToIdentityConverterTest {
         keycloakUser.id = ""
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-            .isInstanceOf(InvalidUserRepresentation::class.java)
-            .hasMessage("missing id")
+            .isInstanceOf(IllegalStateException::class.java)
     }
 
     @Test
-    fun `throws when firstname is empty string`() {
+    fun `can deal with null first name`() {
+        keycloakUser.firstName = null
+
+        assertThat(userConverter.convert(keycloakUser).firstName).isEmpty()
+    }
+
+    @Test
+    fun `can deal with empty first name`() {
         keycloakUser.firstName = ""
 
-        assertThatThrownBy { userConverter.convert(keycloakUser) }
-            .isInstanceOf(InvalidUserRepresentation::class.java)
-            .hasMessage("missing firstName")
+        assertThat(userConverter.convert(keycloakUser).firstName).isEmpty()
     }
 
     @Test
-    fun `throws when lastname is empty string`() {
+    fun `can deal with null last name`() {
+        keycloakUser.lastName = null
+
+        assertThat(userConverter.convert(keycloakUser).lastName).isEmpty()
+    }
+
+    @Test
+    fun `can deal with empty last name`() {
         keycloakUser.lastName = ""
 
-        assertThatThrownBy { userConverter.convert(keycloakUser) }
-            .isInstanceOf(InvalidUserRepresentation::class.java)
-            .hasMessage("missing lastName")
+        assertThat(userConverter.convert(keycloakUser).lastName).isEmpty()
     }
 
     @Test

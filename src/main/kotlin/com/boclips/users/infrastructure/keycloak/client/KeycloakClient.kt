@@ -7,6 +7,7 @@ import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakUser
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
+import com.boclips.users.infrastructure.keycloak.UnknownUserSourceException
 import com.boclips.users.infrastructure.keycloak.UserNotCreatedException
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import mu.KLogging
@@ -57,7 +58,10 @@ open class KeycloakClient(
             try {
                 userConverter.convert(userRepresentation)
             } catch (e: InvalidUserRepresentation) {
-                logger.warn { "Could not convert external keycloak user as email address is invalid" }
+                logger.warn { "Could not convert external keycloak user ${userRepresentation.id} as email address is invalid" }
+                null
+            } catch (e: UnknownUserSourceException) {
+                logger.warn { "Could not convert keycloak user ${userRepresentation.id} as source is unknown" }
                 null
             }
         }
