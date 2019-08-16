@@ -1,10 +1,10 @@
 package com.boclips.users.domain.service
 
+import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.NewUser
 import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import mu.KLogging
@@ -21,9 +21,7 @@ class TeachersPlatformService(
         val retrievedUser = userRepository.findById(UserId(id.value))
         val user = retrievedUser ?: throw UserNotFoundException(id)
 
-        if (retrievedUser.associatedTo != UserSource.Boclips) throw UserNotFoundException(
-            id
-        )
+        if (retrievedUser.associatedTo != UserSource.Boclips) throw UserNotFoundException(id)
 
         logger.info { "Fetched user ${id.value}" }
 

@@ -29,7 +29,7 @@ class UserConverterTest {
 
     @Test
     fun `converts users with Boclips source accordingly`() {
-        val userResource = UserConverter().toUserResource(user = UserFactory.sample(userSource = UserSource.Boclips))
+        val userResource = UserConverter().toUserResource(user = UserFactory.sample(associatedTo = UserSource.Boclips))
 
         assertThat(userResource.organisationId).isNull()
     }
@@ -39,7 +39,7 @@ class UserConverterTest {
         val userResource =
             UserConverter().toUserResource(
                 user = UserFactory.sample(
-                    userSource = UserSource.ApiClient(
+                    associatedTo = UserSource.ApiClient(
                         organisationId = com.boclips.users.domain.model.organisation.OrganisationId("test")
                     )
                 )

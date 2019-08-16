@@ -33,7 +33,7 @@ class UserFactory {
             email: String = "joe@dough.com",
             hasOptedIntoMarketing: Boolean = true,
             marketing: MarketingTracking = MarketingTrackingFactory.sample(),
-            userSource: UserSource = UserSource.Boclips
+            associatedTo: UserSource = UserSource.Boclips
         ) = User(
             id = UserId(value = id),
             activated = activated,
@@ -46,7 +46,7 @@ class UserFactory {
             email = email,
             hasOptedIntoMarketing = hasOptedIntoMarketing,
             marketingTracking = marketing,
-            associatedTo = userSource
+            associatedTo = associatedTo
         )
     }
 }

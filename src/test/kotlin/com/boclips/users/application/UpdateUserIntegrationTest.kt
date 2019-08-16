@@ -4,12 +4,13 @@ import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
+import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import org.assertj.core.api.Assertions
@@ -32,19 +33,21 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext(userId)
 
         saveUser(UserFactory.sample(id = userId))
-        updateUser(userId, UpdateUserRequest(
-            firstName = "josh",
-            lastName = "fleck",
-            hasOptedIntoMarketing = true,
-            subjects = listOf("Maths"),
-            ages = listOf(4,5,6)
-        ))
+        updateUser(
+            userId, UpdateUserRequest(
+                firstName = "josh",
+                lastName = "fleck",
+                hasOptedIntoMarketing = true,
+                subjects = listOf("Maths"),
+                ages = listOf(4, 5, 6)
+            )
+        )
 
         val user = userRepository.findById(UserId(userId))!!
         assertThat(user.firstName).isEqualTo("josh")
         assertThat(user.lastName).isEqualTo("fleck")
         assertThat(user.hasOptedIntoMarketing).isTrue()
-        assertThat(user.ages).containsExactly(4,5,6)
+        assertThat(user.ages).containsExactly(4, 5, 6)
         assertThat(user.subjects).hasSize(1)
         assertThat(user.subjects.first().id).isEqualTo(SubjectId("1"))
     }
@@ -99,23 +102,19 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     @DisplayName("When account not activated")
     inner class AccountNotActivated {
-
         @Test
         fun `update user publishes an event`() {
-            val userId1 = UUID.randomUUID().toString()
+            val userId1 = "${UUID.randomUUID()}@boclips.com"
             setSecurityContext(userId1)
-            saveUser(UserFactory.sample(id = userId1))
+            saveUser(UserFactory.sample(id = userId1, associatedTo = UserSourceFactory.boclipsSample()))
 
-            val userId2 = UUID.randomUUID().toString()
-            setSecurityContext(userId2)
-            saveUser(UserFactory.sample(id = userId2))
-
-            updateUser(userId2)
+            updateUser(userId1)
 
             val event = eventBus.getEventOfType(UserActivated::class.java)
-
-            assertThat(event.totalUsers).isEqualTo(2)
+            assertThat(event.totalUsers).isEqualTo(1)
             assertThat(event.activatedUsers).isEqualTo(1)
+            assertThat(event.user.isBoclipsEmployee).isFalse()
+            assertThat(event.user.organisationId).isEqualTo(null)
         }
 
         @Test

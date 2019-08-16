@@ -23,11 +23,11 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can find all teachers`() {
         listOf(
-            saveUser(UserFactory.sample(id = "1", userSource = UserSourceFactory.apiClientSample())),
-            saveUser(UserFactory.sample(id = "2", userSource = UserSourceFactory.apiClientSample())),
-            saveUser(UserFactory.sample(id = "3", userSource = UserSourceFactory.apiClientSample())),
-            saveUser(UserFactory.sample(id = "4", userSource = UserSourceFactory.apiClientSample())),
-            saveUser(UserFactory.sample(id = "5", userSource = UserSource.Boclips))
+            saveUser(UserFactory.sample(id = "1", associatedTo = UserSourceFactory.apiClientSample())),
+            saveUser(UserFactory.sample(id = "2", associatedTo = UserSourceFactory.apiClientSample())),
+            saveUser(UserFactory.sample(id = "3", associatedTo = UserSourceFactory.apiClientSample())),
+            saveUser(UserFactory.sample(id = "4", associatedTo = UserSourceFactory.apiClientSample())),
+            saveUser(UserFactory.sample(id = "5", associatedTo = UserSource.Boclips))
         )
 
         val users = teachersPlatformService.findAllTeachers()
@@ -38,7 +38,7 @@ class TeachersPlatformServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `fails to find teacher if user is not teacher`() {
-        saveUser(UserFactory.sample(id = "1", userSource = UserSourceFactory.apiClientSample()))
+        saveUser(UserFactory.sample(id = "1", associatedTo = UserSourceFactory.apiClientSample()))
 
         assertThrows<UserNotFoundException> { teachersPlatformService.findTeacherById(UserId("1")) }
     }

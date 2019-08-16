@@ -12,6 +12,7 @@ import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
@@ -79,6 +80,10 @@ class UpdateUser(
                 .user(
                     com.boclips.eventbus.domain.user.User.builder()
                         .id(user.id.value)
+                        .organisationId(when (user.associatedTo) {
+                            is UserSource.Boclips -> null
+                            is UserSource.ApiClient -> user.associatedTo.organisationId.value
+                        })
                         .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
                         .build()
                 )

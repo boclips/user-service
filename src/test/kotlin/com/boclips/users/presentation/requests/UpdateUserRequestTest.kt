@@ -26,10 +26,8 @@ class UpdateUserRequestTest {
         assertThat(violations).hasSize(0)
     }
 
-
     @Nested
     inner class Names {
-
         @Test
         fun `validates first firstName for null`() {
             val violations = validator.validate(
@@ -115,7 +113,6 @@ class UpdateUserRequestTest {
 
     @Nested
     inner class AgeRanges {
-
         @Test
         fun `validates age ranges for null`() {
             val violations = validator.validate(
