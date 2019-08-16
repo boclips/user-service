@@ -18,10 +18,8 @@ class UserImportService(
     companion object : KLogging()
 
     fun importFromIdentityProvider(userIds: List<UserId>) {
-        val allIdentities = identityProvider.getUsers()
-
-        allIdentities.forEach {
-            userRepository.findById(it.id) ?: importFromIdentityProvider(it.id)
+        userIds.forEach {
+            userRepository.findById(it) ?: importFromIdentityProvider(it)
         }
     }
 
