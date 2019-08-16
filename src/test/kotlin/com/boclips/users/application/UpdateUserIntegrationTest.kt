@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
-
     @Autowired
     lateinit var updateUser: UpdateUser
 

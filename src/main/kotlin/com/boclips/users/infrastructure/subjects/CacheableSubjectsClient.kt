@@ -6,7 +6,7 @@ import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.scheduling.annotation.Scheduled
 
-open class CacheableSubjectsClient(val videoServiceClient: VideoServiceClient) {
+open class CacheableSubjectsClient(private val videoServiceClient: VideoServiceClient) {
     companion object : KLogging()
 
     @Cacheable("subjects")
@@ -15,6 +15,5 @@ open class CacheableSubjectsClient(val videoServiceClient: VideoServiceClient) {
     @CacheEvict("subjects")
     @Scheduled(fixedDelayString = "\${subjects.cache.timetolive}")
     open fun flushSubjectsCache() {
-        logger.info { "Flushing subjects cache" }
     }
 }
