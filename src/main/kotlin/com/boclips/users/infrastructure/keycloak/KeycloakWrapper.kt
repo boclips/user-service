@@ -13,6 +13,7 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
         const val TEACHER_ROLE = "ROLE_TEACHER"
     }
 
+    // TODO use sequence
     fun users(): List<UserRepresentation> {
         val allUsers = keycloak
             .realm(REALM)

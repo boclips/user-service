@@ -31,6 +31,7 @@ class MongoUserRepository(
 
     override fun save(user: User) = saveUserDocument(UserDocument.from(user))
 
+    // TODO: ideally ditch count and handle aggregates in data-land / stepping stone: ditch activated
     override fun count(): UserCounts {
         val total = userDocumentMongoRepository.count()
         val activated = userDocumentMongoRepository.countByFirstNameIsNotNull()

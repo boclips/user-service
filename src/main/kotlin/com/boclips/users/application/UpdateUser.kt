@@ -6,9 +6,9 @@ import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
@@ -43,9 +43,9 @@ class UpdateUser(
         val user = userService.findUserById(UserId(authenticatedUser.id))
 
         updateUserRequest.run {
-            userService.updateUserProfile(
-                UpdatedUser(
-                    userId = user.id,
+            userService.updateProfile(
+                userId = user.id,
+                profile = Profile(
                     firstName = this.firstName!!,
                     lastName = this.lastName!!,
                     subjects = convertSubjects(this),

@@ -4,7 +4,6 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.Profile
-import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSource
@@ -74,21 +73,18 @@ class UserService(
         return user
     }
 
-    // TODO split UpdatedUser up into id and profile
-    fun updateUserProfile(updatedUser: UpdatedUser): User {
+    fun updateProfile(userId: UserId, profile: Profile): User {
         val originalUser =
-            userRepository.findById(updatedUser.userId) ?: throw UserNotFoundException(
-                updatedUser.userId
-            )
+            userRepository.findById(userId) ?: throw UserNotFoundException(userId)
 
         val user = userRepository.save(
             originalUser.copy(
                 profile = Profile(
-                    firstName = updatedUser.firstName,
-                    lastName = updatedUser.lastName,
-                    hasOptedIntoMarketing = updatedUser.hasOptedIntoMarketing,
-                    subjects = updatedUser.subjects,
-                    ages = updatedUser.ages
+                    firstName = profile.firstName,
+                    lastName = profile.lastName,
+                    hasOptedIntoMarketing = profile.hasOptedIntoMarketing,
+                    subjects = profile.subjects,
+                    ages = profile.ages
                 )
             )
         )

@@ -3,9 +3,9 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.application.exceptions.UserNotFoundException
+import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -94,8 +94,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     fun `update profile`() {
         saveUser(UserFactory.sample(id = "user-id"))
 
-        val newUserDetails = UpdatedUser(
-            userId = UserId("user-id"),
+        val profile = Profile(
             firstName = "Joe",
             lastName = "Dough",
             subjects = listOf(Subject(id = SubjectId("test"), name = "subject")),
@@ -103,7 +102,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             hasOptedIntoMarketing = true
         )
 
-        val persistedUser = userService.updateUserProfile(newUserDetails)
+        val persistedUser = userService.updateProfile(userId = UserId("user-id"), profile = profile)
 
         assertThat(persistedUser.profile!!.firstName).isEqualTo("Joe")
         assertThat(persistedUser.profile!!.lastName).isEqualTo("Dough")
