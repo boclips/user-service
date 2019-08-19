@@ -1,6 +1,6 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserService
@@ -15,7 +15,7 @@ class SynchronisationService(
     val marketingService: MarketingService,
     val sessionProvider: SessionProvider,
     val userImportService: UserImportService,
-    val identityProvider: IdentityProvider,
+    val accountProvider: AccountProvider,
     val userRepository: UserRepository
 ) {
     companion object : KLogging()
@@ -36,17 +36,17 @@ class SynchronisationService(
         logger.info { "Updated ${allCrmProfiles.size} profiles" }
     }
 
-    fun synchroniseIdentities() {
-        val allIdentityIds = identityProvider.getUsers().map { it.id }
-        logger.info { "Found ${allIdentityIds.size} identities" }
+    fun synchroniseAccounts() {
+        val allAccountIds = accountProvider.getAccounts().map { it.id }
+        logger.info { "Found ${allAccountIds.size} accounts" }
 
         val allUserIds = userRepository.findAll().map { it.id }
         logger.info { "Found ${allUserIds.size} users" }
 
-        val newUsers = allIdentityIds - allUserIds
+        val newUsers = allAccountIds - allUserIds
         logger.info { "Importing ${newUsers.size} users" }
 
-        userImportService.importFromIdentityProvider(newUsers)
+        userImportService.importFromAccountProvider(newUsers)
         logger.info { "Import of ${newUsers.size} users completed" }
     }
 }

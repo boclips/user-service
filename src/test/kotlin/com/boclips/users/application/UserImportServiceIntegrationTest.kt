@@ -2,7 +2,7 @@ package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.application.exceptions.UserNotFoundException
+import com.boclips.users.domain.model.AccountNotFoundException
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
@@ -18,14 +18,14 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var userImportService: UserImportService
 
     @Test
-    fun `imports an identity`() {
+    fun `imports an account`() {
         val userId = UserId(value = UUID.randomUUID().toString())
 
         setSecurityContext(userId.value)
 
-        saveIdentity(UserFactory.sample(id = userId.value))
+        saveAccount(UserFactory.sample(id = userId.value))
 
-        userImportService.importFromIdentityProvider(userId = userId)
+        userImportService.importFromAccountProvider(userId = userId)
 
         val user = userRepository.findById(userId)
 
@@ -38,23 +38,23 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
         val savedUser = userRepository.save(user)
         setSecurityContext(savedUser.id.value)
 
-        saveIdentity(UserFactory.sample(id = "some-id"))
+        saveAccount(UserFactory.sample(id = "some-id"))
 
-        assertThrows<UserAlreadyExistsException> { userImportService.importFromIdentityProvider(userId = savedUser.id) }
+        assertThrows<UserAlreadyExistsException> { userImportService.importFromAccountProvider(userId = savedUser.id) }
     }
 
     @Test
-    fun `import all identities with users`() {
+    fun `import all accounts with users`() {
         val userId1 = UUID.randomUUID().toString()
         val userId2 = UUID.randomUUID().toString()
 
         setSecurityContext(userId1)
         setSecurityContext(userId2)
 
-        saveIdentity(UserFactory.sample(id = userId1))
-        saveIdentity(UserFactory.sample(id = userId2))
+        saveAccount(UserFactory.sample(id = userId1))
+        saveAccount(UserFactory.sample(id = userId2))
 
-        userImportService.importFromIdentityProvider(listOf(UserId(userId1), UserId(userId2)))
+        userImportService.importFromAccountProvider(listOf(UserId(userId1), UserId(userId2)))
 
         val users = userRepository.findAll()
 
@@ -62,9 +62,9 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `throws if identity does not exist`() {
+    fun `throws if account does not exist`() {
         setSecurityContext("test-user")
 
-        assertThrows<UserNotFoundException> { userImportService.importFromIdentityProvider(UserId(value = "test")) }
+        assertThrows<AccountNotFoundException> { userImportService.importFromAccountProvider(UserId(value = "test")) }
     }
 }

@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.any
@@ -13,19 +12,19 @@ import org.junit.jupiter.api.Test
 import org.keycloak.representations.idm.UserRepresentation
 import java.util.UUID
 
-class KeycloakUserToIdentityConverterTest {
+class KeycloakUserToAccountConverterTest {
     lateinit var keycloakUser: UserRepresentation
-    lateinit var userConverter: KeycloakUserToIdentityConverter
+    lateinit var userConverter: KeycloakUserToAccountConverter
 
     @BeforeEach
     fun setup() {
         val organisationMatcherMock = mock<UserSourceResolver>()
         whenever(organisationMatcherMock.resolve(any())).thenReturn(UserSourceFactory.boclipsSample())
 
-        userConverter = KeycloakUserToIdentityConverter(organisationMatcherMock)
+        userConverter = KeycloakUserToAccountConverter(organisationMatcherMock)
         keycloakUser = UserRepresentation().apply {
             this.id = UUID.randomUUID().toString()
-            this.email = "test@gmail.com"
+            this.username = "test@gmail.com"
             this.isEmailVerified = true
             this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
         }
@@ -36,8 +35,7 @@ class KeycloakUserToIdentityConverterTest {
         val convertedUser = userConverter.convert(keycloakUser)
 
         assertThat(convertedUser.id.value).isEqualTo(keycloakUser.id)
-        assertThat(convertedUser.email).isEqualTo(keycloakUser.email)
-        assertThat(convertedUser.isVerified).isEqualTo(keycloakUser.isEmailVerified)
+        assertThat(convertedUser.username).isEqualTo(keycloakUser.username)
         assertThat(convertedUser.associatedTo).isNotNull()
     }
 
@@ -58,20 +56,11 @@ class KeycloakUserToIdentityConverterTest {
     }
 
     @Test
-    fun `throws when email is empty string`() {
-        keycloakUser.email = ""
+    fun `throws should username ever be null`() {
+        keycloakUser.username = null
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
-            .isInstanceOf(InvalidUserRepresentation::class.java)
-            .hasMessage("invalid email")
+            .isInstanceOf(IllegalStateException::class.java)
     }
 
-    @Test
-    fun `throws when email is invalid`() {
-        keycloakUser.email = "invalid email"
-
-        assertThatThrownBy { userConverter.convert(keycloakUser) }
-            .isInstanceOf(InvalidUserRepresentation::class.java)
-            .hasMessage("invalid email")
-    }
 }

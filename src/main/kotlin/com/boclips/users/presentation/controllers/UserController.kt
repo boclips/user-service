@@ -65,7 +65,7 @@ class UserController(
     }
 
     @PostMapping("/sync-identities")
-    fun syncIdentities() {
-        synchronisationService.synchroniseIdentities()
+    fun syncAccounts() {
+        synchronisationService.synchroniseAccounts()
     }
 }

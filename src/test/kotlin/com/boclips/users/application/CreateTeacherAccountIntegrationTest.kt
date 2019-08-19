@@ -32,15 +32,15 @@ class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val account = userRepository.findById(createdAccount.id)
-        Assertions.assertThat(account).isNotNull
-        Assertions.assertThat(account!!.isReferral()).isFalse()
-        Assertions.assertThat(account.referralCode).isEmpty()
-        Assertions.assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
+        val user = userRepository.findById(createdAccount.id)
+        Assertions.assertThat(user).isNotNull
+        Assertions.assertThat(user!!.isReferral()).isFalse()
+        Assertions.assertThat(user.referralCode).isEmpty()
+        Assertions.assertThat(user.analyticsId).isEqualTo(AnalyticsId(value = ""))
 
-        val identity = identityProvider.getUserById(createdAccount.id)
-        Assertions.assertThat(identity).isNotNull
-        Assertions.assertThat(identity!!.email).isEqualTo("hans@muster.com")
+        val account = accountProvider.getAccountById(createdAccount.id)
+        Assertions.assertThat(account).isNotNull
+        Assertions.assertThat(account!!.email).isEqualTo("hans@muster.com")
     }
 
     @Test

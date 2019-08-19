@@ -2,13 +2,13 @@ package com.boclips.users.testsupport
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
+import com.boclips.users.domain.model.Account
 import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.identity.Identity
 import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.ReferralProvider
@@ -57,7 +57,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var keycloakClientFake: KeycloakClientFake
 
     @Autowired
-    lateinit var identityProvider: IdentityProvider
+    lateinit var accountProvider: AccountProvider
 
     @Autowired
     lateinit var repositories: Collection<CrudRepository<*, *>>
@@ -104,17 +104,16 @@ abstract class AbstractSpringIntegrationTest {
     fun saveUser(user: User): User {
         userRepository.save(user)
 
-        saveIdentity(user)
+        saveAccount(user)
 
         return user
     }
 
-    fun saveIdentity(user: User): String {
-        keycloakClientFake.createUser(
-            Identity(
+    fun saveAccount(user: User): String {
+        keycloakClientFake.createAccount(
+            Account(
                 id = user.id,
-                email = user.account.email!!,
-                isVerified = false,
+                username = user.account.email!!,
                 associatedTo = user.account.associatedTo
             )
         )

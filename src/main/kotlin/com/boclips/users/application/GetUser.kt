@@ -20,7 +20,7 @@ class GetUser(
         if (authenticatedUser.id != requestedUserId) throw PermissionDeniedException()
 
         val userId = UserId(value = requestedUserId)
-        val user = userRepository.findById(id = userId) ?: userImportService.importFromIdentityProvider(userId = userId)
+        val user = userRepository.findById(id = userId) ?: userImportService.importFromAccountProvider(userId = userId)
 
         return userConverter.toUserResource(user)
     }

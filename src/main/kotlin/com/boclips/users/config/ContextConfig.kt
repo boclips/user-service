@@ -2,7 +2,7 @@ package com.boclips.users.config
 
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.infrastructure.organisation.UserSourceResolver
-import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
@@ -11,7 +11,7 @@ import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
-import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToIdentityConverter
+import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
@@ -44,11 +44,11 @@ class ContextConfig(
     @Bean
     fun keycloakClient(keycloakWrapper: KeycloakWrapper, userSourceResolver: UserSourceResolver) = KeycloakClient(
         keycloakWrapper,
-        KeycloakUserToIdentityConverter(userSourceResolver)
+        KeycloakUserToAccountConverter(userSourceResolver)
     )
 
     @Bean
-    fun identityProvider(keycloakClient: KeycloakClient): IdentityProvider = keycloakClient
+    fun accountProvider(keycloakClient: KeycloakClient): AccountProvider = keycloakClient
 
     @Bean
     fun sessionProvider(keycloakClient: KeycloakClient): SessionProvider = keycloakClient

@@ -4,7 +4,7 @@ import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
-import com.boclips.users.testsupport.factories.IdentityFactory
+import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -30,7 +30,7 @@ internal class KeycloakClientTest {
 
         keycloakClient = KeycloakClient(
             keycloakWrapperMock,
-            KeycloakUserToIdentityConverter(userSourceResolver)
+            KeycloakUserToAccountConverter(userSourceResolver)
         )
     }
 
@@ -41,24 +41,24 @@ internal class KeycloakClientTest {
             whenever(keycloakWrapperMock.getUserById(any())).thenReturn(UserRepresentation().apply {
                 this.id = "x"
                 this.firstName = "Odete"
-                this.email = "abc@def.xyz"
+                this.username = "abc@def.xyz"
                 this.lastName = "Portugal"
                 this.isEmailVerified = true
                 this.realmRoles = emptyList()
             })
 
             val id = UserId(value = "x")
-            val identity = keycloakClient.getUserById(id)!!
+            val account = keycloakClient.getAccountById(id)!!
 
-            assertThat(identity.id).isEqualTo(id)
+            assertThat(account.id).isEqualTo(id)
         }
 
         @Test
         fun `returns null when cannot find a given user`() {
             val id = UserId(value = "x")
-            val identity = keycloakClient.getUserById(id)
+            val account = keycloakClient.getAccountById(id)
 
-            assertThat(identity).isNull()
+            assertThat(account).isNull()
         }
 
         @Test
@@ -68,9 +68,9 @@ internal class KeycloakClientTest {
             })
 
             val id = UserId(value = "x")
-            val identity = keycloakClient.getUserById(id)
+            val account = keycloakClient.getAccountById(id)
 
-            assertThat(identity).isNull()
+            assertThat(account).isNull()
         }
     }
 
@@ -104,15 +104,13 @@ internal class KeycloakClientTest {
     fun getUsers() {
         val user1 = UserRepresentation().apply {
             this.id = "1"
-            this.isEmailVerified = true
-            this.email = "test@gmail.com"
+            this.username = "test@gmail.com"
             this.realmRoles = emptyList()
 
         }
         val user2 = UserRepresentation().apply {
             this.id = "2"
-            this.isEmailVerified = false
-            this.email = "test2@gmail.com"
+            this.username = "test2@gmail.com"
             this.realmRoles = emptyList()
         }
 
@@ -124,19 +122,17 @@ internal class KeycloakClientTest {
             )
         )
 
-        val users = keycloakClient.getUsers()
+        val users = keycloakClient.getAccounts()
 
         assertThat(users).hasSize(2)
         assertThat(users).containsExactly(
-            IdentityFactory.sample(
+            AccountFactory.sample(
                 id = user1.id,
-                isVerified = user1.isEmailVerified,
-                email = user1.email
+                username = user1.username
             ),
-            IdentityFactory.sample(
+            AccountFactory.sample(
                 id = user2.id,
-                isVerified = user2.isEmailVerified,
-                email = user2.email
+                username = user2.username
             )
         )
     }

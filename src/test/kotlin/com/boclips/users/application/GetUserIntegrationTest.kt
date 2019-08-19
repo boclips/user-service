@@ -3,7 +3,7 @@ package com.boclips.users.application
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
-import com.boclips.users.application.exceptions.UserNotFoundException
+import com.boclips.users.domain.model.AccountNotFoundException
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -77,17 +77,17 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
-        assertThrows<UserNotFoundException> { getUser(userId) }
+        assertThrows<AccountNotFoundException> { getUser(userId) }
     }
 
     @Nested
     inner class WhenUserNotSynchronized {
         @Test
-        fun `attempts to synchronise user with identity provider`() {
+        fun `imports user from account provider when user not found in repository`() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)
 
-            saveIdentity(UserFactory.sample(id = userId))
+            saveAccount(UserFactory.sample(id = userId))
 
             val resource = getUser(userId)
 
@@ -101,7 +101,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId, "TEACHER")
             val organisation = saveOrganisation("Boclips for Teachers")
 
-            saveIdentity(
+            saveAccount(
                 UserFactory.sample(
                     account = AccountFactory.sample(
                         id = userId,
