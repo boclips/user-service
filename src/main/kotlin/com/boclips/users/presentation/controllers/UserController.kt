@@ -1,11 +1,11 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.CreateUser
+import com.boclips.users.application.CreateTeacherAccount
 import com.boclips.users.application.GetUser
 import com.boclips.users.application.SynchronisationService
 import com.boclips.users.application.UpdateUser
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
-import com.boclips.users.presentation.requests.CreateUserRequest
+import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.hateoas.ExposesResourceFor
@@ -26,7 +26,7 @@ import javax.validation.Valid
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
 class UserController(
-    private val createUser: CreateUser,
+    private val createTeacherAccount: CreateTeacherAccount,
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
     private val userLinkBuilder: UserLinkBuilder,
@@ -34,8 +34,8 @@ class UserController(
 ) {
 
     @PostMapping
-    fun createAUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<Resource<*>> {
-        val user = createUser(createUserRequest!!)
+    fun createAUser(@Valid @RequestBody createTeacherRequest: CreateTeacherRequest?): ResponseEntity<Resource<*>> {
+        val user = createTeacherAccount(createTeacherRequest!!)
 
         val headers = HttpHeaders()
         headers.set(HttpHeaders.LOCATION, userLinkBuilder.profileLink(user.id)?.href)
@@ -44,7 +44,7 @@ class UserController(
     }
 
     @PutMapping("/{id}")
-    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest?): Resource<UserResource> {
+    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest): Resource<UserResource> {
         updateUser(id, updateUserRequest)
         return getAUser(id)
     }

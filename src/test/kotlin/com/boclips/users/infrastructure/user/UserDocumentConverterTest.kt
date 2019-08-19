@@ -5,7 +5,9 @@ import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserDocumentFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.videos.service.client.Subject
@@ -14,7 +16,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class UserDocumentTest {
+class UserDocumentConverterTest {
     private val fakeClient = FakeClient()
     private var userDocumentConverter =
         UserDocumentConverter(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))
@@ -28,9 +30,9 @@ class UserDocumentTest {
     @Test
     fun `can convert document to user`() {
         val user = UserFactory.sample(
-            subjects = listOf(com.boclips.users.domain.model.Subject(id = SubjectId(value = "1"), name = "maths")),
-            hasOptedIntoMarketing = true,
-            marketing = MarketingTrackingFactory.sample()
+            profile = ProfileFactory.sample(
+                subjects = listOf(com.boclips.users.domain.model.Subject(SubjectId("1"), "maths"))
+            )
         )
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
@@ -40,26 +42,27 @@ class UserDocumentTest {
 
     @Test
     fun `can convert boclips user`() {
-        val user = UserFactory.sample(associatedTo = UserSource.Boclips)
+        val user = UserFactory.sample(account = AccountFactory.sample(associatedTo = UserSource.Boclips))
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
-        assertThat(convertedUser.associatedTo).isEqualTo(UserSource.Boclips)
+        assertThat(convertedUser.account.associatedTo).isEqualTo(UserSource.Boclips)
     }
 
     @Test
     fun `can convert api client`() {
-        val user = UserFactory.sample(associatedTo = UserSource.ApiClient(organisationId = OrganisationId("test")))
+        val user = UserFactory.sample(account = AccountFactory.sample(associatedTo = UserSource.ApiClient(organisationId = OrganisationId("test"))))
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
 
-        assertThat(convertedUser.associatedTo).isEqualTo(UserSource.ApiClient(organisationId = OrganisationId("test")))
+        assertThat(convertedUser.account.associatedTo).isEqualTo(UserSource.ApiClient(organisationId = OrganisationId("test")))
     }
 
+    //TODO why is this the case??
     @Test
     fun `users missing optedIntoMarketing is defaulted to true`() {
         val convertedUser =
             userDocumentConverter.convertToUser(UserDocumentFactory.sample(hasOptedIntoMarketing = null))
 
-        assertThat(convertedUser.hasOptedIntoMarketing).isTrue()
+        assertThat(convertedUser.profile?.hasOptedIntoMarketing).isTrue()
     }
 }

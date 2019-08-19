@@ -15,13 +15,10 @@ class UserLinkBuilder(private val userRepository: UserRepository) : KLogging() {
 
     fun updateUserLink(): Link? {
         return getIfAuthenticated { currentUserId ->
-            if (userRepository.findById(UserId(value = currentUserId))?.activated == true)
+            if (userRepository.findById(UserId(value = currentUserId))?.hasProfile() == true)
                 null
             else
-                ControllerLinkBuilder.linkTo(
-                    ControllerLinkBuilder.methodOn(UserController::class.java)
-                        .updateAUser(currentUserId, null)
-                ).withRel("activate")
+                profileLink(UserId(currentUserId))?.withRel("activate")
         }
     }
 

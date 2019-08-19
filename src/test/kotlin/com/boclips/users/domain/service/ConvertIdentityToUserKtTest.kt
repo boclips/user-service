@@ -11,7 +11,7 @@ class ConvertIdentityToUserKtTest {
         val userSource = UserSourceFactory.apiClientSample(organisationId = "test")
         val identity = IdentityFactory.sample(userSource = userSource)
 
-        val user = convertIdentityToUser(identity = identity)
+        val user = convertIdentityToAccount(identity = identity)
 
         assertThat(user.id).isEqualTo(identity.id)
         assertThat(user.email).isEqualTo(identity.email)

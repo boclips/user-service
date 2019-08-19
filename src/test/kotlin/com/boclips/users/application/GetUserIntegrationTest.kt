@@ -7,6 +7,8 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -30,12 +32,16 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         val organisationId = ObjectId().toHexString()
         saveUser(
             UserFactory.sample(
-                id = userId,
+                account = AccountFactory.sample(
+                    username = "jane@doe.com",
+                    id = userId,
+                    associatedTo = UserSourceFactory.apiClientSample(organisationId = organisationId)
+                ),
                 analyticsId = AnalyticsId(value = "123"),
-                firstName = "Jane",
-                lastName = "Doe",
-                email = "jane@doe.com",
-                associatedTo = UserSourceFactory.apiClientSample(organisationId = organisationId)
+                profile = ProfileFactory.sample(
+                    firstName = "Jane",
+                    lastName = "Doe"
+                )
             )
         )
 
@@ -95,7 +101,14 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId, "TEACHER")
             val organisation = saveOrganisation("Boclips for Teachers")
 
-            saveIdentity(UserFactory.sample(id = userId, associatedTo = UserSource.ApiClient(organisation.id)))
+            saveIdentity(
+                UserFactory.sample(
+                    account = AccountFactory.sample(
+                        id = userId,
+                        associatedTo = UserSource.ApiClient(organisation.id)
+                    )
+                )
+            )
 
             val resource = getUser(userId)
 

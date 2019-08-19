@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.user
 
+import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserSource
 import org.springframework.data.annotation.Id
@@ -12,7 +13,7 @@ data class UserDocument(
     val firstName: String?,
     val lastName: String?,
     val email: String?,
-    val activated: Boolean,
+    val username: String?,
     val subjectIds: List<String>?,
     val ageRange: List<Int>?,
     val analyticsId: String?,
@@ -25,15 +26,15 @@ data class UserDocument(
         fun from(user: User): UserDocument {
             return UserDocument(
                 id = user.id.value,
-                activated = user.activated,
-                subjectIds = user.subjects.map { it.id.value },
-                ageRange = user.ages,
+                subjectIds = user.profile?.subjects?.map { it.id.value },
+                ageRange = user.profile?.ages,
                 analyticsId = user.analyticsId?.value,
                 referralCode = user.referralCode,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                email = user.email,
-                hasOptedIntoMarketing = user.hasOptedIntoMarketing,
+                firstName = user.profile?.firstName,
+                lastName = user.profile?.lastName,
+                email = user.account.email,
+                username = user.account.username,
+                hasOptedIntoMarketing = user.profile?.hasOptedIntoMarketing ?: false,
                 marketing = MarketingTrackingDocument(
                     utmCampaign = user.marketingTracking.utmCampaign,
                     utmSource = user.marketingTracking.utmSource,
@@ -41,9 +42,28 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = when (user.associatedTo) {
+                organisationId = when (user.account.associatedTo) {
                     is UserSource.Boclips -> null
-                    is UserSource.ApiClient -> user.associatedTo.organisationId.value
+                    is UserSource.ApiClient -> user.account.associatedTo.organisationId.value
+                }
+            )
+        }
+        fun from(account: Account): UserDocument {
+            return UserDocument(
+                id = account.id.value,
+                subjectIds = null,
+                ageRange = null,
+                analyticsId = null,
+                referralCode = null,
+                firstName = null,
+                lastName = null,
+                email = account.email,
+                username = account.username,
+                hasOptedIntoMarketing = false,
+                marketing = null,
+                organisationId = when (account.associatedTo) {
+                    is UserSource.Boclips -> null
+                    is UserSource.ApiClient -> account.associatedTo.organisationId.value
                 }
             )
         }

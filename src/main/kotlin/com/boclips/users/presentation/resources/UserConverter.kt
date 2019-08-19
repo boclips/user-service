@@ -9,13 +9,13 @@ class UserConverter {
     fun toUserResource(user: User): UserResource {
         return UserResource(
             id = user.id.value,
-            firstName = user.firstName,
-            lastName = user.lastName,
-            email = user.email,
+            firstName = user.profile?.firstName,
+            lastName = user.profile?.lastName,
+            email = user.account.email,
             analyticsId = user.analyticsId?.value,
-            organisationId = when (user.associatedTo) {
+            organisationId = when (user.account.associatedTo) {
                 UserSource.Boclips -> null
-                is UserSource.ApiClient -> user.associatedTo.organisationId.value
+                is UserSource.ApiClient -> user.account.associatedTo.organisationId.value
             }
         )
     }

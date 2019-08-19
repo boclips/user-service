@@ -5,7 +5,7 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
-open class CreateUserRequest(
+open class CreateTeacherRequest(
 
     @field:Email(message = "Email must be valid")
     @field:NotNull(message = "Email is required")

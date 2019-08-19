@@ -113,9 +113,9 @@ abstract class AbstractSpringIntegrationTest {
         keycloakClientFake.createUser(
             Identity(
                 id = user.id,
-                email = user.email,
+                email = user.account.email!!,
                 isVerified = false,
-                associatedTo = user.associatedTo
+                associatedTo = user.account.associatedTo
             )
         )
 

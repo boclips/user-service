@@ -131,14 +131,13 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `activate a user without a payload`() {
+    fun `update a user without a payload`() {
         saveUser(UserFactory.sample())
 
         setSecurityContext("user-id")
 
         mvc.perform(put("/v1/users/user-id").asUser("user-id"))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
+            .andExpect(status().isBadRequest)
     }
 
     @Test
@@ -166,11 +165,11 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         val user = userRepository.findById(UserId("user-id"))!!
 
-        assertThat(user.firstName).isEqualTo("jane")
-        assertThat(user.lastName).isEqualTo("doe")
-        assertThat(user.hasOptedIntoMarketing).isTrue()
-        assertThat(user.ages).containsExactly(4, 5, 6)
-        assertThat(user.subjects).hasSize(1)
+        assertThat(user.profile!!.firstName).isEqualTo("jane")
+        assertThat(user.profile!!.lastName).isEqualTo("doe")
+        assertThat(user.profile!!.hasOptedIntoMarketing).isTrue()
+        assertThat(user.profile!!.ages).containsExactly(4, 5, 6)
+        assertThat(user.profile!!.subjects).hasSize(1)
     }
 
     @Test

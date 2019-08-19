@@ -1,6 +1,6 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.NewUser
+import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UpdatedUser
@@ -9,6 +9,7 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -23,11 +24,11 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can find all teachers`() {
         listOf(
-            saveUser(UserFactory.sample(id = "1", associatedTo = UserSourceFactory.apiClientSample())),
-            saveUser(UserFactory.sample(id = "2", associatedTo = UserSourceFactory.apiClientSample())),
-            saveUser(UserFactory.sample(id = "3", associatedTo = UserSourceFactory.apiClientSample())),
-            saveUser(UserFactory.sample(id = "4", associatedTo = UserSourceFactory.apiClientSample())),
-            saveUser(UserFactory.sample(id = "5", associatedTo = UserSource.Boclips))
+            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "1", associatedTo = UserSourceFactory.apiClientSample()))),
+            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "2", associatedTo = UserSourceFactory.apiClientSample()))),
+            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "3", associatedTo = UserSourceFactory.apiClientSample()))),
+            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "4", associatedTo = UserSourceFactory.apiClientSample()))),
+            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "5", associatedTo = UserSource.Boclips)))
         )
 
         val users = userService.findAllTeachers()
@@ -38,14 +39,14 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `fails to find teacher if user is not teacher`() {
-        saveUser(UserFactory.sample(id = "1", associatedTo = UserSourceFactory.apiClientSample()))
+        saveUser(UserFactory.sample(account = AccountFactory.sample(id = "1", associatedTo = UserSourceFactory.apiClientSample())))
 
         assertThrows<UserNotFoundException> { userService.findTeacherById(UserId("1")) }
     }
 
     @Test
-    fun `create user`() {
-        val newUser = NewUser(
+    fun `create teacher`() {
+        val newUser = NewTeacher(
             email = "joe@dough.com",
             password = "thisisapassword",
             analyticsId = AnalyticsId(value = "analytics"),
@@ -59,7 +60,8 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = userService.createTeacher(newUser)
 
-        assertThat(persistedUser.email).isEqualTo("joe@dough.com")
+        assertThat(persistedUser.account.username).isEqualTo("joe@dough.com")
+        assertThat(persistedUser.account.email).isEqualTo("joe@dough.com")
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
         assertThat(persistedUser.marketingTracking.utmSource).isBlank()
@@ -71,7 +73,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `an individual teacher user is not associated to external organisation`() {
-        val newUser = NewUser(
+        val newUser = NewTeacher(
             email = "joe@dough.com",
             password = "thisisapassword",
             analyticsId = AnalyticsId(value = "analytics"),
@@ -85,11 +87,11 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = userService.createTeacher(newUser)
 
-        assertThat(persistedUser.associatedTo).isEqualTo(UserSource.Boclips)
+        assertThat(persistedUser.account.associatedTo).isEqualTo(UserSource.Boclips)
     }
 
     @Test
-    fun `update user details`() {
+    fun `update profile`() {
         saveUser(UserFactory.sample(id = "user-id"))
 
         val newUserDetails = UpdatedUser(
@@ -101,13 +103,12 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             hasOptedIntoMarketing = true
         )
 
-        val persistedUser = userService.updateUserDetails(newUserDetails)
+        val persistedUser = userService.updateUserProfile(newUserDetails)
 
-        assertThat(persistedUser.firstName).isEqualTo("Joe")
-        assertThat(persistedUser.lastName).isEqualTo("Dough")
-        assertThat(persistedUser.email).isEqualTo("joe@dough.com")
-        assertThat(persistedUser.subjects).hasSize(1)
-        assertThat(persistedUser.ages).containsExactly(1, 2)
-        assertThat(persistedUser.hasOptedIntoMarketing).isTrue()
+        assertThat(persistedUser.profile!!.firstName).isEqualTo("Joe")
+        assertThat(persistedUser.profile!!.lastName).isEqualTo("Dough")
+        assertThat(persistedUser.profile!!.subjects).hasSize(1)
+        assertThat(persistedUser.profile!!.ages).containsExactly(1, 2)
+        assertThat(persistedUser.profile!!.hasOptedIntoMarketing).isTrue()
     }
 }

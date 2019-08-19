@@ -5,8 +5,9 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.asUser
+import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import org.hamcrest.Matchers.endsWith
-import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -30,11 +31,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         userRepository.save(
             UserFactory.sample(
-                id = "a-user-id",
-                activated = false,
-                subjects = emptyList(),
-                analyticsId = AnalyticsId(value = "irrelevant"),
-                referralCode = null
+                account = AccountFactory.sample(id = "a-user-id"),
+                profile = null
             )
         )
 
@@ -51,11 +49,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         userRepository.save(
             UserFactory.sample(
-                id = "a-user-id",
-                activated = true,
-                subjects = emptyList(),
-                analyticsId = AnalyticsId(value = "irrelevant"),
-                referralCode = null
+                account = AccountFactory.sample(id = "a-user-id"),
+                profile = ProfileFactory.sample()
             )
         )
 

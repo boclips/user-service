@@ -34,7 +34,7 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `throws when a user already exists`() {
-        val user = UserFactory.sample(id = "some-id", firstName = "Bob")
+        val user = UserFactory.sample(id = "some-id")
         val savedUser = userRepository.save(user)
         setSecurityContext(savedUser.id.value)
 

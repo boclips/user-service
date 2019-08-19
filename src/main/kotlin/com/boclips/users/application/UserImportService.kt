@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.convertIdentityToUser
+import com.boclips.users.domain.service.convertIdentityToAccount
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -29,7 +29,7 @@ class UserImportService(
         }
 
         return identityProvider.getUserById(userId)?.let { identity ->
-            userRepository.save(convertIdentityToUser(identity))
+            userRepository.save(convertIdentityToAccount(identity))
         } ?: throw UserNotFoundException(userId)
     }
 }

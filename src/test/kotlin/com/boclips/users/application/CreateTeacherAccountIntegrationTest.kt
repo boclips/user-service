@@ -1,9 +1,8 @@
 package com.boclips.users.application
 
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
-import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.presentation.requests.CreateUserRequest
+import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.CreateUserRequestFactory
 import com.nhaarman.mockitokotlin2.any
@@ -15,9 +14,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 
-class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
+class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var createUser: CreateUser
+    lateinit var createTeacherAccount: CreateTeacherAccount
 
     @Test
     fun `create account without optional values`() {
@@ -25,8 +24,8 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
             emptyList()
         )
 
-        val createdAccount = createUser(
-            CreateUserRequest(
+        val createdAccount = createTeacherAccount(
+            CreateTeacherRequest(
                 email = "hans@muster.com",
                 password = "hansli",
                 recaptchaToken = "SOMERECAPTCHATOKENHERE"
@@ -37,8 +36,6 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(account).isNotNull
         Assertions.assertThat(account!!.isReferral()).isFalse()
         Assertions.assertThat(account.referralCode).isEmpty()
-        Assertions.assertThat(account.subjects).isEmpty()
-        Assertions.assertThat(account.ages).isEmpty()
         Assertions.assertThat(account.analyticsId).isEqualTo(AnalyticsId(value = ""))
 
         val identity = identityProvider.getUserById(createdAccount.id)
@@ -48,7 +45,7 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `create account with referral and analytics information`() {
-        val user = createUser(
+        val user = createTeacherAccount(
             CreateUserRequestFactory.sample(
                 referralCode = "referral-code-123",
                 analyticsId = "123",
@@ -64,8 +61,6 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         Assertions.assertThat(persistedAccount.isReferral()).isTrue()
         Assertions.assertThat(persistedAccount.referralCode).isEqualTo("referral-code-123")
-        Assertions.assertThat(persistedAccount.subjects).isEmpty()
-        Assertions.assertThat(persistedAccount.ages).isEmpty()
         Assertions.assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")
         Assertions.assertThat(persistedAccount.marketingTracking.utmSource).isEqualTo("facebook")
         Assertions.assertThat(persistedAccount.marketingTracking.utmContent).isEqualTo("utm-content")
@@ -79,20 +74,20 @@ class CreateUserIntegrationTest : AbstractSpringIntegrationTest() {
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
 
         assertThrows<CaptchaScoreBelowThresholdException> {
-            createUser(CreateUserRequestFactory.sample())
+            createTeacherAccount(CreateUserRequestFactory.sample())
         }
     }
 
     @Test
     fun `update contact on hubspot after user creation`() {
-        createUser(CreateUserRequestFactory.sample())
+        createTeacherAccount(CreateUserRequestFactory.sample())
 
         verify(marketingService, times(1)).updateProfile(any())
     }
 
     @Test
     fun `update subscription on hubspot after user creation`() {
-        createUser(CreateUserRequestFactory.sample())
+        createTeacherAccount(CreateUserRequestFactory.sample())
 
         verify(marketingService, times(1)).updateSubscription(any())
     }

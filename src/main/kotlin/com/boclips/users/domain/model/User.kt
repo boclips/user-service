@@ -4,24 +4,45 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 
 data class User(
-    val id: UserId,
-    val activated: Boolean,
-    val analyticsId: AnalyticsId?,
-    val subjects: List<Subject>,
-    val ages: List<Int>,
-    val referralCode: String?,
-    val firstName: String?,
-    val lastName: String?,
-    val email: String,
-    val hasOptedIntoMarketing: Boolean,
+    val account: Account,
+    val profile: Profile?,
     val marketingTracking: MarketingTracking,
-    val associatedTo: UserSource
+    val referralCode: String?,
+    val analyticsId: AnalyticsId? = null
+
 ) {
+    val id get() = this.account.id
+
+    fun hasProfile(): Boolean {
+        return profile?.firstName?.isNotEmpty() ?: false
+    }
+
     fun isReferral(): Boolean {
         return !referralCode.isNullOrEmpty()
+    }
+
+    fun <T> runIfHasContactDetails(block: (contactDetails: ContactDetails) -> T): T? {
+        val email = this.account.email ?: return null
+        return this.profile?.let {
+            block(
+                ContactDetails(
+                    firstName = this.profile.firstName,
+                    lastName = this.profile.lastName,
+                    hasOptedIntoMarketing = this.profile.hasOptedIntoMarketing,
+                    email = email
+                )
+            )
+        }
     }
 
     override fun toString(): String {
         return "User(id=$id)"
     }
+
+    data class ContactDetails(
+        val firstName: String,
+        val lastName: String,
+        val hasOptedIntoMarketing: Boolean = false,
+        val email: String
+    )
 }

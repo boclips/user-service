@@ -1,6 +1,6 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.presentation.requests.CreateUserRequest
+import com.boclips.users.presentation.requests.CreateTeacherRequest
 
 class CreateUserRequestFactory {
     companion object {
@@ -15,8 +15,8 @@ class CreateUserRequestFactory {
             utmMedium: String? = null,
             utmSource: String? = null,
             utmTerm: String? = null
-        ): CreateUserRequest {
-            return CreateUserRequest(
+        ): CreateTeacherRequest {
+            return CreateTeacherRequest(
                 email = email,
                 password = password,
                 analyticsId = analyticsId,

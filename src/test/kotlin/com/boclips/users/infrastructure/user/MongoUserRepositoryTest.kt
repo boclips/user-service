@@ -1,38 +1,31 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import com.boclips.videos.service.client.Subject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
-    fun `persists compulsory information`() {
-        val user = UserFactory.sample()
+    fun `persists account`() {
+        val account = AccountFactory.sample()
+        userRepository.save(account)
 
-        userRepository.save(user)
-
-        val fetchedUser = userRepository.findById(user.id)!!
+        val fetchedUser = userRepository.findById(account.id)!!
 
         assertThat(fetchedUser.id).isNotNull()
-        assertThat(fetchedUser.firstName).isNotNull()
-        assertThat(fetchedUser.lastName).isNotNull()
-        assertThat(fetchedUser.email).isNotNull()
-        assertThat(fetchedUser.activated).isNotNull()
-        assertThat(fetchedUser.associatedTo).isNotNull()
+        assertThat(fetchedUser.account).isEqualTo(account)
     }
 
     @Test
-    fun `persists optional information`() {
+    fun `persists user`() {
         val user = UserFactory.sample(
-            subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
-            ages = listOf(1, 2, 3, 4),
             marketing = MarketingTrackingFactory.sample(
                 utmCampaign = "campaign",
                 utmSource = "source",
@@ -46,35 +39,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         userRepository.save(user)
 
-        val fetchedUser = userRepository.findById(user.id)!!
+        val fetchedUser = userRepository.findById(user.id)
 
-        assertThat(fetchedUser.hasOptedIntoMarketing).isNotNull()
-        assertThat(fetchedUser.ages).isNotNull()
-        assertThat(fetchedUser.subjects).isNotNull()
-        assertThat(fetchedUser.marketingTracking).isNotNull()
-        assertThat(fetchedUser.referralCode).isNotNull()
-        assertThat(fetchedUser.analyticsId).isNotNull()
-    }
-
-    @Test
-    fun `saving analytics id as null is all good`() {
-        val account = UserFactory.sample(
-            subjects = listOf(Subject(id = SubjectId(value = "1"), name = "Maths")),
-            analyticsId = null
-        )
-
-        userRepository.save(account)
-
-        assertThat(userRepository.findById(account.id)).isEqualTo(account)
+        assertThat(fetchedUser).isEqualTo(user)
     }
 
     @Test
     fun `can get all accounts`() {
         val savedUsers = listOf(
-            userRepository.save(UserFactory.sample()),
-            userRepository.save(UserFactory.sample()),
-            userRepository.save(UserFactory.sample()),
-            userRepository.save(UserFactory.sample()),
             userRepository.save(UserFactory.sample()),
             userRepository.save(UserFactory.sample())
         )
@@ -83,39 +55,35 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `activate an account`() {
-        val account = UserFactory.sample(
-            activated = false,
-            analyticsId = null
-        )
-
-        userRepository.save(account)
-        userRepository.activate(account.id)
-
-        assertThat(userRepository.findById(account.id)!!.activated).isTrue()
-    }
-
-    @Test
     fun `count users`() {
         userRepository.save(
             UserFactory.sample(
-                id = "user-1",
-                activated = false,
-                analyticsId = null
+                account = AccountFactory.sample(
+                    id = "user-1"
+                ),
+                profile = ProfileFactory.sample()
             )
         )
         userRepository.save(
             UserFactory.sample(
-                id = "user=2",
-                activated = false,
-                analyticsId = null
+                account = AccountFactory.sample(
+                    id = "user-2"
+                ),
+                profile = ProfileFactory.sample()
             )
         )
-        userRepository.activate(UserId("user-1"))
+        userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(
+                    id = "user-3"
+                ),
+                profile = null
+            )
+        )
 
         val counts = userRepository.count()
 
-        assertThat(counts.total).isEqualTo(2)
-        assertThat(counts.activated).isEqualTo(1)
+        assertThat(counts.total).isEqualTo(3)
+        assertThat(counts.activated).isEqualTo(2)
     }
 }

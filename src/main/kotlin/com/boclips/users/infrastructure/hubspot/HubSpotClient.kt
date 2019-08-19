@@ -22,16 +22,14 @@ class HubSpotClient(
 
     override fun updateProfile(crmProfiles: List<CrmProfile>) {
         try {
-            val allValidContacts = crmProfiles.filter { it.isValid() }
-
-            allValidContacts
+            crmProfiles
                 .windowed(hubspotProperties.batchSize, hubspotProperties.batchSize, true)
                 .forEachIndexed { index, batchOfUsers ->
                     val contacts = updateContacts(batchOfUsers)
                     logger.info { "[Batch $index]: synced ${contacts.size} users with HubSpot" }
                 }
 
-            logger.info { "Successfully synchronized ${allValidContacts.size} contacts with HubSpot" }
+            logger.info { "Successfully synchronized ${crmProfiles.size} contacts with HubSpot" }
         } catch (ex: Exception) {
             logger.error { "Could not update some users as a contact on HubSpot. Reason: $ex" }
         }

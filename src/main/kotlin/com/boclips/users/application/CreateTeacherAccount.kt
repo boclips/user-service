@@ -1,7 +1,7 @@
 package com.boclips.users.application
 
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
-import com.boclips.users.domain.model.NewUser
+import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -11,12 +11,12 @@ import com.boclips.users.domain.service.AnalyticsClient
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.convertUserToCrmProfile
-import com.boclips.users.presentation.requests.CreateUserRequest
+import com.boclips.users.presentation.requests.CreateTeacherRequest
 import mu.KLogging
 import org.springframework.stereotype.Component
 
 @Component
-class CreateUser(
+class CreateTeacherAccount(
     private val userService: UserService,
     private val marketingService: MarketingService,
     private val captchaProvider: CaptchaProvider,
@@ -24,36 +24,37 @@ class CreateUser(
 ) {
     companion object : KLogging()
 
-    operator fun invoke(createUserRequest: CreateUserRequest): User {
-        if (!this.captchaProvider.validateCaptchaToken(createUserRequest.recaptchaToken!!)) {
-            throw CaptchaScoreBelowThresholdException(createUserRequest.email!!)
+    operator fun invoke(createTeacherRequest: CreateTeacherRequest): User {
+        if (!this.captchaProvider.validateCaptchaToken(createTeacherRequest.recaptchaToken!!)) {
+            throw CaptchaScoreBelowThresholdException(createTeacherRequest.email!!)
         }
 
-        val newUser = NewUser(
-            email = createUserRequest.email!!,
-            password = createUserRequest.password!!,
-            analyticsId = AnalyticsId(value = createUserRequest.analyticsId.orEmpty()),
-            referralCode = createUserRequest.referralCode.orEmpty(),
-            utmSource = createUserRequest.utmSource ?: "",
-            utmContent = createUserRequest.utmContent ?: "",
-            utmTerm = createUserRequest.utmTerm ?: "",
-            utmMedium = createUserRequest.utmMedium ?: "",
-            utmCampaign = createUserRequest.utmCampaign ?: ""
+        val newUser = NewTeacher(
+            email = createTeacherRequest.email!!,
+            password = createTeacherRequest.password!!,
+            analyticsId = AnalyticsId(value = createTeacherRequest.analyticsId.orEmpty()),
+            referralCode = createTeacherRequest.referralCode.orEmpty(),
+            utmSource = createTeacherRequest.utmSource ?: "",
+            utmContent = createTeacherRequest.utmContent ?: "",
+            utmTerm = createTeacherRequest.utmTerm ?: "",
+            utmMedium = createTeacherRequest.utmMedium ?: "",
+            utmCampaign = createTeacherRequest.utmCampaign ?: ""
         )
 
-        val createdUser = userService.createTeacher(newUser = newUser)
+        val createdUser = userService.createTeacher(newTeacher = newUser)
 
         attemptToUpdateProfile(createdUser)
-        trackAccountCreatedEvent(createdUser.analyticsId)
+        createdUser.analyticsId?.let { trackAccountCreatedEvent(it) }
 
         return createdUser
     }
 
     private fun attemptToUpdateProfile(createdUser: User) {
         try {
-            val crmProfile = convertUserToCrmProfile(createdUser, UserSessions(lastAccess = null))
-            marketingService.updateProfile(listOf(crmProfile))
-            marketingService.updateSubscription(crmProfile)
+            convertUserToCrmProfile(createdUser, UserSessions(lastAccess = null))?.let {
+                marketingService.updateProfile(listOf(it))
+                marketingService.updateSubscription(it)
+            }
         } catch (ex: Exception) {
             logger.info { "Failed to update contact $ex" }
         }

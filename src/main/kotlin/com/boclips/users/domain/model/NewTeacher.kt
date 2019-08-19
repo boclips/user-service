@@ -2,7 +2,7 @@ package com.boclips.users.domain.model
 
 import com.boclips.users.domain.model.analytics.AnalyticsId
 
-data class NewUser(
+data class NewTeacher(
     val email: String,
     val password: String,
     val analyticsId: AnalyticsId,

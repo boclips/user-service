@@ -2,6 +2,8 @@ package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,10 +14,13 @@ class UserConverterTest {
         val userResource =
             UserConverter().toUserResource(
                 user = UserFactory.sample(
-                    firstName = "Thierry",
-                    lastName = "Henry",
-                    email = "thierry@henry.fr",
-                    activated = true,
+                    account = AccountFactory.sample(
+                        username = "thierry@henry.fr"
+                    ),
+                    profile = ProfileFactory.sample(
+                        firstName = "Thierry",
+                        lastName = "Henry"
+                    ),
                     analyticsId = AnalyticsId(value = "some-analytics-id")
                 )
             )
@@ -29,7 +34,8 @@ class UserConverterTest {
 
     @Test
     fun `converts users with Boclips source accordingly`() {
-        val userResource = UserConverter().toUserResource(user = UserFactory.sample(associatedTo = UserSource.Boclips))
+        val userResource =
+            UserConverter().toUserResource(user = UserFactory.sample(account = AccountFactory.sample(associatedTo = UserSource.Boclips)))
 
         assertThat(userResource.organisationId).isNull()
     }
@@ -39,8 +45,10 @@ class UserConverterTest {
         val userResource =
             UserConverter().toUserResource(
                 user = UserFactory.sample(
-                    associatedTo = UserSource.ApiClient(
-                        organisationId = com.boclips.users.domain.model.organisation.OrganisationId("test")
+                    account = AccountFactory.sample(
+                        associatedTo = UserSource.ApiClient(
+                            organisationId = com.boclips.users.domain.model.organisation.OrganisationId("test")
+                        )
                     )
                 )
             )

@@ -9,6 +9,9 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
+import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.verify
@@ -43,12 +46,13 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         val user = userRepository.findById(UserId(userId))!!
-        assertThat(user.firstName).isEqualTo("josh")
-        assertThat(user.lastName).isEqualTo("fleck")
-        assertThat(user.hasOptedIntoMarketing).isTrue()
-        assertThat(user.ages).containsExactly(4, 5, 6)
-        assertThat(user.subjects).hasSize(1)
-        assertThat(user.subjects.first().id).isEqualTo(SubjectId("1"))
+        val profile = user.profile!!
+        assertThat(profile.firstName).isEqualTo("josh")
+        assertThat(profile.lastName).isEqualTo("fleck")
+        assertThat(profile.hasOptedIntoMarketing).isTrue()
+        assertThat(profile.ages).containsExactly(4, 5, 6)
+        assertThat(profile.subjects).hasSize(1)
+        assertThat(profile.subjects.first().id).isEqualTo(SubjectId("1"))
     }
 
     @Test
@@ -58,7 +62,8 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         saveUser(UserFactory.sample(id = userId))
 
-        assertThat(updateUser(userId)).isEqualTo(updateUser(userId))
+        val updateUserRequest = UpdateUserRequestFactory.sample()
+        assertThat(updateUser(userId, updateUserRequest)).isEqualTo(updateUser(userId, updateUserRequest))
     }
 
     @Nested
@@ -69,9 +74,14 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         fun `does not publish a UserActivated event`() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)
-            saveUser(UserFactory.sample(id = userId, activated = true))
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(id = userId),
+                    profile = ProfileFactory.sample()
+                )
+            )
 
-            updateUser(userId)
+            updateUser(userId, UpdateUserRequestFactory.sample())
 
             assertThat(eventBus.hasReceivedEventOfType(UserActivated::class.java)).isFalse()
         }
@@ -83,16 +93,13 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveUser(
                 UserFactory.sample(
-                    activated = true,
-                    id = userId,
-                    referralCode = "it-is-a-referral",
-                    firstName = "Jane",
-                    lastName = "Doe",
-                    email = "jane@doe.com"
+                    account = AccountFactory.sample(id = userId),
+                    profile = ProfileFactory.sample(),
+                    referralCode = "it-is-a-referral"
                 )
             )
 
-            updateUser(userId)
+            updateUser(userId, UpdateUserRequestFactory.sample())
 
             verifyZeroInteractions(referralProvider)
         }
@@ -101,13 +108,22 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     @DisplayName("When account not activated")
     inner class AccountNotActivated {
+
         @Test
         fun `update user publishes an event for teacher user`() {
             val userId1 = "${UUID.randomUUID()}@boclips.com"
             setSecurityContext(userId1)
-            saveUser(UserFactory.sample(id = userId1, associatedTo = UserSourceFactory.boclipsSample()))
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(
+                        id = userId1,
+                        associatedTo = UserSourceFactory.boclipsSample()
+                    ),
+                    profile = null
+                )
+            )
 
-            updateUser(userId1)
+            updateUser(userId1, UpdateUserRequestFactory.sample())
 
             val event = eventBus.getEventOfType(UserActivated::class.java)
             assertThat(event.totalUsers).isEqualTo(1)
@@ -122,12 +138,15 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId1)
             saveUser(
                 UserFactory.sample(
-                    id = userId1,
-                    associatedTo = UserSourceFactory.apiClientSample(organisationId = "org-123")
+                    account = AccountFactory.sample(
+                        id = userId1,
+                        associatedTo = UserSourceFactory.apiClientSample(organisationId = "org-123")
+                    ),
+                    profile = null
                 )
             )
 
-            updateUser(userId1)
+            updateUser(userId1, UpdateUserRequestFactory.sample())
 
             val event = eventBus.getEventOfType(UserActivated::class.java)
             assertThat(event.totalUsers).isEqualTo(1)
@@ -143,15 +162,20 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveUser(
                 UserFactory.sample(
-                    id = userId,
+                    account = AccountFactory.sample(
+                        id = userId,
+                        username = "jane@doe.com"
+                    ),
                     referralCode = "it-is-a-referral",
-                    firstName = "Jane",
-                    lastName = "Doe",
-                    email = "jane@doe.com"
+                    profile = null
                 )
             )
 
-            updateUser(userId)
+            updateUser(userId, UpdateUserRequest(
+                firstName = "Jane",
+                lastName = "Doe",
+                hasOptedIntoMarketing = false
+            ))
 
             verify(referralProvider).createReferral(com.nhaarman.mockitokotlin2.check {
                 Assertions.assertThat(it.referralCode).isEqualTo("it-is-a-referral")
@@ -167,7 +191,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `cannot update user when security context not populated`() {
         assertThrows<NotAuthenticatedException> {
-            updateUser("peanuts")
+            updateUser("peanuts", UpdateUserRequestFactory.sample())
         }
     }
 
@@ -178,7 +202,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         saveUser(UserFactory.sample())
 
-        assertThrows<PermissionDeniedException> { updateUser(userId) }
+        assertThrows<PermissionDeniedException> { updateUser(userId, UpdateUserRequestFactory.sample()) }
     }
 
     @Test
@@ -186,6 +210,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
-        assertThrows<UserNotFoundException> { updateUser(userId) }
+        assertThrows<UserNotFoundException> { updateUser(userId, UpdateUserRequestFactory.sample()) }
     }
 }

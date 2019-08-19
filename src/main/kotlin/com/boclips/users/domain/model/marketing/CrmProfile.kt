@@ -17,13 +17,6 @@ class CrmProfile(
     val lastLoggedIn: Instant?,
     val marketingTracking: MarketingTracking
 ) {
-    fun isValid(): Boolean {
-        return this.firstName.isNotEmpty() &&
-            this.lastName.isNotEmpty() &&
-            this.email.isNotEmpty() &&
-            EmailValidator.getInstance().isValid(this.email)
-    }
-
     override fun toString(): String {
         return "CrmProfile(id=$id)"
     }

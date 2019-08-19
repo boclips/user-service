@@ -14,25 +14,33 @@ class UserToCrmProfileTest {
         val sessions = UserSessionsFactory.sample(lastAccess = lastAccess)
         val user = UserFactory.sample()
 
-        val crmProfile = convertUserToCrmProfile(user, sessions)
+        val crmProfile = convertUserToCrmProfile(user, sessions)!!
 
         assertThat(crmProfile.id).isEqualTo(user.id)
-        assertThat(crmProfile.activated).isEqualTo(user.activated)
-        assertThat(crmProfile.ageRange).isEqualTo(user.ages)
-        assertThat(crmProfile.subjects).isEqualTo(user.subjects)
-        assertThat(crmProfile.email).isEqualTo(user.email)
-        assertThat(crmProfile.firstName).isEqualTo(user.firstName)
-        assertThat(crmProfile.lastName).isEqualTo(user.lastName)
-        assertThat(crmProfile.hasOptedIntoMarketing).isEqualTo(user.hasOptedIntoMarketing)
+        assertThat(crmProfile.activated).isEqualTo(true)
+        assertThat(crmProfile.ageRange).isEqualTo(user.profile!!.ages)
+        assertThat(crmProfile.subjects).isEqualTo(user.profile!!.subjects)
+        assertThat(crmProfile.email).isEqualTo(user.account.email)
+        assertThat(crmProfile.firstName).isEqualTo(user.profile!!.firstName)
+        assertThat(crmProfile.lastName).isEqualTo(user.profile!!.lastName)
+        assertThat(crmProfile.hasOptedIntoMarketing).isEqualTo(user.profile!!.hasOptedIntoMarketing)
 
         assertThat(crmProfile.lastLoggedIn).isEqualTo(lastAccess)
+    }
+
+    @Test
+    fun `returns null when no user profile`() {
+        val crmProfile = convertUserToCrmProfile(UserFactory.sample(profile = null), UserSessionsFactory.sample())
+
+        assertThat(crmProfile).isNull()
     }
 
     @Test
     fun `includes some session for users that have not logged in`() {
         val user = UserFactory.sample()
         val sessions = UserSessionsFactory.sample(lastAccess = null)
-        val crmProfile = convertUserToCrmProfile(user, sessions)
+
+        val crmProfile = convertUserToCrmProfile(user, sessions)!!
 
         assertThat(crmProfile.lastLoggedIn).isNull()
     }

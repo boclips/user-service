@@ -2,6 +2,8 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -29,8 +31,8 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         userRepository.save(
             UserFactory.sample(
-                id = "lovely-user",
-                activated = false
+                account = AccountFactory.sample(id = "lovely-user"),
+                profile = null
             )
         )
 
@@ -58,8 +60,8 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         userRepository.save(
             UserFactory.sample(
-                id = "lovely-user",
-                activated = true
+                account = AccountFactory.sample(id = "lovely-user"),
+                profile = ProfileFactory.sample()
             )
         )
 

@@ -1,7 +1,9 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.NewUser
+import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.NewTeacher
+import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.UpdatedUser
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
@@ -21,7 +23,7 @@ class UserService(
         val retrievedUser = userRepository.findById(UserId(id.value))
         val user = retrievedUser ?: throw UserNotFoundException(id)
 
-        if (retrievedUser.associatedTo != UserSource.Boclips) throw UserNotFoundException(id)
+        if (retrievedUser.account.associatedTo != UserSource.Boclips) throw UserNotFoundException(id)
 
         logger.info { "Fetched teacher user ${id.value}" }
 
@@ -29,7 +31,7 @@ class UserService(
     }
 
     fun findAllTeachers(): List<User> {
-        val allUsers = userRepository.findAll().filter { it.associatedTo == UserSource.Boclips }
+        val allUsers = userRepository.findAll().filter { it.account.associatedTo == UserSource.Boclips }
         logger.info { "Fetched ${allUsers.size} teacher users from database" }
 
         return allUsers
@@ -40,32 +42,30 @@ class UserService(
         return retrievedUser ?: throw UserNotFoundException(userId)
     }
 
-    fun createTeacher(newUser: NewUser): User {
+    fun createTeacher(newTeacher: NewTeacher): User {
         val identity = identityProvider.createUser(
-            email = newUser.email,
-            password = newUser.password
+            email = newTeacher.email,
+            password = newTeacher.password
         )
 
         val user = userRepository.save(
             User(
-                id = UserId(identity.id.value),
-                activated = false,
-                analyticsId = newUser.analyticsId,
-                subjects = emptyList(),
-                ages = emptyList(),
-                referralCode = newUser.referralCode,
-                firstName = null,
-                lastName = null,
-                email = newUser.email,
-                hasOptedIntoMarketing = false,
-                marketingTracking = MarketingTracking(
-                    utmCampaign = newUser.utmCampaign,
-                    utmSource = newUser.utmSource,
-                    utmMedium = newUser.utmMedium,
-                    utmContent = newUser.utmContent,
-                    utmTerm = newUser.utmTerm
+                account = Account(
+                    id = UserId(identity.id.value),
+                    username = newTeacher.email,
+                    associatedTo = UserSource.Boclips
                 ),
-                associatedTo = UserSource.Boclips
+                profile = null,
+                analyticsId = newTeacher.analyticsId,
+
+                referralCode = newTeacher.referralCode,
+                marketingTracking = MarketingTracking(
+                    utmCampaign = newTeacher.utmCampaign,
+                    utmSource = newTeacher.utmSource,
+                    utmMedium = newTeacher.utmMedium,
+                    utmContent = newTeacher.utmContent,
+                    utmTerm = newTeacher.utmTerm
+                )
             )
         )
 
@@ -74,7 +74,8 @@ class UserService(
         return user
     }
 
-    fun updateUserDetails(updatedUser: UpdatedUser): User {
+    // TODO split UpdatedUser up into id and profile
+    fun updateUserProfile(updatedUser: UpdatedUser): User {
         val originalUser =
             userRepository.findById(updatedUser.userId) ?: throw UserNotFoundException(
                 updatedUser.userId
@@ -82,11 +83,13 @@ class UserService(
 
         val user = userRepository.save(
             originalUser.copy(
-                firstName = updatedUser.firstName,
-                lastName = updatedUser.lastName,
-                hasOptedIntoMarketing = updatedUser.hasOptedIntoMarketing,
-                subjects = updatedUser.subjects,
-                ages = updatedUser.ages
+                profile = Profile(
+                    firstName = updatedUser.firstName,
+                    lastName = updatedUser.lastName,
+                    hasOptedIntoMarketing = updatedUser.hasOptedIntoMarketing,
+                    subjects = updatedUser.subjects,
+                    ages = updatedUser.ages
+                )
             )
         )
 

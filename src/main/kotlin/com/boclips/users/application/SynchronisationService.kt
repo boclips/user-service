@@ -29,7 +29,7 @@ class SynchronisationService(
                 val sessions = sessionProvider.getUserSessions(user.id)
                 return@map convertUserToCrmProfile(user, sessions)
             }
-            .filter { it.isValid() }
+            .filterNotNull()
 
         logger.info { "Updating ${allCrmProfiles.size} profiles" }
         marketingService.updateProfile(allCrmProfiles)

@@ -36,14 +36,14 @@ class UpdateUser(
 ) {
     companion object : KLogging()
 
-    operator fun invoke(userId: String, updateUserRequest: UpdateUserRequest? = null): User {
+    operator fun invoke(userId: String, updateUserRequest: UpdateUserRequest): User {
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
         if (authenticatedUser.id != userId) throw PermissionDeniedException()
 
         val user = userService.findUserById(UserId(authenticatedUser.id))
 
-        updateUserRequest?.run {
-            userService.updateUserDetails(
+        updateUserRequest.run {
+            userService.updateUserProfile(
                 UpdatedUser(
                     userId = user.id,
                     firstName = this.firstName!!,
@@ -55,20 +55,21 @@ class UpdateUser(
             )
         }
 
-        if (!user.activated) activate(user)
+        if (!user.hasProfile()) activate(UserId(authenticatedUser.id))
 
         return userService.findUserById(UserId(authenticatedUser.id))
     }
 
-    private fun activate(user: User) {
-        userRepository.activate(UserId(value = user.id.value))
+    private fun activate(id: UserId) {
+        val user = userService.findUserById(id)
 
         if (user.isReferral()) {
             registerReferral(user)
         }
 
-        val crmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))
-        marketingService.updateProfile(listOf(crmProfile))
+        convertUserToCrmProfile(user, UserSessions(Instant.now()))?.let {
+            marketingService.updateProfile(listOf(it))
+        }
 
         publishUserActivated(user)
 
@@ -83,12 +84,12 @@ class UpdateUser(
                     com.boclips.eventbus.domain.user.User.builder()
                         .id(user.id.value)
                         .organisationId(
-                            when (user.associatedTo) {
+                            when (user.account.associatedTo) {
                                 is UserSource.Boclips -> null
-                                is UserSource.ApiClient -> user.associatedTo.organisationId.value
+                                is UserSource.ApiClient -> user.account.associatedTo.organisationId.value
                             }
                         )
-                        .isBoclipsEmployee(user.email.endsWith("@boclips.com"))
+                        .isBoclipsEmployee(user.account.isBoclipsEmployee())
                         .build()
                 )
                 .totalUsers(count.total)
@@ -98,17 +99,23 @@ class UpdateUser(
     }
 
     private fun registerReferral(activatedUser: User) {
-        val referral = NewReferral(
-            referralCode = activatedUser.referralCode!!,
-            firstName = activatedUser.firstName!!,
-            lastName = activatedUser.lastName!!,
-            email = activatedUser.email,
-            externalIdentifier = activatedUser.id.value,
-            status = "qualified"
-        )
+        if (activatedUser.referralCode.isNullOrBlank()) {
+            return
+        }
 
-        referralProvider.createReferral(referral)
-        logger.info { "Confirmed referral of user ${activatedUser.id}" }
+        activatedUser.runIfHasContactDetails {
+            referralProvider.createReferral(
+                NewReferral(
+                    referralCode = activatedUser.referralCode,
+                    firstName = it.firstName,
+                    lastName = it.lastName,
+                    email = it.email,
+                    externalIdentifier = activatedUser.id.value,
+                    status = "qualified"
+                )
+            )
+            logger.info { "Confirmed referral of user ${activatedUser.id}" }
+        }
     }
 
     private fun convertSubjects(updateUserRequest: UpdateUserRequest): List<Subject> {
