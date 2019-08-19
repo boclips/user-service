@@ -29,16 +29,12 @@ class UserService(
         return user
     }
 
+    // TODO implement stream
     fun findAllTeachers(): List<User> {
         val allUsers = userRepository.findAll().filter { it.account.associatedTo == UserSource.Boclips }
         logger.info { "Fetched ${allUsers.size} teacher users from database" }
 
         return allUsers
-    }
-
-    fun findUserById(userId: UserId): User {
-        val retrievedUser = userRepository.findById(UserId(userId.value))
-        return retrievedUser ?: throw UserNotFoundException(userId)
     }
 
     fun createTeacher(newTeacher: NewTeacher): User {
@@ -56,7 +52,6 @@ class UserService(
                 ),
                 profile = null,
                 analyticsId = newTeacher.analyticsId,
-
                 referralCode = newTeacher.referralCode,
                 marketingTracking = MarketingTracking(
                     utmCampaign = newTeacher.utmCampaign,
@@ -71,6 +66,11 @@ class UserService(
         logger.info { "Created user ${user.id.value}" }
 
         return user
+    }
+
+    fun findUserById(userId: UserId): User {
+        val retrievedUser = userRepository.findById(UserId(userId.value))
+        return retrievedUser ?: throw UserNotFoundException(userId)
     }
 
     fun updateProfile(userId: UserId, profile: Profile): User {
