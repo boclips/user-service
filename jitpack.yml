@@ -1,0 +1,6 @@
+install:
+  - ./build-artifacts
+env:
+  ARTIFACT: user-service-client
+before_install:
+  - export ARTIFACT=user-service-client
