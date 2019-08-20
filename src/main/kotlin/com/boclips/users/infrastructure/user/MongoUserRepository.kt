@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserCounts
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.service.UserUpdateCommand
 import org.springframework.stereotype.Component
 
 @Component
@@ -12,6 +13,10 @@ class MongoUserRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository,
     private val userDocumentConverter: UserDocumentConverter
 ) : UserRepository {
+    override fun update(id: UserId, vararg updateCommands: UserUpdateCommand) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun findAll(ids: List<UserId>) = userDocumentMongoRepository
         .findAllById(ids.map { it.value })
         .mapNotNull { userDocumentConverter.convertToUser(it) }
