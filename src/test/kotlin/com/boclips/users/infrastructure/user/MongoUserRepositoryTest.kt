@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
@@ -85,5 +86,23 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(counts.total).isEqualTo(3)
         assertThat(counts.activated).isEqualTo(2)
+    }
+
+    @Test
+    fun `update user first name`() {
+        val user = userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(
+                    id = "user-1"
+                ),
+                profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace")
+            )
+        )
+
+        userRepository.update(user.id, UserUpdateCommand.ReplaceFirstName("Amelia"))
+
+        val updatedUser = userRepository.findById(user.id)!!
+
+        assertThat(updatedUser.profile!!.firstName).isEqualTo("Amelia")
     }
 }

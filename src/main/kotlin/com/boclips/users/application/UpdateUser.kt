@@ -32,7 +32,8 @@ class UpdateUser(
     private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
     private val subjectService: SubjectService,
-    private val eventBus: EventBus
+    private val eventBus: EventBus,
+    private val userUpdatesConverter: UserUpdatesConverter
 ) {
     companion object : KLogging()
 
@@ -41,6 +42,8 @@ class UpdateUser(
         if (authenticatedUser.id != userId) throw PermissionDeniedException()
 
         val user = userService.findUserById(UserId(authenticatedUser.id))
+
+        val commands = userUpdatesConverter.convert(updateUserRequest)
 
         updateUserRequest.run {
             userService.updateProfile(
