@@ -6,14 +6,28 @@ import com.boclips.users.domain.model.UserCounts
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
+import org.bson.types.ObjectId
 import org.springframework.stereotype.Component
 
 class MongoUserRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository,
     private val userDocumentConverter: UserDocumentConverter
 ) : UserRepository {
-    override fun update(id: UserId, vararg updateCommands: UserUpdateCommand) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    override fun update(user: User, vararg updateCommands: UserUpdateCommand) {
+        val userDocument = UserDocument.from(user)
+
+        updateCommands.forEach { updateCommand ->
+            when(updateCommand) {
+                is UserUpdateCommand.ReplaceFirstName -> userDocument.apply { firstName = updateCommand.firstName }
+                is UserUpdateCommand.ReplaceLastName -> userDocument.apply { lastName = updateCommand.lastName }
+                is UserUpdateCommand.ReplaceSubjects -> userDocument.apply { subjectIds = updateCommand.subjects.map{ it.id.value } }
+                is UserUpdateCommand.ReplaceAges -> userDocument.apply { ageRange = updateCommand.ages }
+                is UserUpdateCommand.ReplaceHasOptedIntoMarketing -> userDocument.apply { hasOptedIntoMarketing = updateCommand.hasOptedIntoMarketing }
+            }
+        }
+
+        userDocumentMongoRepository.save(userDocument)
     }
 
     override fun findAll(ids: List<UserId>) = userDocumentMongoRepository

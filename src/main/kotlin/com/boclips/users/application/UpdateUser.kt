@@ -31,7 +31,6 @@ class UpdateUser(
     private val userRepository: UserRepository,
     private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
-    private val subjectService: SubjectService,
     private val eventBus: EventBus,
     private val userUpdatesConverter: UserUpdatesConverter
 ) {
@@ -43,20 +42,11 @@ class UpdateUser(
 
         val user = userService.findUserById(UserId(authenticatedUser.id))
 
+        // At this point, if user does not exist, then look up Account and create new user with this information.
+
         val commands = userUpdatesConverter.convert(updateUserRequest)
 
-        updateUserRequest.run {
-            userService.updateProfile(
-                userId = user.id,
-                profile = Profile(
-                    firstName = this.firstName!!,
-                    lastName = this.lastName!!,
-                    subjects = convertSubjects(this),
-                    ages = this.ages.orEmpty(),
-                    hasOptedIntoMarketing = this.hasOptedIntoMarketing!!
-                )
-            )
-        }
+        userRepository.update(user, *commands.toTypedArray())
 
         if (!user.hasProfile()) activate(UserId(authenticatedUser.id))
 
@@ -120,15 +110,4 @@ class UpdateUser(
             logger.info { "Confirmed referral of user ${activatedUser.id}" }
         }
     }
-
-    private fun convertSubjects(updateUserRequest: UpdateUserRequest): List<Subject> {
-        return if (containsInvalidSubjects(updateUserRequest.subjects)) {
-            throw InvalidSubjectException(updateUserRequest.subjects.orEmpty())
-        } else {
-            subjectService.getSubjectsById(updateUserRequest.subjects.orEmpty().map { SubjectId(value = it) })
-        }
-    }
-
-    private fun containsInvalidSubjects(subjects: List<String>?) =
-        !subjectService.allSubjectsExist(subjects.orEmpty().map { SubjectId(value = it) })
 }

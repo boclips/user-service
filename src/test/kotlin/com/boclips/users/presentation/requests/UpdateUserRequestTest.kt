@@ -29,17 +29,6 @@ class UpdateUserRequestTest {
     @Nested
     inner class Names {
         @Test
-        fun `validates first firstName for null`() {
-            val violations = validator.validate(
-                UpdateUserRequestFactory.sample(
-                    firstName = null
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("First name is required")
-        }
-
-        @Test
         fun `validates first firstName for empty string`() {
             val violations = validator.validate(
                 UpdateUserRequestFactory.sample(
@@ -60,17 +49,6 @@ class UpdateUserRequestTest {
                 )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("First name must be between 1 and 200 characters")
-        }
-
-        @Test
-        fun `validates first lastName for null`() {
-            val violations = validator.validate(
-                UpdateUserRequestFactory.sample(
-                    lastName = null
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.first().message).isEqualTo("Last name is required")
         }
 
         @Test
@@ -98,32 +76,7 @@ class UpdateUserRequestTest {
     }
 
     @Nested
-    inner class OptInMarketing {
-        @Test
-        fun `validates optInMarketing for null`() {
-            val violations = validator.validate(
-                UpdateUserRequestFactory.sample(
-                    hasOptedIntoMarketing = null
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Marketing preferences must not be null")
-        }
-    }
-
-    @Nested
     inner class AgeRanges {
-        @Test
-        fun `validates age ranges for null`() {
-            val violations = validator.validate(
-                UpdateUserRequestFactory.sample(
-                    ages = null
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Ages are required")
-        }
-
         @Test
         fun `validates age ranges for empty list`() {
             val violations = validator.validate(
@@ -149,18 +102,6 @@ class UpdateUserRequestTest {
 
     @Nested
     inner class Subjects {
-
-        @Test
-        fun `validates subjects for null`() {
-            val violations = validator.validate(
-                UpdateUserRequestFactory.sample(
-                    subjects = null
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Subjects are required")
-        }
-
         @Test
         fun `validates subjects for empty list`() {
             val violations = validator.validate(

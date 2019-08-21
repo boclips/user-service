@@ -10,15 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class UserDocument(
     @Id
     val id: String,
-    val firstName: String?,
-    val lastName: String?,
+    var firstName: String?,
+    var lastName: String?,
     val email: String?,
     val username: String?,
-    val subjectIds: List<String>?,
-    val ageRange: List<Int>?,
+    var subjectIds: List<String>?,
+    var ageRange: List<Int>?,
     val analyticsId: String?,
     val referralCode: String?,
-    val hasOptedIntoMarketing: Boolean?,
+    var hasOptedIntoMarketing: Boolean?,
     val marketing: MarketingTrackingDocument?,
     val organisationId: String?
 ) {
