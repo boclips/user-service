@@ -7,6 +7,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 fun MockHttpServletRequestBuilder.asUser(id: String) =
     this.with(SecurityMockMvcRequestPostProcessors.user(id))
 
+fun MockHttpServletRequestBuilder.asUserWithRoles(id: String, vararg roles: String) =
+    this.with(
+        SecurityMockMvcRequestPostProcessors
+            .user(id)
+            .roles(*roles)
+    )
+
 fun MockHttpServletRequestBuilder.asBackofficeUser() =
     this.with(
         SecurityMockMvcRequestPostProcessors

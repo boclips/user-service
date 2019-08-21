@@ -3,6 +3,8 @@ package com.boclips.users.application
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.application.exceptions.UserNotFoundException
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.AccountNotFoundException
 import com.boclips.users.domain.model.UserSource
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -25,7 +27,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var getUser: GetUser
 
     @Test
-    fun `get user`() {
+    fun `get authenticated user`() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
@@ -56,6 +58,29 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `get any user`() {
+        val organisationId = ObjectId().toHexString()
+        val existingUser = saveUser(
+            UserFactory.sample(
+                account = AccountFactory.sample(
+                    username = "jane@doe.com",
+                    associatedTo = UserSourceFactory.apiClientSample(organisationId = organisationId)
+                ),
+                analyticsId = AnalyticsId(value = "123"),
+                profile = ProfileFactory.sample(
+                    firstName = "Jane",
+                    lastName = "Doe"
+                )
+            )
+        )
+
+        setSecurityContext("user-that-can-view-users", UserRoles.VIEW_USERS)
+        val resource = getUser(existingUser.id.value)
+
+        assertThat(resource.id).isEqualTo(existingUser.id.value)
+    }
+
+    @Test
     fun `cannot obtain user information of another user`() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext("different-user")
@@ -77,7 +102,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
-        assertThrows<AccountNotFoundException> { getUser(userId) }
+        assertThrows<UserNotFoundException> { getUser(userId) }
     }
 
     @Nested

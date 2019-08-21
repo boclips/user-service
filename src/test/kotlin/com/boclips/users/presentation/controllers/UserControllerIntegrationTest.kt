@@ -1,10 +1,12 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
+import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -196,7 +198,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `get user`() {
+    fun `get own profile`() {
         val user = saveUser(UserFactory.sample())
 
         mvc.perform(
@@ -208,6 +210,14 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.lastName").exists())
             .andExpect(jsonPath("$.analyticsId").exists())
             .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
+    }
+
+    @Test
+    fun `get user that does not exist`() {
+        mvc.perform(
+            get("/v1/users/rafal").asUserWithRoles("ben", UserRoles.VIEW_USERS)
+        )
+            .andExpect(status().isNotFound)
     }
 
     @Test

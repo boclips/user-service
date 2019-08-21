@@ -16,7 +16,8 @@ class LinksController(
         "", listOfNotNull(
             userLinkBuilder.createUserLink(),
             userLinkBuilder.updateUserLink(),
-            userLinkBuilder.profileLink()
+            userLinkBuilder.profileLink(),
+            userLinkBuilder.userLink()
         )
     )
 }

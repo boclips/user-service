@@ -38,7 +38,7 @@ class UserController(
         val user = createTeacherAccount(createTeacherRequest!!)
 
         val headers = HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, userLinkBuilder.profileLink(user.id)?.href)
+        headers.set(HttpHeaders.LOCATION, userLinkBuilder.newUserProfileLink(user.id)?.href)
 
         return ResponseEntity(headers, HttpStatus.CREATED)
     }

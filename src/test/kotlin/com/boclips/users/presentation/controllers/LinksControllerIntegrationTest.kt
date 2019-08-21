@@ -1,13 +1,16 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.asUser
+import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
+import com.boclips.users.testsupport.factories.UserFactory
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.endsWith
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -21,7 +24,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(get("/v1/"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.activate").doesNotExist())
-//    TODO include when frontend is refactored        .andExpect(jsonPath("$._links.profile").doesNotExist())
+            .andExpect(jsonPath("$._links.user").doesNotExist())
+            .andExpect(jsonPath("$._links.profile").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").exists())
     }
 
@@ -59,6 +63,14 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.activate").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
+    }
+
+    @Test
+    fun `user with VIEW_USERS role`() {
+        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_USERS))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.user.href", containsString("/users/{id}")))
+            .andExpect(jsonPath("$._links.user.templated", equalTo(true)))
     }
 
     @Test

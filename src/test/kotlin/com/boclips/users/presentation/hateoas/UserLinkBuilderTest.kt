@@ -1,6 +1,8 @@
 package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -96,22 +98,57 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `getUserLink when authenticated`() {
+    fun `profile link when authenticated`() {
         setSecurityContext("a-user")
 
-        val getUserLink = userLinkBuilder.profileLink()
+        val profileLink = userLinkBuilder.profileLink()
 
-        assertThat(getUserLink).isNotNull()
-        assertThat(getUserLink!!.href).endsWith("/users/a-user")
-        assertThat(getUserLink.rel).isEqualTo("profile")
+        assertThat(profileLink).isNotNull
+        assertThat(profileLink!!.href).endsWith("/users/a-user")
+        assertThat(profileLink.rel).isEqualTo("profile")
     }
 
     @Test
-    fun `getUserLink when not authenticated`() {
-        val getUserLink = userLinkBuilder.profileLink()
+    fun `profile link when not authenticated`() {
+        val profileLink = userLinkBuilder.profileLink()
 
-        assertThat(getUserLink).isNotNull()
-        assertThat(getUserLink!!.href).endsWith("/users/{id}")
-        assertThat(getUserLink.rel).isEqualTo("profile")
+        assertThat(profileLink).isNull()
+    }
+
+    @Test
+    fun `profile link for new user when not authenticated`() {
+        val userId = "new-user-id"
+        val profileLink = userLinkBuilder.newUserProfileLink(UserId(userId))
+
+        assertThat(profileLink).isNotNull
+        assertThat(profileLink!!.href).endsWith("/users/$userId")
+        assertThat(profileLink.rel).isEqualTo("profile")
+    }
+
+    @Test
+    fun `user link when not authenticated`() {
+        val userLink = userLinkBuilder.userLink()
+
+        assertThat(userLink).isNull()
+    }
+
+    @Test
+    fun `user link when authenticated without VIEW_USERS role`() {
+        setSecurityContext("a-user")
+
+        val userLink = userLinkBuilder.userLink()
+
+        assertThat(userLink).isNull()
+    }
+
+    @Test
+    fun `user link when authenticated and has VIEW_USERS role`() {
+        setSecurityContext("a-user", UserRoles.VIEW_USERS)
+
+        val userLink = userLinkBuilder.userLink()
+
+        assertThat(userLink).isNotNull()
+        assertThat(userLink!!.href).endsWith("/users/{id}")
+        assertThat(userLink.rel).isEqualTo("user")
     }
 }
