@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.requests
 
+import com.boclips.users.domain.service.UserUpdateCommand
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
@@ -16,5 +17,7 @@ open class UpdateUserRequest(
     @field:Size(min = 1, max = 19, message = "Cannot have less than 1 or more than 99 ages")
     var ages: List<Int>? = null,
 
-    var hasOptedIntoMarketing: Boolean? = null
+    var hasOptedIntoMarketing: Boolean? = null,
+
+    var referralCode: String? = null
 )

@@ -24,6 +24,7 @@ class MongoUserRepository(
                 is UserUpdateCommand.ReplaceSubjects -> userDocument.apply { subjectIds = updateCommand.subjects.map{ it.id.value } }
                 is UserUpdateCommand.ReplaceAges -> userDocument.apply { ageRange = updateCommand.ages }
                 is UserUpdateCommand.ReplaceHasOptedIntoMarketing -> userDocument.apply { hasOptedIntoMarketing = updateCommand.hasOptedIntoMarketing }
+                is UserUpdateCommand.ReplaceReferralCode -> userDocument.apply { referralCode = updateCommand.referralCode }
             }
         }
 
