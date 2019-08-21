@@ -6,7 +6,7 @@ import com.boclips.users.client.model.User
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testUser
-import com.boclips.users.domain.model.UserSource
+import com.boclips.users.domain.model.Platform
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -50,12 +50,12 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
         val organisation = saveOrganisation(organisationName)
         val user = UserFactory.sample(
             account = AccountFactory.sample(
-                associatedTo = UserSource.ApiClient(organisation.id)
+                platform = Platform.ApiCustomer(organisation.id)
             )
         )
         saveUser(user)
 
-        return User(user.id.value, (user.account.associatedTo as UserSource.ApiClient).organisationId.value)
+        return User(user.id.value, (user.account.platform as Platform.ApiCustomer).organisationId.value)
     }
 }
 

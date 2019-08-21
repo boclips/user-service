@@ -1,12 +1,11 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.UserSource
+import com.boclips.users.domain.model.Platform
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.testsupport.factories.AccountFactory
-import com.boclips.users.testsupport.factories.MarketingTrackingFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserDocumentFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -42,19 +41,19 @@ class UserDocumentConverterTest {
 
     @Test
     fun `can convert boclips user`() {
-        val user = UserFactory.sample(account = AccountFactory.sample(associatedTo = UserSource.Boclips))
+        val user = UserFactory.sample(account = AccountFactory.sample(platform = Platform.BoclipsForTeachers))
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
-        assertThat(convertedUser.account.associatedTo).isEqualTo(UserSource.Boclips)
+        assertThat(convertedUser.account.platform).isEqualTo(Platform.BoclipsForTeachers)
     }
 
     @Test
     fun `can convert api client`() {
-        val user = UserFactory.sample(account = AccountFactory.sample(associatedTo = UserSource.ApiClient(organisationId = OrganisationId("test"))))
+        val user = UserFactory.sample(account = AccountFactory.sample(platform = Platform.ApiCustomer(organisationId = OrganisationId("test"))))
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
 
-        assertThat(convertedUser.account.associatedTo).isEqualTo(UserSource.ApiClient(organisationId = OrganisationId("test")))
+        assertThat(convertedUser.account.platform).isEqualTo(Platform.ApiCustomer(organisationId = OrganisationId("test")))
     }
 
     //TODO why is this the case??

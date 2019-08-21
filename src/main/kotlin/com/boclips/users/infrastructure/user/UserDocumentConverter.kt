@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.UserSource
+import com.boclips.users.domain.model.Platform
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.service.SubjectService
@@ -16,9 +16,9 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
             account = Account(
                 id = UserId(value = userDocument.id),
                 username = userDocument.username ?: userDocument.email.orEmpty(),
-                associatedTo = userDocument.organisationId
-                    ?.let { UserSource.ApiClient(com.boclips.users.domain.model.organisation.OrganisationId(value = userDocument.organisationId)) }
-                    ?: UserSource.Boclips
+                platform = userDocument.organisationId
+                    ?.let { Platform.ApiCustomer(com.boclips.users.domain.model.organisation.OrganisationId(value = userDocument.organisationId)) }
+                    ?: Platform.BoclipsForTeachers
             ),
             profile = Profile(
                 firstName = userDocument.firstName.orEmpty(),

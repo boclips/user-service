@@ -5,8 +5,7 @@ import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.AccountNotFoundException
-import com.boclips.users.domain.model.UserSource
+import com.boclips.users.domain.model.Platform
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
@@ -37,7 +36,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
                 account = AccountFactory.sample(
                     username = "jane@doe.com",
                     id = userId,
-                    associatedTo = UserSourceFactory.apiClientSample(organisationId = organisationId)
+                    platform = UserSourceFactory.apiClientSample(organisationId = organisationId)
                 ),
                 analyticsId = AnalyticsId(value = "123"),
                 profile = ProfileFactory.sample(
@@ -64,7 +63,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 account = AccountFactory.sample(
                     username = "jane@doe.com",
-                    associatedTo = UserSourceFactory.apiClientSample(organisationId = organisationId)
+                    platform = UserSourceFactory.apiClientSample(organisationId = organisationId)
                 ),
                 analyticsId = AnalyticsId(value = "123"),
                 profile = ProfileFactory.sample(
@@ -130,7 +129,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
                 UserFactory.sample(
                     account = AccountFactory.sample(
                         id = userId,
-                        associatedTo = UserSource.ApiClient(organisation.id)
+                        platform = Platform.ApiCustomer(organisation.id)
                     )
                 )
             )

@@ -20,7 +20,7 @@ class KeycloakUserToAccountConverter(
         return Account(
             id = UserId(value = userId),
             username = userRepresentation.username,
-            associatedTo = userRole
+            platform = userRole
         )
     }
 }

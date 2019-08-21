@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserSource
+import com.boclips.users.domain.model.Platform
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -42,9 +42,9 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = when (user.account.associatedTo) {
-                    is UserSource.Boclips -> null
-                    is UserSource.ApiClient -> user.account.associatedTo.organisationId.value
+                organisationId = when (user.account.platform) {
+                    is Platform.BoclipsForTeachers -> null
+                    is Platform.ApiCustomer -> user.account.platform.organisationId.value
                 }
             )
         }
@@ -61,9 +61,9 @@ data class UserDocument(
                 username = account.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
-                organisationId = when (account.associatedTo) {
-                    is UserSource.Boclips -> null
-                    is UserSource.ApiClient -> account.associatedTo.organisationId.value
+                organisationId = when (account.platform) {
+                    is Platform.BoclipsForTeachers -> null
+                    is Platform.ApiCustomer -> account.platform.organisationId.value
                 }
             )
         }

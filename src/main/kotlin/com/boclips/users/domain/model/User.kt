@@ -9,7 +9,6 @@ data class User(
     val marketingTracking: MarketingTracking,
     val referralCode: String?,
     val analyticsId: AnalyticsId? = null
-
 ) {
     val id get() = this.account.id
 

@@ -117,7 +117,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 UserFactory.sample(
                     account = AccountFactory.sample(
                         id = userId1,
-                        associatedTo = UserSourceFactory.boclipsSample()
+                        platform = UserSourceFactory.boclipsSample()
                     ),
                     profile = null
                 )
@@ -140,7 +140,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 UserFactory.sample(
                     account = AccountFactory.sample(
                         id = userId1,
-                        associatedTo = UserSourceFactory.apiClientSample(organisationId = "org-123")
+                        platform = UserSourceFactory.apiClientSample(organisationId = "org-123")
                     ),
                     profile = null
                 )

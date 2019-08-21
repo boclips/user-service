@@ -23,7 +23,7 @@ class KeycloakClientFake : AccountProvider, SessionProvider {
         fakeUsers[id] = Account(
             id = UserId(value = id),
             username = email,
-            associatedTo = UserSourceFactory.boclipsSample()
+            platform = UserSourceFactory.boclipsSample()
         )
         return fakeUsers[id]!!
     }
