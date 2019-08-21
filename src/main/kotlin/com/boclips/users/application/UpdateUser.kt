@@ -14,6 +14,7 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.Platform
 import com.boclips.users.domain.model.referrals.NewReferral
+import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SubjectService
@@ -40,9 +41,9 @@ class UpdateUser(
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
         if (authenticatedUser.id != userId) throw PermissionDeniedException()
 
-        val user = userService.findUserById(UserId(authenticatedUser.id))
+        val userId = UserId(authenticatedUser.id)
 
-        // At this point, if user does not exist, then look up Account and create new user with this information.
+        val user = userService.findUserById(userId)
 
         val commands = userUpdatesConverter.convert(updateUserRequest)
 
