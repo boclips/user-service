@@ -2,6 +2,7 @@ package com.boclips.users.application
 
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.videos.service.client.Subject
 import com.boclips.videos.service.client.internal.FakeClient
@@ -58,6 +59,23 @@ class UserUpdatesConverterTest {
     @Test
     fun `converts referral code change to a command`() {
         val commands = userUpdatesConverter.convert(UpdateUserRequest(referralCode = "1234"))
+
+        assertThat(commands).hasSize(1)
+    }
+
+    @Test
+    fun `converts marketing tracking change to a command`() {
+        val commands = userUpdatesConverter.convert(
+            UpdateUserRequest(
+                marketingTrackingRequest = MarketingTrackingRequest(
+                    utmCampaign = "A",
+                    utmTerm = "B",
+                    utmMedium = "C",
+                    utmContent = "D",
+                    utmSource = "E"
+                )
+            )
+        )
 
         assertThat(commands).hasSize(1)
     }

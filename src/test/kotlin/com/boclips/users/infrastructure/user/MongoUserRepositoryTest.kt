@@ -117,12 +117,21 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 account = AccountFactory.sample(
                     id = "user-1"
                 ),
-                profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace", hasOptedIntoMarketing = false),
+                profile = ProfileFactory.sample(
+                    firstName = "Ada",
+                    lastName = "Lovelace",
+                    hasOptedIntoMarketing = false
+                ),
                 referralCode = ""
             )
         )
 
-        userRepository.update(user, UserUpdateCommand.ReplaceLastName("Earhart"), UserUpdateCommand.ReplaceHasOptedIntoMarketing(true), UserUpdateCommand.ReplaceReferralCode("1234"))
+        userRepository.update(
+            user,
+            UserUpdateCommand.ReplaceLastName("Earhart"),
+            UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
+            UserUpdateCommand.ReplaceReferralCode("1234")
+        )
 
         val updatedUser = userRepository.findById(user.id)!!
 
@@ -145,7 +154,6 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         whenever(subjectService.getSubjectsById(any())).thenReturn(
             listOf(maths, physics)
         )
-
 
         val user = userRepository.save(
             UserFactory.sample(
@@ -179,5 +187,36 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         val updatedUser = userRepository.findById(user.id)!!
 
         assertThat(updatedUser.profile!!.ages).containsExactly(6, 7, 8, 9)
+    }
+
+    @Test
+    fun `updating marketing tracking fields`() {
+        val user = userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(
+                    id = "user-1"
+                ),
+                profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace")
+            )
+        )
+
+        userRepository.update(
+            user,
+            UserUpdateCommand.ReplaceMarketingTracking(
+                utmCampaign = "test-campaign",
+                utmSource = "test-source",
+                utmContent = "test-content",
+                utmMedium = "test-medium",
+                utmTerm = "test-term"
+            )
+        )
+
+        val updatedUser = userRepository.findById(user.id)!!
+
+        assertThat(updatedUser.marketingTracking.utmCampaign).isEqualTo("test-campaign")
+        assertThat(updatedUser.marketingTracking.utmContent).isEqualTo("test-content")
+        assertThat(updatedUser.marketingTracking.utmMedium).isEqualTo("test-medium")
+        assertThat(updatedUser.marketingTracking.utmSource).isEqualTo("test-source")
+        assertThat(updatedUser.marketingTracking.utmTerm).isEqualTo("test-term")
     }
 }

@@ -1,9 +1,9 @@
 package com.boclips.users.infrastructure.user
 
 data class MarketingTrackingDocument(
-    val utmCampaign: String?,
-    val utmTerm: String?,
-    val utmMedium: String?,
-    val utmContent: String?,
-    val utmSource: String?
+    var utmCampaign: String?,
+    var utmTerm: String?,
+    var utmMedium: String?,
+    var utmContent: String?,
+    var utmSource: String?
 )

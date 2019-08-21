@@ -18,13 +18,28 @@ class MongoUserRepository(
         val userDocument = UserDocument.from(user)
 
         updateCommands.forEach { updateCommand ->
-            when(updateCommand) {
+            when (updateCommand) {
                 is UserUpdateCommand.ReplaceFirstName -> userDocument.apply { firstName = updateCommand.firstName }
                 is UserUpdateCommand.ReplaceLastName -> userDocument.apply { lastName = updateCommand.lastName }
-                is UserUpdateCommand.ReplaceSubjects -> userDocument.apply { subjectIds = updateCommand.subjects.map{ it.id.value } }
+                is UserUpdateCommand.ReplaceSubjects -> userDocument.apply {
+                    subjectIds = updateCommand.subjects.map { it.id.value }
+                }
                 is UserUpdateCommand.ReplaceAges -> userDocument.apply { ageRange = updateCommand.ages }
-                is UserUpdateCommand.ReplaceHasOptedIntoMarketing -> userDocument.apply { hasOptedIntoMarketing = updateCommand.hasOptedIntoMarketing }
-                is UserUpdateCommand.ReplaceReferralCode -> userDocument.apply { referralCode = updateCommand.referralCode }
+                is UserUpdateCommand.ReplaceHasOptedIntoMarketing -> userDocument.apply {
+                    hasOptedIntoMarketing = updateCommand.hasOptedIntoMarketing
+                }
+                is UserUpdateCommand.ReplaceReferralCode -> userDocument.apply {
+                    referralCode = updateCommand.referralCode
+                }
+                is UserUpdateCommand.ReplaceMarketingTracking -> userDocument.apply {
+                    marketing = MarketingTrackingDocument(
+                        utmCampaign = updateCommand.utmCampaign,
+                        utmSource = updateCommand.utmSource,
+                        utmContent = updateCommand.utmContent,
+                        utmMedium = updateCommand.utmMedium,
+                        utmTerm = updateCommand.utmTerm
+                    )
+                }
             }
         }
 
