@@ -80,7 +80,6 @@ class UserService(
         return userRepository.save(User(
             account = account, profile = null, analyticsId = null, referralCode = null, marketingTracking = MarketingTracking()
         ))
-
     }
 
     fun updateProfile(userId: UserId, profile: Profile): User {

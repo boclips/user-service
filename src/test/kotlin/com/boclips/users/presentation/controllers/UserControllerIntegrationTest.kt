@@ -155,7 +155,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "lastName": "doe",
                      "subjects": ["Maths"],
                      "hasOptedIntoMarketing": true,
-                     "ages": [4,5,6]
+                     "ages": [4,5,6],
+                     "referralCode": "1234"
                      }
                     """.trimIndent()
                 )
@@ -170,6 +171,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.profile!!.hasOptedIntoMarketing).isTrue()
         assertThat(user.profile!!.ages).containsExactly(4, 5, 6)
         assertThat(user.profile!!.subjects).hasSize(1)
+        assertThat(user.referralCode).isEqualTo("1234")
     }
 
     @Test

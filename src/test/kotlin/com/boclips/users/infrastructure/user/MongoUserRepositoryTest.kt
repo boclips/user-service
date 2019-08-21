@@ -117,16 +117,18 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 account = AccountFactory.sample(
                     id = "user-1"
                 ),
-                profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace", hasOptedIntoMarketing = false)
+                profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace", hasOptedIntoMarketing = false),
+                referralCode = ""
             )
         )
 
-        userRepository.update(user, UserUpdateCommand.ReplaceLastName("Earhart"), UserUpdateCommand.ReplaceHasOptedIntoMarketing(true))
+        userRepository.update(user, UserUpdateCommand.ReplaceLastName("Earhart"), UserUpdateCommand.ReplaceHasOptedIntoMarketing(true), UserUpdateCommand.ReplaceReferralCode("1234"))
 
         val updatedUser = userRepository.findById(user.id)!!
 
         assertThat(updatedUser.profile!!.lastName).isEqualTo("Earhart")
         assertThat(updatedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
+        assertThat(updatedUser.referralCode).isEqualTo("1234")
     }
 
     @Test

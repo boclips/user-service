@@ -54,4 +54,11 @@ class UserUpdatesConverterTest {
 
         assertThat(commands).hasSize(1)
     }
+
+    @Test
+    fun `converts referral code change to a command`() {
+        val commands = userUpdatesConverter.convert(UpdateUserRequest(referralCode = "1234"))
+
+        assertThat(commands).hasSize(1)
+    }
 }
