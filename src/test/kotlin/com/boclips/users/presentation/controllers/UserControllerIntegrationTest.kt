@@ -173,29 +173,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `cannot update a user with missing fields`() {
-        saveUser(UserFactory.sample())
-
-        setSecurityContext("user-id")
-
-        mvc.perform(
-            put("/v1/users/user-id").asUser("user-id")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
-                    {
-                     "lastName": "doe",
-                     "subjects": ["Maths"],
-                     "hasOptedIntoMarketing": true,
-                     "ages": [4,5,6]
-                     }
-                    """.trimIndent()
-                )
-        )
-            .andExpect(status().isBadRequest)
-    }
-
-    @Test
     fun `get user`() {
         val user = saveUser(UserFactory.sample())
 
