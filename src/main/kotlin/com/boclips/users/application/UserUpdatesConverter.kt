@@ -12,12 +12,25 @@ import org.springframework.stereotype.Component
 class UserUpdatesConverter(private val subjectService: SubjectService) {
     fun convert(updateUserRequest: UpdateUserRequest): List<UserUpdateCommand> {
         return listOfNotNull(
-            updateUserRequest.firstName?.let { UserUpdateCommand.ReplaceFirstName(firstName = it)},
-            updateUserRequest.lastName?.let { UserUpdateCommand.ReplaceLastName(lastName = it)},
-            updateUserRequest.subjects?.let { UserUpdateCommand.ReplaceSubjects(subjects = convertSubjects(it))},
-            updateUserRequest.ages?.let { UserUpdateCommand.ReplaceAges(ages = it)},
-            updateUserRequest.hasOptedIntoMarketing?.let { UserUpdateCommand.ReplaceHasOptedIntoMarketing(hasOptedIntoMarketing = it)},
-            updateUserRequest.referralCode?.let { UserUpdateCommand.ReplaceReferralCode(referralCode = it)}
+            updateUserRequest.firstName?.let { UserUpdateCommand.ReplaceFirstName(firstName = it) },
+            updateUserRequest.lastName?.let { UserUpdateCommand.ReplaceLastName(lastName = it) },
+            updateUserRequest.subjects?.let { UserUpdateCommand.ReplaceSubjects(subjects = convertSubjects(it)) },
+            updateUserRequest.ages?.let { UserUpdateCommand.ReplaceAges(ages = it) },
+            updateUserRequest.hasOptedIntoMarketing?.let {
+                UserUpdateCommand.ReplaceHasOptedIntoMarketing(
+                    hasOptedIntoMarketing = it
+                )
+            },
+            updateUserRequest.referralCode?.let { UserUpdateCommand.ReplaceReferralCode(referralCode = it) },
+            updateUserRequest.marketingTrackingRequest?.let {
+                UserUpdateCommand.ReplaceMarketingTracking(
+                    utmCampaign = it.utmCampaign,
+                    utmTerm = it.utmTerm,
+                    utmMedium = it.utmMedium,
+                    utmContent = it.utmContent,
+                    utmSource = it.utmSource
+                )
+            }
         )
     }
 

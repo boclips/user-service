@@ -19,7 +19,7 @@ data class UserDocument(
     val analyticsId: String?,
     var referralCode: String?,
     var hasOptedIntoMarketing: Boolean?,
-    val marketing: MarketingTrackingDocument?,
+    var marketing: MarketingTrackingDocument?,
     val organisationId: String?
 ) {
     companion object {

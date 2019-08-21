@@ -44,7 +44,7 @@ class UpdateUserRequestTest {
             val violations =
                 validator.validate(
                     UpdateUserRequestFactory.sample(
-                        firstName = StringUtils.repeat("X", 201)
+                        firstName = "X".repeat(201)
                     )
                 )
             assertThat(violations).hasSize(1)
@@ -67,7 +67,7 @@ class UpdateUserRequestTest {
             val violations =
                 validator.validate(
                     UpdateUserRequestFactory.sample(
-                        lastName = StringUtils.repeat("X", 201)
+                        lastName = "X".repeat(201)
                     )
                 )
             assertThat(violations).hasSize(1)
@@ -122,6 +122,44 @@ class UpdateUserRequestTest {
             )
             assertThat(violations).hasSize(1)
             assertThat(violations.map { it.message }).contains("Cannot have less than 1 or more than 50 subjects")
+        }
+    }
+
+    @Nested
+    inner class ReferralCode {
+        @Test
+        fun `validates referral code for length`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(
+                    referralCode = "B".repeat(51)
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("Referral code cannot be longer than 50 characters")
+        }
+    }
+
+    @Nested
+    inner class MarketingTracking {
+        @Test
+        fun `validates marketing tracking request fields for length`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(
+                    marketingTrackingRequest = MarketingTrackingRequest(
+                        utmCampaign = "A".repeat(201),
+                        utmTerm = "A".repeat(201),
+                        utmMedium = "A".repeat(201),
+                        utmContent = "A".repeat(201),
+                        utmSource = "A".repeat(201)
+                    )
+                )
+            )
+            assertThat(violations).hasSize(5)
+            assertThat(violations.map { it.message }).contains("utmCampaign cannot be longer than 200 characters")
+            assertThat(violations.map { it.message }).contains("utmTerm cannot be longer than 200 characters")
+            assertThat(violations.map { it.message }).contains("utmSource cannot be longer than 200 characters")
+            assertThat(violations.map { it.message }).contains("utmContent cannot be longer than 200 characters")
+            assertThat(violations.map { it.message }).contains("utmMedium cannot be longer than 200 characters")
         }
     }
 }
