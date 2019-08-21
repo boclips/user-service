@@ -7,7 +7,6 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
 import org.springframework.stereotype.Component
 
-@Component
 class MongoUserRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository,
     private val userDocumentConverter: UserDocumentConverter
