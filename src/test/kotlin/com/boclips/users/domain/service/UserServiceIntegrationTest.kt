@@ -45,14 +45,10 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `creates a user if there is an account for the userId, but no existing user`() {
+    fun `throws exception if user not found`() {
         val userId = UserId(value = "1234")
 
-        keycloakClientFake.createAccount(AccountFactory.sample(id = userId.value))
-
-        val user = userService.findUserById(userId)
-
-        assertThat(user.id.value).isEqualTo("1234")
+        assertThrows<UserNotFoundException> { userService.findUserById(userId) }
     }
 
     @Test

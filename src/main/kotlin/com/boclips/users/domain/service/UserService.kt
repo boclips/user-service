@@ -71,15 +71,7 @@ class UserService(
     fun findUserById(userId: UserId): User {
         val retrievedUser = userRepository.findById(UserId(userId.value))
 
-        if (retrievedUser != null) {
-            return retrievedUser
-        }
-
-        val account = accountProvider.getAccountById(userId) ?: throw UserNotFoundException(userId)
-
-        return userRepository.save(User(
-            account = account, profile = null, analyticsId = null, referralCode = null, marketingTracking = MarketingTracking()
-        ))
+        return retrievedUser ?: throw UserNotFoundException(userId)
     }
 
     fun updateProfile(userId: UserId, profile: Profile): User {
