@@ -1,11 +1,13 @@
 package com.boclips.users.config
 
+import com.boclips.eventbus.EventBus
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.EventPublishingUserRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
+import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
@@ -14,13 +16,16 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
+import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.infrastructure.user.MongoUserRepository
 import com.boclips.users.infrastructure.user.UserDocumentConverter
+import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
 import com.boclips.videos.service.client.VideoServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -32,9 +37,7 @@ import org.springframework.web.client.RestTemplate
 
 @Profile("!test")
 @Configuration
-class ContextConfig(
-    val objectMapper: ObjectMapper
-) {
+class ContextConfig(val objectMapper: ObjectMapper) {
     @Bean
     fun analyticsClient(properties: MixpanelProperties) = MixpanelClient(properties)
 
@@ -97,5 +100,20 @@ class ContextConfig(
     @Bean
     fun userDocumentConverter(subjectService: VideoServiceSubjectsClient): UserDocumentConverter {
         return UserDocumentConverter(subjectService)
+    }
+}
+
+@Configuration
+class RepositoryConfiguration {
+    @Bean
+    fun mongoUserRepository(
+        userDocumentMongoRepository: UserDocumentMongoRepository,
+        userDocumentConverter: UserDocumentConverter
+    ) =
+        MongoUserRepository(userDocumentMongoRepository, userDocumentConverter)
+
+    @Bean
+    fun userRepository(mongoUserRepository: MongoUserRepository, eventBus: EventBus): UserRepository {
+        return EventPublishingUserRepository(mongoUserRepository, eventBus)
     }
 }
