@@ -2,6 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.CreateTeacherAccount
 import com.boclips.users.application.GetUser
+import com.boclips.users.application.ReplayUserCreatedEvents
 import com.boclips.users.application.SynchronisationService
 import com.boclips.users.application.UpdateUser
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
@@ -30,7 +31,8 @@ class UserController(
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
     private val userLinkBuilder: UserLinkBuilder,
-    private val synchronisationService: SynchronisationService
+    private val synchronisationService: SynchronisationService,
+    private val replayUserCreatedEvents: ReplayUserCreatedEvents
 ) {
 
     @PostMapping
@@ -67,5 +69,10 @@ class UserController(
     @PostMapping("/sync-identities")
     fun syncAccounts() {
         synchronisationService.synchroniseAccounts()
+    }
+
+    @PostMapping("/replay-user-created-events")
+    fun replayUserCreatedEvents() {
+        replayUserCreatedEvents.publishAll()
     }
 }
