@@ -11,6 +11,5 @@ interface UserRepository {
     fun findById(id: UserId): User?
     fun findAll(ids: List<UserId>): List<User>
     fun findAll(): List<User>
-    fun count(): UserCounts
     fun update(user: User, vararg updateCommands: UserUpdateCommand)
 }

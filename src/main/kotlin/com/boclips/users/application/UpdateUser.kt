@@ -1,23 +1,14 @@
 package com.boclips.users.application
 
-import com.boclips.eventbus.EventBus
-import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.utils.UserExtractor
-import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
-import com.boclips.users.domain.model.Profile
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.model.Platform
 import com.boclips.users.domain.model.referrals.NewReferral
-import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
-import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.convertUserToCrmProfile
@@ -32,7 +23,6 @@ class UpdateUser(
     private val userRepository: UserRepository,
     private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
-    private val eventBus: EventBus,
     private val userUpdatesConverter: UserUpdatesConverter
 ) {
     companion object : KLogging()
@@ -65,31 +55,7 @@ class UpdateUser(
             marketingService.updateProfile(listOf(it))
         }
 
-        publishUserActivated(user)
-
-        logger.info { "Activated user $user" }
-    }
-
-    private fun publishUserActivated(user: User) {
-        val count = userRepository.count()
-        eventBus.publish(
-            UserActivated.builder()
-                .user(
-                    com.boclips.eventbus.domain.user.User.builder()
-                        .id(user.id.value)
-                        .organisationId(
-                            when (user.account.platform) {
-                                is Platform.BoclipsForTeachers -> null
-                                is Platform.ApiCustomer -> user.account.platform.organisationId.value
-                            }
-                        )
-                        .isBoclipsEmployee(user.account.isBoclipsEmployee())
-                        .build()
-                )
-                .totalUsers(count.total)
-                .activatedUsers(count.activated)
-                .build()
-        )
+        logger.info { "User $user has logged in for the first time" }
     }
 
     private fun registerReferral(activatedUser: User) {

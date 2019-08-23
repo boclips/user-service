@@ -59,39 +59,6 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `count users`() {
-        userRepository.save(
-            UserFactory.sample(
-                account = AccountFactory.sample(
-                    id = "user-1"
-                ),
-                profile = ProfileFactory.sample()
-            )
-        )
-        userRepository.save(
-            UserFactory.sample(
-                account = AccountFactory.sample(
-                    id = "user-2"
-                ),
-                profile = ProfileFactory.sample()
-            )
-        )
-        userRepository.save(
-            UserFactory.sample(
-                account = AccountFactory.sample(
-                    id = "user-3"
-                ),
-                profile = null
-            )
-        )
-
-        val counts = userRepository.count()
-
-        assertThat(counts.total).isEqualTo(3)
-        assertThat(counts.activated).isEqualTo(2)
-    }
-
-    @Test
     fun `updating user first name field only replaces first name`() {
         val user = userRepository.save(
             UserFactory.sample(
