@@ -1,9 +1,9 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
+import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.UserSourceFactory
 import com.nhaarman.mockitokotlin2.any
@@ -119,10 +119,10 @@ internal class KeycloakClientTest {
             listOf(
                 user1,
                 user2
-            )
+            ).asSequence()
         )
 
-        val users = keycloakClient.getAccounts()
+        val users = keycloakClient.getAccounts().toList()
 
         assertThat(users).hasSize(2)
         assertThat(users).containsExactly(

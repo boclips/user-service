@@ -84,7 +84,7 @@ class KeycloakWrapperContractTest {
             )
         )
 
-        val users: List<UserRepresentation> = wrapper.users()
+        val users: List<UserRepresentation> = wrapper.users().toList()
 
         val theChosenUser = users.find { (it.id == createdUser.id) }!!
         assertThat(theChosenUser.id).isNotNull()

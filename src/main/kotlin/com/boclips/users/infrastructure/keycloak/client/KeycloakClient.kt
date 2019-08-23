@@ -51,7 +51,7 @@ open class KeycloakClient(
         }
     }
 
-    override fun getAccounts(): List<Account> {
+    override fun getAccounts(): Sequence<Account> {
         return keycloak.users().mapNotNull { userRepresentation ->
             try {
                 userConverter.convert(userRepresentation)

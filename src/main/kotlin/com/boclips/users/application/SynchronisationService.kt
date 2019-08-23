@@ -3,8 +3,8 @@ package com.boclips.users.application
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
-import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -37,16 +37,14 @@ class SynchronisationService(
     }
 
     fun synchroniseAccounts() {
-        val allAccountIds = accountProvider.getAccounts().map { it.id }
-        logger.info { "Found ${allAccountIds.size} accounts" }
-
-        val allUserIds = userRepository.findAll().map { it.id }
+        val allUserIds = userRepository.findAll().map { it.id }.toSet()
         logger.info { "Found ${allUserIds.size} users" }
 
-        val newUsers = allAccountIds - allUserIds
-        logger.info { "Importing ${newUsers.size} users" }
-
-        userImportService.importFromAccountProvider(newUsers)
-        logger.info { "Import of ${newUsers.size} users completed" }
+        accountProvider.getAccounts().forEach { account ->
+            allUserIds.contains(account.id).let {
+                userImportService.importFromAccountProvider(listOf(account.id))
+                logger.info { "Import of user $account completed" }
+            }
+        }
     }
 }

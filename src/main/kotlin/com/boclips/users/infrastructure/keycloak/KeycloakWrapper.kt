@@ -13,18 +13,25 @@ open class KeycloakWrapper(private val keycloak: Keycloak) {
         const val TEACHER_ROLE = "ROLE_TEACHER"
     }
 
-    // TODO use sequence
-    fun users(): List<UserRepresentation> {
-        val allUsers = keycloak
-            .realm(REALM)
-            .users()
-            .list(0, countUsers())
+    fun users(): Sequence<UserRepresentation> {
+        val maxPages = Math.ceil(countUsers().toDouble() / 3).toInt()
 
-        allUsers.forEach { user ->
-            user.realmRoles = getRolesOfUser(user.id)
+        return sequence {
+            for (index in 0..maxPages) {
+                println("fetching sequence $index ... ${index + 3}")
+
+                val sequenceOfUsers = generateSequence {
+                    println("going for $index ... ${index + 3}")
+                    return@generateSequence keycloak
+                        .realm(REALM)
+                        .users()
+                        .list(index, index + 3)
+                }
+                    .flatMap { listOfUsers -> listOfUsers.asSequence() }
+
+                yieldAll(sequenceOfUsers)
+            }
         }
-
-        return allUsers
     }
 
     fun countUsers(): Int {

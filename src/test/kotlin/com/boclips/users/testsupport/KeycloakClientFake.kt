@@ -32,8 +32,8 @@ class KeycloakClientFake : AccountProvider, SessionProvider {
         return fakeUsers[id.value]
     }
 
-    override fun getAccounts(): List<Account> {
-        return fakeUsers.values.toList()
+    override fun getAccounts(): Sequence<Account> {
+        return fakeUsers.values.asSequence()
     }
 
     override fun count(): Int {
