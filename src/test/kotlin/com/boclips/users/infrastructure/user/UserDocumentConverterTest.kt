@@ -56,12 +56,11 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.account.platform).isEqualTo(Platform.ApiCustomer(organisationId = OrganisationId("test")))
     }
 
-    //TODO why is this the case??
     @Test
     fun `users missing optedIntoMarketing is defaulted to true`() {
         val convertedUser =
             userDocumentConverter.convertToUser(UserDocumentFactory.sample(hasOptedIntoMarketing = null))
 
-        assertThat(convertedUser.profile?.hasOptedIntoMarketing).isTrue()
+        assertThat(convertedUser.profile?.hasOptedIntoMarketing).isFalse()
     }
 }
