@@ -26,7 +26,7 @@ class KeycloakWrapperContractTest {
             "admin-cli"
         )
 
-        wrapper = KeycloakWrapper(keycloakInstance)
+        wrapper = KeycloakWrapper(keycloak = keycloakInstance, pageSize = 3)
     }
 
     @Test
@@ -84,7 +84,9 @@ class KeycloakWrapperContractTest {
             )
         )
 
-        val users: List<UserRepresentation> = wrapper.users()
+        val users: List<UserRepresentation> = wrapper.users().toList()
+
+        assertThat(users.size).isEqualTo(wrapper.countUsers())
 
         val theChosenUser = users.find { (it.id == createdUser.id) }!!
         assertThat(theChosenUser.id).isNotNull()

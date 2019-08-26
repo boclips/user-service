@@ -6,25 +6,37 @@ import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.EventRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import javax.ws.rs.core.Response
+import kotlin.math.ceil
 
-open class KeycloakWrapper(private val keycloak: Keycloak) {
+open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize: Int = 500) {
     companion object : KLogging() {
         const val REALM = "boclips"
         const val TEACHER_ROLE = "ROLE_TEACHER"
     }
 
-    // TODO use sequence
-    fun users(): List<UserRepresentation> {
-        val allUsers = keycloak
-            .realm(REALM)
-            .users()
-            .list(0, countUsers())
+    fun users(): Sequence<UserRepresentation> {
+        val maxPages = ceil(countUsers().toDouble() / pageSize)
+        var currentPage = 0
+        logger.info { "Found ${countUsers()} users [$maxPages pages of page size $pageSize]" }
 
-        allUsers.forEach { user ->
-            user.realmRoles = getRolesOfUser(user.id)
+        return generateSequence {
+            if (currentPage > maxPages) return@generateSequence null
+
+            logger.info { "Fetching users page [$currentPage]" }
+            val sequenceOfUsers = keycloak
+                .realm(REALM)
+                .users()
+                .list(currentPage * pageSize, pageSize)
+
+            currentPage += 1
+            return@generateSequence sequenceOfUsers
+        }.flatMap { listOfUsers: MutableList<UserRepresentation> ->
+            listOfUsers.forEach { user ->
+                user.realmRoles = getRolesOfUser(user.id)
+            }
+
+            listOfUsers.asSequence()
         }
-
-        return allUsers
     }
 
     fun countUsers(): Int {
