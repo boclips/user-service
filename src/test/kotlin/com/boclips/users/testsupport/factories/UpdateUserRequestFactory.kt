@@ -12,12 +12,12 @@ class UpdateUserRequestFactory {
             ages: List<Int>? = listOf(1, 2, 4),
             hasOptedIntoMarketing: Boolean? = false,
             referralCode: String? = "ABCD",
-            marketingTrackingRequest: MarketingTrackingRequest? = MarketingTrackingRequest(
-                utmSource = "",
-                utmCampaign = "",
-                utmContent = "",
-                utmMedium = "",
-                utmTerm = ""
+            utm: MarketingTrackingRequest? = MarketingTrackingRequest(
+                source = "",
+                campaign = "",
+                content = "",
+                medium = "",
+                term = ""
             )
         ): UpdateUserRequest {
             return UpdateUserRequest(
@@ -27,7 +27,7 @@ class UpdateUserRequestFactory {
                 ages = ages,
                 hasOptedIntoMarketing = hasOptedIntoMarketing,
                 referralCode = referralCode,
-                marketingTrackingRequest = marketingTrackingRequest
+                utm = utm
             )
         }
     }

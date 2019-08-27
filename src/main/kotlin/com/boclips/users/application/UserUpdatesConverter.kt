@@ -22,13 +22,13 @@ class UserUpdatesConverter(private val subjectService: SubjectService) {
                 )
             },
             updateUserRequest.referralCode?.let { UserUpdateCommand.ReplaceReferralCode(referralCode = it) },
-            updateUserRequest.marketingTrackingRequest?.let {
+            updateUserRequest.utm?.let {
                 UserUpdateCommand.ReplaceMarketingTracking(
-                    utmCampaign = it.utmCampaign,
-                    utmTerm = it.utmTerm,
-                    utmMedium = it.utmMedium,
-                    utmContent = it.utmContent,
-                    utmSource = it.utmSource
+                    utmCampaign = it.campaign,
+                    utmTerm = it.term,
+                    utmMedium = it.medium,
+                    utmContent = it.content,
+                    utmSource = it.source
                 )
             }
         )

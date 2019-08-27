@@ -145,12 +145,12 @@ class UpdateUserRequestTest {
         fun `validates marketing tracking request fields for length`() {
             val violations = validator.validate(
                 UpdateUserRequestFactory.sample(
-                    marketingTrackingRequest = MarketingTrackingRequest(
-                        utmCampaign = "A".repeat(201),
-                        utmTerm = "A".repeat(201),
-                        utmMedium = "A".repeat(201),
-                        utmContent = "A".repeat(201),
-                        utmSource = "A".repeat(201)
+                    utm = MarketingTrackingRequest(
+                        campaign = "A".repeat(201),
+                        term = "A".repeat(201),
+                        medium = "A".repeat(201),
+                        content = "A".repeat(201),
+                        source = "A".repeat(201)
                     )
                 )
             )

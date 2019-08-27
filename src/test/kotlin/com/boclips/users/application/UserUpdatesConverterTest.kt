@@ -67,12 +67,12 @@ class UserUpdatesConverterTest {
     fun `converts marketing tracking change to a command`() {
         val commands = userUpdatesConverter.convert(
             UpdateUserRequest(
-                marketingTrackingRequest = MarketingTrackingRequest(
-                    utmCampaign = "A",
-                    utmTerm = "B",
-                    utmMedium = "C",
-                    utmContent = "D",
-                    utmSource = "E"
+                utm = MarketingTrackingRequest(
+                    campaign = "A",
+                    term = "B",
+                    medium = "C",
+                    content = "D",
+                    source = "E"
                 )
             )
         )

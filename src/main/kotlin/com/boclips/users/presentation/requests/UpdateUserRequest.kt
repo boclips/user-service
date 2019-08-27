@@ -22,22 +22,22 @@ open class UpdateUserRequest(
     var referralCode: String? = null,
 
     @field:Valid
-    var marketingTrackingRequest: MarketingTrackingRequest? = null
+    var utm: MarketingTrackingRequest? = null
 )
 
 class MarketingTrackingRequest(
     @field:Size(max = 200, message = "utmSource cannot be longer than 200 characters")
-    var utmSource: String? = null,
+    var source: String? = null,
 
     @field:Size(max = 200, message = "utmMedium cannot be longer than 200 characters")
-    var utmMedium: String? = null,
+    var medium: String? = null,
 
     @field:Size(max = 200, message = "utmCampaign cannot be longer than 200 characters")
-    var utmCampaign: String? = null,
+    var campaign: String? = null,
 
     @field:Size(max = 200, message = "utmTerm cannot be longer than 200 characters")
-    var utmTerm: String? = null,
+    var term: String? = null,
 
     @field:Size(max = 200, message = "utmContent cannot be longer than 200 characters")
-    var utmContent: String? = null
+    var content: String? = null
 )

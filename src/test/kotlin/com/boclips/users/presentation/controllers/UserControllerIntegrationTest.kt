@@ -161,7 +161,14 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "subjects": ["Maths"],
                      "hasOptedIntoMarketing": true,
                      "ages": [4,5,6],
-                     "referralCode": "1234"
+                     "referralCode": "1234",
+                     "utm": {
+                        "source": "test-source",
+                        "medium": "test-medium",
+                        "campaign": "test-campaign",
+                        "term": "test-term",
+                        "content": "test-content"
+                        }
                      }
                     """.trimIndent()
                 )
@@ -177,6 +184,11 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.profile!!.ages).containsExactly(4, 5, 6)
         assertThat(user.profile!!.subjects).hasSize(1)
         assertThat(user.referralCode).isEqualTo("1234")
+        assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")
+        assertThat(user.marketingTracking.utmMedium).isEqualTo("test-medium")
+        assertThat(user.marketingTracking.utmCampaign).isEqualTo("test-campaign")
+        assertThat(user.marketingTracking.utmTerm).isEqualTo("test-term")
+        assertThat(user.marketingTracking.utmContent).isEqualTo("test-content")
     }
 
     @Test
