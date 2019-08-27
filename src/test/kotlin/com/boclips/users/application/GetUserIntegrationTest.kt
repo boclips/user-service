@@ -46,14 +46,14 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val resource = getUser(userId)
+        val user = getUser(userId)
 
-        assertThat(resource.id).isEqualTo(userId)
-        assertThat(resource.firstName).isEqualTo("Jane")
-        assertThat(resource.lastName).isEqualTo("Doe")
-        assertThat(resource.analyticsId).isEqualTo("123")
-        assertThat(resource.email).isEqualTo("jane@doe.com")
-        assertThat(resource.organisationId).isEqualTo(organisationId)
+        assertThat(user.id.value).isEqualTo(userId)
+        assertThat(user.profile!!.firstName).isEqualTo("Jane")
+        assertThat(user.profile!!.lastName).isEqualTo("Doe")
+        assertThat(user.analyticsId!!.value).isEqualTo("123")
+        assertThat(user.account.email).isEqualTo("jane@doe.com")
+        assertThat(user.account.platform.getIdentifier()!!.value).isEqualTo(organisationId)
     }
 
     @Test
@@ -74,9 +74,9 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         setSecurityContext("user-that-can-view-users", UserRoles.VIEW_USERS)
-        val resource = getUser(existingUser.id.value)
+        val user = getUser(existingUser.id.value)
 
-        assertThat(resource.id).isEqualTo(existingUser.id.value)
+        assertThat(user.id).isEqualTo(existingUser.id)
     }
 
     @Test
@@ -113,9 +113,9 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveAccount(UserFactory.sample(id = userId))
 
-            val resource = getUser(userId)
+            val user = getUser(userId)
 
-            assertThat(resource.id).isEqualTo(userId)
+            assertThat(user.id.value).isEqualTo(userId)
         }
 
         @Test
@@ -134,9 +134,9 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val resource = getUser(userId)
+            val user = getUser(userId)
 
-            assertThat(resource.organisationId).isEqualTo(organisation.id.value)
+            assertThat(user.account.platform.getIdentifier()).isEqualTo(organisation.id)
         }
     }
 }

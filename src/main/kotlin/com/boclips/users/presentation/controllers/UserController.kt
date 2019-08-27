@@ -7,6 +7,7 @@ import com.boclips.users.application.UpdateUser
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
+import com.boclips.users.presentation.resources.UserConverter
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Resource
@@ -29,6 +30,7 @@ class UserController(
     private val createTeacherAccount: CreateTeacherAccount,
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
+    private val userConverter: UserConverter,
     private val userLinkBuilder: UserLinkBuilder,
     private val synchronisationService: SynchronisationService
 ) {
@@ -53,7 +55,7 @@ class UserController(
     fun getAUser(@PathVariable id: String?): Resource<UserResource> {
         val user = getUser(id!!)
         return Resource(
-            user,
+            userConverter.toUserResource(user),
             userLinkBuilder.selfLink(),
             userLinkBuilder.profileLink()
         )
