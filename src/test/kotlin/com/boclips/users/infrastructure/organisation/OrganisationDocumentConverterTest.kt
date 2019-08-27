@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -7,11 +8,14 @@ import org.junit.jupiter.api.Test
 class OrganisationDocumentConverterTest {
     @Test
     fun `converts organisation document to organisation`() {
-        val organisationDocument = OrganisationDocumentFactory.sample()
+        val organisationDocument = OrganisationDocumentFactory.sample(
+            contractIds = listOf("A", "B")
+        )
 
         val organisation = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
         assertThat(organisation.id.value).isEqualTo(organisationDocument.id.toHexString())
         assertThat(organisation.name).isEqualTo(organisationDocument.name)
+        assertThat(organisation.contractIds).containsExactly(ContractId("A"), ContractId("B"))
     }
 }

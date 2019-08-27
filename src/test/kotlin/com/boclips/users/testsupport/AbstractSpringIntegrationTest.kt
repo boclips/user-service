@@ -7,6 +7,7 @@ import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
@@ -123,7 +124,10 @@ abstract class AbstractSpringIntegrationTest {
         return user.id.value
     }
 
-    fun saveOrganisation(organisationName: String = "Boclips for Teachers"): Organisation {
-        return organisationRepository.save(organisationName = organisationName)
+    fun saveOrganisation(organisationName: String = "Boclips for Teachers", contractIds: List<ContractId> = emptyList()): Organisation {
+        return organisationRepository.save(
+            organisationName = organisationName,
+            contractIds = contractIds
+        )
     }
 }

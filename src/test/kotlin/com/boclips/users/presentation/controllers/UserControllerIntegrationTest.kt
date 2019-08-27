@@ -2,11 +2,14 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.Platform
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -189,6 +192,28 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.lastName").exists())
             .andExpect(jsonPath("$.analyticsId").exists())
             .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
+            .andExpect(jsonPath("$._links.contracts").doesNotExist())
+    }
+
+    @Test
+    fun `returns a link to contracts if user has VIEW_CONTRACTS role`() {
+        val user = saveUser(UserFactory.sample())
+
+        mvc.perform(
+            get("/v1/users/${user.id.value}").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.contracts.href", endsWith("/v1/users/${user.id.value}/contracts")))
+    }
+
+    @Test
+    fun `returns a 403 response when caller does not have VIEW_CONTRACTS role`() {
+        val user = saveUser(UserFactory.sample())
+
+        mvc.perform(
+            get("/v1/users/${user.id.value}/contracts").asUser(user.id.value)
+        )
+            .andExpect(status().isForbidden)
     }
 
     @Test
@@ -209,5 +234,31 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `synchronise crm profiles`() {
         mvc.perform(post("/v1/users/sync").asBackofficeUser())
             .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `lists ids of contracts user has access to`() {
+        val organisation = saveOrganisation(
+            organisationName = "Organisation X",
+            contractIds = listOf(
+                ContractId("Contract A"),
+                ContractId("Contract B"),
+                ContractId("Contract C")
+            )
+        )
+
+        val user = saveUser(
+            UserFactory.sample(
+                account = AccountFactory.sample(
+                    platform = Platform.ApiCustomer(organisation.id)
+                )
+            )
+        )
+
+        mvc.perform(
+            get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(3)))
     }
 }

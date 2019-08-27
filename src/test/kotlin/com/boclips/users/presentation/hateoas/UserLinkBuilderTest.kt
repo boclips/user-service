@@ -151,4 +151,24 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         assertThat(userLink!!.href).endsWith("/users/{id}")
         assertThat(userLink.rel).isEqualTo("user")
     }
+
+    @Test
+    fun `contracts link when authenticated and has VIEW_CONTRACTS role`() {
+        setSecurityContext("a-user", UserRoles.VIEW_CONTRACTS)
+
+        val contractsLink = userLinkBuilder.contractsLink(UserId("a-user"))
+
+        assertThat(contractsLink).isNotNull()
+        assertThat(contractsLink!!.href).endsWith("/users/a-user/contracts")
+        assertThat(contractsLink.rel).isEqualTo("contracts")
+    }
+
+    @Test
+    fun `no contracts link when does not have VIEW_CONTRACTS role`() {
+        setSecurityContext("a-user")
+
+        val contractsLink = userLinkBuilder.contractsLink(UserId("a-user"))
+
+        assertThat(contractsLink).isNull()
+    }
 }

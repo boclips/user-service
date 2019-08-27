@@ -62,4 +62,13 @@ class UserLinkBuilder(private val userRepository: UserRepository) : KLogging() {
             profileLink()?.withSelfRel()
         }
     }
+
+    fun contractsLink(userId: UserId): Link? {
+        return if (currentUserHasAnyRole(UserRoles.VIEW_CONTRACTS)) {
+            ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController::class.java).getContractsOfUser(userId.value))
+                .withRel("contracts")
+        } else {
+            null
+        }
+    }
 }

@@ -1,16 +1,20 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.CreateTeacherAccount
+import com.boclips.users.application.GetContracts
 import com.boclips.users.application.GetUser
 import com.boclips.users.application.SynchronisationService
 import com.boclips.users.application.UpdateUser
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
+import com.boclips.users.presentation.resources.ContractConverter
+import com.boclips.users.presentation.resources.ContractResource
 import com.boclips.users.presentation.resources.UserConverter
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Resource
+import org.springframework.hateoas.Resources
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -32,7 +36,9 @@ class UserController(
     private val getUser: GetUser,
     private val userConverter: UserConverter,
     private val userLinkBuilder: UserLinkBuilder,
-    private val synchronisationService: SynchronisationService
+    private val synchronisationService: SynchronisationService,
+    private val contractConverter: ContractConverter,
+    private val getContracts: GetContracts
 ) {
 
     @PostMapping
@@ -56,8 +62,19 @@ class UserController(
         val user = getUser(id!!)
         return Resource(
             userConverter.toUserResource(user),
-            userLinkBuilder.selfLink(),
-            userLinkBuilder.profileLink()
+            listOfNotNull(
+                userLinkBuilder.selfLink(),
+                userLinkBuilder.profileLink(),
+                userLinkBuilder.contractsLink(user.id)
+            )
+        )
+    }
+
+    @GetMapping("/{id}/contracts")
+    fun getContractsOfUser(@PathVariable id: String?): Resources<ContractResource> {
+        val user = getUser(id!!)
+        return Resources(
+            getContracts(user).map(contractConverter::convert)
         )
     }
 

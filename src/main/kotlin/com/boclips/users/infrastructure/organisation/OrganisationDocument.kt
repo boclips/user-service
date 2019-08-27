@@ -9,5 +9,6 @@ data class OrganisationDocument(
     @BsonId
     val id: ObjectId,
     val name: String,
-    val role: String?
+    val role: String?,
+    val contractIds: List<String> = emptyList()
 )

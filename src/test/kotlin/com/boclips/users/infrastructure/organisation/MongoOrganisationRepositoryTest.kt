@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -9,10 +10,15 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     fun `persists an organisation`() {
         val organisationName = "Persist Organisation"
 
-        val persisted = organisationRepository.save(organisationName)
+        val contractIds = listOf(ContractId("Contract A"), ContractId("Contract B"))
+        val organisation = organisationRepository.save(
+            organisationName,
+            contractIds = contractIds
+        )
 
-        assertThat(persisted.id).isNotNull
-        assertThat(persisted.name).isEqualTo(organisationName)
+        assertThat(organisation.id).isNotNull
+        assertThat(organisation.name).isEqualTo(organisationName)
+        assertThat(organisation.contractIds).isEqualTo(contractIds)
     }
 
     @Test
@@ -21,6 +27,15 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         val organisation = organisationRepository.save(organisationName = "blah", role = role)
 
         val foundOrganisation = organisationRepository.findByRole(role)
+        assertThat(organisation).isEqualTo(foundOrganisation)
+    }
+
+    @Test
+    fun `looks up an organisation by id`() {
+        val organisation = organisationRepository.save(organisationName = "blah")
+
+        val foundOrganisation = organisationRepository.findById(organisation.id)
+
         assertThat(organisation).isEqualTo(foundOrganisation)
     }
 }
