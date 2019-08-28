@@ -6,7 +6,9 @@ data class Profile(
     val subjects: List<Subject> = emptyList(),
     val ages: List<Int> = emptyList(),
     val hasOptedIntoMarketing: Boolean = false,
-    val country: String = ""
+    val country: String = "",
+    val state: String = "",
+    val school: String = ""
 )
 
 fun Profile?.getSubjects() = this?.subjects ?: emptyList()
