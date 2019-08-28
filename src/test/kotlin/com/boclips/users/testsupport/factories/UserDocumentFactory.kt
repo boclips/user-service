@@ -17,7 +17,8 @@ class UserDocumentFactory {
             subjects: List<String> = listOf("maths"),
             ageRange: List<Int> = listOf(1, 2),
             hasOptedIntoMarketing: Boolean? = false,
-            organisationId: String = "some-org-id"
+            organisationId: String = "some-org-id",
+            country: String? = "United Kingdom"
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
@@ -36,7 +37,8 @@ class UserDocumentFactory {
                 utmTerm = null,
                 utmContent = null
             ),
-            organisationId = organisationId
+            organisationId = organisationId,
+            country = country
         )
     }
 }

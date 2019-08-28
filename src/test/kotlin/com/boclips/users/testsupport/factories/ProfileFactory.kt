@@ -16,13 +16,15 @@ class ProfileFactory {
             ages: List<Int> = listOf(1, 2),
             firstName: String = "Joe",
             lastName: String = "Dough",
-            hasOptedIntoMarketing: Boolean = true
+            hasOptedIntoMarketing: Boolean = true,
+            country: String = "United Kingdom"
             ) = Profile(
             subjects = subjects,
             ages = ages,
             firstName = firstName,
             lastName = lastName,
-            hasOptedIntoMarketing = hasOptedIntoMarketing
+            hasOptedIntoMarketing = hasOptedIntoMarketing,
+            country = country
         )
     }
 }
