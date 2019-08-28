@@ -29,7 +29,8 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                         it
                     )
                 } ?: emptyList(),
-                ages = userDocument.ageRange.orEmpty()
+                ages = userDocument.ageRange.orEmpty(),
+                country = userDocument.country.orEmpty()
 
             ),
             analyticsId = userDocument.analyticsId?.let { AnalyticsId(value = it) },
