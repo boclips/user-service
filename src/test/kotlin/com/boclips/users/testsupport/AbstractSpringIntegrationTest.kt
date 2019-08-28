@@ -7,10 +7,11 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.contract.CollectionId
+import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.contract.SelectedContentContract
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.ReferralProvider
@@ -84,6 +85,9 @@ abstract class AbstractSpringIntegrationTest {
     @Autowired
     lateinit var selectedContentContractRepository: SelectedContentContractRepository
 
+    @Autowired
+    lateinit var contractRepository: ContractRepository
+
     @BeforeEach
     fun resetState() {
         repositories.forEach { it.deleteAll() }
@@ -140,7 +144,7 @@ abstract class AbstractSpringIntegrationTest {
         )
     }
 
-    fun saveSelectedContentContract(name: String, collectionIds: List<CollectionId>): SelectedContentContract {
+    fun saveSelectedContentContract(name: String, collectionIds: List<CollectionId>): Contract.SelectedContent {
         return selectedContentContractRepository.saveSelectedContentContract(name, collectionIds)
     }
 }

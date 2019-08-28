@@ -1,16 +1,16 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.contract.CollectionId
+import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.contract.SelectedContentContract
 import java.util.UUID
 
-class SelectedContentContractFactory {
+class ContractFactory {
     companion object {
-        fun sample(
+        fun sampleSelectedContentContract(
             id: ContractId = ContractId(UUID.randomUUID().toString()),
             name: String = "Tailored collections list",
             collectionIds: List<CollectionId> = emptyList()
-        ) = SelectedContentContract(id, name, collectionIds)
+        ) = Contract.SelectedContent(id, name, collectionIds)
     }
 }

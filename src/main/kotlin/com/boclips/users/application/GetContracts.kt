@@ -4,23 +4,26 @@ import com.boclips.security.utils.UserExtractor.getIfHasRole
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.contract.SelectedContentContract
+import com.boclips.users.domain.model.contract.Contract
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.SelectedContentContractRepository
 import org.springframework.stereotype.Service
 
 @Service
 class GetContracts(
     private val organisationRepository: OrganisationRepository,
-    private val selectedContentContractRepository: SelectedContentContractRepository
+    private val contractRepository: ContractRepository
 ) {
-    operator fun invoke(user: User): List<SelectedContentContract> {
+    operator fun invoke(user: User): List<Contract> {
         return getIfHasRole(UserRoles.VIEW_CONTRACTS) {
-            user.account.platform.getIdentifier()?.let { organisationId ->
-                organisationRepository.findById(organisationId)?.contractIds?.mapNotNull { contractId ->
-                    selectedContentContractRepository.findById(contractId)
-                } ?: emptyList()
-            } ?: emptyList()
+            findOrganisation(user)?.contractIds?.mapNotNull(contractRepository::findById)
         } ?: throw PermissionDeniedException()
+    }
+
+    private fun findOrganisation(user: User): Organisation? {
+        return user.account.platform.getIdentifier()?.let {
+            organisationRepository.findById(it)
+        }
     }
 }
