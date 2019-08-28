@@ -17,14 +17,18 @@ class ProfileFactory {
             firstName: String = "Joe",
             lastName: String = "Dough",
             hasOptedIntoMarketing: Boolean = true,
-            country: String = "United Kingdom"
+            country: String = "United States of America",
+            state: String = "New York",
+            school: String = "Brooklyn School"
             ) = Profile(
             subjects = subjects,
             ages = ages,
             firstName = firstName,
             lastName = lastName,
             hasOptedIntoMarketing = hasOptedIntoMarketing,
-            country = country
+            country = country,
+            state = state,
+            school = school
         )
     }
 }

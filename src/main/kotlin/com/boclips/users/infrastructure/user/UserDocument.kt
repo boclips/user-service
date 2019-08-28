@@ -21,7 +21,9 @@ data class UserDocument(
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
     val organisationId: String?,
-    val country: String?
+    val country: String?,
+    val state: String?,
+    val school: String?
 ) {
     companion object {
         fun from(user: User): UserDocument {
@@ -47,7 +49,9 @@ data class UserDocument(
                     is Platform.BoclipsForTeachers -> null
                     is Platform.ApiCustomer -> user.account.platform.organisationId.value
                 },
-                country = user.profile?.country
+                country = user.profile?.country,
+                state = user.profile?.state,
+                school = user.profile?.school
             )
         }
         fun from(account: Account): UserDocument {
@@ -67,7 +71,9 @@ data class UserDocument(
                     is Platform.BoclipsForTeachers -> null
                     is Platform.ApiCustomer -> account.platform.organisationId.value
                 },
-                country = null
+                country = null,
+                state = null,
+                school = null
             )
         }
     }
