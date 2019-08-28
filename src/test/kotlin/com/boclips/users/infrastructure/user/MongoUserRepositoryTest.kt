@@ -87,7 +87,10 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 profile = ProfileFactory.sample(
                     firstName = "Ada",
                     lastName = "Lovelace",
-                    hasOptedIntoMarketing = false
+                    hasOptedIntoMarketing = false,
+                    country = "United Kingdom",
+                    state = "New York",
+                    school = "Brooklyn School"
                 ),
                 referralCode = ""
             )
@@ -97,13 +100,19 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             user,
             UserUpdateCommand.ReplaceLastName("Earhart"),
             UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
-            UserUpdateCommand.ReplaceReferralCode("1234")
+            UserUpdateCommand.ReplaceReferralCode("1234"),
+            UserUpdateCommand.ReplaceCountry("United States of America"),
+            UserUpdateCommand.ReplaceState("California"),
+            UserUpdateCommand.ReplaceSchool("Sunnydale High School")
         )
 
         val updatedUser = userRepository.findById(user.id)!!
 
         assertThat(updatedUser.profile!!.lastName).isEqualTo("Earhart")
         assertThat(updatedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
+        assertThat(updatedUser.profile!!.country).isEqualTo("United States of America")
+        assertThat(updatedUser.profile!!.state).isEqualTo("California")
+        assertThat(updatedUser.profile!!.school).isEqualTo("Sunnydale High School")
         assertThat(updatedUser.referralCode).isEqualTo("1234")
     }
 

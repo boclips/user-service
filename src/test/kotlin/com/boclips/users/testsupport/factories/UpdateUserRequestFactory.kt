@@ -18,7 +18,8 @@ class UpdateUserRequestFactory {
                 content = "",
                 medium = "",
                 term = ""
-            )
+            ),
+            school: String? = "Sunnydale High School"
         ): UpdateUserRequest {
             return UpdateUserRequest(
                 firstName = firstName,
@@ -27,7 +28,8 @@ class UpdateUserRequestFactory {
                 ages = ages,
                 hasOptedIntoMarketing = hasOptedIntoMarketing,
                 referralCode = referralCode,
-                utm = utm
+                utm = utm,
+                school = school
             )
         }
     }

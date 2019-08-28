@@ -40,6 +40,9 @@ class MongoUserRepository(
                         utmTerm = updateCommand.utmTerm
                     )
                 }
+                is UserUpdateCommand.ReplaceCountry -> userDocument.apply { country = updateCommand.country }
+                is UserUpdateCommand.ReplaceState -> userDocument.apply { state = updateCommand.state }
+                is UserUpdateCommand.ReplaceSchool -> userDocument.apply { school = updateCommand.school }
             }
         }
 

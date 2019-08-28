@@ -79,4 +79,25 @@ class UserUpdatesConverterTest {
 
         assertThat(commands).hasSize(1)
     }
+
+    @Test
+    fun `converts country change to a command`() {
+        val commands = userUpdatesConverter.convert(UpdateUserRequest(country = "United States of America"))
+
+        assertThat(commands).hasSize(1)
+    }
+
+    @Test
+    fun `converts state change to a command`() {
+        val commands = userUpdatesConverter.convert(UpdateUserRequest(state = "Washington"))
+
+        assertThat(commands).hasSize(1)
+    }
+
+    @Test
+    fun `converts school change to a command`() {
+        val commands = userUpdatesConverter.convert(UpdateUserRequest(school = "Connaught School"))
+
+        assertThat(commands).hasSize(1)
+    }
 }

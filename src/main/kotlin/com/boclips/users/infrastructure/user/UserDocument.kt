@@ -21,9 +21,9 @@ data class UserDocument(
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
     val organisationId: String?,
-    val country: String?,
-    val state: String?,
-    val school: String?
+    var country: String?,
+    var state: String?,
+    var school: String?
 ) {
     companion object {
         fun from(user: User): UserDocument {

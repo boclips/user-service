@@ -169,7 +169,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         "campaign": "test-campaign",
                         "term": "test-term",
                         "content": "test-content"
-                        }
+                        },
+                     "country": "United States of America",
+                     "state": "California",
+                     "school": "Sunnydale High School"
                      }
                     """.trimIndent()
                 )
@@ -184,6 +187,9 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.profile!!.hasOptedIntoMarketing).isTrue()
         assertThat(user.profile!!.ages).containsExactly(4, 5, 6)
         assertThat(user.profile!!.subjects).hasSize(1)
+        assertThat(user.profile!!.country).isEqualTo("United States of America")
+        assertThat(user.profile!!.state).isEqualTo("California")
+        assertThat(user.profile!!.school).isEqualTo("Sunnydale High School")
         assertThat(user.referralCode).isEqualTo("1234")
         assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(user.marketingTracking.utmMedium).isEqualTo("test-medium")
