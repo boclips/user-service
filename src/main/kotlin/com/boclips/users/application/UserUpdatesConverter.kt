@@ -30,7 +30,10 @@ class UserUpdatesConverter(private val subjectService: SubjectService) {
                     utmContent = it.content,
                     utmSource = it.source
                 )
-            }
+            },
+            updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = it) },
+            updateUserRequest.state?.let { UserUpdateCommand.ReplaceState(state = it) },
+            updateUserRequest.school?.let { UserUpdateCommand.ReplaceSchool(school = it) }
         )
     }
 

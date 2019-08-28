@@ -22,7 +22,14 @@ open class UpdateUserRequest(
     var referralCode: String? = null,
 
     @field:Valid
-    var utm: MarketingTrackingRequest? = null
+    var utm: MarketingTrackingRequest? = null,
+
+    var country: String? = null,
+
+    var state: String? = null,
+
+    @field:Size(min = 1, max = 200, message = "School name must be between 1 and 200 characters")
+    var school: String? = null
 )
 
 class MarketingTrackingRequest(

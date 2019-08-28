@@ -140,6 +140,31 @@ class UpdateUserRequestTest {
     }
 
     @Nested
+    inner class School {
+        @Test
+        fun `validates school for empty string`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(
+                    school = ""
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.first().message).isEqualTo("School name must be between 1 and 200 characters")
+        }
+
+        @Test
+        fun `validates school for length`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(
+                    school = "B".repeat(201)
+                )
+            )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("School name must be between 1 and 200 characters")
+        }
+    }
+
+    @Nested
     inner class MarketingTracking {
         @Test
         fun `validates marketing tracking request fields for length`() {

@@ -38,7 +38,10 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 lastName = "fleck",
                 hasOptedIntoMarketing = true,
                 subjects = listOf("Maths"),
-                ages = listOf(4, 5, 6)
+                ages = listOf(4, 5, 6),
+                country = "United States of America",
+                state = "California",
+                school = "Sunnydale High School"
             )
         )
 
@@ -50,6 +53,10 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(profile.ages).containsExactly(4, 5, 6)
         assertThat(profile.subjects).hasSize(1)
         assertThat(profile.subjects.first().id).isEqualTo(SubjectId("1"))
+        assertThat(profile.country).isEqualTo("United States of America")
+        assertThat(profile.state).isEqualTo("California")
+        assertThat(profile.school).isEqualTo("Sunnydale High School")
+
     }
 
     @Test
