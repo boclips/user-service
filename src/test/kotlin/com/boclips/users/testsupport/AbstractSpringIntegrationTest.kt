@@ -3,17 +3,20 @@ package com.boclips.users.testsupport
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.model.Account
-import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.contract.SelectedContentContract
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.ReferralProvider
+import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
@@ -78,6 +81,9 @@ abstract class AbstractSpringIntegrationTest {
     @Autowired
     lateinit var userSourceResolver: UserSourceResolver
 
+    @Autowired
+    lateinit var selectedContentContractRepository: SelectedContentContractRepository
+
     @BeforeEach
     fun resetState() {
         repositories.forEach { it.deleteAll() }
@@ -124,10 +130,17 @@ abstract class AbstractSpringIntegrationTest {
         return user.id.value
     }
 
-    fun saveOrganisation(organisationName: String = "Boclips for Teachers", contractIds: List<ContractId> = emptyList()): Organisation {
+    fun saveOrganisation(
+        organisationName: String = "Boclips for Teachers",
+        contractIds: List<ContractId> = emptyList()
+    ): Organisation {
         return organisationRepository.save(
             organisationName = organisationName,
             contractIds = contractIds
         )
+    }
+
+    fun saveSelectedContentContract(name: String, collectionIds: List<CollectionId>): SelectedContentContract {
+        return selectedContentContractRepository.saveSelectedContentContract(name, collectionIds)
     }
 }

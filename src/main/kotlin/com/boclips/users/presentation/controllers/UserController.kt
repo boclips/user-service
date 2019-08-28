@@ -8,7 +8,7 @@ import com.boclips.users.application.UpdateUser
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
-import com.boclips.users.presentation.resources.ContractConverter
+import com.boclips.users.presentation.resources.SelectedContentContractConverter
 import com.boclips.users.presentation.resources.ContractResource
 import com.boclips.users.presentation.resources.UserConverter
 import com.boclips.users.presentation.resources.UserResource
@@ -37,7 +37,7 @@ class UserController(
     private val userConverter: UserConverter,
     private val userLinkBuilder: UserLinkBuilder,
     private val synchronisationService: SynchronisationService,
-    private val contractConverter: ContractConverter,
+    private val selectedContentContractConverter: SelectedContentContractConverter,
     private val getContracts: GetContracts
 ) {
 
@@ -74,7 +74,7 @@ class UserController(
     fun getContractsOfUser(@PathVariable id: String?): Resources<ContractResource> {
         val user = getUser(id!!)
         return Resources(
-            getContracts(user).map(contractConverter::convert)
+            getContracts(user).map(selectedContentContractConverter::convert)
         )
     }
 

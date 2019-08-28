@@ -4,7 +4,7 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.Platform
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
@@ -15,6 +15,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.endsWith
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -249,13 +250,18 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `lists ids of contracts user has access to`() {
+    fun `lists contracts user has access to`() {
+        val contractName = "Test contract"
+        val collectionId = "test-collection-id"
+        val testContract = saveSelectedContentContract(
+            name = contractName,
+            collectionIds = listOf(CollectionId(collectionId))
+        )
+
         val organisation = saveOrganisation(
             organisationName = "Organisation X",
             contractIds = listOf(
-                ContractId("Contract A"),
-                ContractId("Contract B"),
-                ContractId("Contract C")
+                testContract.id
             )
         )
 
@@ -271,6 +277,9 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(3)))
+            .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(1)))
+            .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(contractName)))
+            .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
+            .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo(collectionId)))
     }
 }

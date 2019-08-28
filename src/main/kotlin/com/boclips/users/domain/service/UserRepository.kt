@@ -2,7 +2,6 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserCounts
 import com.boclips.users.domain.model.UserId
 
 interface UserRepository {
