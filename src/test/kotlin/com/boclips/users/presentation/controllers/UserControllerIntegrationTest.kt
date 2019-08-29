@@ -278,8 +278,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(1)))
+            .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
             .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(contractName)))
             .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
             .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo(collectionId)))
+            .andExpect(jsonPath("$._links.self.href", endsWith("/v1/users/${user.id.value}/contracts")))
     }
 }

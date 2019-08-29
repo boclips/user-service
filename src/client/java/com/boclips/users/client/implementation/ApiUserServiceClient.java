@@ -1,11 +1,15 @@
 package com.boclips.users.client.implementation;
 
 import com.boclips.users.client.UserServiceClient;
-import com.boclips.users.client.implementation.api.hateoas.Links;
-import com.boclips.users.client.implementation.api.hateoas.LinksResource;
+import com.boclips.users.client.implementation.api.hateoas.contract.ContractsHateoasWrapper;
+import com.boclips.users.client.implementation.api.hateoas.links.Links;
+import com.boclips.users.client.implementation.api.hateoas.links.LinksResource;
 import com.boclips.users.client.model.User;
+import com.boclips.users.client.model.contract.Contract;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 public class ApiUserServiceClient implements UserServiceClient {
     private final RestTemplate restTemplate;
@@ -23,6 +27,14 @@ public class ApiUserServiceClient implements UserServiceClient {
         } catch (HttpClientErrorException.NotFound ex) {
             return null;
         }
+    }
+
+    @Override
+    public List<Contract> getContracts(String userId) {
+        return restTemplate
+                .getForObject(getLinks().getContracts().getHref(), ContractsHateoasWrapper.class, userId)
+                .get_embedded()
+                .getContracts();
     }
 
     private Links getLinks() {

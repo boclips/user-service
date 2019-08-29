@@ -17,7 +17,8 @@ class LinksController(
             userLinkBuilder.createUserLink(),
             userLinkBuilder.updateUserLink(),
             userLinkBuilder.profileLink(),
-            userLinkBuilder.userLink()
+            userLinkBuilder.userLink(),
+            userLinkBuilder.contractsLink()
         )
     )
 }

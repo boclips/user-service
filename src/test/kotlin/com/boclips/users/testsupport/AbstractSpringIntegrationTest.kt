@@ -19,6 +19,7 @@ import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.presentation.resources.ContractConverter
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
@@ -88,6 +89,9 @@ abstract class AbstractSpringIntegrationTest {
     @Autowired
     lateinit var contractRepository: ContractRepository
 
+    @Autowired
+    lateinit var contractConverter: ContractConverter
+
     @BeforeEach
     fun resetState() {
         repositories.forEach { it.deleteAll() }
@@ -134,10 +138,32 @@ abstract class AbstractSpringIntegrationTest {
         return user.id.value
     }
 
+    fun saveOrganisationWithContractDetails(
+        organisationName: String = "Boclips for Teachers",
+        contractIds: List<Contract> = emptyList()
+    ): Organisation {
+        val organisationContracts = mutableListOf<Contract>()
+        contractIds.forEach {
+            when (it) {
+                is Contract.SelectedContent -> {
+                    organisationContracts.add(
+                        selectedContentContractRepository.saveSelectedContentContract(
+                            it.name,
+                            it.collectionIds
+                        )
+                    )
+                }
+            }
+        }
+
+        return saveOrganisation(organisationName, organisationContracts.map { it.id })
+    }
+
     fun saveOrganisation(
         organisationName: String = "Boclips for Teachers",
         contractIds: List<ContractId> = emptyList()
     ): Organisation {
+
         return organisationRepository.save(
             organisationName = organisationName,
             contractIds = contractIds
