@@ -11,5 +11,6 @@ data class OrganisationDocument(
     val name: String,
     val role: String?,
     val contractIds: List<String> = emptyList(),
-    val externalId: String?
+    val externalId: String?,
+    val type: String?
 )

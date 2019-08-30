@@ -15,7 +15,8 @@ class OrganisationDocumentFactory {
             name = name,
             role = role,
             contractIds = contractIds,
-            externalId = externalId
+            externalId = externalId,
+            type = null
         )
     }
 }

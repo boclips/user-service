@@ -3,6 +3,7 @@ package com.boclips.users.testsupport
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
@@ -163,13 +164,15 @@ abstract class AbstractSpringIntegrationTest {
         organisationName: String = "Boclips for Teachers",
         contractIds: List<ContractId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
-        districtId: String? = null
+        districtId: String? = null,
+        organisationType: OrganisationType = OrganisationType.ApiCustomer
     ): Organisation {
         return organisationRepository.save(
             organisationName = organisationName,
             contractIds = contractIds,
             role = role,
-            districtId = districtId
+            districtId = districtId,
+            organisationType = organisationType
         )
     }
 

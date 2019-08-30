@@ -1,5 +1,6 @@
 package com.boclips.users.domain.service
 
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ class OrganisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `find an organisation by an external id`() {
         val organisation =
-            organisationRepository.save(organisationName = "my-school-district", districtId = "external-id")
+            organisationRepository.save(organisationName = "my-school-district", districtId = "external-id", organisationType = OrganisationType.District)
         val retrievedOrganisation = organisationService.findByExternalId(externalId = "external-id")
 
         assertThat(organisation).isEqualTo(retrievedOrganisation)

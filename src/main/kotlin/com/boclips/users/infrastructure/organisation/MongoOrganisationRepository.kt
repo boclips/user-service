@@ -14,7 +14,7 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
     override fun findByType(organisationType: OrganisationType): List<Organisation> {
         return when (organisationType) {
             is OrganisationType.District -> repository.findByExternalIdNotNull().toList().map { fromDocument(it) }
-            else -> throw IllegalStateException("Organisation $organisationType is not a district")
+            is OrganisationType.ApiCustomer -> repository.findByType(type = "API").toList().map { fromDocument(it) }
         }
     }
 
@@ -30,7 +30,8 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
         organisationName: String,
         role: String?,
         contractIds: List<ContractId>,
-        districtId: String?
+        districtId: String?,
+        organisationType: OrganisationType?
     ): Organisation {
         return fromDocument(
             repository.save(
@@ -39,7 +40,12 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
                     name = organisationName,
                     role = role,
                     contractIds = contractIds.map { it.value },
-                    externalId = districtId
+                    externalId = districtId,
+                    type = when (organisationType) {
+                        OrganisationType.ApiCustomer -> "API"
+                        OrganisationType.District -> "DISTRICT"
+                        else -> null
+                    }
                 )
             )
         )

@@ -10,7 +10,8 @@ interface OrganisationRepository {
         organisationName: String,
         role: String? = null,
         contractIds: List<ContractId> = emptyList(),
-        districtId: String? = null
+        districtId: String? = null,
+        organisationType: OrganisationType?
     ): Organisation
 
     fun findByRole(role: String): Organisation?
