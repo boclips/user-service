@@ -9,9 +9,9 @@ import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.OrganisationTypeFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
-import com.boclips.users.testsupport.factories.UserSourceFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Nested
@@ -35,14 +35,14 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 account = AccountFactory.sample(
                     username = "jane@doe.com",
-                    id = userId,
-                    organisationType = UserSourceFactory.apiClientSample(organisationId = organisationId)
+                    id = userId
                 ),
                 analyticsId = AnalyticsId(value = "123"),
                 profile = ProfileFactory.sample(
                     firstName = "Jane",
                     lastName = "Doe"
-                )
+                ),
+                organisationType = OrganisationTypeFactory.api(organisationId = organisationId)
             )
         )
 
@@ -53,7 +53,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.profile!!.lastName).isEqualTo("Doe")
         assertThat(user.analyticsId!!.value).isEqualTo("123")
         assertThat(user.account.email).isEqualTo("jane@doe.com")
-        assertThat(user.account.organisationType.getIdentifier()!!.value).isEqualTo(organisationId)
+        assertThat(user.organisationType.getIdentifier()!!.value).isEqualTo(organisationId)
     }
 
     @Test
@@ -62,9 +62,9 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         val existingUser = saveUser(
             UserFactory.sample(
                 account = AccountFactory.sample(
-                    username = "jane@doe.com",
-                    organisationType = UserSourceFactory.apiClientSample(organisationId = organisationId)
+                    username = "jane@doe.com"
                 ),
+                organisationType = OrganisationTypeFactory.api(organisationId = organisationId),
                 analyticsId = AnalyticsId(value = "123"),
                 profile = ProfileFactory.sample(
                     firstName = "Jane",
@@ -119,24 +119,20 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `populates the organisation when synchronizing user`() {
+        fun `populates the organisation type when synchronizing user`() {
             val userId = UUID.randomUUID().toString()
 
             setSecurityContext(userId, "TEACHER")
-            val organisation = saveOrganisation("Boclips for Teachers")
 
             saveAccount(
                 UserFactory.sample(
-                    account = AccountFactory.sample(
-                        id = userId,
-                        organisationType = OrganisationType.ApiCustomer(organisation.id)
-                    )
+                    account = AccountFactory.sample(id = userId, roles = listOf("ROLE_TEACHER"))
                 )
             )
 
             val user = getUser(userId)
 
-            assertThat(user.account.organisationType.getIdentifier()).isEqualTo(organisation.id)
+            assertThat(user.organisationType).isEqualTo(OrganisationType.BoclipsForTeachers)
         }
     }
 }

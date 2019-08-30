@@ -5,11 +5,14 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.infrastructure.keycloak.UnknownUserSourceException
 import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
+import com.boclips.users.infrastructure.organisation.UserSourceResolver
 
 class MongoUserRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository,
-    private val userDocumentConverter: UserDocumentConverter
+    private val userDocumentConverter: UserDocumentConverter,
+    private val userSourceResolver: UserSourceResolver
 ) : UserRepository {
 
     override fun update(user: User, vararg updateCommands: UserUpdateCommand) {
@@ -69,7 +72,12 @@ class MongoUserRepository(
             ?.let { userDocumentConverter.convertToUser(it) }
     }
 
-    override fun save(account: Account) = saveUserDocument(UserDocument.from(account))
+    override fun save(account: Account): User {
+        val organisationType = userSourceResolver.resolve(account.roles)
+            ?: throw UnknownUserSourceException("Could not resolve roles: ${account.roles}")
+
+        return saveUserDocument(UserDocument.from(account = account, organisationType = organisationType))
+    }
 
     override fun save(user: User) = saveUserDocument(UserDocument.from(user))
 

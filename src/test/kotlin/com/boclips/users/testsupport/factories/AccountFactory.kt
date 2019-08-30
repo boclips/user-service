@@ -9,11 +9,11 @@ class AccountFactory {
         fun sample(
             id: String = "user-id",
             username: String = "joe@dough.com",
-            organisationType: OrganisationType = OrganisationType.BoclipsForTeachers
+            roles: List<String> = emptyList()
         ) = Account(
             id = UserId(value = id),
             username = username,
-            organisationType = organisationType
+            roles = roles
         )
     }
 }

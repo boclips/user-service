@@ -16,12 +16,7 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
         return User(
             account = Account(
                 id = UserId(value = userDocument.id),
-                username = userDocument.username ?: userDocument.email.orEmpty(),
-                organisationType = when(userDocument.organisationType.type) {
-                    is OrganisationType.BoclipsForTeachers -> OrganisationType.BoclipsForTeachers
-                    is OrganisationType.District -> OrganisationType.District(OrganisationId(userDocument.organisationType.id!!))
-                    is OrganisationType.ApiCustomer -> OrganisationType.ApiCustomer(OrganisationId(userDocument.organisationType.id!!))
-                }
+                username = userDocument.username ?: userDocument.email.orEmpty()
             ),
             profile = Profile(
                 firstName = userDocument.firstName.orEmpty(),
@@ -46,7 +41,12 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                 utmMedium = userDocument.marketing?.utmMedium ?: "",
                 utmTerm = userDocument.marketing?.utmTerm ?: "",
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
-            )
+            ),
+            organisationType = when(userDocument.organisationType.type) {
+                is OrganisationType.BoclipsForTeachers -> OrganisationType.BoclipsForTeachers
+                is OrganisationType.District -> OrganisationType.District(OrganisationId(userDocument.organisationType.id!!))
+                is OrganisationType.ApiCustomer -> OrganisationType.ApiCustomer(OrganisationId(userDocument.organisationType.id!!))
+            }
         )
     }
 }

@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.organisation.UserSourceResolver
 import com.boclips.users.testsupport.factories.AccountFactory
-import com.boclips.users.testsupport.factories.UserSourceFactory
+import com.boclips.users.testsupport.factories.OrganisationTypeFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -26,11 +26,11 @@ internal class KeycloakClientTest {
     fun setUp() {
         keycloakWrapperMock = Mockito.mock(KeycloakWrapper::class.java)
         val userSourceResolver = mock<UserSourceResolver>()
-        whenever(userSourceResolver.resolve(any())).thenReturn(UserSourceFactory.boclipsSample())
+        whenever(userSourceResolver.resolve(any())).thenReturn(OrganisationTypeFactory.boclipsForTeachers())
 
         keycloakClient = KeycloakClient(
             keycloakWrapperMock,
-            KeycloakUserToAccountConverter(userSourceResolver)
+            KeycloakUserToAccountConverter()
         )
     }
 

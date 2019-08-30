@@ -21,13 +21,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists account`() {
-        val account = AccountFactory.sample()
+        val account = AccountFactory.sample(roles = listOf("ROLE_TEACHER"))
         userRepository.save(account)
 
         val fetchedUser = userRepository.findById(account.id)!!
 
         assertThat(fetchedUser.id).isNotNull()
-        assertThat(fetchedUser.account).isEqualTo(account)
+        assertThat(fetchedUser.account.email).isEqualTo(account.email)
+        assertThat(fetchedUser.account.id).isEqualTo(account.id)
     }
 
     @Test
@@ -85,8 +86,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         val user = userRepository.save(
             UserFactory.sample(
                 account = AccountFactory.sample(
-                    id = "user-1",
-                    organisationType = OrganisationType.BoclipsForTeachers
+                    id = "user-1"
                 ),
                 profile = ProfileFactory.sample(
                     firstName = "Ada",
@@ -96,8 +96,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                     state = "New York",
                     school = "Brooklyn School"
                 ),
-                referralCode = ""
-
+                referralCode = "",
+                organisationType = OrganisationType.BoclipsForTeachers
             )
         )
 
@@ -122,7 +122,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.state).isEqualTo("California")
         assertThat(updatedUser.profile!!.school).isEqualTo("Sunnydale High School")
         assertThat(updatedUser.referralCode).isEqualTo("1234")
-        assertThat(updatedUser.account.organisationType).isEqualTo(organisationType)
+        assertThat(updatedUser.organisationType).isEqualTo(organisationType)
     }
 
     @Test
@@ -209,7 +209,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     inner class OrganisationAssociation {
         @Test
         fun `there exist teachers which are not associated to an organisation`() {
-            val teacher = UserFactory.sample(account = AccountFactory.sample(organisationType = OrganisationType.BoclipsForTeachers))
+            val teacher = UserFactory.sample(organisationType = OrganisationType.BoclipsForTeachers)
 
             val savedTeacher = userRepository.save(teacher)
 
@@ -219,10 +219,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `there exist users are associated to API clients`() {
             val user = UserFactory.sample(
-                account = AccountFactory.sample(
-                    organisationType = OrganisationType.ApiCustomer(
-                        OrganisationId("some-org-id")
-                    )
+                organisationType = OrganisationType.ApiCustomer(
+                    OrganisationId("some-org-id")
                 )
             )
 
@@ -234,10 +232,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `there exist users which are associated to school districts`() {
             val teacher = UserFactory.sample(
-                account = AccountFactory.sample(
-                    organisationType = OrganisationType.District(
-                        OrganisationId("some-district-id")
-                    )
+                organisationType = OrganisationType.District(
+                    OrganisationId("some-district-id")
                 )
             )
 

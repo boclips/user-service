@@ -41,19 +41,19 @@ class UserDocumentConverterTest {
 
     @Test
     fun `can convert boclips user`() {
-        val user = UserFactory.sample(account = AccountFactory.sample(organisationType = OrganisationType.BoclipsForTeachers))
+        val user = UserFactory.sample(organisationType = OrganisationType.BoclipsForTeachers)
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
-        assertThat(convertedUser.account.organisationType).isEqualTo(OrganisationType.BoclipsForTeachers)
+        assertThat(convertedUser.organisationType).isEqualTo(OrganisationType.BoclipsForTeachers)
     }
 
     @Test
     fun `can convert api client`() {
-        val user = UserFactory.sample(account = AccountFactory.sample(organisationType = OrganisationType.ApiCustomer(organisationId = OrganisationId("test"))))
+        val user = UserFactory.sample(organisationType = OrganisationType.ApiCustomer(organisationId = OrganisationId("test")))
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
 
-        assertThat(convertedUser.account.organisationType).isEqualTo(OrganisationType.ApiCustomer(organisationId = OrganisationId("test")))
+        assertThat(convertedUser.organisationType).isEqualTo(OrganisationType.ApiCustomer(organisationId = OrganisationId("test")))
     }
 
     @Test

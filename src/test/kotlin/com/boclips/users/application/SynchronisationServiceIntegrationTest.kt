@@ -25,11 +25,11 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updates new accounts from account provider`() {
-        val existingAccount = AccountFactory.sample(id = "cat")
+        val existingAccount = AccountFactory.sample(id = "cat", roles = listOf("ROLE_TEACHER"))
         keycloakClientFake.createAccount(existingAccount)
         saveUser(UserFactory.sample(id = existingAccount.id.value))
 
-        keycloakClientFake.createAccount(AccountFactory.sample(id = "dog"))
+        keycloakClientFake.createAccount(AccountFactory.sample(id = "dog", roles = listOf("ROLE_TEACHER")))
 
         assertThat(userRepository.findAll()).hasSize(1)
 

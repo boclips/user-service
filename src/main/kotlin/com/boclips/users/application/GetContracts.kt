@@ -22,7 +22,7 @@ class GetContracts(
     }
 
     private fun findOrganisation(user: User): Organisation? {
-        return user.account.organisationType.getIdentifier()?.let {
+        return user.organisationType.getIdentifier()?.let {
             organisationRepository.findById(it)
         }
     }

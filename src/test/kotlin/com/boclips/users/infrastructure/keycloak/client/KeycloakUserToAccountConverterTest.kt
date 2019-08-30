@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloak.client
 
 import com.boclips.users.infrastructure.organisation.UserSourceResolver
-import com.boclips.users.testsupport.factories.UserSourceFactory
+import com.boclips.users.testsupport.factories.OrganisationTypeFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -19,9 +19,9 @@ class KeycloakUserToAccountConverterTest {
     @BeforeEach
     fun setup() {
         val organisationMatcherMock = mock<UserSourceResolver>()
-        whenever(organisationMatcherMock.resolve(any())).thenReturn(UserSourceFactory.boclipsSample())
+        whenever(organisationMatcherMock.resolve(any())).thenReturn(OrganisationTypeFactory.boclipsForTeachers())
 
-        userConverter = KeycloakUserToAccountConverter(organisationMatcherMock)
+        userConverter = KeycloakUserToAccountConverter()
         keycloakUser = UserRepresentation().apply {
             this.id = UUID.randomUUID().toString()
             this.username = "test@gmail.com"
@@ -36,7 +36,12 @@ class KeycloakUserToAccountConverterTest {
 
         assertThat(convertedUser.id.value).isEqualTo(keycloakUser.id)
         assertThat(convertedUser.username).isEqualTo(keycloakUser.username)
-        assertThat(convertedUser.organisationType).isNotNull()
+        assertThat(convertedUser.roles).containsExactly(
+            "ROLE_VIEWSONIC",
+            "ROLE_TEACHER",
+            "ROLE_BACKOFFICE",
+            "uma_something"
+        )
     }
 
     @Test
@@ -62,5 +67,4 @@ class KeycloakUserToAccountConverterTest {
         assertThatThrownBy { userConverter.convert(keycloakUser) }
             .isInstanceOf(IllegalStateException::class.java)
     }
-
 }

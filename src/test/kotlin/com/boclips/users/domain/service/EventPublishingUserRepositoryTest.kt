@@ -14,7 +14,7 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `it publishes an user created event api customers given a User`() {
         val user = userRepository.save(
             UserFactory.sample(
-                account = AccountFactory.sample(organisationType = OrganisationType.ApiCustomer(OrganisationId("quite-something")))
+                organisationType = OrganisationType.ApiCustomer(OrganisationId("quite-something"))
             )
         )
 
@@ -35,7 +35,7 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it publishes a user event for api customers given an Account`() {
         val user =
-            userRepository.save(AccountFactory.sample(organisationType = OrganisationType.ApiCustomer(OrganisationId("quite-something"))))
+            userRepository.save(UserFactory.sample(organisationType = OrganisationType.ApiCustomer(OrganisationId("quite-something"))))
 
         val event = eventBus.getEventOfType(UserCreated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)
@@ -44,8 +44,7 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it publishes a user event for Boclips For Teachers given an Account`() {
-        val user =
-            userRepository.save(AccountFactory.sample())
+        val user = userRepository.save(AccountFactory.sample(roles = listOf("ROLE_TEACHER")))
 
         val event = eventBus.getEventOfType(UserCreated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)

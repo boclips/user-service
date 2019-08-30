@@ -47,7 +47,7 @@ class ContextConfig(val objectMapper: ObjectMapper) {
     @Bean
     fun keycloakClient(keycloakWrapper: KeycloakWrapper, userSourceResolver: UserSourceResolver) = KeycloakClient(
         keycloakWrapper,
-        KeycloakUserToAccountConverter(userSourceResolver)
+        KeycloakUserToAccountConverter()
     )
 
     @Bean
@@ -108,9 +108,10 @@ class RepositoryConfiguration {
     @Bean
     fun mongoUserRepository(
         userDocumentMongoRepository: UserDocumentMongoRepository,
-        userDocumentConverter: UserDocumentConverter
+        userDocumentConverter: UserDocumentConverter,
+        userSourceResolver: UserSourceResolver
     ) =
-        MongoUserRepository(userDocumentMongoRepository, userDocumentConverter)
+        MongoUserRepository(userDocumentMongoRepository, userDocumentConverter, userSourceResolver)
 
     @Bean
     fun userRepository(mongoUserRepository: MongoUserRepository, eventBus: EventBus): UserRepository {

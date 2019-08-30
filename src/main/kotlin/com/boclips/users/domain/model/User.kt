@@ -8,7 +8,8 @@ data class User(
     val profile: Profile?,
     val marketingTracking: MarketingTracking,
     val referralCode: String?,
-    val analyticsId: AnalyticsId? = null
+    val analyticsId: AnalyticsId? = null,
+    val organisationType: OrganisationType
 ) {
     val id get() = this.account.id
 

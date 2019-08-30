@@ -3,10 +3,10 @@ package com.boclips.users.domain.service
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.NewTeacher
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -22,7 +22,7 @@ class UserService(
         val retrievedUser = userRepository.findById(UserId(id.value))
         val user = retrievedUser ?: throw UserNotFoundException(id)
 
-        if (retrievedUser.account.organisationType != OrganisationType.BoclipsForTeachers) throw UserNotFoundException(id)
+        if (retrievedUser.organisationType != OrganisationType.BoclipsForTeachers) throw UserNotFoundException(id)
 
         logger.info { "Fetched teacher user ${id.value}" }
 
@@ -31,7 +31,7 @@ class UserService(
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
-        val allUsers = userRepository.findAll().filter { it.account.organisationType == OrganisationType.BoclipsForTeachers }
+        val allUsers = userRepository.findAll().filter { it.organisationType == OrganisationType.BoclipsForTeachers }
         logger.info { "Fetched ${allUsers.size} teacher users from database" }
 
         return allUsers
@@ -45,11 +45,7 @@ class UserService(
 
         val user = userRepository.save(
             User(
-                account = Account(
-                    id = UserId(account.id.value),
-                    username = newTeacher.email,
-                    organisationType = OrganisationType.BoclipsForTeachers
-                ),
+                account = account,
                 profile = null,
                 analyticsId = newTeacher.analyticsId,
                 referralCode = newTeacher.referralCode,
@@ -59,7 +55,8 @@ class UserService(
                     utmMedium = newTeacher.utmMedium,
                     utmContent = newTeacher.utmContent,
                     utmTerm = newTeacher.utmTerm
-                )
+                ),
+                organisationType = OrganisationType.BoclipsForTeachers
             )
         )
 

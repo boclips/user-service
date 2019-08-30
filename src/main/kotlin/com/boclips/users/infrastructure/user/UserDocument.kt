@@ -1,8 +1,8 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.OrganisationType
+import com.boclips.users.domain.model.User
 import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -21,7 +21,6 @@ data class UserDocument(
     var referralCode: String?,
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
-    val organisationId: String?,
     var country: String?,
     var state: String?,
     var school: String?,
@@ -47,17 +46,14 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = extractOrganisationId(user.account.organisationType),
-                organisationType = OrganisationTypeDocument(
-                    id = extractOrganisationId(user.account.organisationType),
-                    type = user.account.organisationType
-                ),
+                organisationType = OrganisationTypeConverter().toDocument(user.organisationType),
                 country = user.profile?.country,
                 state = user.profile?.state,
                 school = user.profile?.school
             )
         }
-        fun from(account: Account): UserDocument {
+
+        fun from(account: Account, organisationType: OrganisationType): UserDocument {
             return UserDocument(
                 id = account.id.value,
                 subjectIds = null,
@@ -70,23 +66,11 @@ data class UserDocument(
                 username = account.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
-                organisationId = extractOrganisationId(account.organisationType),
-                organisationType = OrganisationTypeDocument(
-                    id = extractOrganisationId(account.organisationType),
-                    type = account.organisationType
-                ),
+                organisationType = OrganisationTypeConverter().toDocument(organisationType),
                 country = null,
                 state = null,
                 school = null
             )
-        }
-
-        private fun extractOrganisationId(organisationType: OrganisationType) : String? {
-            return when (organisationType) {
-                is OrganisationType.BoclipsForTeachers -> null
-                is OrganisationType.ApiCustomer -> organisationType.organisationId.value
-                is OrganisationType.District -> organisationType.organisationId.value
-            }
         }
     }
 }

@@ -272,11 +272,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         val user = saveUser(
-            UserFactory.sample(
-                account = AccountFactory.sample(
-                    organisationType = OrganisationType.ApiCustomer(organisation.id)
-                )
-            )
+            UserFactory.sample(organisationType = OrganisationType.ApiCustomer(organisation.id))
         )
 
         mvc.perform(

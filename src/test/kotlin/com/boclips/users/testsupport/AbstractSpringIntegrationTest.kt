@@ -129,7 +129,7 @@ abstract class AbstractSpringIntegrationTest {
             Account(
                 id = user.id,
                 username = user.account.email!!,
-                organisationType = user.account.organisationType
+                roles = listOf("ROLE_TEACHER")
             )
         )
 

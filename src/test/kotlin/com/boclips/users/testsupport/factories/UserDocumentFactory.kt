@@ -42,7 +42,6 @@ class UserDocumentFactory {
                 utmTerm = null,
                 utmContent = null
             ),
-            organisationId = organisationId,
             country = country,
             state = state,
             school = school,
