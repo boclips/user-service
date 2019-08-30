@@ -2,6 +2,7 @@ package com.boclips.users.domain.model
 
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.OrganisationId
 
 data class User(
     val account: Account,
@@ -9,7 +10,7 @@ data class User(
     val marketingTracking: MarketingTracking,
     val referralCode: String?,
     val analyticsId: AnalyticsId? = null,
-    val organisationType: OrganisationType
+    val organisationId: OrganisationId?
 ) {
     val id get() = this.account.id
 

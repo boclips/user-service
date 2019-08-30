@@ -1,52 +1,46 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class RoleBasedOrganisationTypeResolverTest : AbstractSpringIntegrationTest() {
     @Test
     fun `matches a teacher user to "Boclips for Teachers"`() {
-        val userSource = userSourceResolver.resolve(listOf("ROLE_TEACHER"))
+        val organisationId = organisationIdResolver.resolve(listOf("ROLE_TEACHER"))
 
-        assertThat(userSource).isInstanceOf(OrganisationType.BoclipsForTeachers::class.java)
+        assertThat(organisationId).isNull()
     }
 
     @Test
     fun `matches a viewsonic user to "ViewSonic MyViewBoard"`() {
-        val userSource = userSourceResolver.resolve(listOf("ROLE_VIEWSONIC"))
+        val organisation = saveOrganisation(role = "ROLE_VIEWSONIC")
 
-        assertThat(userSource).isInstanceOf(OrganisationType.ApiCustomer::class.java)
-        assertThat((userSource as OrganisationType.ApiCustomer).organisationId).isNotNull
+        val organisationId = organisationIdResolver.resolve(listOf("ROLE_VIEWSONIC"))
+
+        assertThat(organisationId).isEqualTo(organisation.id)
     }
 
     @Test
     fun `matches a pearson user to "Pearson MyRealize"`() {
-        val userSource = userSourceResolver.resolve(listOf("ROLE_PEARSON_MYREALIZE"))
+        val organisation = saveOrganisation(role = "ROLE_PEARSON_MYREALIZE")
 
-        assertThat(userSource).isInstanceOf(OrganisationType.ApiCustomer::class.java)
-        assertThat((userSource as OrganisationType.ApiCustomer).organisationId).isNotNull
+        val organisationId = organisationIdResolver.resolve(listOf("ROLE_PEARSON_MYREALIZE"))
+
+        assertThat(organisationId).isEqualTo(organisation.id)
     }
 
     @Test
     fun `does not match if there are only unknown roles`() {
-        val matched = userSourceResolver.resolve(listOf("ROLE_STUDENT", "uma_offline", "Matt"))
+        val matched = organisationIdResolver.resolve(listOf("ROLE_STUDENT", "uma_offline", "Matt"))
 
         assertThat(matched).isNull()
     }
 
     @Test
     fun `can deal with no roles entities`() {
-        val matched = userSourceResolver.resolve(emptyList())
+        val matched = organisationIdResolver.resolve(emptyList())
 
         assertThat(matched).isNull()
-    }
-
-    @BeforeEach
-    fun insertFixtures() {
-        organisationRepository.save("ViewSonic MyViewBoard", "ROLE_VIEWSONIC")
-        organisationRepository.save("Pearson MyRealize", "ROLE_PEARSON_MYREALIZE")
     }
 }

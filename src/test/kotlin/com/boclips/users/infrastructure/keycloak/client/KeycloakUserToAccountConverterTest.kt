@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.infrastructure.organisation.UserSourceResolver
-import com.boclips.users.testsupport.factories.OrganisationTypeFactory
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -18,8 +18,8 @@ class KeycloakUserToAccountConverterTest {
 
     @BeforeEach
     fun setup() {
-        val organisationMatcherMock = mock<UserSourceResolver>()
-        whenever(organisationMatcherMock.resolve(any())).thenReturn(OrganisationTypeFactory.boclipsForTeachers())
+        val organisationMatcherMock = mock<OrganisationIdResolver>()
+        whenever(organisationMatcherMock.resolve(any())).thenReturn(OrganisationId("my-id"))
 
         userConverter = KeycloakUserToAccountConverter()
         keycloakUser = UserRepresentation().apply {

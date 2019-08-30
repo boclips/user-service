@@ -45,12 +45,7 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                 utmTerm = userDocument.marketing?.utmTerm ?: "",
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
-            organisationType = when (userDocument.organisationType.type) {
-                TYPE_NO_ORGANISATION -> OrganisationType.BoclipsForTeachers
-                TYPE_DISTRICT -> OrganisationType.District(OrganisationId(userDocument.organisationType.id!!))
-                TYPE_API -> OrganisationType.ApiCustomer(OrganisationId(userDocument.organisationType.id!!))
-                else -> throw IllegalStateException("Could not interpret organisation type ${userDocument.organisationType.type}")
-            }
+            organisationId = userDocument.organisationId?.let { OrganisationId(it) }
         )
     }
 }

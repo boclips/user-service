@@ -7,7 +7,6 @@ import com.boclips.users.client.model.contract.SelectedContentContract
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testUser
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.testsupport.factories.ContractFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -85,12 +84,11 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
 
     override fun insertTestUser(organisationName: String, vararg contracts: DomainContract): User {
         val organisation = saveOrganisationWithContractDetails(organisationName, contracts.toList())
-        val user = UserFactory.sample(
-            organisationType = OrganisationType.ApiCustomer(organisation.id)
-        )
+        val user = UserFactory.sample(organisationId = organisation.id)
+
         saveUser(user)
 
-        return User(user.id.value, (user.organisationType as OrganisationType.ApiCustomer).organisationId.value)
+        return User(user.id.value, user.organisationId!!.value)
     }
 }
 

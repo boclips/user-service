@@ -2,14 +2,12 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
-import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -272,7 +270,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         val user = saveUser(
-            UserFactory.sample(organisationType = OrganisationType.ApiCustomer(organisation.id))
+            UserFactory.sample(organisationId = organisation.id)
         )
 
         mvc.perform(

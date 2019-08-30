@@ -1,37 +1,32 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.Organisation
 import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
     val userRepository: UserRepository,
+    val organisationRepository: OrganisationRepository,
     val accountProvider: AccountProvider
 ) {
     companion object : KLogging()
 
-    fun findTeacherById(id: UserId): User {
-        val retrievedUser = userRepository.findById(UserId(id.value))
-        val user = retrievedUser ?: throw UserNotFoundException(id)
-
-        if (retrievedUser.organisationType != OrganisationType.BoclipsForTeachers) throw UserNotFoundException(id)
-
-        logger.info { "Fetched teacher user ${id.value}" }
-
-        return user
-    }
-
     // TODO implement stream
     fun findAllTeachers(): List<User> {
-        val allUsers = userRepository.findAll().filter { it.organisationType == OrganisationType.BoclipsForTeachers }
+        val districts = organisationRepository.findByType(OrganisationType.District)
+
+        val allUsers = userRepository.findAll().filter {
+            it.organisationId == null || districts.map { district: Organisation -> district.id }.contains(it.organisationId)
+        }
+
         logger.info { "Fetched ${allUsers.size} teacher users from database" }
 
         return allUsers
@@ -56,7 +51,7 @@ class UserService(
                     utmContent = newTeacher.utmContent,
                     utmTerm = newTeacher.utmTerm
                 ),
-                organisationType = OrganisationType.BoclipsForTeachers
+                organisationId = null
             )
         )
 

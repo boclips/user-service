@@ -1,9 +1,8 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.User
-import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
+import com.boclips.users.domain.model.organisation.OrganisationId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -24,7 +23,7 @@ data class UserDocument(
     var country: String?,
     var state: String?,
     var school: String?,
-    var organisationType: OrganisationTypeDocument
+    var organisationId: String?
 ) {
     companion object {
         fun from(user: User): UserDocument {
@@ -46,14 +45,14 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationType = OrganisationTypeConverter().toDocument(user.organisationType),
+                organisationId = user.organisationId?.value,
                 country = user.profile?.country,
                 state = user.profile?.state,
                 school = user.profile?.school
             )
         }
 
-        fun from(account: Account, organisationType: OrganisationType): UserDocument {
+        fun from(account: Account, organisationId: OrganisationId?): UserDocument {
             return UserDocument(
                 id = account.id.value,
                 subjectIds = null,
@@ -66,7 +65,7 @@ data class UserDocument(
                 username = account.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
-                organisationType = OrganisationTypeConverter().toDocument(organisationType),
+                organisationId = organisationId?.value,
                 country = null,
                 state = null,
                 school = null

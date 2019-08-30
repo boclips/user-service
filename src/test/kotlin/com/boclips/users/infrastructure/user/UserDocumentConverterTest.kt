@@ -40,23 +40,6 @@ class UserDocumentConverterTest {
     }
 
     @Test
-    fun `can convert boclips user`() {
-        val user = UserFactory.sample(organisationType = OrganisationType.BoclipsForTeachers)
-
-        val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
-        assertThat(convertedUser.organisationType).isEqualTo(OrganisationType.BoclipsForTeachers)
-    }
-
-    @Test
-    fun `can convert api client`() {
-        val user = UserFactory.sample(organisationType = OrganisationType.ApiCustomer(organisationId = OrganisationId("test")))
-
-        val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
-
-        assertThat(convertedUser.organisationType).isEqualTo(OrganisationType.ApiCustomer(organisationId = OrganisationId("test")))
-    }
-
-    @Test
     fun `users missing optedIntoMarketing is defaulted to true`() {
         val convertedUser =
             userDocumentConverter.convertToUser(UserDocumentFactory.sample(hasOptedIntoMarketing = null))

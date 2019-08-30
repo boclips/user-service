@@ -1,5 +1,6 @@
 package com.boclips.users.domain.model.organisation
 
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.contract.ContractId
 
 data class Organisation(

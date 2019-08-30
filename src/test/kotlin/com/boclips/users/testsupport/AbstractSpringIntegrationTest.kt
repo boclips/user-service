@@ -17,7 +17,7 @@ import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.infrastructure.organisation.UserSourceResolver
+import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.presentation.resources.ContractConverter
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
@@ -81,7 +81,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var subjectService: VideoServiceSubjectsClient
 
     @Autowired
-    lateinit var userSourceResolver: UserSourceResolver
+    lateinit var organisationIdResolver: OrganisationIdResolver
 
     @Autowired
     lateinit var selectedContentContractRepository: SelectedContentContractRepository
@@ -161,12 +161,15 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveOrganisation(
         organisationName: String = "Boclips for Teachers",
-        contractIds: List<ContractId> = emptyList()
+        contractIds: List<ContractId> = emptyList(),
+        role: String = "ROLE_VIEWSONIC",
+        districtId: String? = null
     ): Organisation {
-
         return organisationRepository.save(
             organisationName = organisationName,
-            contractIds = contractIds
+            contractIds = contractIds,
+            role = role,
+            districtId = districtId
         )
     }
 

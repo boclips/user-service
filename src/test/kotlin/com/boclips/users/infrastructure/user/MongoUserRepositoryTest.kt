@@ -97,11 +97,9 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                     school = "Brooklyn School"
                 ),
                 referralCode = "",
-                organisationType = OrganisationType.BoclipsForTeachers
+                organisationId = null
             )
         )
-
-        val organisationType = OrganisationType.District(organisationId = OrganisationId("district-id"))
 
         userRepository.update(
             user,
@@ -111,7 +109,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             UserUpdateCommand.ReplaceCountry("United States of America"),
             UserUpdateCommand.ReplaceState("California"),
             UserUpdateCommand.ReplaceSchool("Sunnydale High School"),
-            UserUpdateCommand.ReplaceOrganisation(organisationType)
+            UserUpdateCommand.ReplaceOrganisationId(OrganisationId("my-id"))
         )
 
         val updatedUser = userRepository.findById(user.id)!!
@@ -122,7 +120,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.state).isEqualTo("California")
         assertThat(updatedUser.profile!!.school).isEqualTo("Sunnydale High School")
         assertThat(updatedUser.referralCode).isEqualTo("1234")
-        assertThat(updatedUser.organisationType).isEqualTo(organisationType)
+        assertThat(updatedUser.organisationId).isEqualTo(OrganisationId("my-id"))
     }
 
     @Test
@@ -203,43 +201,5 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.marketingTracking.utmMedium).isEqualTo("test-medium")
         assertThat(updatedUser.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(updatedUser.marketingTracking.utmTerm).isEqualTo("test-term")
-    }
-
-    @Nested
-    inner class OrganisationAssociation {
-        @Test
-        fun `there exist teachers which are not associated to an organisation`() {
-            val teacher = UserFactory.sample(organisationType = OrganisationType.BoclipsForTeachers)
-
-            val savedTeacher = userRepository.save(teacher)
-
-            assertThat(teacher).isEqualTo(savedTeacher)
-        }
-
-        @Test
-        fun `there exist users are associated to API clients`() {
-            val user = UserFactory.sample(
-                organisationType = OrganisationType.ApiCustomer(
-                    OrganisationId("some-org-id")
-                )
-            )
-
-            val savedUser = userRepository.save(user)
-
-            assertThat(user).isEqualTo(savedUser)
-        }
-
-        @Test
-        fun `there exist users which are associated to school districts`() {
-            val teacher = UserFactory.sample(
-                organisationType = OrganisationType.District(
-                    OrganisationId("some-district-id")
-                )
-            )
-
-            val savedTeacher = userRepository.save(teacher)
-
-            assertThat(teacher).isEqualTo(savedTeacher)
-        }
     }
 }

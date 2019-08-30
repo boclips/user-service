@@ -23,13 +23,7 @@ class EventPublishingUserRepository(val userRepository: UserRepository, private 
                 .user(
                     EventUser.builder()
                         .id(createdUser.id.value)
-                        .organisationId(
-                            when (createdUser.organisationType) {
-                                is OrganisationType.BoclipsForTeachers -> null
-                                is OrganisationType.ApiCustomer -> createdUser.organisationType.organisationId.value
-                                is OrganisationType.District -> createdUser.organisationType.organisationId.value
-                            }
-                        )
+                        .organisationId(createdUser.organisationId?.value)
                         .isBoclipsEmployee(createdUser.account.isBoclipsEmployee())
                         .build()
                 )

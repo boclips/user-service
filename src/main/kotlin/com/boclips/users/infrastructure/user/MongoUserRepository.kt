@@ -5,15 +5,12 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
-import com.boclips.users.infrastructure.keycloak.UnknownUserSourceException
-import com.boclips.users.infrastructure.organisation.UserSourceResolver
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.mongodb.core.MongoTemplate
+import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 
 class MongoUserRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository,
     private val userDocumentConverter: UserDocumentConverter,
-    private val userSourceResolver: UserSourceResolver
+    private val organisationIdResolver: OrganisationIdResolver
 ) : UserRepository {
 
     override fun update(user: User, vararg updateCommands: UserUpdateCommand) {
@@ -46,8 +43,8 @@ class MongoUserRepository(
                 is UserUpdateCommand.ReplaceCountry -> userDocument.apply { country = updateCommand.country }
                 is UserUpdateCommand.ReplaceState -> userDocument.apply { state = updateCommand.state }
                 is UserUpdateCommand.ReplaceSchool -> userDocument.apply { school = updateCommand.school }
-                is UserUpdateCommand.ReplaceOrganisation -> userDocument.apply {
-                    organisationType = OrganisationTypeConverter().toDocument(updateCommand.organisationType)
+                is UserUpdateCommand.ReplaceOrganisationId -> userDocument.apply {
+                    organisationId = updateCommand.organisationId.value
                 }
             }
         }
@@ -71,10 +68,9 @@ class MongoUserRepository(
     }
 
     override fun save(account: Account): User {
-        val organisationType = userSourceResolver.resolve(account.roles)
-            ?: throw UnknownUserSourceException("Could not resolve roles: ${account.roles}")
+        val organisationId = organisationIdResolver.resolve(account.roles)
 
-        return saveUserDocument(UserDocument.from(account = account, organisationType = organisationType))
+        return saveUserDocument(UserDocument.from(account = account, organisationId = organisationId))
     }
 
     override fun save(user: User) = saveUserDocument(UserDocument.from(user))

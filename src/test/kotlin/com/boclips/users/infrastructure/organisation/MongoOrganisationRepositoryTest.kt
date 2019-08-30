@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
@@ -41,10 +42,22 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `looks up an organisation by a district id`() {
-        val organisation = organisationRepository.save(organisationName = "my-school-district", districtId = "external-id")
+        val organisation =
+            organisationRepository.save(organisationName = "my-school-district", districtId = "external-id")
 
         val retrievedOrganisation = organisationRepository.findByDistrictId(districtId = "external-id")
 
         assertThat(organisation).isEqualTo(retrievedOrganisation)
+    }
+
+    @Test
+    fun `looks up organisation by type`() {
+        val savedOrganisation = organisationRepository.save(organisationName = "Some District", districtId = "abc")
+        organisationRepository.save(organisationName = "Some District", districtId = null)
+
+        val districts = organisationRepository.findByType(OrganisationType.District)
+
+        assertThat(districts).hasSize(1)
+        assertThat(districts.first().id).isEqualTo(savedOrganisation.id)
     }
 }

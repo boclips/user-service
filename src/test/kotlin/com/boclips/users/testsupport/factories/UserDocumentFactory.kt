@@ -1,7 +1,5 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
-import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument.Companion.TYPE_NO_ORGANISATION
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import java.util.UUID
@@ -21,12 +19,8 @@ class UserDocumentFactory {
             hasOptedIntoMarketing: Boolean? = false,
             country: String? = "United States of America",
             state: String? = "New York",
-            school: String? = "Brooklyn School",
-            organisationType: OrganisationTypeDocument = OrganisationTypeDocument(
-                id = null,
-                type = TYPE_NO_ORGANISATION
-            )
-        ): UserDocument = UserDocument(
+            school: String? = "Brooklyn School"
+            ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
             lastName = lastName,
@@ -47,7 +41,7 @@ class UserDocumentFactory {
             country = country,
             state = state,
             school = school,
-            organisationType = organisationType
+            organisationId = "some-org-id"
         )
     }
 }

@@ -16,7 +16,7 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
-import com.boclips.users.infrastructure.organisation.UserSourceResolver
+import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
@@ -45,7 +45,7 @@ class ContextConfig(val objectMapper: ObjectMapper) {
     fun keycloakWrapper(keycloak: Keycloak) = KeycloakWrapper(keycloak)
 
     @Bean
-    fun keycloakClient(keycloakWrapper: KeycloakWrapper, userSourceResolver: UserSourceResolver) = KeycloakClient(
+    fun keycloakClient(keycloakWrapper: KeycloakWrapper, organisationIdResolver: OrganisationIdResolver) = KeycloakClient(
         keycloakWrapper,
         KeycloakUserToAccountConverter()
     )
@@ -109,9 +109,9 @@ class RepositoryConfiguration {
     fun mongoUserRepository(
         userDocumentMongoRepository: UserDocumentMongoRepository,
         userDocumentConverter: UserDocumentConverter,
-        userSourceResolver: UserSourceResolver
+        organisationIdResolver: OrganisationIdResolver
     ) =
-        MongoUserRepository(userDocumentMongoRepository, userDocumentConverter, userSourceResolver)
+        MongoUserRepository(userDocumentMongoRepository, userDocumentConverter, organisationIdResolver)
 
     @Bean
     fun userRepository(mongoUserRepository: MongoUserRepository, eventBus: EventBus): UserRepository {
