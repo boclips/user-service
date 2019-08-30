@@ -1,7 +1,7 @@
 package com.boclips.users.application
 
 import com.boclips.users.application.exceptions.InvalidSubjectException
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.organisation.Organisation
@@ -40,7 +40,7 @@ class UserUpdatesConverter(
             updateUserRequest.school?.let { UserUpdateCommand.ReplaceSchool(school = it) },
             district?.let {
                 UserUpdateCommand.ReplaceOrganisation(
-                    organisationType = Platform.District(it.id)
+                    organisationType = OrganisationType.District(it.id)
                 )
             }
         )

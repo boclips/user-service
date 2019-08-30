@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -22,7 +22,7 @@ class UserService(
         val retrievedUser = userRepository.findById(UserId(id.value))
         val user = retrievedUser ?: throw UserNotFoundException(id)
 
-        if (retrievedUser.account.platform != Platform.BoclipsForTeachers) throw UserNotFoundException(id)
+        if (retrievedUser.account.organisationType != OrganisationType.BoclipsForTeachers) throw UserNotFoundException(id)
 
         logger.info { "Fetched teacher user ${id.value}" }
 
@@ -31,7 +31,7 @@ class UserService(
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
-        val allUsers = userRepository.findAll().filter { it.account.platform == Platform.BoclipsForTeachers }
+        val allUsers = userRepository.findAll().filter { it.account.organisationType == OrganisationType.BoclipsForTeachers }
         logger.info { "Fetched ${allUsers.size} teacher users from database" }
 
         return allUsers
@@ -48,7 +48,7 @@ class UserService(
                 account = Account(
                     id = UserId(account.id.value),
                     username = newTeacher.email,
-                    platform = Platform.BoclipsForTeachers
+                    organisationType = OrganisationType.BoclipsForTeachers
                 ),
                 profile = null,
                 analyticsId = newTeacher.analyticsId,

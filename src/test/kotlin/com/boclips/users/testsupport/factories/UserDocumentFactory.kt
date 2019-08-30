@@ -1,6 +1,6 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
@@ -23,7 +23,7 @@ class UserDocumentFactory {
             country: String? = "United States of America",
             state: String? = "New York",
             school: String? = "Brooklyn School",
-            organisationType: OrganisationTypeDocument = OrganisationTypeDocument(id = null, type = Platform.BoclipsForTeachers)
+            organisationType: OrganisationTypeDocument = OrganisationTypeDocument(id = null, type = OrganisationType.BoclipsForTeachers)
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,

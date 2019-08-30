@@ -1,33 +1,33 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class RoleBasedPlatformResolverTest : AbstractSpringIntegrationTest() {
+class RoleBasedOrganisationTypeResolverTest : AbstractSpringIntegrationTest() {
     @Test
     fun `matches a teacher user to "Boclips for Teachers"`() {
         val userSource = userSourceResolver.resolve(listOf("ROLE_TEACHER"))
 
-        assertThat(userSource).isInstanceOf(Platform.BoclipsForTeachers::class.java)
+        assertThat(userSource).isInstanceOf(OrganisationType.BoclipsForTeachers::class.java)
     }
 
     @Test
     fun `matches a viewsonic user to "ViewSonic MyViewBoard"`() {
         val userSource = userSourceResolver.resolve(listOf("ROLE_VIEWSONIC"))
 
-        assertThat(userSource).isInstanceOf(Platform.ApiCustomer::class.java)
-        assertThat((userSource as Platform.ApiCustomer).organisationId).isNotNull
+        assertThat(userSource).isInstanceOf(OrganisationType.ApiCustomer::class.java)
+        assertThat((userSource as OrganisationType.ApiCustomer).organisationId).isNotNull
     }
 
     @Test
     fun `matches a pearson user to "Pearson MyRealize"`() {
         val userSource = userSourceResolver.resolve(listOf("ROLE_PEARSON_MYREALIZE"))
 
-        assertThat(userSource).isInstanceOf(Platform.ApiCustomer::class.java)
-        assertThat((userSource as Platform.ApiCustomer).organisationId).isNotNull
+        assertThat(userSource).isInstanceOf(OrganisationType.ApiCustomer::class.java)
+        assertThat((userSource as OrganisationType.ApiCustomer).organisationId).isNotNull
     }
 
     @Test

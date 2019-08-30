@@ -129,7 +129,7 @@ abstract class AbstractSpringIntegrationTest {
             Account(
                 id = user.id,
                 username = user.account.email!!,
-                platform = user.account.platform
+                organisationType = user.account.organisationType
             )
         )
 

@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -47,10 +47,10 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = extractOrganisationId(user.account.platform),
+                organisationId = extractOrganisationId(user.account.organisationType),
                 organisationType = OrganisationTypeDocument(
-                    id = extractOrganisationId(user.account.platform),
-                    type = user.account.platform
+                    id = extractOrganisationId(user.account.organisationType),
+                    type = user.account.organisationType
                 ),
                 country = user.profile?.country,
                 state = user.profile?.state,
@@ -70,10 +70,10 @@ data class UserDocument(
                 username = account.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
-                organisationId = extractOrganisationId(account.platform),
+                organisationId = extractOrganisationId(account.organisationType),
                 organisationType = OrganisationTypeDocument(
-                    id = extractOrganisationId(account.platform),
-                    type = account.platform
+                    id = extractOrganisationId(account.organisationType),
+                    type = account.organisationType
                 ),
                 country = null,
                 state = null,
@@ -81,11 +81,11 @@ data class UserDocument(
             )
         }
 
-        private fun extractOrganisationId(platform: Platform) : String? {
-            return when (platform) {
-                is Platform.BoclipsForTeachers -> null
-                is Platform.ApiCustomer -> platform.organisationId.value
-                is Platform.District -> platform.organisationId.value
+        private fun extractOrganisationId(organisationType: OrganisationType) : String? {
+            return when (organisationType) {
+                is OrganisationType.BoclipsForTeachers -> null
+                is OrganisationType.ApiCustomer -> organisationType.organisationId.value
+                is OrganisationType.District -> organisationType.organisationId.value
             }
         }
     }

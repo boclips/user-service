@@ -36,7 +36,7 @@ class KeycloakUserToAccountConverterTest {
 
         assertThat(convertedUser.id.value).isEqualTo(keycloakUser.id)
         assertThat(convertedUser.username).isEqualTo(keycloakUser.username)
-        assertThat(convertedUser.platform).isNotNull()
+        assertThat(convertedUser.organisationType).isNotNull()
     }
 
     @Test

@@ -12,7 +12,7 @@ class OrganisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `find an organisation by an external id`() {
         val organisation =
-            organisationRepository.save(organisationName = "my-school-district", externalId = "external-id")
+            organisationRepository.save(organisationName = "my-school-district", districtId = "external-id")
         val retrievedOrganisation = organisationService.findByExternalId(externalId = "external-id")
 
         assertThat(organisation).isEqualTo(retrievedOrganisation)

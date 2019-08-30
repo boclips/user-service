@@ -2,7 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -274,7 +274,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val user = saveUser(
             UserFactory.sample(
                 account = AccountFactory.sample(
-                    platform = Platform.ApiCustomer(organisation.id)
+                    organisationType = OrganisationType.ApiCustomer(organisation.id)
                 )
             )
         )

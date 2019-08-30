@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
@@ -17,10 +17,10 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
             account = Account(
                 id = UserId(value = userDocument.id),
                 username = userDocument.username ?: userDocument.email.orEmpty(),
-                platform = when(userDocument.organisationType.type) {
-                    is Platform.BoclipsForTeachers -> Platform.BoclipsForTeachers
-                    is Platform.District -> Platform.District(OrganisationId(userDocument.organisationType.id!!))
-                    is Platform.ApiCustomer -> Platform.ApiCustomer(OrganisationId(userDocument.organisationType.id!!))
+                organisationType = when(userDocument.organisationType.type) {
+                    is OrganisationType.BoclipsForTeachers -> OrganisationType.BoclipsForTeachers
+                    is OrganisationType.District -> OrganisationType.District(OrganisationId(userDocument.organisationType.id!!))
+                    is OrganisationType.ApiCustomer -> OrganisationType.ApiCustomer(OrganisationId(userDocument.organisationType.id!!))
                 }
             ),
             profile = Profile(

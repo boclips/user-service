@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
@@ -41,19 +41,19 @@ class UserDocumentConverterTest {
 
     @Test
     fun `can convert boclips user`() {
-        val user = UserFactory.sample(account = AccountFactory.sample(platform = Platform.BoclipsForTeachers))
+        val user = UserFactory.sample(account = AccountFactory.sample(organisationType = OrganisationType.BoclipsForTeachers))
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
-        assertThat(convertedUser.account.platform).isEqualTo(Platform.BoclipsForTeachers)
+        assertThat(convertedUser.account.organisationType).isEqualTo(OrganisationType.BoclipsForTeachers)
     }
 
     @Test
     fun `can convert api client`() {
-        val user = UserFactory.sample(account = AccountFactory.sample(platform = Platform.ApiCustomer(organisationId = OrganisationId("test"))))
+        val user = UserFactory.sample(account = AccountFactory.sample(organisationType = OrganisationType.ApiCustomer(organisationId = OrganisationId("test"))))
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
 
-        assertThat(convertedUser.account.platform).isEqualTo(Platform.ApiCustomer(organisationId = OrganisationId("test")))
+        assertThat(convertedUser.account.organisationType).isEqualTo(OrganisationType.ApiCustomer(organisationId = OrganisationId("test")))
     }
 
     @Test

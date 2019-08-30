@@ -3,7 +3,7 @@ package com.boclips.users.domain.service
 import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.User
 import com.boclips.eventbus.domain.user.User as EventUser
 
@@ -24,10 +24,10 @@ class EventPublishingUserRepository(val userRepository: UserRepository, private 
                     EventUser.builder()
                         .id(createdUser.id.value)
                         .organisationId(
-                            when (createdUser.account.platform) {
-                                is Platform.BoclipsForTeachers -> null
-                                is Platform.ApiCustomer -> createdUser.account.platform.organisationId.value
-                                is Platform.District -> createdUser.account.platform.organisationId.value
+                            when (createdUser.account.organisationType) {
+                                is OrganisationType.BoclipsForTeachers -> null
+                                is OrganisationType.ApiCustomer -> createdUser.account.organisationType.organisationId.value
+                                is OrganisationType.District -> createdUser.account.organisationType.organisationId.value
                             }
                         )
                         .isBoclipsEmployee(createdUser.account.isBoclipsEmployee())

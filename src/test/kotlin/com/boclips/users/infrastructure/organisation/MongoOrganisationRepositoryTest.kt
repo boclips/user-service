@@ -41,7 +41,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `looks up an organisation by a district id`() {
-        val organisation = organisationRepository.save(organisationName = "my-school-district", externalId = "external-id")
+        val organisation = organisationRepository.save(organisationName = "my-school-district", districtId = "external-id")
 
         val retrievedOrganisation = organisationRepository.findByDistrictId(districtId = "external-id")
 

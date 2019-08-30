@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 
-data class OrganisationTypeDocument(val id: String?, val type: Platform) {
+data class OrganisationTypeDocument(val id: String?, val type: OrganisationType) {
 }

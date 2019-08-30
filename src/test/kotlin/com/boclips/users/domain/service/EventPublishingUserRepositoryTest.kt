@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service
 
 import com.boclips.eventbus.events.user.UserCreated
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
@@ -14,7 +14,7 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `it publishes an user created event api customers given a User`() {
         val user = userRepository.save(
             UserFactory.sample(
-                account = AccountFactory.sample(platform = Platform.ApiCustomer(OrganisationId("quite-something")))
+                account = AccountFactory.sample(organisationType = OrganisationType.ApiCustomer(OrganisationId("quite-something")))
             )
         )
 
@@ -35,7 +35,7 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it publishes a user event for api customers given an Account`() {
         val user =
-            userRepository.save(AccountFactory.sample(platform = Platform.ApiCustomer(OrganisationId("quite-something"))))
+            userRepository.save(AccountFactory.sample(organisationType = OrganisationType.ApiCustomer(OrganisationId("quite-something"))))
 
         val event = eventBus.getEventOfType(UserCreated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)

@@ -1,6 +1,6 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.Platform
+import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Subject
 
 sealed class UserUpdateCommand {
@@ -13,7 +13,7 @@ sealed class UserUpdateCommand {
     data class ReplaceCountry(val country: String) : UserUpdateCommand()
     data class ReplaceState(val state: String) : UserUpdateCommand()
     data class ReplaceSchool(val school: String) : UserUpdateCommand()
-    data class ReplaceOrganisation(val organisationType: Platform) : UserUpdateCommand()
+    data class ReplaceOrganisation(val organisationType: OrganisationType) : UserUpdateCommand()
     data class ReplaceMarketingTracking(
         val utmCampaign: String?,
         val utmSource: String?,
