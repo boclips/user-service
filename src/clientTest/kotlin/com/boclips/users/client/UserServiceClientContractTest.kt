@@ -76,9 +76,9 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
     @BeforeEach
     fun initialiseApiClient() {
         client = ApiUserServiceClient(
+            userServiceUrl(),
             RestTemplateBuilder()
                 .basicAuthentication(testUser, testPassword)
-                .rootUri(userServiceUrl())
                 .build()
         )
     }
