@@ -1,5 +1,7 @@
 package com.boclips.users.testsupport.factories
 
+import com.boclips.users.domain.model.Platform
+import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import java.util.UUID
@@ -20,7 +22,8 @@ class UserDocumentFactory {
             organisationId: String = "some-org-id",
             country: String? = "United States of America",
             state: String? = "New York",
-            school: String? = "Brooklyn School"
+            school: String? = "Brooklyn School",
+            organisationType: OrganisationTypeDocument = OrganisationTypeDocument(id = null, type = Platform.BoclipsForTeachers)
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
@@ -42,7 +45,8 @@ class UserDocumentFactory {
             organisationId = organisationId,
             country = country,
             state = state,
-            school = school
+            school = school,
+            organisationType = organisationType
         )
     }
 }

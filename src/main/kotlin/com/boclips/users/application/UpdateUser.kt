@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.MarketingService
+import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
@@ -31,11 +32,11 @@ class UpdateUser(
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
         if (authenticatedUser.id != userId) throw PermissionDeniedException()
 
-        val userId = UserId(authenticatedUser.id)
+        val authenticatedUserId = UserId(authenticatedUser.id)
 
-        val user = userService.findUserById(userId)
+        val user = userService.findUserById(authenticatedUserId)
 
-        val commands = userUpdatesConverter.convert(updateUserRequest)
+        val commands = userUpdatesConverter.convert(updateUserRequest, null)
 
         userRepository.update(user, *commands.toTypedArray())
 

@@ -1,8 +1,10 @@
 package com.boclips.users.infrastructure.user
 
+import com.boclips.users.domain.model.Platform
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
@@ -12,6 +14,7 @@ import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
@@ -82,7 +85,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         val user = userRepository.save(
             UserFactory.sample(
                 account = AccountFactory.sample(
-                    id = "user-1"
+                    id = "user-1",
+                    platform = Platform.BoclipsForTeachers
                 ),
                 profile = ProfileFactory.sample(
                     firstName = "Ada",
@@ -93,8 +97,11 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                     school = "Brooklyn School"
                 ),
                 referralCode = ""
+
             )
         )
+
+        val platform = Platform.District(organisationId = OrganisationId("district-id"))
 
         userRepository.update(
             user,
@@ -103,7 +110,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             UserUpdateCommand.ReplaceReferralCode("1234"),
             UserUpdateCommand.ReplaceCountry("United States of America"),
             UserUpdateCommand.ReplaceState("California"),
-            UserUpdateCommand.ReplaceSchool("Sunnydale High School")
+            UserUpdateCommand.ReplaceSchool("Sunnydale High School"),
+            UserUpdateCommand.ReplaceOrganisation(platform)
         )
 
         val updatedUser = userRepository.findById(user.id)!!
@@ -114,6 +122,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.state).isEqualTo("California")
         assertThat(updatedUser.profile!!.school).isEqualTo("Sunnydale High School")
         assertThat(updatedUser.referralCode).isEqualTo("1234")
+        assertThat(updatedUser.account.platform).isEqualTo(platform)
     }
 
     @Test
@@ -194,5 +203,47 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.marketingTracking.utmMedium).isEqualTo("test-medium")
         assertThat(updatedUser.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(updatedUser.marketingTracking.utmTerm).isEqualTo("test-term")
+    }
+
+    @Nested
+    inner class OrganisationAssociation {
+        @Test
+        fun `there exist teachers which are not associated to an organisation`() {
+            val teacher = UserFactory.sample(account = AccountFactory.sample(platform = Platform.BoclipsForTeachers))
+
+            val savedTeacher = userRepository.save(teacher)
+
+            assertThat(teacher).isEqualTo(savedTeacher)
+        }
+
+        @Test
+        fun `there exist users are associated to API clients`() {
+            val user = UserFactory.sample(
+                account = AccountFactory.sample(
+                    platform = Platform.ApiCustomer(
+                        OrganisationId("some-org-id")
+                    )
+                )
+            )
+
+            val savedUser = userRepository.save(user)
+
+            assertThat(user).isEqualTo(savedUser)
+        }
+
+        @Test
+        fun `there exist users which are associated to school districts`() {
+            val teacher = UserFactory.sample(
+                account = AccountFactory.sample(
+                    platform = Platform.District(
+                        OrganisationId("some-district-id")
+                    )
+                )
+            )
+
+            val savedTeacher = userRepository.save(teacher)
+
+            assertThat(teacher).isEqualTo(savedTeacher)
+        }
     }
 }

@@ -2,12 +2,10 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserCounts
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
-import org.bson.types.ObjectId
-import org.springframework.stereotype.Component
+import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
 
 class MongoUserRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository,
@@ -17,8 +15,8 @@ class MongoUserRepository(
     override fun update(user: User, vararg updateCommands: UserUpdateCommand) {
         val userDocument = UserDocument.from(user)
 
-        updateCommands.forEach { updateCommand ->
-            when (updateCommand) {
+        updateCommands.map { updateCommand ->
+            return@map when (updateCommand) {
                 is UserUpdateCommand.ReplaceFirstName -> userDocument.apply { firstName = updateCommand.firstName }
                 is UserUpdateCommand.ReplaceLastName -> userDocument.apply { lastName = updateCommand.lastName }
                 is UserUpdateCommand.ReplaceSubjects -> userDocument.apply {
@@ -40,9 +38,16 @@ class MongoUserRepository(
                         utmTerm = updateCommand.utmTerm
                     )
                 }
+                // TODO: think about country updates...
                 is UserUpdateCommand.ReplaceCountry -> userDocument.apply { country = updateCommand.country }
                 is UserUpdateCommand.ReplaceState -> userDocument.apply { state = updateCommand.state }
                 is UserUpdateCommand.ReplaceSchool -> userDocument.apply { school = updateCommand.school }
+                is UserUpdateCommand.ReplaceOrganisation -> userDocument.apply {
+                    organisationType = OrganisationTypeDocument(
+                        id = updateCommand.organisationType.getIdentifier()?.value,
+                        type = updateCommand.organisationType
+                    )
+                }
             }
         }
 

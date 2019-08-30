@@ -27,6 +27,7 @@ class EventPublishingUserRepository(val userRepository: UserRepository, private 
                             when (createdUser.account.platform) {
                                 is Platform.BoclipsForTeachers -> null
                                 is Platform.ApiCustomer -> createdUser.account.platform.organisationId.value
+                                is Platform.District -> createdUser.account.platform.organisationId.value
                             }
                         )
                         .isBoclipsEmployee(createdUser.account.isBoclipsEmployee())

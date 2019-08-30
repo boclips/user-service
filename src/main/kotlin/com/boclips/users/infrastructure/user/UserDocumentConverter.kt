@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.SubjectService
 
 data class UserDocumentConverter(private val subjectService: SubjectService) {
@@ -16,9 +17,11 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
             account = Account(
                 id = UserId(value = userDocument.id),
                 username = userDocument.username ?: userDocument.email.orEmpty(),
-                platform = userDocument.organisationId
-                    ?.let { Platform.ApiCustomer(com.boclips.users.domain.model.organisation.OrganisationId(value = userDocument.organisationId)) }
-                    ?: Platform.BoclipsForTeachers
+                platform = when(userDocument.organisationType.type) {
+                    is Platform.BoclipsForTeachers -> Platform.BoclipsForTeachers
+                    is Platform.District -> Platform.District(OrganisationId(userDocument.organisationType.id!!))
+                    is Platform.ApiCustomer -> Platform.ApiCustomer(OrganisationId(userDocument.organisationType.id!!))
+                }
             ),
             profile = Profile(
                 firstName = userDocument.firstName.orEmpty(),

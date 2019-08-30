@@ -10,18 +10,28 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MongoOrganisationRepository(private val repository: OrganisationSpringDataRepository) : OrganisationRepository {
+    override fun findByDistrictId(districtId: String): Organisation? {
+        return repository.findByExternalId(districtId)?.let { fromDocument(it) }
+    }
+
     override fun findByRole(role: String): Organisation? {
         return repository.findByRole(role)?.let { fromDocument(it) }
     }
 
-    override fun save(organisationName: String, role: String?, contractIds: List<ContractId>): Organisation {
+    override fun save(
+        organisationName: String,
+        role: String?,
+        contractIds: List<ContractId>,
+        districtId: String?
+    ): Organisation {
         return fromDocument(
             repository.save(
                 OrganisationDocument(
                     id = ObjectId(),
                     name = organisationName,
                     role = role,
-                    contractIds = contractIds.map { it.value }
+                    contractIds = contractIds.map { it.value },
+                    externalId = districtId
                 )
             )
         )
