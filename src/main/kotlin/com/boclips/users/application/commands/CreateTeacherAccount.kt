@@ -1,5 +1,6 @@
-package com.boclips.users.application
+package com.boclips.users.application.commands
 
+import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.User

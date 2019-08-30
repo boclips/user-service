@@ -1,12 +1,13 @@
-package com.boclips.users.application
+package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
 import com.boclips.security.utils.UserExtractor.currentUserHasRole
+import com.boclips.users.application.UserImportService
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.AccountNotFoundException
+import com.boclips.users.application.exceptions.AccountNotFoundException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository

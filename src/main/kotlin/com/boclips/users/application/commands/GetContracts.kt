@@ -1,4 +1,4 @@
-package com.boclips.users.application
+package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor.getIfHasRole
 import com.boclips.users.application.exceptions.PermissionDeniedException

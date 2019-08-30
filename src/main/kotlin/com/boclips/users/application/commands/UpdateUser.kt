@@ -1,6 +1,7 @@
-package com.boclips.users.application
+package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
+import com.boclips.users.application.UserUpdatesConverter
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.domain.model.User

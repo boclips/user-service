@@ -1,10 +1,10 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.CreateTeacherAccount
-import com.boclips.users.application.GetContracts
-import com.boclips.users.application.GetUser
+import com.boclips.users.application.commands.CreateTeacherAccount
+import com.boclips.users.application.commands.GetContracts
+import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.SynchronisationService
-import com.boclips.users.application.UpdateUser
+import com.boclips.users.application.commands.UpdateUser
 import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest

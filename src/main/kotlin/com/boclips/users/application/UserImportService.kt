@@ -1,6 +1,6 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.model.AccountNotFoundException
+import com.boclips.users.application.exceptions.AccountNotFoundException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.AccountProvider

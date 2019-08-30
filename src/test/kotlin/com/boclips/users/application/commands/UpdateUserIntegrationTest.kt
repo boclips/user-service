@@ -1,4 +1,4 @@
-package com.boclips.users.application
+package com.boclips.users.application.commands
 
 import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.testing.setSecurityContext

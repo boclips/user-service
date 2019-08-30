@@ -1,4 +1,4 @@
-package com.boclips.users.application
+package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.domain.model.analytics.AnalyticsId
