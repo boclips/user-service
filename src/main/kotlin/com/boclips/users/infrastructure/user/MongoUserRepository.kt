@@ -6,8 +6,9 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.infrastructure.keycloak.UnknownUserSourceException
-import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument
 import com.boclips.users.infrastructure.organisation.UserSourceResolver
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mongodb.core.MongoTemplate
 
 class MongoUserRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository,
@@ -46,10 +47,7 @@ class MongoUserRepository(
                 is UserUpdateCommand.ReplaceState -> userDocument.apply { state = updateCommand.state }
                 is UserUpdateCommand.ReplaceSchool -> userDocument.apply { school = updateCommand.school }
                 is UserUpdateCommand.ReplaceOrganisation -> userDocument.apply {
-                    organisationType = OrganisationTypeDocument(
-                        id = updateCommand.organisationType.getIdentifier()?.value,
-                        type = updateCommand.organisationType
-                    )
+                    organisationType = OrganisationTypeConverter().toDocument(updateCommand.organisationType)
                 }
             }
         }

@@ -10,6 +10,9 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.SubjectService
+import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument.Companion.TYPE_API
+import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument.Companion.TYPE_DISTRICT
+import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument.Companion.TYPE_NO_ORGANISATION
 
 data class UserDocumentConverter(private val subjectService: SubjectService) {
     fun convertToUser(userDocument: UserDocument): User {
@@ -42,10 +45,11 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                 utmTerm = userDocument.marketing?.utmTerm ?: "",
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
-            organisationType = when(userDocument.organisationType.type) {
-                is OrganisationType.BoclipsForTeachers -> OrganisationType.BoclipsForTeachers
-                is OrganisationType.District -> OrganisationType.District(OrganisationId(userDocument.organisationType.id!!))
-                is OrganisationType.ApiCustomer -> OrganisationType.ApiCustomer(OrganisationId(userDocument.organisationType.id!!))
+            organisationType = when (userDocument.organisationType.type) {
+                TYPE_NO_ORGANISATION -> OrganisationType.BoclipsForTeachers
+                TYPE_DISTRICT -> OrganisationType.District(OrganisationId(userDocument.organisationType.id!!))
+                TYPE_API -> OrganisationType.ApiCustomer(OrganisationId(userDocument.organisationType.id!!))
+                else -> throw IllegalStateException("Could not interpret organisation type ${userDocument.organisationType.type}")
             }
         )
     }
