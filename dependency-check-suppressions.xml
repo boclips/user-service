@@ -88,4 +88,13 @@
         <gav regex="true">^org\.springframework\.security:spring-security-.*:.*$</gav>
         <cve>CVE-2018-1258</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+      file name: commons-beanutils-1.9.2.jar
+
+      Transient dependency from commons-validator, we need to wait for an update on that (reported for v1.6)
+      ]]></notes>
+        <cpe>cpe:2.3:a:apache:commons_beanutils:1.9.2</cpe>
+        <cve>CVE-2019-10086</cve>
+    </suppress>
 </suppressions>
