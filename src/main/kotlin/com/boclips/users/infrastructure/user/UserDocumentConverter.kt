@@ -1,7 +1,6 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
@@ -10,9 +9,6 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.SubjectService
-import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument.Companion.TYPE_API
-import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument.Companion.TYPE_DISTRICT
-import com.boclips.users.infrastructure.organisation.OrganisationTypeDocument.Companion.TYPE_NO_ORGANISATION
 
 data class UserDocumentConverter(private val subjectService: SubjectService) {
     fun convertToUser(userDocument: UserDocument): User {

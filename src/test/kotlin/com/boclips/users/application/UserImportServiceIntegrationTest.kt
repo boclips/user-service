@@ -1,8 +1,8 @@
 package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.AccountNotFoundException
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory

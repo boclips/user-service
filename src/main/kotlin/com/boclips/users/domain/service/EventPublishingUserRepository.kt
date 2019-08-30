@@ -3,7 +3,6 @@ package com.boclips.users.domain.service
 import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.User
 import com.boclips.eventbus.domain.user.User as EventUser
 

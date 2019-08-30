@@ -91,5 +91,4 @@ class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
 
         verify(marketingService, times(1)).updateSubscription(any())
     }
-
 }

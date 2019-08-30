@@ -1,7 +1,6 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId

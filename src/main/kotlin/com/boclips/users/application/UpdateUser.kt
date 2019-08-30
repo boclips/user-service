@@ -8,7 +8,6 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService

@@ -42,4 +42,4 @@ open class CreateTeacherRequest(
     @field:NotEmpty(message = "recaptchaToken must be set")
     var recaptchaToken: String? = null
 
-    )
+)

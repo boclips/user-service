@@ -2,8 +2,8 @@ package com.boclips.users.config
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties

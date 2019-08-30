@@ -222,6 +222,5 @@ class CreateTeacherAccountRequestTest {
             assertThat(violations).hasSize(1)
             assertThat(violations.map { it.message }).contains("Analytics ID cannot be longer than 100 characters")
         }
-
     }
 }

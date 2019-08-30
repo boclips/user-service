@@ -56,7 +56,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(profile.country).isEqualTo("United States of America")
         assertThat(profile.state).isEqualTo("California")
         assertThat(profile.school).isEqualTo("Sunnydale High School")
-
     }
 
     @Test

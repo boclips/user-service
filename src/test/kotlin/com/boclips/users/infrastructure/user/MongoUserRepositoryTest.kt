@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -14,7 +13,6 @@ import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {

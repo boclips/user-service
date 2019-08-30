@@ -20,7 +20,7 @@ class UserDocumentFactory {
             country: String? = "United States of America",
             state: String? = "New York",
             school: String? = "Brooklyn School"
-            ): UserDocument = UserDocument(
+        ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
             lastName = lastName,

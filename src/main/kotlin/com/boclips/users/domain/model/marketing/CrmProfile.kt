@@ -2,7 +2,6 @@ package com.boclips.users.domain.model.marketing
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.UserId
-import org.apache.commons.validator.routines.EmailValidator
 import java.time.Instant
 
 class CrmProfile(

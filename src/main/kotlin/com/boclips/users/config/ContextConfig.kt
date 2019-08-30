@@ -45,10 +45,11 @@ class ContextConfig(val objectMapper: ObjectMapper) {
     fun keycloakWrapper(keycloak: Keycloak) = KeycloakWrapper(keycloak)
 
     @Bean
-    fun keycloakClient(keycloakWrapper: KeycloakWrapper, organisationIdResolver: OrganisationIdResolver) = KeycloakClient(
-        keycloakWrapper,
-        KeycloakUserToAccountConverter()
-    )
+    fun keycloakClient(keycloakWrapper: KeycloakWrapper, organisationIdResolver: OrganisationIdResolver) =
+        KeycloakClient(
+            keycloakWrapper,
+            KeycloakUserToAccountConverter()
+        )
 
     @Bean
     fun accountProvider(keycloakClient: KeycloakClient): AccountProvider = keycloakClient

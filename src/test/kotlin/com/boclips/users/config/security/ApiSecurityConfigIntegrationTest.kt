@@ -1,18 +1,16 @@
 package com.boclips.users.config.security
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
-import org.assertj.core.api.Assertions.assertThat
+import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class ApiSecurityConfigIntegrationTest : AbstractSpringIntegrationTest() {
     @Test

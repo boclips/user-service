@@ -1,11 +1,8 @@
 package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.OrganisationType
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
-import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserDocumentFactory
 import com.boclips.users.testsupport.factories.UserFactory

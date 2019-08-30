@@ -20,7 +20,7 @@ class ProfileFactory {
             country: String = "United States of America",
             state: String = "New York",
             school: String = "Brooklyn School"
-            ) = Profile(
+        ) = Profile(
             subjects = subjects,
             ages = ages,
             firstName = firstName,
