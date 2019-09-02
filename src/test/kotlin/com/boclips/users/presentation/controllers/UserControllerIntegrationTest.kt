@@ -157,7 +157,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "lastName": "doe",
                      "subjects": ["Maths"],
                      "ages": [4,5,6],
-                     "country": "US",
+                     "country": "USA",
                      "state": "CA",
                      "schoolName": "San Fran Forest School"
                      }
@@ -171,7 +171,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.lastName", equalTo("doe")))
             .andExpect(jsonPath("$.ages", equalTo(listOf(4, 5, 6))))
             .andExpect(jsonPath("$.subjects", hasSize<Int>(1)))
-            .andExpect(jsonPath("$.country.id", equalTo("US")))
+            .andExpect(jsonPath("$.country.id", equalTo("USA")))
             .andExpect(jsonPath("$.country.name", equalTo("United States")))
             .andExpect(jsonPath("$.state.id", equalTo("CA")))
             .andExpect(jsonPath("$.state.name", equalTo("California")))

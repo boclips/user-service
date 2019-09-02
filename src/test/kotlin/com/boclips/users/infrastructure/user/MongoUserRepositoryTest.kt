@@ -93,7 +93,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                     firstName = "Ada",
                     lastName = "Lovelace",
                     hasOptedIntoMarketing = false,
-                    country = Country(id = Locale.CANADA.country, name = Locale.CANADA.displayCountry),
+                    country = Country(id = Locale.CANADA.isO3Country, name = Locale.CANADA.displayCountry),
                     state = State(id = "NY", name = "New York"),
                     school = "Brooklyn School"
                 ),
@@ -107,7 +107,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             UserUpdateCommand.ReplaceLastName("Earhart"),
             UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
             UserUpdateCommand.ReplaceReferralCode("1234"),
-            UserUpdateCommand.ReplaceCountry(Country.fromCode("US")),
+            UserUpdateCommand.ReplaceCountry(Country.fromCode("USA")),
             UserUpdateCommand.ReplaceState(State.fromCode("CA")),
             UserUpdateCommand.ReplaceSchool("Brooklyn School"),
             UserUpdateCommand.ReplaceOrganisationId(OrganisationId("my-id"))
@@ -117,7 +117,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(updatedUser.profile!!.lastName).isEqualTo("Earhart")
         assertThat(updatedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
-        assertThat(updatedUser.profile!!.country!!.id).isEqualTo("US")
+        assertThat(updatedUser.profile!!.country!!.id).isEqualTo("USA")
         assertThat(updatedUser.profile!!.country!!.name).isEqualTo("United States")
         assertThat(updatedUser.profile!!.state!!.id).isEqualTo("CA")
         assertThat(updatedUser.profile!!.state!!.name).isEqualTo("California")

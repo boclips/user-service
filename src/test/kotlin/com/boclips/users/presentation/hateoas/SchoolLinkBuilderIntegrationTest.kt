@@ -44,7 +44,7 @@ internal class SchoolLinkBuilderIntegrationTest : AbstractSpringIntegrationTest(
     @Test
     fun `expose US state link when user is from US`() {
         val user = saveUser(
-            UserFactory.sample(profile = ProfileFactory.sample(country = Country(id = "US", name = "United States")))
+            UserFactory.sample(profile = ProfileFactory.sample(country = Country(id = "USA", name = "United States")))
         )
 
         setSecurityContext(username = user.account.username)

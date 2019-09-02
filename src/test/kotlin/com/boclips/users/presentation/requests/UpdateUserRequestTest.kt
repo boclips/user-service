@@ -237,9 +237,9 @@ class UpdateUserRequestTest {
         }
 
         @Test
-        fun `2 letter country is valid`() {
+        fun `3 letter country is valid`() {
             val violations = validator.validate(
-                UpdateUserRequestFactory.sample(country = "US")
+                UpdateUserRequestFactory.sample(country = "USA")
             )
             assertThat(violations).hasSize(0)
         }
@@ -251,17 +251,17 @@ class UpdateUserRequestTest {
             )
 
             assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Country must be 2 characters")
+            assertThat(violations.map { it.message }).contains("Country must be 3 characters")
         }
 
         @Test
-        fun `country longer than 2 characters are invalid`() {
+        fun `country longer than 3 characters are invalid`() {
             val violations = validator.validate(
-                UpdateUserRequestFactory.sample(country = "USA")
+                UpdateUserRequestFactory.sample(country = "USAB")
             )
 
             assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Country must be 2 characters")
+            assertThat(violations.map { it.message }).contains("Country must be 3 characters")
         }
     }
 }

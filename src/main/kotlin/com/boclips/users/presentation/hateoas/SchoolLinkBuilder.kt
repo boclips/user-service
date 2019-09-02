@@ -32,7 +32,7 @@ class SchoolLinkBuilder {
 
     fun getUsStatesLink(user: User): Link? {
         return user.profile?.country?.let { country ->
-            if ("US" == country.id) {
+            if (country.isUSA()) {
                 return ControllerLinkBuilder.linkTo(
                     ControllerLinkBuilder.methodOn(SchoolController::class.java).getAllUsStates()
                 ).withRel("us_states")
