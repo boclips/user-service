@@ -65,7 +65,7 @@ class UserController(
         return Resource(
             userConverter.toUserResource(user),
             listOfNotNull(
-                userLinkBuilder.selfLink(),
+                userLinkBuilder.profileSelfLink(),
                 userLinkBuilder.profileLink(),
                 userLinkBuilder.contractsLink(user.id)
             )

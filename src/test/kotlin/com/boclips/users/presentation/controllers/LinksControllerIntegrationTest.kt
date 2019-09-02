@@ -28,6 +28,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.profile").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").exists())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
+            .andExpect(jsonPath("$._links.countries").doesNotExist())
     }
 
     @Test
@@ -44,13 +45,14 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile").exists())
+            .andExpect(jsonPath("$._links.countries").exists())
             .andExpect(jsonPath("$._links.activate.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
     }
 
     @Test
-    fun `activated user`() {
+    fun `registered user with profile`() {
         setSecurityContext("a-user-id")
 
         userRepository.save(
@@ -64,8 +66,9 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.activate").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
-            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
+            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
+            .andExpect(jsonPath("$._links.countries").exists())
     }
 
     @Test
