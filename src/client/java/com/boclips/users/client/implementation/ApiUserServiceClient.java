@@ -12,13 +12,13 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 public class ApiUserServiceClient implements UserServiceClient {
-    private final String apiGatewayUrl;
+    private final String baseUrl;
     private final RestTemplate restTemplate;
 
     private Links links;
 
-    public ApiUserServiceClient(String apiGatewayUrl, RestTemplate restTemplate) {
-        this.apiGatewayUrl = apiGatewayUrl;
+    public ApiUserServiceClient(String baseUrl, RestTemplate restTemplate) {
+        this.baseUrl = baseUrl;
         this.restTemplate = restTemplate;
     }
 
@@ -41,7 +41,7 @@ public class ApiUserServiceClient implements UserServiceClient {
 
     private Links getLinks() {
         if (links == null) {
-            this.links = restTemplate.getForObject(apiGatewayUrl + "/v1", LinksResource.class).get_links();
+            this.links = restTemplate.getForObject(baseUrl + "/v1", LinksResource.class).get_links();
         }
 
         return links;

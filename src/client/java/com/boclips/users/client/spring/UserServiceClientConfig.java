@@ -24,7 +24,7 @@ public class UserServiceClientConfig {
         requireNonBlank(properties.getClientSecret(), "user-service.client-secret is required");
 
         ClientCredentialsResourceDetails credentials = new ClientCredentialsResourceDetails();
-        credentials.setAccessTokenUri(properties.getBaseUrl() + "/v1/token");
+        credentials.setAccessTokenUri(properties.getTokenUrl());
         credentials.setClientId(properties.getClientId());
         credentials.setClientSecret(properties.getClientSecret());
 
