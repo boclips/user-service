@@ -23,7 +23,7 @@ class KeycloakWrapperContractTest {
             KeycloakWrapper.REALM,
             readSecret("KEYCLOAK_USERNAME"),
             readSecret("KEYCLOAK_PASSWORD"),
-            "admin-cli"
+            "boclips-admin"
         )
 
         wrapper = KeycloakWrapper(keycloak = keycloakInstance, pageSize = 3)

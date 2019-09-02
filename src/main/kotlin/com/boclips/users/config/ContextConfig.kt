@@ -64,7 +64,7 @@ class ContextConfig(val objectMapper: ObjectMapper) {
             KeycloakWrapper.REALM,
             properties.username,
             properties.password,
-            "admin-cli"
+            "boclips-admin"
         )
     }
 
