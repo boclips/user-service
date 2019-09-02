@@ -22,4 +22,13 @@ class SchoolControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(MockMvcRequestBuilders.get("/v1/countries"))
             .andExpect(MockMvcResultMatchers.status().isForbidden)
     }
+
+    @Test
+    fun `lists all states when user is authenticated`() {
+        mvc.perform(MockMvcRequestBuilders.get("/v1/us/states").asUser("some-teacher"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.states", Matchers.hasSize<Int>(67)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.states[0].id", Matchers.equalTo("AB")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.states[0].name", Matchers.equalTo("Alberta")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$._links.self.href", Matchers.endsWith("/us/states")))
+    }
 }

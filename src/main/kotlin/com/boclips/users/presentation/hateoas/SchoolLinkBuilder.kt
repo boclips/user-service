@@ -21,4 +21,10 @@ class SchoolLinkBuilder {
             ControllerLinkBuilder.methodOn(SchoolController::class.java).getAllCountries()
         ).withSelfRel()
     }
+
+    fun getUsStatesSelfLink(): Link? {
+        return ControllerLinkBuilder.linkTo(
+            ControllerLinkBuilder.methodOn(SchoolController::class.java).getAllUsStates()
+        ).withSelfRel()
+    }
 }

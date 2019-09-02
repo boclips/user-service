@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.resources
+package com.boclips.users.presentation.resources.school
 
 import org.springframework.hateoas.core.Relation
 
