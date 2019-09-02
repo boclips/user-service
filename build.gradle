@@ -140,6 +140,7 @@ dependencies {
     implementation('com.mixpanel:mixpanel-java:1.4.4')
     implementation('com.google.guava:guava:27.0.1-jre')
     implementation('commons-validator:commons-validator:1.6')
+    implementation('commons-beanutils:commons-beanutils:1.9.4')
     implementation('io.sentry:sentry-logback:1.7.21')
     implementation('io.micrometer:micrometer-core')
     implementation('io.micrometer:micrometer-registry-prometheus')
