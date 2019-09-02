@@ -23,7 +23,7 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
     @Test
     fun `configuration properties are sourced`() {
         assertThat(userServiceClientProperties).isNotNull
-        assertThat(userServiceClientProperties.apiGatewayUrl).isEqualTo("https://api-gateway/v1")
+        assertThat(userServiceClientProperties.baseUrl).isEqualTo("https://api-gateway")
         assertThat(userServiceClientProperties.tokenUrl).isEqualTo("https://api-gateway/v1/token")
         assertThat(userServiceClientProperties.clientId).isEqualTo("user-service-client-id")
         assertThat(userServiceClientProperties.clientSecret).isEqualTo("user-service-client-secret")
@@ -37,7 +37,7 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
                 UserServiceClientConfig()
                     .userServiceClient(
                         UserServiceClientProperties().apply {
-                            apiGatewayUrl = ""
+                            baseUrl = ""
                             tokenUrl = "not empty"
                             clientId = "not empty"
                             clientSecret = "not empty"
@@ -52,7 +52,7 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
                 UserServiceClientConfig()
                     .userServiceClient(
                         UserServiceClientProperties().apply {
-                            apiGatewayUrl = "not empty"
+                            baseUrl = "not empty"
                             tokenUrl = ""
                             clientId = "not empty"
                             clientSecret = "not empty"
@@ -67,7 +67,7 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
                 UserServiceClientConfig()
                     .userServiceClient(
                         UserServiceClientProperties().apply {
-                            apiGatewayUrl = "not empty"
+                            baseUrl = "not empty"
                             tokenUrl = "not empty"
                             clientId = ""
                             clientSecret = "not empty"
@@ -82,7 +82,7 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
                 UserServiceClientConfig()
                     .userServiceClient(
                         UserServiceClientProperties().apply {
-                            apiGatewayUrl = "not empty"
+                            baseUrl = "not empty"
                             tokenUrl = "not empty"
                             clientId = "not empty"
                             clientSecret = ""

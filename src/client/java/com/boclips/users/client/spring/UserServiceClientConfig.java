@@ -18,17 +18,17 @@ public class UserServiceClientConfig {
 
     @Bean
     public UserServiceClient userServiceClient(UserServiceClientProperties properties) {
-        requireNonBlank(properties.getApiGatewayUrl(), "user-service-client.api-gateway-url is required");
-        requireNonBlank(properties.getTokenUrl(), "user-service-client.token-url is required");
-        requireNonBlank(properties.getClientId(), "user-service-client.client-id is required");
-        requireNonBlank(properties.getClientSecret(), "user-service-client.client-secret is required");
+        requireNonBlank(properties.getBaseUrl(), "user-service.base-url is required");
+        requireNonBlank(properties.getTokenUrl(), "user-service.token-url is required");
+        requireNonBlank(properties.getClientId(), "user-service.client-id is required");
+        requireNonBlank(properties.getClientSecret(), "user-service.client-secret is required");
 
         ClientCredentialsResourceDetails credentials = new ClientCredentialsResourceDetails();
-        credentials.setAccessTokenUri(properties.getApiGatewayUrl() + "/v1/token");
+        credentials.setAccessTokenUri(properties.getBaseUrl() + "/v1/token");
         credentials.setClientId(properties.getClientId());
         credentials.setClientSecret(properties.getClientSecret());
 
-        return new ApiUserServiceClient(properties.getApiGatewayUrl(), new OAuth2RestTemplate(credentials));
+        return new ApiUserServiceClient(properties.getBaseUrl(), new OAuth2RestTemplate(credentials));
     }
 
     private void requireNonBlank(String value, String message) {
