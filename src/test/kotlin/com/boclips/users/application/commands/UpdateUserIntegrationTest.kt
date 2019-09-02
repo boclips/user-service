@@ -7,6 +7,9 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
+import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
@@ -39,13 +42,22 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 hasOptedIntoMarketing = true,
                 subjects = listOf("Maths"),
                 ages = listOf(4, 5, 6),
-                country = "United States of America",
-                state = "California",
-                school = "Sunnydale High School"
+                country = "US",
+                state = "CA",
+                school = "Sunnydale High School",
+                referralCode = "1234",
+                utm = MarketingTrackingRequest(
+                    source = "test-source",
+                    medium = "test-medium",
+                    campaign = "test-campaign",
+                    term = "test-term",
+                    content = "test-content"
+                )
             )
         )
 
         val user = userRepository.findById(UserId(userId))!!
+
         val profile = user.profile!!
         assertThat(profile.firstName).isEqualTo("josh")
         assertThat(profile.lastName).isEqualTo("fleck")
@@ -53,9 +65,15 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(profile.ages).containsExactly(4, 5, 6)
         assertThat(profile.subjects).hasSize(1)
         assertThat(profile.subjects.first().id).isEqualTo(SubjectId("1"))
-        assertThat(profile.country).isEqualTo("United States of America")
-        assertThat(profile.state).isEqualTo("California")
+        assertThat(profile.country).isEqualTo(Country(id = "US", name = "United States"))
+        assertThat(profile.state).isEqualTo(State(id = "CA", name = "California"))
         assertThat(profile.school).isEqualTo("Sunnydale High School")
+        assertThat(user.referralCode).isEqualTo("1234")
+        assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")
+        assertThat(user.marketingTracking.utmMedium).isEqualTo("test-medium")
+        assertThat(user.marketingTracking.utmCampaign).isEqualTo("test-campaign")
+        assertThat(user.marketingTracking.utmTerm).isEqualTo("test-term")
+        assertThat(user.marketingTracking.utmContent).isEqualTo("test-content")
     }
 
     @Test

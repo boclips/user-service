@@ -8,6 +8,8 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.SubjectService
 
 data class UserDocumentConverter(private val subjectService: SubjectService) {
@@ -27,10 +29,9 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                     )
                 } ?: emptyList(),
                 ages = userDocument.ageRange.orEmpty(),
-                country = userDocument.country.orEmpty(),
-                state = userDocument.state.orEmpty(),
+                country = userDocument.country?.let { Country.fromCode(it) },
+                state = userDocument.state?.let { State.fromCode(it) },
                 school = userDocument.school.orEmpty()
-
             ),
             analyticsId = userDocument.analyticsId?.let { AnalyticsId(value = it) },
             referralCode = userDocument.referralCode?.let { it },

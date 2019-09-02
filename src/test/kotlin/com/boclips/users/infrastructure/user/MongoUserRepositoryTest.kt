@@ -4,6 +4,8 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
@@ -14,6 +16,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.Locale
 
 class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
@@ -90,8 +93,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                     firstName = "Ada",
                     lastName = "Lovelace",
                     hasOptedIntoMarketing = false,
-                    country = "United Kingdom",
-                    state = "New York",
+                    country = Country(id = Locale.CANADA.country, name = Locale.CANADA.displayCountry),
+                    state = State(id = "NY", name = "New York"),
                     school = "Brooklyn School"
                 ),
                 referralCode = "",
@@ -104,8 +107,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             UserUpdateCommand.ReplaceLastName("Earhart"),
             UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
             UserUpdateCommand.ReplaceReferralCode("1234"),
-            UserUpdateCommand.ReplaceCountry("United States of America"),
-            UserUpdateCommand.ReplaceState("California"),
+            UserUpdateCommand.ReplaceCountry(Country.fromCode("US")),
+            UserUpdateCommand.ReplaceState(State.fromCode("CA")),
             UserUpdateCommand.ReplaceSchool("Sunnydale High School"),
             UserUpdateCommand.ReplaceOrganisationId(OrganisationId("my-id"))
         )
@@ -114,8 +117,10 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(updatedUser.profile!!.lastName).isEqualTo("Earhart")
         assertThat(updatedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
-        assertThat(updatedUser.profile!!.country).isEqualTo("United States of America")
-        assertThat(updatedUser.profile!!.state).isEqualTo("California")
+        assertThat(updatedUser.profile!!.country!!.id).isEqualTo("US")
+        assertThat(updatedUser.profile!!.country!!.name).isEqualTo("United States")
+        assertThat(updatedUser.profile!!.state!!.id).isEqualTo("CA")
+        assertThat(updatedUser.profile!!.state!!.name).isEqualTo("California")
         assertThat(updatedUser.profile!!.school).isEqualTo("Sunnydale High School")
         assertThat(updatedUser.referralCode).isEqualTo("1234")
         assertThat(updatedUser.organisationId).isEqualTo(OrganisationId("my-id"))

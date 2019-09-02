@@ -46,8 +46,8 @@ data class UserDocument(
                     utmContent = user.marketingTracking.utmContent
                 ),
                 organisationId = user.organisationId?.value,
-                country = user.profile?.country,
-                state = user.profile?.state,
+                country = user.profile?.country?.id,
+                state = user.profile?.state?.id,
                 school = user.profile?.school
             )
         }

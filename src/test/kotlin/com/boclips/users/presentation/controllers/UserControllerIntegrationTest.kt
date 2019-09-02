@@ -158,18 +158,9 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     {"firstName": "jane",
                      "lastName": "doe",
                      "subjects": ["Maths"],
-                     "hasOptedIntoMarketing": true,
                      "ages": [4,5,6],
-                     "referralCode": "1234",
-                     "utm": {
-                        "source": "test-source",
-                        "medium": "test-medium",
-                        "campaign": "test-campaign",
-                        "term": "test-term",
-                        "content": "test-content"
-                        },
-                     "country": "United States of America",
-                     "state": "California",
+                     "country": "US",
+                     "state": "CA",
                      "school": "Sunnydale High School"
                      }
                     """.trimIndent()
@@ -177,23 +168,16 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
-
-        val user = userRepository.findById(UserId("user-id"))!!
-
-        assertThat(user.profile!!.firstName).isEqualTo("jane")
-        assertThat(user.profile!!.lastName).isEqualTo("doe")
-        assertThat(user.profile!!.hasOptedIntoMarketing).isTrue()
-        assertThat(user.profile!!.ages).containsExactly(4, 5, 6)
-        assertThat(user.profile!!.subjects).hasSize(1)
-        assertThat(user.profile!!.country).isEqualTo("United States of America")
-        assertThat(user.profile!!.state).isEqualTo("California")
-        assertThat(user.profile!!.school).isEqualTo("Sunnydale High School")
-        assertThat(user.referralCode).isEqualTo("1234")
-        assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")
-        assertThat(user.marketingTracking.utmMedium).isEqualTo("test-medium")
-        assertThat(user.marketingTracking.utmCampaign).isEqualTo("test-campaign")
-        assertThat(user.marketingTracking.utmTerm).isEqualTo("test-term")
-        assertThat(user.marketingTracking.utmContent).isEqualTo("test-content")
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.firstName", equalTo("jane")))
+            .andExpect(jsonPath("$.lastName", equalTo("doe")))
+            .andExpect(jsonPath("$.ages", equalTo(listOf(4, 5, 6))))
+            .andExpect(jsonPath("$.subjects", hasSize<Int>(1)))
+            .andExpect(jsonPath("$.country.id", equalTo("US")))
+            .andExpect(jsonPath("$.country.name", equalTo("United States")))
+            .andExpect(jsonPath("$.state.id", equalTo("CA")))
+            .andExpect(jsonPath("$.state.name", equalTo("California")))
+            .andExpect(jsonPath("$.school", equalTo("Sunnydale High School")))
     }
 
     @Test

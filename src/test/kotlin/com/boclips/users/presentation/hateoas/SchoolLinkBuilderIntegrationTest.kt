@@ -1,7 +1,10 @@
 package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.ProfileFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,5 +39,21 @@ internal class SchoolLinkBuilderIntegrationTest : AbstractSpringIntegrationTest(
         assertThat(selfLink).isNotNull()
         assertThat(selfLink!!.href).endsWith("/countries")
         assertThat(selfLink.rel).isEqualTo("self")
+    }
+
+    @Test
+    fun `expose US state link when user is from US`() {
+        val user = saveUser(
+            UserFactory.sample(profile = ProfileFactory.sample(country = Country(id = "US", name = "United States")))
+        )
+
+        setSecurityContext(username = user.account.username)
+
+        val stateLink = schoolUriBuilder.getUsStatesLink(user)
+
+        assertThat(stateLink).isNotNull()
+        assertThat(stateLink!!.href).endsWith("/us/states")
+        assertThat(stateLink.rel).isEqualTo("us_states")
+
     }
 }

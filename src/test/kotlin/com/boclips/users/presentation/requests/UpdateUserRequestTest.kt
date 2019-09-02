@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.requests
 
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

@@ -1,6 +1,10 @@
 package com.boclips.users.presentation.resources
 
+import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -18,7 +22,12 @@ class UserConverterTest {
                     ),
                     profile = ProfileFactory.sample(
                         firstName = "Thierry",
-                        lastName = "Henry"
+                        lastName = "Henry",
+                        ages = listOf(1, 2, 3),
+                        subjects = listOf(Subject(SubjectId("subject-id"), name = "Math")),
+                        country = Country(id = "US", name = "United States"),
+                        state = State(id = "NY", name = "New York"),
+                        school = "Some School"
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id")
                 )
@@ -27,6 +36,13 @@ class UserConverterTest {
         assertThat(userResource.id).isNotNull()
         assertThat(userResource.firstName).isEqualTo("Thierry")
         assertThat(userResource.lastName).isEqualTo("Henry")
+        assertThat(userResource.ages).containsExactly(1, 2, 3)
+        assertThat(userResource.subjects).containsExactly("subject-id")
+        assertThat(userResource.country!!.id).isEqualTo("US")
+        assertThat(userResource.country!!.name).isEqualTo("United States")
+        assertThat(userResource.state!!.id).isEqualTo("NY")
+        assertThat(userResource.state!!.name).isEqualTo("New York")
+        assertThat(userResource.school).isEqualTo("Some School")
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
     }

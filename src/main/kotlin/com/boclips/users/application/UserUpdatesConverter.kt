@@ -4,6 +4,8 @@ import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.presentation.requests.UpdateUserRequest
@@ -34,8 +36,8 @@ class UserUpdatesConverter(
                     utmSource = it.source
                 )
             },
-            updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = it) },
-            updateUserRequest.state?.let { UserUpdateCommand.ReplaceState(state = it) },
+            updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = Country.fromCode(it)) },
+            updateUserRequest.state?.let { UserUpdateCommand.ReplaceState(state = State.fromCode(it)) },
             updateUserRequest.school?.let { UserUpdateCommand.ReplaceSchool(school = it) },
             district?.let { UserUpdateCommand.ReplaceOrganisationId(organisationId = it.id) }
         )
