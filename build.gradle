@@ -149,9 +149,9 @@ dependencies {
     clientCompileOnly(lombok)
     clientAnnotationProcessor(lombok)
 
-    clientCompileOnly(springSecurityOAuth2)
-    clientCompileOnly(jackson)
-    clientCompileOnly('org.springframework.boot:spring-boot-autoconfigure')
+    clientImplementation(springSecurityOAuth2)
+    clientImplementation(jackson)
+    clientImplementation('org.springframework.boot:spring-boot-autoconfigure')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.springframework.security:spring-security-test')
