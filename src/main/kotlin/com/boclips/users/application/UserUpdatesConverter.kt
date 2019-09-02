@@ -12,9 +12,7 @@ import com.boclips.users.presentation.requests.UpdateUserRequest
 import org.springframework.stereotype.Component
 
 @Component
-class UserUpdatesConverter(
-    private val subjectService: SubjectService
-) {
+class UserUpdatesConverter(private val subjectService: SubjectService) {
     fun convert(updateUserRequest: UpdateUserRequest, district: Organisation? = null): List<UserUpdateCommand> {
         return listOfNotNull(
             updateUserRequest.firstName?.let { UserUpdateCommand.ReplaceFirstName(firstName = it) },
@@ -38,7 +36,7 @@ class UserUpdatesConverter(
             },
             updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = Country.fromCode(it)) },
             updateUserRequest.state?.let { UserUpdateCommand.ReplaceState(state = State.fromCode(it)) },
-            updateUserRequest.school?.let { UserUpdateCommand.ReplaceSchool(school = it) },
+            updateUserRequest.schoolName?.let { UserUpdateCommand.ReplaceSchool(school = it) },
             district?.let { UserUpdateCommand.ReplaceOrganisationId(organisationId = it.id) }
         )
     }

@@ -24,12 +24,14 @@ open class UpdateUserRequest(
     @field:Valid
     var utm: MarketingTrackingRequest? = null,
 
+    @field:Size(min = 2, max = 2, message = "Country must be 2 characters")
     var country: String? = null,
 
+    @field:Size(min = 2, max = 2, message = "US state must be 2 characters")
     var state: String? = null,
 
     @field:Size(min = 1, max = 200, message = "School name must be between 1 and 200 characters")
-    var school: String? = null
+    var schoolName: String? = null
 )
 
 class MarketingTrackingRequest(

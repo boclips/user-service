@@ -19,7 +19,7 @@ class ProfileFactory {
             firstName: String = "Joe",
             lastName: String = "Dough",
             hasOptedIntoMarketing: Boolean = true,
-            country: Country? = Country(id = "US", name = "United States"),
+            country: Country? = Country(id = "PL", name = "Poland"),
             state: State? = State(id = "NY", name = "New York"),
             school: String = "Brooklyn School"
         ) = Profile(

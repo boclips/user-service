@@ -1,6 +1,5 @@
 package com.boclips.users.presentation.requests
 
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -185,6 +184,84 @@ class UpdateUserRequestTest {
             assertThat(violations.map { it.message }).contains("utmSource cannot be longer than 200 characters")
             assertThat(violations.map { it.message }).contains("utmContent cannot be longer than 200 characters")
             assertThat(violations.map { it.message }).contains("utmMedium cannot be longer than 200 characters")
+        }
+    }
+
+    @Nested
+    inner class UsStates {
+        @Test
+        fun `null state are valid`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(state = null)
+            )
+            assertThat(violations).hasSize(0)
+        }
+
+        @Test
+        fun `2 letter state is valid`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(state = "CA")
+            )
+            assertThat(violations).hasSize(0)
+        }
+
+        @Test
+        fun `empty state are invalid`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(state = "")
+            )
+
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("US state must be 2 characters")
+        }
+
+        @Test
+        fun `states longer than 2 characters are invalid`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(state = "CAL")
+            )
+
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("US state must be 2 characters")
+        }
+    }
+
+    @Nested
+    inner class Country {
+        @Test
+        fun `null country are valid`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(country = null)
+            )
+            assertThat(violations).hasSize(0)
+        }
+
+        @Test
+        fun `2 letter country is valid`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(country = "US")
+            )
+            assertThat(violations).hasSize(0)
+        }
+
+        @Test
+        fun `empty country are invalid`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(country = "")
+            )
+
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("Country must be 2 characters")
+        }
+
+        @Test
+        fun `country longer than 2 characters are invalid`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(country = "USA")
+            )
+
+            assertThat(violations).hasSize(1)
+            assertThat(violations.map { it.message }).contains("Country must be 2 characters")
         }
     }
 }

@@ -109,7 +109,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             UserUpdateCommand.ReplaceReferralCode("1234"),
             UserUpdateCommand.ReplaceCountry(Country.fromCode("US")),
             UserUpdateCommand.ReplaceState(State.fromCode("CA")),
-            UserUpdateCommand.ReplaceSchool("Sunnydale High School"),
+            UserUpdateCommand.ReplaceSchool("Brooklyn School"),
             UserUpdateCommand.ReplaceOrganisationId(OrganisationId("my-id"))
         )
 
@@ -121,7 +121,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.country!!.name).isEqualTo("United States")
         assertThat(updatedUser.profile!!.state!!.id).isEqualTo("CA")
         assertThat(updatedUser.profile!!.state!!.name).isEqualTo("California")
-        assertThat(updatedUser.profile!!.school).isEqualTo("Sunnydale High School")
+        assertThat(updatedUser.profile!!.school).isEqualTo("Brooklyn School")
         assertThat(updatedUser.referralCode).isEqualTo("1234")
         assertThat(updatedUser.organisationId).isEqualTo(OrganisationId("my-id"))
     }

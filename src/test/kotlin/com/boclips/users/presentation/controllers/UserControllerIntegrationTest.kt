@@ -2,7 +2,6 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
@@ -11,7 +10,6 @@ import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
-import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -161,7 +159,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "ages": [4,5,6],
                      "country": "US",
                      "state": "CA",
-                     "school": "Sunnydale High School"
+                     "schoolName": "San Fran Forest School"
                      }
                     """.trimIndent()
                 )
@@ -177,7 +175,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.country.name", equalTo("United States")))
             .andExpect(jsonPath("$.state.id", equalTo("CA")))
             .andExpect(jsonPath("$.state.name", equalTo("California")))
-            .andExpect(jsonPath("$.school", equalTo("Sunnydale High School")))
+            .andExpect(jsonPath("$.school", equalTo("San Fran Forest School")))
     }
 
     @Test

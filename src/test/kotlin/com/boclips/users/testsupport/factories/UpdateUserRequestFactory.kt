@@ -19,7 +19,9 @@ class UpdateUserRequestFactory {
                 medium = "",
                 term = ""
             ),
-            school: String? = "Sunnydale High School"
+            school: String? = "Sunnydale High School",
+            state: String? = "CA",
+            country: String? = "US"
         ): UpdateUserRequest {
             return UpdateUserRequest(
                 firstName = firstName,
@@ -29,7 +31,9 @@ class UpdateUserRequestFactory {
                 hasOptedIntoMarketing = hasOptedIntoMarketing,
                 referralCode = referralCode,
                 utm = utm,
-                school = school
+                schoolName = school,
+                state = state,
+                country = country
             )
         }
     }

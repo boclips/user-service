@@ -44,7 +44,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 ages = listOf(4, 5, 6),
                 country = "US",
                 state = "CA",
-                school = "Sunnydale High School",
+                schoolName = "Sunnydale High School",
                 referralCode = "1234",
                 utm = MarketingTrackingRequest(
                     source = "test-source",

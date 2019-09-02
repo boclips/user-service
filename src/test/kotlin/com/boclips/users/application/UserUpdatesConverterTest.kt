@@ -99,7 +99,7 @@ class UserUpdatesConverterTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `converts school change to a command`() {
-        val commands = userUpdatesConverter.convert(UpdateUserRequest(school = "Connaught School"))
+        val commands = userUpdatesConverter.convert(UpdateUserRequest(schoolName = "Connaught School"))
 
         assertThat(commands).hasSize(1)
     }
