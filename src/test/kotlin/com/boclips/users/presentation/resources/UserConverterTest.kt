@@ -46,4 +46,20 @@ class UserConverterTest {
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
     }
+
+    @Test
+    fun `converts a user without country and state information`() {
+        val userResource =
+            UserConverter().toUserResource(
+                user = UserFactory.sample(
+                    profile = ProfileFactory.sample(
+                        country = null,
+                        state = null
+                    )
+                )
+            )
+
+        assertThat(userResource.country).isNull()
+        assertThat(userResource.state).isNull()
+    }
 }
