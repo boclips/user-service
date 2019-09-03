@@ -16,17 +16,25 @@ public class FakeUserServiceClient implements UserServiceClient {
         return user;
     }
 
-    @Override
-    public List<Contract> getContracts(String userId) {
-        return contracts;
-    }
-
     public User addUser(User user) {
         this.user = user;
         return user;
     }
 
+    public void clearUser() {
+        this.user = null;
+    }
+
+    @Override
+    public List<Contract> getContracts(String userId) {
+        return contracts;
+    }
+
     public void addContract(Contract contract) {
         contracts.add(contract);
+    }
+
+    public void clearContracts() {
+        contracts.clear();
     }
 }
