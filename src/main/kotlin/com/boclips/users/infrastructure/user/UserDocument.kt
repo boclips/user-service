@@ -20,9 +20,6 @@ data class UserDocument(
     var referralCode: String?,
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
-    var country: String?,
-    var state: String?,
-    var school: String?,
     var organisationId: String?
 ) {
     companion object {
@@ -45,10 +42,7 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = user.organisationId?.value,
-                country = user.profile?.country?.id,
-                state = user.profile?.state?.id,
-                school = user.profile?.school
+                organisationId = user.organisationId?.value
             )
         }
 
@@ -65,10 +59,7 @@ data class UserDocument(
                 username = account.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
-                organisationId = organisationId?.value,
-                country = null,
-                state = null,
-                school = null
+                organisationId = organisationId?.value
             )
         }
     }

@@ -16,10 +16,7 @@ class UserDocumentFactory {
             referralCode: String? = "code",
             subjects: List<String> = listOf("maths"),
             ageRange: List<Int> = listOf(1, 2),
-            hasOptedIntoMarketing: Boolean? = false,
-            country: String? = "USA",
-            state: String? = "NY",
-            school: String? = "Brooklyn School"
+            hasOptedIntoMarketing: Boolean? = false
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
@@ -38,9 +35,6 @@ class UserDocumentFactory {
                 utmTerm = null,
                 utmContent = null
             ),
-            country = country,
-            state = state,
-            school = school,
             organisationId = "some-org-id"
         )
     }

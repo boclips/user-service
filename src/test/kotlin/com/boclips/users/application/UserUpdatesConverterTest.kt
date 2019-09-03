@@ -84,27 +84,6 @@ class UserUpdatesConverterTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `converts country change to a command`() {
-        val commands = userUpdatesConverter.convert(UpdateUserRequest(country = "USA"))
-
-        assertThat(commands).hasSize(1)
-    }
-
-    @Test
-    fun `converts state change to a command`() {
-        val commands = userUpdatesConverter.convert(UpdateUserRequest(state = "NY"))
-
-        assertThat(commands).hasSize(1)
-    }
-
-    @Test
-    fun `converts school change to a command`() {
-        val commands = userUpdatesConverter.convert(UpdateUserRequest(schoolName = "Connaught School"))
-
-        assertThat(commands).hasSize(1)
-    }
-
-    @Test
     fun `converts organisationId change to a command`() {
         val commands = userUpdatesConverter.convert(UpdateUserRequest(), district = OrganisationFactory.sample())
 

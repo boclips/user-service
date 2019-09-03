@@ -29,6 +29,16 @@ class OrganisationLinkBuilder {
         ).withSelfRel()
     }
 
+    fun getSchoolLink(countryId: String?): Link? {
+        return ControllerLinkBuilder.linkTo(
+            ControllerLinkBuilder.methodOn(OrganisationController::class.java).getSchools(
+                country = countryId,
+                query = null,
+                state = null
+            )
+        ).withRel("schools")
+    }
+
     fun getStatesLink(country: Country): Link? {
         return when {
             country.isUSA() -> getUsStatesLink()
