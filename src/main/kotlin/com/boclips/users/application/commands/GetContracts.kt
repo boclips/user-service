@@ -1,6 +1,6 @@
 package com.boclips.users.application.commands
 
-import com.boclips.security.utils.UserExtractor.getIfHasRole
+import com.boclips.security.utils.UserExtractor.currentUserHasRole
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.User
@@ -16,9 +16,11 @@ class GetContracts(
     private val contractRepository: ContractRepository
 ) {
     operator fun invoke(user: User): List<Contract> {
-        return getIfHasRole(UserRoles.VIEW_CONTRACTS) {
-            findOrganisation(user)?.contractIds?.mapNotNull(contractRepository::findById)
-        } ?: throw PermissionDeniedException()
+        if (!currentUserHasRole(UserRoles.VIEW_CONTRACTS)) {
+            throw PermissionDeniedException()
+        }
+
+        return findOrganisation(user)?.contractIds?.mapNotNull(contractRepository::findById) ?: emptyList()
     }
 
     private fun findOrganisation(user: User): Organisation? {

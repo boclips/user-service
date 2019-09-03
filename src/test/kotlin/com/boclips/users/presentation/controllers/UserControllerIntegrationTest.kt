@@ -13,6 +13,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -195,27 +196,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `returns a link to contracts if user has VIEW_CONTRACTS role`() {
-        val user = saveUser(UserFactory.sample())
-
-        mvc.perform(
-            get("/v1/users/${user.id.value}").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.contracts.href", endsWith("/v1/users/${user.id.value}/contracts")))
-    }
-
-    @Test
-    fun `returns a 403 response when caller does not have VIEW_CONTRACTS role`() {
-        val user = saveUser(UserFactory.sample())
-
-        mvc.perform(
-            get("/v1/users/${user.id.value}/contracts").asUser(user.id.value)
-        )
-            .andExpect(status().isForbidden)
-    }
-
-    @Test
     fun `get user that does not exist`() {
         mvc.perform(
             get("/v1/users/rafal").asUserWithRoles("ben", UserRoles.VIEW_USERS)
@@ -235,35 +215,70 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
     }
 
-    @Test
-    fun `lists contracts user has access to`() {
-        val contractName = "Test contract"
-        val collectionId = "test-collection-id"
-        val testContract = saveSelectedContentContract(
-            name = contractName,
-            collectionIds = listOf(CollectionId(collectionId))
-        )
+    @Nested
+    inner class Contracts {
+        @Test
+        fun `returns a link to contracts if user has VIEW_CONTRACTS role`() {
+            val user = saveUser(UserFactory.sample())
 
-        val organisation = saveOrganisation(
-            organisationName = "Organisation X",
-            contractIds = listOf(
-                testContract.id
+            mvc.perform(
+                get("/v1/users/${user.id.value}").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
             )
-        )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._links.contracts.href", endsWith("/v1/users/${user.id.value}/contracts")))
+        }
 
-        val user = saveUser(
-            UserFactory.sample(organisationId = organisation.id)
-        )
+        @Test
+        fun `lists contracts user has access to`() {
+            val contractName = "Test contract"
+            val collectionId = "test-collection-id"
+            val testContract = saveSelectedContentContract(
+                name = contractName,
+                collectionIds = listOf(CollectionId(collectionId))
+            )
 
-        mvc.perform(
-            get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(1)))
-            .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
-            .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(contractName)))
-            .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
-            .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo(collectionId)))
-            .andExpect(jsonPath("$._links.self.href", endsWith("/v1/users/${user.id.value}/contracts")))
+            val organisation = saveOrganisation(
+                organisationName = "Organisation X",
+                contractIds = listOf(
+                    testContract.id
+                )
+            )
+
+            val user = saveUser(
+                UserFactory.sample(organisationId = organisation.id)
+            )
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(contractName)))
+                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo(collectionId)))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/users/${user.id.value}/contracts")))
+        }
+
+        @Test
+        fun `returns an empty list of contracts when user does not belong to an organisation`() {
+            val user = saveUser(UserFactory.sample())
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(0)))
+        }
+
+        @Test
+        fun `returns a 403 response when caller does not have VIEW_CONTRACTS role`() {
+            val user = saveUser(UserFactory.sample())
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}/contracts").asUser(user.id.value)
+            )
+                .andExpect(status().isForbidden)
+        }
     }
 }
