@@ -77,14 +77,17 @@ class UpdateUserRequestTest {
     @Nested
     inner class AgeRanges {
         @Test
-        fun `validates age ranges for empty list`() {
-            val violations = validator.validate(
-                UpdateUserRequestFactory.sample(
-                    ages = emptyList()
-                )
-            )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Cannot have less than 1 or more than 99 ages")
+        fun `empty age range is valid`() {
+            val violations = validator.validate(UpdateUserRequestFactory.sample(ages = emptyList()))
+
+            assertThat(violations).hasSize(0)
+        }
+
+        @Test
+        fun `null age range is valid`() {
+            val violations = validator.validate(UpdateUserRequestFactory.sample(ages = null))
+
+            assertThat(violations).hasSize(0)
         }
 
         @Test
@@ -95,7 +98,7 @@ class UpdateUserRequestTest {
                 )
             )
             assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Cannot have less than 1 or more than 99 ages")
+            assertThat(violations.map { it.message }).contains("Cannot have more than 99 ages")
         }
     }
 
@@ -108,8 +111,17 @@ class UpdateUserRequestTest {
                     subjects = emptyList()
                 )
             )
-            assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Cannot have less than 1 or more than 50 subjects")
+            assertThat(violations).hasSize(0)
+        }
+
+        @Test
+        fun `validates subjects for null`() {
+            val violations = validator.validate(
+                UpdateUserRequestFactory.sample(
+                    subjects = null
+                )
+            )
+            assertThat(violations).hasSize(0)
         }
 
         @Test
@@ -120,7 +132,7 @@ class UpdateUserRequestTest {
                 )
             )
             assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("Cannot have less than 1 or more than 50 subjects")
+            assertThat(violations.map { it.message }).contains("Cannot have more than 50 subjects")
         }
     }
 
