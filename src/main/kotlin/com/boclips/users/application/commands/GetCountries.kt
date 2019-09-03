@@ -8,6 +8,6 @@ import java.util.Locale
 class GetCountries {
     operator fun invoke(): List<Country> {
         return Locale.getISOCountries().map { Locale("", it) }
-            .map { Country(id = it.country, name = it.displayCountry) }
+            .map { Country(id = it.isO3Country, name = it.displayCountry) }
     }
 }

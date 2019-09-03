@@ -6,7 +6,6 @@ import com.boclips.security.utils.UserExtractor.getIfAuthenticated
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.presentation.controllers.SchoolController
 import com.boclips.users.presentation.controllers.UserController
 import mu.KLogging
 import org.springframework.hateoas.Link

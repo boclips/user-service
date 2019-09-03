@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.resources.school
 
+import org.springframework.hateoas.Link
 import org.springframework.hateoas.core.Relation
 
 @Relation(collectionRelation = "countries")
