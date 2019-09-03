@@ -36,7 +36,7 @@ class OrganisationLinkBuilder {
         }
     }
 
-    fun getUsStatesLink(): Link {
+    private fun getUsStatesLink(): Link {
         return ControllerLinkBuilder.linkTo(
             ControllerLinkBuilder.methodOn(OrganisationController::class.java).getAllUsStates()
         ).withRel("states")

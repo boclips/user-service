@@ -22,13 +22,15 @@ class OrganisationController(
 ) {
 
     @GetMapping("/countries")
-    fun getAllCountries(): Resources<Resource<CountryResource>>{
+    fun getAllCountries(): Resources<Resource<CountryResource>> {
         val countries = getCountries()
 
-        return Resources(countryConverter.toCountriesResource(countries), organisationLinkBuilder.getCountriesSelfLink())
+        return Resources(
+            countryConverter.toCountriesResource(countries), organisationLinkBuilder.getCountriesSelfLink()
+        )
     }
 
-    @GetMapping("/us/states")
+    @GetMapping("/countries/USA/states")
     fun getAllUsStates(): Resources<StateResource> {
         val states = getUsStates()
 

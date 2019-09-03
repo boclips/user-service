@@ -40,18 +40,18 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
     }
 
     @Test
-    fun `expose state link when country is the US`() {
-        val stateLink = organisationUriBuilder.getUsStatesLink()
+    fun `expose state link when country is the USA`() {
+        val country = Country.fromCode("USA")
+        val stateLink = organisationUriBuilder.getStatesLink(country)
 
         assertThat(stateLink).isNotNull()
-        assertThat(stateLink!!.href).endsWith("/us/states")
+        assertThat(stateLink!!.href).endsWith("countries/USA/states")
         assertThat(stateLink.rel).isEqualTo("states")
     }
 
     @Test
-    fun `does not expose state link when country is not the US`() {
+    fun `does not expose state link when country is not the USA`() {
         val country = Country.fromCode("GBR")
-
         val stateLink = organisationUriBuilder.getStatesLink(country)
 
         assertThat(stateLink).isNull()

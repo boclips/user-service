@@ -17,7 +17,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.countries[0].name", Matchers.equalTo("Andorra")))
             .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.countries[233].id", Matchers.equalTo("USA")))
             .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.countries[233].name", Matchers.equalTo("United States")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.countries[233]._links.states.href", Matchers.endsWith("/us/states")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.countries[233]._links.states.href", Matchers.endsWith("/countries/USA/states")))
             .andExpect(MockMvcResultMatchers.jsonPath("$._links.self.href", Matchers.endsWith("/countries")))
     }
 
@@ -29,10 +29,10 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `lists all states when user is authenticated`() {
-        mvc.perform(MockMvcRequestBuilders.get("/v1/us/states").asUser("some-teacher"))
+        mvc.perform(MockMvcRequestBuilders.get("/v1/countries/USA/states").asUser("some-teacher"))
             .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.states", Matchers.hasSize<Int>(67)))
             .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.states[0].id", Matchers.equalTo("AB")))
             .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.states[0].name", Matchers.equalTo("Alberta")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$._links.self.href", Matchers.endsWith("/us/states")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$._links.self.href", Matchers.endsWith("/countries/USA/states")))
     }
 }
