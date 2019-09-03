@@ -21,7 +21,8 @@ class LinksController(
             userLinkBuilder.profileLink(),
             userLinkBuilder.userLink(),
             userLinkBuilder.contractsLink(),
-            organisationLinkBuilder.getCountriesLink()
+            organisationLinkBuilder.getCountriesLink(),
+            organisationLinkBuilder.getUsStatesSelfLink()
         )
     )
 }
