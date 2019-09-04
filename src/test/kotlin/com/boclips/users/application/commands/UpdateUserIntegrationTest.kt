@@ -43,8 +43,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 subjects = listOf("Maths"),
                 ages = listOf(4, 5, 6),
                 country = "USA",
-                state = "CA",
-                schoolName = "Sunnydale High School",
                 referralCode = "1234",
                 utm = MarketingTrackingRequest(
                     source = "test-source",
@@ -66,8 +64,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(profile.subjects).hasSize(1)
         assertThat(profile.subjects.first().id).isEqualTo(SubjectId("1"))
         assertThat(profile.country).isEqualTo(Country(id = "USA", name = "United States"))
-        assertThat(profile.state).isEqualTo(State(id = "CA", name = "California"))
-        assertThat(profile.school).isEqualTo("Sunnydale High School")
         assertThat(user.referralCode).isEqualTo("1234")
         assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(user.marketingTracking.utmMedium).isEqualTo("test-medium")
