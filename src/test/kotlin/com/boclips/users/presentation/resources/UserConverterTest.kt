@@ -25,9 +25,7 @@ class UserConverterTest {
                         lastName = "Henry",
                         ages = listOf(1, 2, 3),
                         subjects = listOf(Subject(SubjectId("subject-id"), name = "Math")),
-                        country = Country(id = "US", name = "United States"),
-                        state = State(id = "NY", name = "New York"),
-                        school = "Some School"
+                        country = Country(id = "US", name = "United States")
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id")
                 )
@@ -40,26 +38,21 @@ class UserConverterTest {
         assertThat(userResource.subjects).containsExactly("subject-id")
         assertThat(userResource.country!!.id).isEqualTo("US")
         assertThat(userResource.country!!.name).isEqualTo("United States")
-        assertThat(userResource.state!!.id).isEqualTo("NY")
-        assertThat(userResource.state!!.name).isEqualTo("New York")
-        assertThat(userResource.school).isEqualTo("Some School")
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
     }
 
     @Test
-    fun `converts a user without country and state information`() {
+    fun `converts a user without country information`() {
         val userResource =
             UserConverter().toUserResource(
                 user = UserFactory.sample(
                     profile = ProfileFactory.sample(
-                        country = null,
-                        state = null
+                        country = null
                     )
                 )
             )
 
         assertThat(userResource.country).isNull()
-        assertThat(userResource.state).isNull()
     }
 }

@@ -5,5 +5,6 @@ data class OrganisationTypeDocument(val id: String?, val type: String) {
         const val TYPE_NO_ORGANISATION = "NO_ORGANISATION"
         const val TYPE_API = "API"
         const val TYPE_DISTRICT = "DISTRICT"
+        const val TYPE_SCHOOL = "SCHOOL"
     }
 }

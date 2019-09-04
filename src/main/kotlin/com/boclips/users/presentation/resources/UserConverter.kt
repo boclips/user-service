@@ -14,11 +14,9 @@ class UserConverter {
             lastName = user.profile?.lastName,
             ages = user.profile?.ages,
             subjects = user.profile?.subjects?.map { it.id.value },
-            country = user.profile?.country?.let { CountryResource(id = it.id, name = it.name) },
-            state = user.profile?.state?.let { StateResource(id = it.id, name = it.name) },
-            school = user.profile?.school,
             email = user.account.email,
-            analyticsId = user.analyticsId?.value
+            analyticsId = user.analyticsId?.value,
+            country = user.profile?.country?.let { CountryResource(id = it.id, name = it.name) }
         )
     }
 }

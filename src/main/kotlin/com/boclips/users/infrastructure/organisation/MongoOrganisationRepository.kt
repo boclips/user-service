@@ -15,6 +15,7 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
         return when (organisationType) {
             is OrganisationType.District -> repository.findByExternalIdNotNull().toList().map { fromDocument(it) }
             is OrganisationType.ApiCustomer -> repository.findByType(type = "API").toList().map { fromDocument(it) }
+            is OrganisationType.School -> repository.findByType(type = "SCHOOL").toList().map { fromDocument(it) }
         }
     }
 
@@ -31,7 +32,9 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
         role: String?,
         contractIds: List<ContractId>,
         districtId: String?,
-        organisationType: OrganisationType?
+        organisationType: OrganisationType?,
+        countryId: String?,
+        stateId: String?
     ): Organisation {
         return fromDocument(
             repository.save(
@@ -44,8 +47,11 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
                     type = when (organisationType) {
                         OrganisationType.ApiCustomer -> "API"
                         OrganisationType.District -> "DISTRICT"
+                        OrganisationType.School -> "SCHOOL"
                         else -> null
-                    }
+                    },
+                    country = countryId,
+                    state = stateId
                 )
             )
         )

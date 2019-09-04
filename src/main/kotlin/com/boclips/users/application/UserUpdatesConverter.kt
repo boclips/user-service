@@ -35,8 +35,6 @@ class UserUpdatesConverter(private val subjectService: SubjectService) {
                 )
             },
             updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = Country.fromCode(it)) },
-            updateUserRequest.state?.let { UserUpdateCommand.ReplaceState(state = State.fromCode(it)) },
-            updateUserRequest.schoolName?.let { UserUpdateCommand.ReplaceSchool(school = it) },
             district?.let { UserUpdateCommand.ReplaceOrganisationId(organisationId = it.id) }
         )
     }
