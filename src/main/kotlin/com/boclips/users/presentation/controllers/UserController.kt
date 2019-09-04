@@ -5,6 +5,7 @@ import com.boclips.users.application.commands.GetContracts
 import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.SynchronisationService
 import com.boclips.users.application.commands.UpdateUser
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest
@@ -74,11 +75,11 @@ class UserController(
 
     @GetMapping("/{id}/contracts")
     fun getContractsOfUser(@PathVariable id: String?): ContractResourcesHateoasWrapper {
-        val user = getUser(id!!)
+        val userId = UserId(id!!)
         return ContractResourcesHateoasWrapper(
-            ContractResourcesWrapper(getContracts(user).map { contractConverter.toResource(it) }),
+            ContractResourcesWrapper(getContracts(userId).map { contractConverter.toResource(it) }),
             listOfNotNull(
-                contractsLinkBuilder.self(user.id)
+                contractsLinkBuilder.self(userId)
             )
         )
     }
