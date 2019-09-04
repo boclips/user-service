@@ -13,12 +13,13 @@ interface OrganisationRepository {
         contractIds: List<ContractId> = emptyList(),
         districtId: String? = null,
         organisationType: OrganisationType?,
-        countryId: String? = null,
-        stateId: String? = null
+        country: String? = null,
+        state: String? = null
     ): Organisation
 
     fun findByRole(role: String): Organisation?
     fun findById(id: OrganisationId): Organisation?
     fun findByDistrictId(districtId: String): Organisation?
     fun findByType(organisationType: OrganisationType): List<Organisation>
+    fun findByNameAndCountry(organisationName: String, country: String) : List<Organisation>
 }

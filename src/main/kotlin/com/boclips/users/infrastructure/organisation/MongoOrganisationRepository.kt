@@ -11,6 +11,18 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MongoOrganisationRepository(private val repository: OrganisationSpringDataRepository) : OrganisationRepository {
+
+    override fun findByNameAndCountry(
+        organisationName: String,
+        country: String
+    ): List<Organisation> {
+        return repository.findOrganisationDocumentByCountryEqualsAndNameContainsAndTypeEquals(
+            country = country,
+            name = organisationName,
+            type = "SCHOOL"
+        ).toList().map { fromDocument(it) }
+    }
+
     override fun findByType(organisationType: OrganisationType): List<Organisation> {
         return when (organisationType) {
             is OrganisationType.District -> repository.findByExternalIdNotNull().toList().map { fromDocument(it) }
@@ -33,8 +45,8 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
         contractIds: List<ContractId>,
         districtId: String?,
         organisationType: OrganisationType?,
-        countryId: String?,
-        stateId: String?
+        country: String?,
+        state: String?
     ): Organisation {
         return fromDocument(
             repository.save(
@@ -50,8 +62,8 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
                         OrganisationType.School -> "SCHOOL"
                         else -> null
                     },
-                    country = countryId,
-                    state = stateId
+                    country = country,
+                    state = state
                 )
             )
         )

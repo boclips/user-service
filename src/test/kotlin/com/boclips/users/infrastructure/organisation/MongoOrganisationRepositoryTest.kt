@@ -94,10 +94,59 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 organisationType = OrganisationType.ApiCustomer
             )
 
-            val districts = organisationRepository.findByType(OrganisationType.ApiCustomer)
+            val apiCustomers = organisationRepository.findByType(OrganisationType.ApiCustomer)
 
-            assertThat(districts).hasSize(1)
-            assertThat(districts.first().id).isEqualTo(savedOrganisation.id)
+            assertThat(apiCustomers).hasSize(1)
+            assertThat(apiCustomers.first().id).isEqualTo(savedOrganisation.id)
         }
+
+        @Test
+        fun `looks up organisation by schools`() {
+            organisationRepository.save(
+                organisationName = "Some District",
+                districtId = "abc",
+                organisationType = OrganisationType.District
+            )
+            val savedOrganisation = organisationRepository.save(
+                organisationName = "Some School",
+                organisationType = OrganisationType.School
+            )
+
+            val schools = organisationRepository.findByType(OrganisationType.School)
+
+            assertThat(schools).hasSize(1)
+            assertThat(schools.first().id).isEqualTo(savedOrganisation.id)
+        }
+    }
+
+    @Test
+    fun `looks up organisation by name and country`() {
+        val correctSchool = organisationRepository.save(
+            organisationName = "Some School",
+            organisationType = OrganisationType.School,
+            country = "GBR"
+        )
+        organisationRepository.save(
+            organisationName = "Some API customer",
+            organisationType = OrganisationType.ApiCustomer
+        )
+        organisationRepository.save(
+            organisationName = "Some School",
+            organisationType = OrganisationType.School,
+            country = "POL"
+        )
+        organisationRepository.save(
+            organisationName = "Another one",
+            organisationType = OrganisationType.School,
+            country = "GBR"
+        )
+
+        val schools = organisationRepository.findByNameAndCountry(
+            organisationName = "School",
+            country = "GBR"
+        )
+
+        assertThat(schools).hasSize(1)
+        assertThat(schools.first().id).isEqualTo(correctSchool.id)
     }
 }
