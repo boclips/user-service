@@ -39,7 +39,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `lists schools when given only query and country - outside US schools`() {
+    fun `lists schools when given only query and country - outside USA schools`() {
         val school = organisationRepository.save(organisationName = "my school 1", organisationType = OrganisationType.School, country = "GBR")
         organisationRepository.save(organisationName = "my school 2", organisationType = OrganisationType.School, country = "POL")
         organisationRepository.save(organisationName = "something else", organisationType = OrganisationType.School, country = "GBR")
