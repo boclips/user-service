@@ -1,18 +1,18 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.commands.CreateTeacherAccount
-import com.boclips.users.application.commands.GetContracts
-import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.SynchronisationService
+import com.boclips.users.application.commands.CreateTeacherAccount
+import com.boclips.users.application.commands.GetContractsOfUser
+import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.commands.UpdateUser
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
+import com.boclips.users.presentation.hateoas.ContractResourcesHateoasWrapper
+import com.boclips.users.presentation.hateoas.ContractResourcesWrapper
+import com.boclips.users.presentation.hateoas.UserContractsLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.ContractConverter
-import com.boclips.users.presentation.resources.ContractResourcesHateoasWrapper
-import com.boclips.users.presentation.resources.ContractResourcesWrapper
 import com.boclips.users.presentation.resources.UserConverter
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.hateoas.ExposesResourceFor
@@ -38,10 +38,10 @@ class UserController(
     private val getUser: GetUser,
     private val userConverter: UserConverter,
     private val userLinkBuilder: UserLinkBuilder,
-    private val contractsLinkBuilder: ContractsLinkBuilder,
+    private val userContractsLinkBuilder: UserContractsLinkBuilder,
     private val synchronisationService: SynchronisationService,
     private val contractConverter: ContractConverter,
-    private val getContracts: GetContracts
+    private val getContractsOfUser: GetContractsOfUser
 ) {
 
     @PostMapping
@@ -77,9 +77,11 @@ class UserController(
     fun getContractsOfUser(@PathVariable id: String?): ContractResourcesHateoasWrapper {
         val userId = UserId(id!!)
         return ContractResourcesHateoasWrapper(
-            ContractResourcesWrapper(getContracts(userId).map { contractConverter.toResource(it) }),
+            ContractResourcesWrapper(
+                getContractsOfUser(userId).map { contractConverter.toResource(it) }
+            ),
             listOfNotNull(
-                contractsLinkBuilder.self(userId)
+                userContractsLinkBuilder.self(userId)
             )
         )
     }

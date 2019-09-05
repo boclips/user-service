@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.contract.CollectionId
+import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
 import com.boclips.users.testsupport.factories.ContractFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -14,10 +15,9 @@ class ContractConverterTest {
 
         val resource = converter.toResource(contract) as ContractResource.SelectedContent
 
-        assertThat(resource.id).isNotBlank()
         assertThat(resource.name).isEqualTo(contract.name)
         assertThat(resource.collectionIds).containsExactlyInAnyOrder("A", "B")
     }
 
-    private val converter = ContractConverter()
+    private val converter = ContractConverter(ContractsLinkBuilder())
 }

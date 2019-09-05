@@ -10,6 +10,5 @@ import lombok.Data;
 })
 @Data
 public abstract class Contract {
-    protected String id;
     protected String name;
 }

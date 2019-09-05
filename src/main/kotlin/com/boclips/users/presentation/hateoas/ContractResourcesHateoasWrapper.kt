@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.resources
+package com.boclips.users.presentation.hateoas
 
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.ResourceSupport

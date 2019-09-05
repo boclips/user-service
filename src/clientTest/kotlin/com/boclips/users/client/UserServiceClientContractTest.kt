@@ -36,7 +36,7 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     }
 
     @Nested
-    inner class GetContracts {
+    inner class GetContractsOfUser {
         @Test
         fun `returns an empty list when user is not eligible to any contracts`() {
             val organisationName = "test-organisation-id"
@@ -103,7 +103,6 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
             domainContract as DomainContract.SelectedContent
             (client as FakeUserServiceClient).addContract(
                 SelectedContentContract().apply {
-                    id = domainContract.id.value
                     name = domainContract.name
                     collectionIds = domainContract.collectionIds.map { it.value }
                 }
