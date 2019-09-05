@@ -8,6 +8,10 @@ class ContractDocumentFactory {
         fun sampleSelectedContentContractDocument(
             name: String = "Test selected content contract",
             collectionIds: List<String> = emptyList()
-        ) = ContractDocument.SelectedContent(id = ObjectId(), name = name, collectionIds = collectionIds)
+        ) = ContractDocument.SelectedContent().apply {
+            this.id = ObjectId()
+            this.name = name
+            this.collectionIds = collectionIds
+        }
     }
 }

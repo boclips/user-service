@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
+import javax.validation.ConstraintViolationException
 
 @ControllerAdvice(basePackageClasses = [PresentationPackageMarker::class])
 class ExceptionHandlingControllerAdvice {
@@ -50,6 +51,12 @@ class ExceptionHandlingControllerAdvice {
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Contract not found")
     @ExceptionHandler(ContractNotFoundException::class)
     fun handleContractNotFound(ex: ContractNotFoundException) {
-        logger.info { "Contract ${ex.contractId} not found" }
+        logger.info { "Contract for ${ex.criteria} not found" }
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Validation failed")
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolationException(ex: ConstraintViolationException) {
+        logger.info { ex.message }
     }
 }

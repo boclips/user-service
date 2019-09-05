@@ -7,9 +7,9 @@ import com.boclips.users.domain.service.ContractRepository
 import org.springframework.stereotype.Service
 
 @Service
-class GetContract(private val contractRepository: ContractRepository) {
+class GetContractById(private val contractRepository: ContractRepository) {
     operator fun invoke(id: String): Contract {
         val contractId = ContractId(id)
-        return contractRepository.findById(contractId) ?: throw ContractNotFoundException(contractId)
+        return contractRepository.findById(contractId) ?: throw ContractNotFoundException(id)
     }
 }

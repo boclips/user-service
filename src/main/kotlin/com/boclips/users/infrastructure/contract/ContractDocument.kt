@@ -7,12 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "contracts")
 sealed class ContractDocument {
     @TypeAlias("SelectedContent")
-    data class SelectedContent(
-        override val id: ObjectId,
-        override val name: String,
-        val collectionIds: List<String>
-    ) : ContractDocument()
+    class SelectedContent : ContractDocument() {
+        lateinit var collectionIds: List<String>
+    }
 
-    abstract val id: ObjectId
-    abstract val name: String
+    lateinit var id: ObjectId
+    lateinit var name: String
 }

@@ -1,7 +1,8 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.commands.CreateContract
-import com.boclips.users.application.commands.GetContract
+import com.boclips.users.application.commands.GetContractById
+import com.boclips.users.application.commands.GetContractByName
 import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
 import com.boclips.users.presentation.requests.CreateContractRequest
 import com.boclips.users.presentation.resources.ContractConverter
@@ -10,19 +11,24 @@ import org.springframework.hateoas.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
+import javax.validation.constraints.NotBlank
 
+@Validated
 @RestController
-@RequestMapping("/v1/contracts/", "/v1/contracts")
+@RequestMapping("/v1/contracts")
 class ContractController(
     private val createContract: CreateContract,
-    private val getContract: GetContract,
+    private val getContractById: GetContractById,
+    private val getContractByName: GetContractByName,
     private val contractsLinkBuilder: ContractsLinkBuilder,
     private val contractConverter: ContractConverter
 ) {
@@ -38,8 +44,15 @@ class ContractController(
 
     @GetMapping("/{id}")
     fun fetchContract(@PathVariable("id") id: String): ContractResource {
-        val contract = getContract(id)
+        return contractConverter.toResource(
+            getContractById(id)
+        )
+    }
 
-        return contractConverter.toResource(contract)
+    @GetMapping
+    fun fetchContractByName(@NotBlank @RequestParam(required = false) name: String?): ContractResource {
+        return contractConverter.toResource(
+            getContractByName(name!!)
+        )
     }
 }

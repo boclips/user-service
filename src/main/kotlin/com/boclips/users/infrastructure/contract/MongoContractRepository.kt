@@ -19,6 +19,14 @@ class MongoContractRepository(
         }
     }
 
+    override fun findByName(name: String): Contract? {
+        return contractDocumentMongoRepository.findByName(name)?.let {
+            return when (it) {
+                is ContractDocument.SelectedContent -> contractDocumentConverter.fromDocument(it)
+            }
+        }
+    }
+
     private fun asNullable(potentialDocument: Optional<ContractDocument>): ContractDocument? {
         return if (potentialDocument.isPresent) {
             potentialDocument.get()

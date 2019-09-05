@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.web.util.UriComponentsBuilder
 
 class ContractControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
@@ -126,6 +127,66 @@ class ContractControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
             )
                 .andExpect(status().isNotFound)
+        }
+    }
+
+    @Nested
+    inner class LookingContractsUpByName {
+        @Test
+        fun `returns a 403 response when caller does not have a VIEW_CONTRACTS role`() {
+            mvc.perform(
+                get("/v1/contracts?name=Super+Contract")
+                    .asUser("cant-view-contracts@hacker.com")
+            )
+                .andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `returns given contract when the name matches`() {
+            val contractName = "Super contract"
+            val contract = selectedContentContractRepository.saveSelectedContentContract(
+                contractName,
+                listOf(CollectionId("A"))
+            )
+
+            mvc.perform(
+                get(
+                    UriComponentsBuilder.fromUriString("/v1/contracts")
+                        .queryParam("name", contractName)
+                        .build()
+                        .toUri()
+                )
+                    .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$.name", equalTo(contractName)))
+                .andExpect(jsonPath("$.collectionIds", hasSize<Int>(1)))
+                .andExpect(jsonPath("$.collectionIds[0]", equalTo("A")))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/contracts/${contract.id.value}")))
+        }
+
+        @Test
+        fun `returns a 404 response when contract is not found by name`() {
+            mvc.perform(
+                get(
+                    UriComponentsBuilder.fromUriString("/v1/contracts")
+                        .queryParam("name", "this does not exist")
+                        .build()
+                        .toUri()
+                )
+                    .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
+            )
+                .andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `returns a 400 response when name query parameter is not provided`() {
+            mvc.perform(
+                get("/v1/contracts")
+                    .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
+            )
+                .andExpect(status().isBadRequest)
         }
     }
 }

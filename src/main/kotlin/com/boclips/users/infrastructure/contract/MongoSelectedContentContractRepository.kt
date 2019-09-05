@@ -17,10 +17,11 @@ class MongoSelectedContentContractRepository(
     ): Contract.SelectedContent {
         return contractDocumentConverter.fromDocument(
             selectedContentContractDocumentMongoRepository.save(
-                ContractDocument.SelectedContent(
-                    id = ObjectId(),
-                    name = name,
-                    collectionIds = collectionIds.map { it.value })
+                ContractDocument.SelectedContent().apply {
+                    this.id = ObjectId()
+                    this.name = name
+                    this.collectionIds = collectionIds.map { it.value }
+                }
             )
         ) as Contract.SelectedContent
     }

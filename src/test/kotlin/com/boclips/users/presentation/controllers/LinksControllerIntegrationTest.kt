@@ -28,6 +28,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.profile").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").exists())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
+            .andExpect(jsonPath("$._links.getContractByName").doesNotExist())
             .andExpect(jsonPath("$._links.countries").doesNotExist())
     }
 
@@ -83,8 +84,10 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `user with VIEW_CONTRACTS role`() {
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_CONTRACTS))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.contracts.href", containsString("/users/{id}/contracts")))
+            .andExpect(jsonPath("$._links.contracts.href", endsWith("/users/{id}/contracts")))
             .andExpect(jsonPath("$._links.contracts.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.getContractByName.href", endsWith("/contracts{?name}")))
+            .andExpect(jsonPath("$._links.getContractByName.templated", equalTo(true)))
     }
 
     @Test
