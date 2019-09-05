@@ -53,7 +53,7 @@ class ContractControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `returns a 4xx response when SelectedContent payload is invalid`() {
+        fun `returns a 400 response when SelectedContent payload is invalid`() {
             mvc.perform(
                 post("/v1/contracts")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -68,6 +68,24 @@ class ContractControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.errors", hasSize<Any>(2)))
+        }
+
+        @Test
+        fun `returns a 400 response when contract type is not provided`() {
+            mvc.perform(
+                post("/v1/contracts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                            "name": "Test selected content contract",
+                            "collectionIds": ["A", "B", "C"]
+                        }
+                    """.trimIndent()
+                    )
+                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_CONTRACTS)
+            )
+                .andExpect(status().isBadRequest)
         }
     }
 
