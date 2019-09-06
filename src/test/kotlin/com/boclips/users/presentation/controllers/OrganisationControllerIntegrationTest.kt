@@ -91,6 +91,60 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
+        fun `returns a 409 response when organisation nam collides`() {
+            val organisationName = "Test Org"
+            organisationRepository.save(
+                organisationName = organisationName,
+                role = "ROLE_TEST_ORG",
+                contractIds = emptyList(),
+                organisationType = OrganisationType.ApiCustomer
+            )
+
+            mvc.perform(
+                post("/v1/organisations")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                            "name": "$organisationName",
+                            "role": "ROLE_ANOTHER",
+                            "contractIds": []
+                        }
+                    """.trimIndent()
+                    )
+                    .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
+            )
+                .andExpect(status().isConflict)
+        }
+
+        @Test
+        fun `returns a 409 response when organisation role collides`() {
+            val role = "ROLE_TEST_ORG"
+            organisationRepository.save(
+                organisationName = "Some name",
+                role = role,
+                contractIds = emptyList(),
+                organisationType = OrganisationType.ApiCustomer
+            )
+
+            mvc.perform(
+                post("/v1/organisations")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                            "name": "Some other name",
+                            "role": "$role",
+                            "contractIds": []
+                        }
+                    """.trimIndent()
+                    )
+                    .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
+            )
+                .andExpect(status().isConflict)
+        }
+
+        @Test
         fun `returns a 400 response when request data is invalid`() {
             mvc.perform(
                 post("/v1/organisations")

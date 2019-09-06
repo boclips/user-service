@@ -16,6 +16,7 @@ interface OrganisationRepository {
 
     fun findByRole(role: String): Organisation?
     fun findById(id: OrganisationId): Organisation?
+    fun findByName(name: String): Organisation?
     fun findByDistrictId(districtId: String): Organisation?
     fun findByType(organisationType: OrganisationType): List<Organisation>
 }

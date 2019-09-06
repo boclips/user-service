@@ -1,3 +1,5 @@
 package com.boclips.users.infrastructure.keycloak
 
-class UserAlreadyExistsException : Exception()
+import com.boclips.users.application.exceptions.AlreadyExistsException
+
+class UserAlreadyExistsException : AlreadyExistsException("User already exists")

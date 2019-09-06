@@ -59,4 +59,8 @@ class MongoOrganisationRepository(private val repository: OrganisationSpringData
             null
         }
     }
+
+    override fun findByName(name: String): Organisation? {
+        return repository.findByName(name)?.let { fromDocument(it) }
+    }
 }

@@ -1,11 +1,11 @@
 package com.boclips.users.presentation
 
+import com.boclips.users.application.exceptions.AlreadyExistsException
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.application.exceptions.ContractExistsException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.NotFoundException
 import com.boclips.users.application.exceptions.PermissionDeniedException
-import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.presentation.controllers.PresentationPackageMarker
 import mu.KLogging
 import org.springframework.http.HttpStatus
@@ -18,10 +18,10 @@ import javax.validation.ConstraintViolationException
 class ExceptionHandlingControllerAdvice {
     companion object : KLogging()
 
-    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "User already exists")
-    @ExceptionHandler(UserAlreadyExistsException::class)
-    fun handleUserAlreadyExists(ex: UserAlreadyExistsException) {
-        logger.info { "User already exists $ex" }
+    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Already exists")
+    @ExceptionHandler(AlreadyExistsException::class)
+    fun handleAlreadyExists(ex: AlreadyExistsException) {
+        logger.info { ex.message }
     }
 
     @ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "User permission denied")
