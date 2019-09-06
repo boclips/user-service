@@ -6,11 +6,15 @@ data class Country(
     val id: String,
     val name: String
 ) {
+
     fun isUSA(): Boolean {
-        return id == "USA"
+        return id == USA_ISO
     }
 
     companion object {
+        const val USA_ISO = "USA"
+        fun usa() = fromCode(USA_ISO)
+
         fun fromCode(countryCode: String): Country {
             return Countries.getByCode(countryCode)?.let { it }
                 ?: throw IllegalStateException("Could not find three letter country code for $countryCode")

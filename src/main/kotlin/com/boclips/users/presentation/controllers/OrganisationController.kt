@@ -5,12 +5,14 @@ import com.boclips.users.application.commands.GetCountries
 import com.boclips.users.application.commands.GetOrganisationById
 import com.boclips.users.application.commands.GetOrganisationByName
 import com.boclips.users.application.commands.GetUsStates
+import com.boclips.users.application.commands.SearchSchools
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.requests.CreateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationConverter
 import com.boclips.users.presentation.resources.OrganisationResource
 import com.boclips.users.presentation.resources.school.CountryConverter
 import com.boclips.users.presentation.resources.school.CountryResource
+import com.boclips.users.presentation.resources.school.SchoolResource
 import com.boclips.users.presentation.resources.school.StateResource
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
@@ -39,7 +41,8 @@ class OrganisationController(
     private val createOrganisation: CreateOrganisation,
     private val getOrganisationById: GetOrganisationById,
     private val getOrganisationByName: GetOrganisationByName,
-    private val organisationConverter: OrganisationConverter
+    private val organisationConverter: OrganisationConverter,
+    private val searchSchools: SearchSchools
 ) {
 
     @GetMapping("/countries")
@@ -93,5 +96,17 @@ class OrganisationController(
                 organisationLinkBuilder.self(organisation.id)
             )
         )
+    }
+
+    @GetMapping("/schools")
+    fun searchSchools(
+        @RequestParam(required = false) query: String?,
+        @RequestParam(required = false) state: String?,
+        @RequestParam(required = true) country: String?
+    ): Resources<SchoolResource> {
+        val schools = searchSchools(school = query, state = state, countryId = country)
+
+        return Resources(
+            schools.map { SchoolResource(id = it.id, name = it.name) })
     }
 }

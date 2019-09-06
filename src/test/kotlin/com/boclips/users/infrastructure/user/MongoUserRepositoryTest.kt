@@ -3,9 +3,8 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
@@ -96,7 +95,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                     country = Country(id = Locale.CANADA.isO3Country, name = Locale.CANADA.displayCountry)
                 ),
                 referralCode = "",
-                organisationId = null
+                organisationAccountId = null
             )
         )
 
@@ -106,7 +105,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
             UserUpdateCommand.ReplaceReferralCode("1234"),
             UserUpdateCommand.ReplaceCountry(Country.fromCode("USA")),
-            UserUpdateCommand.ReplaceOrganisationId(OrganisationId("my-id"))
+            UserUpdateCommand.ReplaceOrganisationId(OrganisationAccountId("my-id"))
         )
 
         val updatedUser = userRepository.findById(user.id)!!
@@ -116,7 +115,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.country!!.id).isEqualTo("USA")
         assertThat(updatedUser.profile!!.country!!.name).isEqualTo("United States")
         assertThat(updatedUser.referralCode).isEqualTo("1234")
-        assertThat(updatedUser.organisationId).isEqualTo(OrganisationId("my-id"))
+        assertThat(updatedUser.organisationAccountId).isEqualTo(OrganisationAccountId("my-id"))
     }
 
     @Test

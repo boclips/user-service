@@ -9,6 +9,8 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.OrganisationAccountFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -21,13 +23,25 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `can find all teachers`() {
-        val organisation = saveOrganisation(districtId = "d1")
-        val apiOrganisation = saveOrganisation(districtId = null)
+        val organisation =
+            saveOrganisationAccount(organisation = OrganisationFactory.district())
+        val apiOrganisation =
+            saveOrganisationAccount(organisation = OrganisationFactory.apiIntegration())
 
         listOf(
-            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "1"), organisationId = organisation.id)),
-            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "4"), organisationId = null)),
-            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "5"), organisationId = apiOrganisation.id))
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(id = "1"),
+                    organisationAccountId = organisation.id
+                )
+            ),
+            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "4"), organisationAccountId = null)),
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(id = "5"),
+                    organisationAccountId = apiOrganisation.id
+                )
+            )
         )
 
         val users = userService.findAllTeachers()
@@ -86,7 +100,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = userService.createTeacher(newUser)
 
-        assertThat(persistedUser.organisationId).isNull()
+        assertThat(persistedUser.organisationAccountId).isNull()
     }
 
     @Test

@@ -36,7 +36,7 @@ class UpdateUser(
 
         val user = userService.findUserById(authenticatedUserId)
 
-        val commands = userUpdatesConverter.convert(updateUserRequest, null)
+        val commands = userUpdatesConverter.convert(updateUserRequest)
 
         userRepository.update(user, *commands.toTypedArray())
 

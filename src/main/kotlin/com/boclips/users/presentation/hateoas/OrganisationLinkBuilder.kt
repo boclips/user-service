@@ -3,7 +3,7 @@ package com.boclips.users.presentation.hateoas
 import com.boclips.security.utils.UserExtractor
 import com.boclips.security.utils.UserExtractor.getIfHasRole
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.presentation.controllers.OrganisationController
 import org.springframework.hateoas.Link
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class OrganisationLinkBuilder {
-    fun self(id: OrganisationId): Link {
+    fun self(id: OrganisationAccountId): Link {
         return ControllerLinkBuilder.linkTo(
             ControllerLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisation(id.value)
         ).withSelfRel()
@@ -45,6 +45,16 @@ class OrganisationLinkBuilder {
         return ControllerLinkBuilder.linkTo(
             ControllerLinkBuilder.methodOn(OrganisationController::class.java).getAllUsStates()
         ).withSelfRel()
+    }
+
+    fun getSchoolLink(countryId: String?): Link? {
+        return ControllerLinkBuilder.linkTo(
+            ControllerLinkBuilder.methodOn(OrganisationController::class.java).searchSchools(
+                country = countryId,
+                query = null,
+                state = null
+            )
+        ).withRel("schools")
     }
 
     fun getStatesLink(country: Country): Link? {

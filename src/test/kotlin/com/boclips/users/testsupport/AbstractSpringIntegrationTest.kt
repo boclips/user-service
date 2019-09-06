@@ -3,7 +3,6 @@ package com.boclips.users.testsupport
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
@@ -11,16 +10,18 @@ import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.OrganisationRepository
+import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.presentation.resources.ContractConverter
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
@@ -58,7 +59,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var userRepository: UserRepository
 
     @Autowired
-    lateinit var organisationRepository: OrganisationRepository
+    lateinit var organisationAccountRepository: OrganisationAccountRepository
 
     @Autowired
     lateinit var keycloakClientFake: KeycloakClientFake
@@ -142,7 +143,7 @@ abstract class AbstractSpringIntegrationTest {
     fun saveOrganisationWithContractDetails(
         organisationName: String = "Boclips for Teachers",
         contractIds: List<Contract> = emptyList()
-    ): Organisation {
+    ): OrganisationAccount {
         val organisationContracts = mutableListOf<Contract>()
         contractIds.forEach {
             when (it) {
@@ -157,22 +158,20 @@ abstract class AbstractSpringIntegrationTest {
             }
         }
 
-        return saveOrganisation(organisationName, organisationContracts.map { it.id })
+        return saveOrganisationAccount(
+            organisation = OrganisationFactory.apiIntegration(name = organisationName),
+            contractIds = organisationContracts.map { it.id })
     }
 
-    fun saveOrganisation(
-        organisationName: String = "Boclips for Teachers",
+    fun saveOrganisationAccount(
         contractIds: List<ContractId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
-        districtId: String? = null,
-        organisationType: OrganisationType = OrganisationType.ApiCustomer
-    ): Organisation {
-        return organisationRepository.save(
-            organisationName = organisationName,
+        organisation: Organisation = OrganisationFactory.apiIntegration()
+    ): OrganisationAccount {
+        return organisationAccountRepository.save(
             contractIds = contractIds,
             role = role,
-            districtId = districtId,
-            organisationType = organisationType
+            organisation = organisation
         )
     }
 

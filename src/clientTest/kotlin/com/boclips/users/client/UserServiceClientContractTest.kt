@@ -88,7 +88,7 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
 
         saveUser(user)
 
-        return User(user.id.value, user.organisationId!!.value)
+        return User(user.id.value, user.organisationAccountId!!.value)
     }
 }
 

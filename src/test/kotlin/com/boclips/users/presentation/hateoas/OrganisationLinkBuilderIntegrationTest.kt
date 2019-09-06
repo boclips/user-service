@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
@@ -16,7 +16,7 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
     @Test
     fun `self link for organisation`() {
         val organisationId = "test-id"
-        val organisationLink = organisationLinkBuilder.self(OrganisationId(organisationId))
+        val organisationLink = organisationLinkBuilder.self(OrganisationAccountId(organisationId))
 
         assertThat(organisationLink.rel).isEqualTo("self")
         assertThat(organisationLink.href).endsWith("/organisations/$organisationId")
@@ -65,5 +65,13 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
         val stateLink = organisationLinkBuilder.getStatesLink(country)
 
         assertThat(stateLink).isNull()
+    }
+
+    @Test
+    fun `expose school link`() {
+        val schoolLink = organisationLinkBuilder.getSchoolLink("USA")
+
+        assertThat(schoolLink).isNotNull
+        assertThat(schoolLink!!.href).endsWith("/schools?country=USA{&query,state}")
     }
 }

@@ -234,15 +234,14 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 collectionIds = listOf(CollectionId(collectionId))
             )
 
-            val organisation = saveOrganisation(
-                organisationName = "Organisation X",
+            val organisation = saveOrganisationAccount(
                 contractIds = listOf(
                     testContract.id
                 )
             )
 
             val user = saveUser(
-                UserFactory.sample(organisationId = organisation.id)
+                UserFactory.sample(organisationAccountId = organisation.id)
             )
 
             mvc.perform(

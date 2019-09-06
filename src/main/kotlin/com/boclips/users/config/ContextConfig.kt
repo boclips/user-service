@@ -3,6 +3,7 @@ package com.boclips.users.config
 import com.boclips.eventbus.EventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.AmericanSchoolsProvider
 import com.boclips.users.domain.service.EventPublishingUserRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.ReferralProvider
@@ -21,6 +22,8 @@ import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.referralrock.ReferralRockClient
 import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
+import com.boclips.users.infrastructure.schooldigger.SchoolDiggerClient
+import com.boclips.users.infrastructure.schooldigger.SchoolDiggerProperties
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.infrastructure.user.MongoUserRepository
@@ -33,6 +36,7 @@ import org.keycloak.admin.client.Keycloak
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.web.client.AsyncRestTemplate
 import org.springframework.web.client.RestTemplate
 
 @Profile("!test")
@@ -102,6 +106,10 @@ class ContextConfig(val objectMapper: ObjectMapper) {
     fun userDocumentConverter(subjectService: VideoServiceSubjectsClient): UserDocumentConverter {
         return UserDocumentConverter(subjectService)
     }
+
+    @Bean
+    fun americanSchoolsProvider(schoolDiggerProperties: SchoolDiggerProperties): AmericanSchoolsProvider =
+        SchoolDiggerClient(properties = schoolDiggerProperties, restTemplate = RestTemplate())
 }
 
 @Configuration

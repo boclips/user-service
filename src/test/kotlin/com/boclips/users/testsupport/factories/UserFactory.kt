@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 
 class UserFactory {
     companion object {
@@ -17,14 +17,14 @@ class UserFactory {
             marketing: MarketingTracking = MarketingTrackingFactory.sample(),
             account: Account = AccountFactory.sample(),
             profile: Profile? = ProfileFactory.sample(),
-            organisationId: OrganisationId? = null
+            organisationAccountId: OrganisationAccountId? = null
         ) = User(
             account = account,
             profile = profile,
             analyticsId = analyticsId,
             referralCode = referralCode,
             marketingTracking = marketing,
-            organisationId = organisationId
+            organisationAccountId = organisationAccountId
         )
 
         fun sample(

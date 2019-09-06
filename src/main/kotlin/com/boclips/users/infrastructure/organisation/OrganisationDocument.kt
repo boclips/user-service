@@ -12,7 +12,16 @@ data class OrganisationDocument(
     val role: String?,
     val contractIds: List<String> = emptyList(),
     val externalId: String?,
-    val type: String?,
-    val country: String?,
-    val state: String?
+    val type: OrganisationType,
+    val country: LocationDocument?,
+    val state: LocationDocument?,
+    val organisations: List<OrganisationDocument> = emptyList()
+)
+
+enum class OrganisationType {
+    API, SCHOOL, DISTRICT
+}
+
+data class LocationDocument(
+    val code: String
 )

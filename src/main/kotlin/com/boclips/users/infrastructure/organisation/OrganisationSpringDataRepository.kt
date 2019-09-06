@@ -7,5 +7,9 @@ interface OrganisationSpringDataRepository : MongoRepository<OrganisationDocumen
     fun findByRole(role: String): OrganisationDocument?
     fun findByExternalId(externalId: String): OrganisationDocument?
     fun findByExternalIdNotNull(): Iterable<OrganisationDocument>
-    fun findByType(type: String): Iterable<OrganisationDocument>
+    fun findByTypeAndCountryCodeAndNameContains(
+        type: OrganisationType,
+        code: String,
+        name: String
+    ): Iterable<OrganisationDocument>
 }

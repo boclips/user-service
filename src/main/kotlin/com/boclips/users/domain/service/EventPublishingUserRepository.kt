@@ -22,7 +22,7 @@ class EventPublishingUserRepository(val userRepository: UserRepository, private 
                 .user(
                     EventUser.builder()
                         .id(createdUser.id.value)
-                        .organisationId(createdUser.organisationId?.value)
+                        .organisationId(createdUser.organisationAccountId?.value)
                         .isBoclipsEmployee(createdUser.account.isBoclipsEmployee())
                         .build()
                 )

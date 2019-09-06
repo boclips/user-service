@@ -3,9 +3,7 @@ package com.boclips.users.application
 import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.presentation.requests.UpdateUserRequest
@@ -13,7 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserUpdatesConverter(private val subjectService: SubjectService) {
-    fun convert(updateUserRequest: UpdateUserRequest, district: Organisation? = null): List<UserUpdateCommand> {
+    fun convert(updateUserRequest: UpdateUserRequest): List<UserUpdateCommand> {
         return listOfNotNull(
             updateUserRequest.firstName?.let { UserUpdateCommand.ReplaceFirstName(firstName = it) },
             updateUserRequest.lastName?.let { UserUpdateCommand.ReplaceLastName(lastName = it) },
@@ -34,8 +32,7 @@ class UserUpdatesConverter(private val subjectService: SubjectService) {
                     utmSource = it.source
                 )
             },
-            updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = Country.fromCode(it)) },
-            district?.let { UserUpdateCommand.ReplaceOrganisationId(organisationId = it.id) }
+            updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = Country.fromCode(it)) }
         )
     }
 

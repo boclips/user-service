@@ -42,7 +42,7 @@ class MongoUserRepository(
                 // TODO: think about country updates...
                 is UserUpdateCommand.ReplaceCountry -> userDocument.apply { country = updateCommand.country.id }
                 is UserUpdateCommand.ReplaceOrganisationId -> userDocument.apply {
-                    organisationId = updateCommand.organisationId.value
+                    organisationId = updateCommand.organisationAccountId.value
                 }
             }
         }
@@ -66,9 +66,9 @@ class MongoUserRepository(
     }
 
     override fun save(account: Account): User {
-        val organisationId = organisationIdResolver.resolve(account.roles)
+        val organisationAccountId = organisationIdResolver.resolve(account.roles)
 
-        return saveUserDocument(UserDocument.from(account = account, organisationId = organisationId))
+        return saveUserDocument(UserDocument.from(account = account, organisationAccountId = organisationAccountId))
     }
 
     override fun save(user: User) = saveUserDocument(UserDocument.from(user))

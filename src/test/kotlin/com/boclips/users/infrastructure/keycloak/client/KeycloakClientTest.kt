@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.keycloak.client
 
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.testsupport.factories.AccountFactory
@@ -26,7 +26,7 @@ internal class KeycloakClientTest {
     fun setUp() {
         keycloakWrapperMock = Mockito.mock(KeycloakWrapper::class.java)
         val userSourceResolver = mock<OrganisationIdResolver>()
-        whenever(userSourceResolver.resolve(any())).thenReturn(OrganisationId("any-old-id"))
+        whenever(userSourceResolver.resolve(any())).thenReturn(OrganisationAccountId("any-old-id"))
 
         keycloakClient = KeycloakClient(
             keycloakWrapperMock,

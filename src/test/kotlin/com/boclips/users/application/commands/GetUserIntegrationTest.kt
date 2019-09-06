@@ -6,7 +6,7 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -41,7 +41,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
                     firstName = "Jane",
                     lastName = "Doe"
                 ),
-                organisationId = OrganisationId(organisationId)
+                organisationAccountId = OrganisationAccountId(organisationId)
             )
         )
 
@@ -52,7 +52,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.profile!!.lastName).isEqualTo("Doe")
         assertThat(user.analyticsId!!.value).isEqualTo("123")
         assertThat(user.account.email).isEqualTo("jane@doe.com")
-        assertThat(user.organisationId!!.value).isEqualTo(organisationId)
+        assertThat(user.organisationAccountId!!.value).isEqualTo(organisationId)
     }
 
     @Test

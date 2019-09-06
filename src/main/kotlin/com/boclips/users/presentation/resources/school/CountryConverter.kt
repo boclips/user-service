@@ -9,10 +9,13 @@ import org.springframework.stereotype.Component
 class CountryConverter(val organisationLinkBuilder: OrganisationLinkBuilder) {
     fun toCountriesResource(countries: List<Country>): List<Resource<CountryResource>> {
         return countries.map {
-            when {
-                it.isUSA() -> Resource(CountryResource(id = it.id, name = it.name), organisationLinkBuilder.getStatesLink(it))
-                else -> Resource(CountryResource(id = it.id, name = it.name))
-            }
+            Resource(
+                CountryResource(id = it.id, name = it.name),
+                listOfNotNull(
+                    organisationLinkBuilder.getStatesLink(it),
+                    organisationLinkBuilder.getSchoolLink(it.id)
+                )
+            )
         }
     }
 }

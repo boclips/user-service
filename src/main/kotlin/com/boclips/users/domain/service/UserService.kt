@@ -2,29 +2,30 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.NewTeacher
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationAccount
 import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
     val userRepository: UserRepository,
-    val organisationRepository: OrganisationRepository,
+    val organisationAccountRepository: OrganisationAccountRepository,
     val accountProvider: AccountProvider
 ) {
     companion object : KLogging()
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
-        val districts = organisationRepository.findByType(OrganisationType.District)
+        val districts = organisationAccountRepository.findDistricts()
 
         val allUsers = userRepository.findAll().filter {
-            it.organisationId == null || districts.map { district: Organisation -> district.id }.contains(it.organisationId)
+            it.organisationAccountId == null || districts.map { district: OrganisationAccount -> district.id }.contains(
+                it.organisationAccountId
+            )
         }
 
         logger.info { "Fetched ${allUsers.size} teacher users from database" }
@@ -51,7 +52,7 @@ class UserService(
                     utmContent = newTeacher.utmContent,
                     utmTerm = newTeacher.utmTerm
                 ),
-                organisationId = null
+                organisationAccountId = null
             )
         )
 

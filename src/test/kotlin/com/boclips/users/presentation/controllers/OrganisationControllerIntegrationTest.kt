@@ -1,11 +1,13 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.OrganisationType
 import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.infrastructure.organisation.OrganisationType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.OrganisationFactory
+import org.apache.commons.io.filefilter.OrFileFilter
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.containsString
@@ -39,6 +41,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         contains(endsWith("/countries/USA/states"))
                     )
                 )
+                .andExpect(jsonPath("$._embedded.countries[?(@.id == 'USA')]._links.schools.href",
+                    contains(endsWith("/schools?country=USA{&query,state}"))))
+
                 .andExpect(jsonPath("$._links.self.href", endsWith("/countries")))
         }
 
@@ -94,11 +99,10 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a 409 response when organisation nam collides`() {
             val organisationName = "Test Org"
-            organisationRepository.save(
-                organisationName = organisationName,
+            organisationAccountRepository.save(
                 role = "ROLE_TEST_ORG",
                 contractIds = emptyList(),
-                organisationType = OrganisationType.ApiCustomer
+                organisation = OrganisationFactory.apiIntegration(name = organisationName)
             )
 
             mvc.perform(
@@ -121,11 +125,10 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a 409 response when organisation role collides`() {
             val role = "ROLE_TEST_ORG"
-            organisationRepository.save(
-                organisationName = "Some name",
+            organisationAccountRepository.save(
                 role = role,
                 contractIds = emptyList(),
-                organisationType = OrganisationType.ApiCustomer
+                organisation = OrganisationFactory.apiIntegration(name = "Some name")
             )
 
             mvc.perform(
@@ -163,11 +166,10 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `retrieves an organisation by id`() {
             val organisationName = "Test Org"
-            val organisation = organisationRepository.save(
-                organisationName = organisationName,
+            val organisation = organisationAccountRepository.save(
                 role = "ROLE_TEST_ORG",
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
-                organisationType = OrganisationType.ApiCustomer
+                organisation = OrganisationFactory.apiIntegration(name = organisationName)
             )
 
             mvc.perform(
@@ -217,11 +219,10 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns given organisation when it's found by name`() {
             val organisationName = "Test Org"
-            val organisation = organisationRepository.save(
-                organisationName = organisationName,
+            val organisation = organisationAccountRepository.save(
                 role = "ROLE_TEST_ORG",
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
-                organisationType = OrganisationType.ApiCustomer
+                organisation = OrganisationFactory.apiIntegration(name = organisationName)
             )
 
             mvc.perform(
@@ -259,5 +260,31 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isBadRequest)
         }
+    }
+
+    @Test
+    fun `lists schools when given only query and country - outside USA schools`() {
+        val school = organisationAccountRepository.save(
+            organisation = OrganisationFactory.school(
+                name = "my school 1",
+                countryName = "GBR"
+            )
+        )
+        organisationAccountRepository.save(
+            organisation = OrganisationFactory.school(
+                name = "my school 2",
+                countryName = "POL"
+            )
+        )
+        organisationAccountRepository.save(
+            organisation = OrganisationFactory.school(
+                name = "something else",
+                countryName = "GBR"
+            )
+        )
+
+        mvc.perform(get("/v1/schools?country=GBR&query=school").asUser("some-teacher"))
+            .andExpect(jsonPath("$._embedded.schools", hasSize<Int>(1)))
+            .andExpect(jsonPath("$._embedded.schools[0].id", equalTo(school.id.value)))
     }
 }

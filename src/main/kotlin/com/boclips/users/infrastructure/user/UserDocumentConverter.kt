@@ -7,9 +7,8 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.SubjectService
 
 data class UserDocumentConverter(private val subjectService: SubjectService) {
@@ -40,7 +39,7 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                 utmTerm = userDocument.marketing?.utmTerm ?: "",
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
-            organisationId = userDocument.organisationId?.let { OrganisationId(it) }
+            organisationAccountId = userDocument.organisationId?.let { OrganisationAccountId(it) }
         )
     }
 }

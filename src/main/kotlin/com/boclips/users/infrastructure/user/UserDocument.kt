@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -43,12 +43,12 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = user.organisationId?.value,
+                organisationId = user.organisationAccountId?.value,
                 country = user.profile?.country?.id
             )
         }
 
-        fun from(account: Account, organisationId: OrganisationId?): UserDocument {
+        fun from(account: Account, organisationAccountId: OrganisationAccountId?): UserDocument {
             return UserDocument(
                 id = account.id.value,
                 subjectIds = null,
@@ -61,7 +61,7 @@ data class UserDocument(
                 username = account.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
-                organisationId = organisationId?.value,
+                organisationId = organisationAccountId?.value,
                 country = null
             )
         }

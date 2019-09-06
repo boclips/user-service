@@ -1,0 +1,36 @@
+{
+  "schoolMatches": [
+    {
+      "schoolid": "id-1",
+      "schoolName": "Abraham Lincoln High School",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11235",
+      "schoolLevel": "High",
+      "lowGrade": "09",
+      "highGrade": "12",
+      "latitude": 40.582372,
+      "longitude": -73.968078,
+      "hasBoundary": true,
+      "rank": 881,
+      "rankOf": 1232,
+      "rankStars": 1
+    },
+    {
+      "schoolid": "id-2",
+      "schoolName": "Stella K Abraham High School For Girls",
+      "city": "Hewlett",
+      "state": "NY",
+      "zip": "11557",
+      "schoolLevel": "Private",
+      "lowGrade": "09",
+      "highGrade": "12",
+      "latitude": 40.636516,
+      "longitude": -73.6959,
+      "hasBoundary": false,
+      "rank": null,
+      "rankOf": null,
+      "rankStars": null
+    }
+  ]
+}
