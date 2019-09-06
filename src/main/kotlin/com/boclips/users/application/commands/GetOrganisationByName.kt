@@ -10,6 +10,6 @@ class GetOrganisationByName(
     private val organisationRepository: OrganisationAccountRepository
 ) {
     operator fun invoke(name: String): OrganisationAccount {
-        return organisationRepository.findByName(name) ?: throw OrganisationNotFoundException(name)
+        return organisationRepository.findApiIntegrationByName(name) ?: throw OrganisationNotFoundException(name)
     }
 }

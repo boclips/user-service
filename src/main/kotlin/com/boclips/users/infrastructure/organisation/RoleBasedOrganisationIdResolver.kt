@@ -14,7 +14,7 @@ class RoleBasedOrganisationIdResolver(private val organisationAccountRepository:
         }
 
         for (role in roles) {
-            val organisation = organisationAccountRepository.findByRole(role)
+            val organisation = organisationAccountRepository.findOrganisationAccountByRole(role)
             if (organisation != null) {
                 return organisation.id
             } else if (role == KeycloakWrapper.TEACHER_ROLE) {

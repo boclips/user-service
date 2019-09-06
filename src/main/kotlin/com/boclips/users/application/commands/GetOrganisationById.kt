@@ -11,6 +11,6 @@ class GetOrganisationById(
     private val organisationRepository: OrganisationAccountRepository
 ) {
     operator fun invoke(id: String): OrganisationAccount {
-        return organisationRepository.findById(OrganisationAccountId(id)) ?: throw OrganisationNotFoundException(id)
+        return organisationRepository.findOrganisationAccountById(OrganisationAccountId(id)) ?: throw OrganisationNotFoundException(id)
     }
 }

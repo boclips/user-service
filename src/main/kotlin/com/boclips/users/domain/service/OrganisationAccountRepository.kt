@@ -15,11 +15,11 @@ interface OrganisationAccountRepository {
         organisation: Organisation
     ): OrganisationAccount
 
-    fun findByRole(role: String): OrganisationAccount?
-    fun findById(id: OrganisationAccountId): OrganisationAccount?
+    fun findOrganisationAccountByRole(role: String): OrganisationAccount?
+    fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount?
     fun findByDistrictId(districtId: String): OrganisationAccount?
     fun findDistricts(): List<OrganisationAccount>
-    fun findByName(name: String): OrganisationAccount?
+    fun findApiIntegrationByName(name: String): OrganisationAccount?
 
     fun lookupSchools(organisationName: String, country: String) : List<LookupEntry>
 }

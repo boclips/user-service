@@ -25,10 +25,10 @@ class CreateOrganisation(
     }
 
     private fun assertNewOrganisationDoesNotCollide(request: CreateOrganisationRequest) {
-        organisationRepository.findByName(request.name!!)?.let {
+        organisationRepository.findApiIntegrationByName(request.name!!)?.let {
             throw OrganisationAlreadyExistsException(request.name!!)
         }
-        organisationRepository.findByRole(request.role!!)?.let {
+        organisationRepository.findOrganisationAccountByRole(request.role!!)?.let {
             throw OrganisationAlreadyExistsException(request.role!!)
         }
     }

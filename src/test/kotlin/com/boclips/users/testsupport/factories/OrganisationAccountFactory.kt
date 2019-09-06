@@ -36,7 +36,7 @@ class OrganisationFactory {
             countryName: String? = null,
             state: State = State.fromCode("IL"),
             district: District? = null
-        ): Organisation {
+        ): School {
             return School(
                 name = name,
                 externalId = externalId,
@@ -49,12 +49,14 @@ class OrganisationFactory {
         fun district(
             name: String = "Amazing Organisation",
             externalId: String = "externalId",
-            state: State = State.fromCode("IL")
-        ): Organisation {
+            state: State = State.fromCode("IL"),
+            schools: List<School> = emptyList()
+        ): District {
             return District(
                 name = name,
                 externalId = externalId,
-                state = state
+                state = state,
+                schools = schools
             )
         }
 
@@ -62,7 +64,7 @@ class OrganisationFactory {
             name: String = "Amazing Organisation",
             country: Country = Country.fromCode(Country.USA_ISO),
             state: State = State.fromCode("IL")
-        ): Organisation {
+        ): ApiIntegration {
             return ApiIntegration(
                 name = name,
                 country = country,

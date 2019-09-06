@@ -1,11 +1,9 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
@@ -33,7 +31,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             organisation = OrganisationFactory.apiIntegration()
         )
 
-        val foundOrganisation = organisationAccountRepository.findByRole(role)
+        val foundOrganisation = organisationAccountRepository.findOrganisationAccountByRole(role)
         assertThat(organisation).isEqualTo(foundOrganisation)
     }
 
@@ -42,7 +40,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         val organisation =
             organisationAccountRepository.save(organisation = OrganisationFactory.apiIntegration())
 
-        val foundOrganisation = organisationAccountRepository.findById(organisation.id)
+        val foundOrganisation = organisationAccountRepository.findOrganisationAccountById(organisation.id)
 
         assertThat(organisation).isEqualTo(foundOrganisation)
     }
@@ -81,5 +79,16 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(schools).hasSize(1)
         assertThat(schools.first().id).isEqualTo(correctSchool.id.value)
+    }
+
+    @Test
+    fun `looks up an api integration by name`() {
+        val organisation = organisationAccountRepository.save(
+            organisation = OrganisationFactory.apiIntegration(name = "api-name")
+        )
+
+        val retrievedOrganisation = organisationAccountRepository.findApiIntegrationByName(name = "api-name")
+
+        assertThat(organisation).isEqualTo(retrievedOrganisation)
     }
 }

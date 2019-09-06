@@ -36,7 +36,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         return repository.findByExternalId(districtId)?.let { fromDocument(it) }
     }
 
-    override fun findByRole(role: String): OrganisationAccount? {
+    override fun findOrganisationAccountByRole(role: String): OrganisationAccount? {
         return repository.findByRole(role)?.let { fromDocument(it) }
     }
 
@@ -69,7 +69,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         )
     }
 
-    override fun findById(id: OrganisationAccountId): OrganisationAccount? {
+    override fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount? {
         val potentialOrganisationDocument = repository.findById(id.value)
         return if (potentialOrganisationDocument.isPresent) {
             fromDocument(potentialOrganisationDocument.get())
@@ -78,7 +78,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         }
     }
 
-    override fun findByName(name: String): OrganisationAccount? {
-        return repository.findByName(name)?.let { fromDocument(it) }
+    override fun findApiIntegrationByName(name: String): OrganisationAccount? {
+        return repository.findByNameAndType(name = name, type = OrganisationType.API)?.let { fromDocument(it) }
     }
 }

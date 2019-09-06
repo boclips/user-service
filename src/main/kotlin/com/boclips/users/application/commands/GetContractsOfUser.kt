@@ -22,7 +22,7 @@ class GetContractsOfUser(
 
     private fun findOrganisation(userId: UserId): OrganisationAccount? {
         return userRepository.findById(userId)?.organisationAccountId?.let {
-            organisationAccountRepository.findById(it)
+            organisationAccountRepository.findOrganisationAccountById(it)
         }
     }
 }
