@@ -47,6 +47,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._links.self.href", endsWith("/countries")))
         }
 
+
         @Test
         fun `cannot list all countries when not authenticated`() {
             mvc.perform(get("/v1/countries"))
