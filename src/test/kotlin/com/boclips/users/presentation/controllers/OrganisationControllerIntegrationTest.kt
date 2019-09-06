@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.web.util.UriComponentsBuilder
 
 class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
@@ -158,7 +159,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Nested
-    inner class FetchingOrganisations {
+    inner class FetchingOrganisationsById {
         @Test
         fun `retrieves an organisation by id`() {
             val organisationName = "Test Org"
@@ -195,6 +196,68 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(status().isNotFound)
+        }
+    }
+
+    @Nested
+    inner class FetchingOrganisationsByName {
+        @Test
+        fun `returns a 403 response when caller does not have a VIEW_ORGANISATIONS role`() {
+            mvc.perform(
+                get(
+                    UriComponentsBuilder.fromUriString("/v1/organisations")
+                        .queryParam("name", "Some org that does not exist")
+                        .build()
+                        .toUri())
+                    .asUser("has-role@test.com")
+            )
+                .andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `returns given organisation when it's found by name`() {
+            val organisationName = "Test Org"
+            val organisation = organisationRepository.save(
+                organisationName = organisationName,
+                role = "ROLE_TEST_ORG",
+                contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
+                organisationType = OrganisationType.ApiCustomer
+            )
+
+            mvc.perform(
+                get(
+                    UriComponentsBuilder.fromUriString("/v1/organisations")
+                        .queryParam("name", organisationName)
+                        .build()
+                        .toUri())
+                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.name", equalTo(organisationName)))
+                .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
+        }
+
+        @Test
+        fun `returns a 404 response when organisation is not found by name`() {
+            mvc.perform(
+                get(
+                    UriComponentsBuilder.fromUriString("/v1/organisations")
+                        .queryParam("name", "Some org that does not exist")
+                        .build()
+                        .toUri())
+                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
+            )
+                .andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `returns a 400 response when query parameter is not provided`() {
+            mvc.perform(
+                get("/v1/organisations")
+                    .asUserWithRoles("viewer@hacker.com", UserRoles.VIEW_ORGANISATIONS)
+            )
+                .andExpect(status().isBadRequest)
         }
     }
 }

@@ -38,6 +38,7 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
 
             .antMatchers(HttpMethod.POST, "/v1/organisations").hasRole(UserRoles.INSERT_ORGANISATIONS)
             .antMatchers(HttpMethod.GET, "/v1/organisations/*").hasRole(UserRoles.VIEW_ORGANISATIONS)
+            .antMatchers(HttpMethod.GET, "/v1/organisations").hasRole(UserRoles.VIEW_ORGANISATIONS)
 
             .anyRequest().authenticated()
     }

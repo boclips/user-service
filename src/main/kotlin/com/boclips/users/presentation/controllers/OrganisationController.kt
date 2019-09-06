@@ -3,8 +3,8 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.commands.CreateOrganisation
 import com.boclips.users.application.commands.GetCountries
 import com.boclips.users.application.commands.GetOrganisationById
+import com.boclips.users.application.commands.GetOrganisationByName
 import com.boclips.users.application.commands.GetUsStates
-import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.requests.CreateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationConverter
@@ -17,15 +17,18 @@ import org.springframework.hateoas.Resources
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
-import javax.ws.rs.PathParam
+import javax.validation.constraints.NotBlank
 
+@Validated
 @RestController
 @RequestMapping("/v1", "/v1/")
 class OrganisationController(
@@ -35,6 +38,7 @@ class OrganisationController(
     private val organisationLinkBuilder: OrganisationLinkBuilder,
     private val createOrganisation: CreateOrganisation,
     private val getOrganisationById: GetOrganisationById,
+    private val getOrganisationByName: GetOrganisationByName,
     private val organisationConverter: OrganisationConverter
 ) {
 
@@ -70,6 +74,18 @@ class OrganisationController(
     @GetMapping("/organisations/{id}")
     fun fetchOrganisation(@PathVariable("id") id: String): Resource<OrganisationResource> {
         val organisation = getOrganisationById(id)
+
+        return Resource(
+            organisationConverter.toResource(organisation),
+            listOfNotNull(
+                organisationLinkBuilder.self(organisation.id)
+            )
+        )
+    }
+
+    @GetMapping("/organisations")
+    fun fetchOrganisationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<OrganisationResource> {
+        val organisation = getOrganisationByName(name!!)
 
         return Resource(
             organisationConverter.toResource(organisation),

@@ -24,6 +24,7 @@ class LinksController(
             userLinkBuilder.userLink(),
             userLinkBuilder.contractsLink(),
             organisationLinkBuilder.getCountriesLink(),
+            organisationLinkBuilder.getOrganisationByName(),
             contractsLinkBuilder.getContractByName()
         )
     )

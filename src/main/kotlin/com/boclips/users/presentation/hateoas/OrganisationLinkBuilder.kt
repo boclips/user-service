@@ -1,6 +1,8 @@
 package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.utils.UserExtractor
+import com.boclips.security.utils.UserExtractor.getIfHasRole
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.presentation.controllers.OrganisationController
@@ -15,6 +17,15 @@ class OrganisationLinkBuilder {
             ControllerLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisation(id.value)
         ).withSelfRel()
     }
+
+    fun getOrganisationByName(): Link? {
+        return getIfHasRole(UserRoles.VIEW_ORGANISATIONS) {
+            ControllerLinkBuilder.linkTo(
+                ControllerLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisationByName(null)
+            ).withRel("getOrganisationByName")
+        }
+    }
+
 
     fun getCountriesLink(): Link? {
         return UserExtractor.getIfAuthenticated {
