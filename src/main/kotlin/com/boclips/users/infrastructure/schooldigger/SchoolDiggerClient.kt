@@ -2,10 +2,13 @@ package com.boclips.users.infrastructure.schooldigger
 
 import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.service.AmericanSchoolsProvider
+import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI

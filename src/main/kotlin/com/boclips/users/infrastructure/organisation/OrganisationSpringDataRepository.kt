@@ -4,8 +4,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 
 interface OrganisationSpringDataRepository : MongoRepository<OrganisationDocument, String> {
     fun findByNameAndType(name: String, type: OrganisationType): OrganisationDocument?
-    fun findByRole(role: String): OrganisationDocument?
-    fun findByExternalId(externalId: String): OrganisationDocument?
+    fun findByRoleAndType(role: String, type: OrganisationType): OrganisationDocument?
     fun findByExternalIdNotNull(): Iterable<OrganisationDocument>
     fun findByTypeAndCountryCodeAndNameContainsIgnoreCase(
         type: OrganisationType,

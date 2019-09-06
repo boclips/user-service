@@ -14,7 +14,7 @@ class RoleBasedOrganisationTypeResolverTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `matches a viewsonic user to "ViewSonic MyViewBoard"`() {
-        val organisation = saveOrganisationAccount(role = "ROLE_VIEWSONIC")
+        val organisation = saveApiIntegration(role = "ROLE_VIEWSONIC")
 
         val organisationId = organisationIdResolver.resolve(listOf("ROLE_VIEWSONIC"))
 
@@ -23,7 +23,7 @@ class RoleBasedOrganisationTypeResolverTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `matches a pearson user to "Pearson MyRealize"`() {
-        val organisation = saveOrganisationAccount(role = "ROLE_PEARSON_MYREALIZE")
+        val organisation = saveApiIntegration(role = "ROLE_PEARSON_MYREALIZE")
 
         val organisationId = organisationIdResolver.resolve(listOf("ROLE_PEARSON_MYREALIZE"))
 

@@ -9,7 +9,8 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.ContractRepository
@@ -19,6 +20,7 @@ import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
+import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.presentation.resources.ContractConverter
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -94,6 +96,9 @@ abstract class AbstractSpringIntegrationTest {
     @Autowired
     lateinit var contractConverter: ContractConverter
 
+    @Autowired
+    lateinit var fakeAmericanSchoolsProvider: FakeAmericanSchoolsProvider
+
     @BeforeEach
     fun resetState() {
         repositories.forEach { it.deleteAll() }
@@ -158,20 +163,28 @@ abstract class AbstractSpringIntegrationTest {
             }
         }
 
-        return saveOrganisationAccount(
+        return saveApiIntegration(
             organisation = OrganisationFactory.apiIntegration(name = organisationName),
             contractIds = organisationContracts.map { it.id })
     }
 
-    fun saveOrganisationAccount(
+    fun saveApiIntegration(
         contractIds: List<ContractId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
-        organisation: Organisation = OrganisationFactory.apiIntegration()
+        organisation: ApiIntegration = OrganisationFactory.apiIntegration()
     ): OrganisationAccount {
         return organisationAccountRepository.save(
             contractIds = contractIds,
             role = role,
-            organisation = organisation
+            apiIntegration = organisation
+        )
+    }
+
+    fun saveDistrict(
+        district: District = OrganisationFactory.district()
+    ): OrganisationAccount {
+        return organisationAccountRepository.save(
+            district = district
         )
     }
 

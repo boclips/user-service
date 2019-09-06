@@ -72,6 +72,6 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
         val schoolLink = organisationLinkBuilder.getSchoolLink("USA")
 
         assertThat(schoolLink).isNotNull
-        assertThat(schoolLink!!.href).endsWith("/schools?country=USA{&query,state}")
+        assertThat(schoolLink!!.href).endsWith("/schools?countryCode=USA{&query,state}")
     }
 }

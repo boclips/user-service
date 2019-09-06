@@ -9,14 +9,14 @@ import com.boclips.users.presentation.requests.CreateOrganisationRequest
 import org.springframework.stereotype.Service
 
 @Service
-class CreateOrganisation(
+class CreateApiIntegration(
     private val organisationRepository: OrganisationAccountRepository
 ) {
     operator fun invoke(request: CreateOrganisationRequest): OrganisationAccount {
         assertNewOrganisationDoesNotCollide(request)
 
         return organisationRepository.save(
-            organisation = ApiIntegration(
+            apiIntegration = ApiIntegration(
                 name = request.name!!
             ),
             role = request.role,
@@ -28,7 +28,7 @@ class CreateOrganisation(
         organisationRepository.findApiIntegrationByName(request.name!!)?.let {
             throw OrganisationAlreadyExistsException(request.name!!)
         }
-        organisationRepository.findOrganisationAccountByRole(request.role!!)?.let {
+        organisationRepository.findApiIntegrationByRole(request.role!!)?.let {
             throw OrganisationAlreadyExistsException(request.role!!)
         }
     }

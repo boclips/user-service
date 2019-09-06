@@ -84,7 +84,7 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
 
     override fun insertTestUser(organisationName: String, vararg contracts: DomainContract): User {
         val organisation = saveOrganisationWithContractDetails(organisationName, contracts.toList())
-        val user = UserFactory.sample(organisationId = organisation.id)
+        val user = UserFactory.sample(organisationAccountId = organisation.id)
 
         saveUser(user)
 

@@ -50,7 +50,7 @@ class OrganisationLinkBuilder {
     fun getSchoolLink(countryId: String?): Link? {
         return ControllerLinkBuilder.linkTo(
             ControllerLinkBuilder.methodOn(OrganisationController::class.java).searchSchools(
-                country = countryId,
+                countryCode = countryId,
                 query = null,
                 state = null
             )

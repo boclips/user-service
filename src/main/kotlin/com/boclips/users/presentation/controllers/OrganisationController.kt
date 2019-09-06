@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.commands.CreateOrganisation
+import com.boclips.users.application.commands.CreateApiIntegration
 import com.boclips.users.application.commands.GetCountries
 import com.boclips.users.application.commands.GetOrganisationById
 import com.boclips.users.application.commands.GetOrganisationByName
@@ -38,7 +38,7 @@ class OrganisationController(
     private val getUsStates: GetUsStates,
     private val countryConverter: CountryConverter,
     private val organisationLinkBuilder: OrganisationLinkBuilder,
-    private val createOrganisation: CreateOrganisation,
+    private val createApiIntegration: CreateApiIntegration,
     private val getOrganisationById: GetOrganisationById,
     private val getOrganisationByName: GetOrganisationByName,
     private val organisationConverter: OrganisationConverter,
@@ -66,7 +66,8 @@ class OrganisationController(
 
     @PostMapping("/organisations")
     fun insertOrganisation(@Valid @RequestBody request: CreateOrganisationRequest): ResponseEntity<Resource<*>> {
-        val createdOrganisation = createOrganisation(request)
+        // TODO An organisation endpoint ends up creating an api integration
+        val createdOrganisation = createApiIntegration(request)
 
         val headers = HttpHeaders()
         headers.set(HttpHeaders.LOCATION, organisationLinkBuilder.self(createdOrganisation.id).href)
@@ -102,9 +103,9 @@ class OrganisationController(
     fun searchSchools(
         @RequestParam(required = false) query: String?,
         @RequestParam(required = false) state: String?,
-        @RequestParam(required = true) country: String?
+        @RequestParam(required = true) countryCode: String?
     ): Resources<SchoolResource> {
-        val schools = searchSchools(school = query, state = state, countryId = country)
+        val schools = searchSchools(schoolName = query, state = state, countryCode = countryCode)
 
         return Resources(
             schools.map { SchoolResource(id = it.id, name = it.name) })

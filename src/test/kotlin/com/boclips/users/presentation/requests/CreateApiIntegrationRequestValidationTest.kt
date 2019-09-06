@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import javax.validation.Validation
 import javax.validation.Validator
 
-class CreateOrganisationRequestValidationTest {
+class CreateApiIntegrationRequestValidationTest {
     @BeforeEach
     fun setupValidator() {
         validator = Validation.buildDefaultValidatorFactory().validator

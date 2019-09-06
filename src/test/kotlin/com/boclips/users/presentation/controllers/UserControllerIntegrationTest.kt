@@ -234,7 +234,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 collectionIds = listOf(CollectionId(collectionId))
             )
 
-            val organisation = saveOrganisationAccount(
+            val organisation = saveApiIntegration(
                 contractIds = listOf(
                     testContract.id
                 )

@@ -36,7 +36,6 @@ import org.keycloak.admin.client.Keycloak
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.web.client.AsyncRestTemplate
 import org.springframework.web.client.RestTemplate
 
 @Profile("!test")
@@ -107,6 +106,7 @@ class ContextConfig(val objectMapper: ObjectMapper) {
         return UserDocumentConverter(subjectService)
     }
 
+    @Profile("!test")
     @Bean
     fun americanSchoolsProvider(schoolDiggerProperties: SchoolDiggerProperties): AmericanSchoolsProvider =
         SchoolDiggerClient(properties = schoolDiggerProperties, restTemplate = RestTemplate())

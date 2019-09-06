@@ -7,15 +7,16 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
+
     @Test
     fun `persists an organisation`() {
         val organisationName = "Persist Organisation"
 
         val contractIds = listOf(ContractId("Contract A"), ContractId("Contract B"))
+
         val organisationAccount = organisationAccountRepository.save(
-            organisationName,
             contractIds = contractIds,
-            organisation = OrganisationFactory.apiIntegration(name = organisationName)
+            apiIntegration = OrganisationFactory.apiIntegration(name = organisationName)
         )
 
         assertThat(organisationAccount.id).isNotNull
@@ -28,17 +29,17 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         val role = "ROLE_VIEWSONIC"
         val organisation = organisationAccountRepository.save(
             role = role,
-            organisation = OrganisationFactory.apiIntegration()
+            apiIntegration = OrganisationFactory.apiIntegration()
         )
 
-        val foundOrganisation = organisationAccountRepository.findOrganisationAccountByRole(role)
+        val foundOrganisation = organisationAccountRepository.findApiIntegrationByRole(role)
         assertThat(organisation).isEqualTo(foundOrganisation)
     }
 
     @Test
     fun `looks up an organisation by id`() {
         val organisation =
-            organisationAccountRepository.save(organisation = OrganisationFactory.apiIntegration())
+            organisationAccountRepository.save(apiIntegration = OrganisationFactory.apiIntegration())
 
         val foundOrganisation = organisationAccountRepository.findOrganisationAccountById(organisation.id)
 
@@ -46,30 +47,18 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `looks up an organisation by a district id`() {
-        val organisation =
-            organisationAccountRepository.save(
-                organisation = OrganisationFactory.district(externalId = "external-id")
-            )
-
-        val retrievedOrganisation = organisationAccountRepository.findByDistrictId(districtId = "external-id")
-
-        assertThat(organisation).isEqualTo(retrievedOrganisation)
-    }
-
-    @Test
     fun `looks up schools by name and country`() {
         val correctSchool = organisationAccountRepository.save(
-            organisation = OrganisationFactory.school(name = "Some School", countryName = "GBR")
+            OrganisationFactory.school(name = "Some School", countryName = "GBR")
         )
         organisationAccountRepository.save(
-            organisation = OrganisationFactory.apiIntegration()
+            apiIntegration = OrganisationFactory.apiIntegration(name = "Some School")
         )
         organisationAccountRepository.save(
-            organisation = OrganisationFactory.school(name = "Some School", countryName = "POL")
+            OrganisationFactory.school(name = "Some School", countryName = "POL")
         )
         organisationAccountRepository.save(
-            organisation = OrganisationFactory.school(name = "Another one", countryName = "GBR")
+            OrganisationFactory.school(name = "Another one", countryName = "GBR")
         )
 
         val schools = organisationAccountRepository.lookupSchools(
@@ -84,7 +73,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `looks up an api integration by name`() {
         val organisation = organisationAccountRepository.save(
-            organisation = OrganisationFactory.apiIntegration(name = "api-name")
+            apiIntegration = OrganisationFactory.apiIntegration(name = "api-name")
         )
 
         val retrievedOrganisation = organisationAccountRepository.findApiIntegrationByName(name = "api-name")

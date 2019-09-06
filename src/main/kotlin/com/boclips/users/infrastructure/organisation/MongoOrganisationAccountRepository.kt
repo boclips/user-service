@@ -32,17 +32,26 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         return repository.findByExternalIdNotNull().toList().map { fromDocument(it) }
     }
 
-    override fun findByDistrictId(districtId: String): OrganisationAccount? {
-        return repository.findByExternalId(districtId)?.let { fromDocument(it) }
-    }
-
-    override fun findOrganisationAccountByRole(role: String): OrganisationAccount? {
-        return repository.findByRole(role)?.let { fromDocument(it) }
+    override fun findApiIntegrationByRole(role: String): OrganisationAccount? {
+        return repository.findByRoleAndType(role = role, type = OrganisationType.API)?.let { fromDocument(it) }
     }
 
     override fun save(
         role: String?,
         contractIds: List<ContractId>,
+        apiIntegration: ApiIntegration
+    ) =
+        doSave(role, contractIds, apiIntegration)
+
+    override fun save(school: School) =
+        doSave(organisation = school)
+
+    override fun save(district: District) =
+        doSave(organisation = district)
+
+    private fun doSave(
+        role: String? = null,
+        contractIds: List<ContractId> = emptyList(),
         organisation: Organisation
     ): OrganisationAccount {
         return fromDocument(

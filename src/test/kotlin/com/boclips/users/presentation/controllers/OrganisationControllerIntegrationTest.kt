@@ -2,12 +2,10 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.infrastructure.organisation.OrganisationType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import org.apache.commons.io.filefilter.OrFileFilter
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.containsString
@@ -41,12 +39,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         contains(endsWith("/countries/USA/states"))
                     )
                 )
-                .andExpect(jsonPath("$._embedded.countries[?(@.id == 'USA')]._links.schools.href",
-                    contains(endsWith("/schools?country=USA{&query,state}"))))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.countries[?(@.id == 'USA')]._links.schools.href",
+                        contains(endsWith("/schools?countryCode=USA{&query,state}"))
+                    )
+                )
 
                 .andExpect(jsonPath("$._links.self.href", endsWith("/countries")))
         }
-
 
         @Test
         fun `cannot list all countries when not authenticated`() {
@@ -103,7 +104,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             organisationAccountRepository.save(
                 role = "ROLE_TEST_ORG",
                 contractIds = emptyList(),
-                organisation = OrganisationFactory.apiIntegration(name = organisationName)
+                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName)
             )
 
             mvc.perform(
@@ -129,7 +130,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             organisationAccountRepository.save(
                 role = role,
                 contractIds = emptyList(),
-                organisation = OrganisationFactory.apiIntegration(name = "Some name")
+                apiIntegration = OrganisationFactory.apiIntegration(name = "Some name")
             )
 
             mvc.perform(
@@ -170,7 +171,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val organisation = organisationAccountRepository.save(
                 role = "ROLE_TEST_ORG",
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
-                organisation = OrganisationFactory.apiIntegration(name = organisationName)
+                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName)
             )
 
             mvc.perform(
@@ -211,7 +212,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     UriComponentsBuilder.fromUriString("/v1/organisations")
                         .queryParam("name", "Some org that does not exist")
                         .build()
-                        .toUri())
+                        .toUri()
+                )
                     .asUser("has-role@test.com")
             )
                 .andExpect(status().isForbidden)
@@ -223,7 +225,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val organisation = organisationAccountRepository.save(
                 role = "ROLE_TEST_ORG",
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
-                organisation = OrganisationFactory.apiIntegration(name = organisationName)
+                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName)
             )
 
             mvc.perform(
@@ -231,7 +233,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     UriComponentsBuilder.fromUriString("/v1/organisations")
                         .queryParam("name", organisationName)
                         .build()
-                        .toUri())
+                        .toUri()
+                )
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(status().isOk)
@@ -247,7 +250,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     UriComponentsBuilder.fromUriString("/v1/organisations")
                         .queryParam("name", "Some org that does not exist")
                         .build()
-                        .toUri())
+                        .toUri()
+                )
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(status().isNotFound)
@@ -266,25 +270,25 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `lists schools when given only query and country - outside USA schools`() {
         val school = organisationAccountRepository.save(
-            organisation = OrganisationFactory.school(
+            school = OrganisationFactory.school(
                 name = "my school 1",
                 countryName = "GBR"
             )
         )
         organisationAccountRepository.save(
-            organisation = OrganisationFactory.school(
+            school = OrganisationFactory.school(
                 name = "my school 2",
                 countryName = "POL"
             )
         )
         organisationAccountRepository.save(
-            organisation = OrganisationFactory.school(
+            school = OrganisationFactory.school(
                 name = "something else",
                 countryName = "GBR"
             )
         )
 
-        mvc.perform(get("/v1/schools?country=GBR&query=school").asUser("some-teacher"))
+        mvc.perform(get("/v1/schools?countryCode=GBR&query=school").asUser("some-teacher"))
             .andExpect(jsonPath("$._embedded.schools", hasSize<Int>(1)))
             .andExpect(jsonPath("$._embedded.schools[0].id", equalTo(school.id.value)))
     }
