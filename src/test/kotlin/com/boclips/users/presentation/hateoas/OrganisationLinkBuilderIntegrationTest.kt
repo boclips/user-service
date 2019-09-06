@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
@@ -10,13 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired
 internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
-    lateinit var organisationUriBuilder: OrganisationLinkBuilder
+    lateinit var organisationLinkBuilder: OrganisationLinkBuilder
+
+    @Test
+    fun `self link for organisation`() {
+        val organisationId = "test-id"
+        val organisationLink = organisationLinkBuilder.self(OrganisationId(organisationId))
+
+        assertThat(organisationLink.rel).isEqualTo("self")
+        assertThat(organisationLink.href).endsWith("/organisations/$organisationId")
+    }
 
     @Test
     fun `when authenticated expose link to list of all countries`() {
         setSecurityContext("some-user")
 
-        val countriesLink = organisationUriBuilder.getCountriesLink()
+        val countriesLink = organisationLinkBuilder.getCountriesLink()
 
         assertThat(countriesLink).isNotNull()
         assertThat(countriesLink!!.href).endsWith("/countries")
@@ -25,14 +35,14 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
 
     @Test
     fun `when not authenticated we do not expose list of all countries`() {
-        val countriesLink = organisationUriBuilder.getCountriesLink()
+        val countriesLink = organisationLinkBuilder.getCountriesLink()
 
         assertThat(countriesLink).isNull()
     }
 
     @Test
     fun `self link for countries`() {
-        val selfLink = organisationUriBuilder.getCountriesSelfLink()
+        val selfLink = organisationLinkBuilder.getCountriesSelfLink()
 
         assertThat(selfLink).isNotNull()
         assertThat(selfLink!!.href).endsWith("/countries")
@@ -42,7 +52,7 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
     @Test
     fun `expose state link when country is the USA`() {
         val country = Country.fromCode("USA")
-        val stateLink = organisationUriBuilder.getStatesLink(country)
+        val stateLink = organisationLinkBuilder.getStatesLink(country)
 
         assertThat(stateLink).isNotNull()
         assertThat(stateLink!!.href).endsWith("countries/USA/states")
@@ -52,7 +62,7 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
     @Test
     fun `does not expose state link when country is not the USA`() {
         val country = Country.fromCode("GBR")
-        val stateLink = organisationUriBuilder.getStatesLink(country)
+        val stateLink = organisationLinkBuilder.getStatesLink(country)
 
         assertThat(stateLink).isNull()
     }

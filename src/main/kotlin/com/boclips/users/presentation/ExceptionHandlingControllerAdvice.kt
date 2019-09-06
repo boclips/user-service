@@ -2,10 +2,9 @@ package com.boclips.users.presentation
 
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.application.exceptions.ContractExistsException
-import com.boclips.users.application.exceptions.ContractNotFoundException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
+import com.boclips.users.application.exceptions.NotFoundException
 import com.boclips.users.application.exceptions.PermissionDeniedException
-import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.presentation.controllers.PresentationPackageMarker
 import mu.KLogging
@@ -43,16 +42,10 @@ class ExceptionHandlingControllerAdvice {
         logger.info { "It is assumed ${ex.identifier} is a robot" }
     }
 
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "User not found")
-    @ExceptionHandler(UserNotFoundException::class)
-    fun handleUserNotFound(ex: UserNotFoundException) {
-        logger.info { "User ${ex.userId} not found" }
-    }
-
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Contract not found")
-    @ExceptionHandler(ContractNotFoundException::class)
-    fun handleContractNotFound(ex: ContractNotFoundException) {
-        logger.info { "Contract for ${ex.criteria} not found" }
+    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Not found")
+    @ExceptionHandler(NotFoundException::class)
+    fun handleNotFound(ex: NotFoundException) {
+        logger.info { ex.message }
     }
 
     @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Contract already exists for given name")
