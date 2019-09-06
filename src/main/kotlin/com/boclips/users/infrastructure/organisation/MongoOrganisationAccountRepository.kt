@@ -21,7 +21,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         schoolName: String,
         country: String
     ): List<LookupEntry> {
-        return repository.findByTypeAndCountryCodeAndNameContains(
+        return repository.findByTypeAndCountryCodeAndNameContainsIgnoreCase(
             code = country,
             name = schoolName,
             type = OrganisationType.SCHOOL

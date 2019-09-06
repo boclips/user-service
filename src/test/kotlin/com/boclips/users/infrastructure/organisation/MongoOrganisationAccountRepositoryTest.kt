@@ -58,7 +58,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `looks up organisation by name and country`() {
+    fun `looks up schools by name and country`() {
         val correctSchool = organisationAccountRepository.save(
             organisation = OrganisationFactory.school(name = "Some School", countryName = "GBR")
         )
@@ -73,7 +73,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         )
 
         val schools = organisationAccountRepository.lookupSchools(
-            organisationName = "School",
+            organisationName = "school",
             country = "GBR"
         )
 
