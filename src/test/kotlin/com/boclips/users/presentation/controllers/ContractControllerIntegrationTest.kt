@@ -88,10 +88,35 @@ class ContractControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isBadRequest)
         }
+
+        @Test
+        fun `returns a 409 response when a contract with given name already exists`() {
+            val contractName = "Super contract"
+            selectedContentContractRepository.saveSelectedContentContract(
+                contractName,
+                listOf(CollectionId("A"))
+            )
+
+            mvc.perform(
+                post("/v1/contracts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                            "type": "SelectedContent",
+                            "name": "$contractName",
+                            "collectionIds": ["A"]
+                        }
+                    """.trimIndent()
+                    )
+                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_CONTRACTS)
+            )
+                .andExpect(status().isConflict)
+        }
     }
 
     @Nested
-    inner class FetchingContracts() {
+    inner class FetchingContracts {
         @Test
         fun `returns a 403 response when caller does not have a VIEW_CONTRACTS role`() {
             mvc.perform(

@@ -1,6 +1,7 @@
 package com.boclips.users.presentation
 
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
+import com.boclips.users.application.exceptions.ContractExistsException
 import com.boclips.users.application.exceptions.ContractNotFoundException
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
@@ -52,6 +53,12 @@ class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(ContractNotFoundException::class)
     fun handleContractNotFound(ex: ContractNotFoundException) {
         logger.info { "Contract for ${ex.criteria} not found" }
+    }
+
+    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Contract already exists for given name")
+    @ExceptionHandler(ContractExistsException::class)
+    fun handleContractExists(ex: ContractExistsException) {
+        logger.info { ex.message }
     }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Validation failed")
