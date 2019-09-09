@@ -25,47 +25,6 @@ import org.springframework.web.util.UriComponentsBuilder
 
 class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
-    inner class Countries {
-        @Test
-        fun `lists all countries when user is authenticated`() {
-            mvc.perform(get("/v1/countries").asUser("some-teacher"))
-                .andExpect(jsonPath("$._embedded.countries.length()", greaterThanOrEqualTo(249)))
-                .andExpect(jsonPath("$._embedded.countries[0].id", equalTo("AND")))
-                .andExpect(jsonPath("$._embedded.countries[0].name", equalTo("Andorra")))
-                .andExpect(jsonPath("$._embedded.countries[?(@.id == 'USA')].name", contains("United States")))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.countries[?(@.id == 'USA')]._links.states.href",
-                        contains(endsWith("/countries/USA/states"))
-                    )
-                )
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.countries[?(@.id == 'USA')]._links.schools.href",
-                        contains(endsWith("/schools?countryCode=USA{&query,state}"))
-                    )
-                )
-
-                .andExpect(jsonPath("$._links.self.href", endsWith("/countries")))
-        }
-
-        @Test
-        fun `cannot list all countries when not authenticated`() {
-            mvc.perform(get("/v1/countries"))
-                .andExpect(status().isForbidden)
-        }
-
-        @Test
-        fun `lists all states when user is authenticated`() {
-            mvc.perform(get("/v1/countries/USA/states").asUser("some-teacher"))
-                .andExpect(jsonPath("$._embedded.states", hasSize<Int>(67)))
-                .andExpect(jsonPath("$._embedded.states[0].id", equalTo("AB")))
-                .andExpect(jsonPath("$._embedded.states[0].name", equalTo("Alberta")))
-                .andExpect(jsonPath("$._links.self.href", endsWith("/countries/USA/states")))
-        }
-    }
-
-    @Nested
     inner class CreatingOrganisations {
         @Test
         fun `returns a 403 response when user does not have an INSERT_ORGANISATIONS role`() {

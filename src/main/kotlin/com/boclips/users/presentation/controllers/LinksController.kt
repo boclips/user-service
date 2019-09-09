@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
+import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import org.springframework.hateoas.Resource
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController
 class LinksController(
     private val userLinkBuilder: UserLinkBuilder,
     private val organisationLinkBuilder: OrganisationLinkBuilder,
-    private val contractsLinkBuilder: ContractsLinkBuilder
+    private val contractsLinkBuilder: ContractsLinkBuilder,
+    private val countryLinkBuilder: CountryLinkBuilder
 ) {
     @GetMapping
     fun getLinks() = Resource(
@@ -23,7 +25,7 @@ class LinksController(
             userLinkBuilder.profileLink(),
             userLinkBuilder.userLink(),
             userLinkBuilder.contractsLink(),
-            organisationLinkBuilder.getCountriesLink(),
+            countryLinkBuilder.getCountriesLink(),
             organisationLinkBuilder.getApiIntegrationByName(),
             contractsLinkBuilder.getContractByName()
         )
