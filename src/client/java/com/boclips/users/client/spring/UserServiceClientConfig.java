@@ -17,18 +17,22 @@ public class UserServiceClientConfig {
     }
 
     @Bean
-    public UserServiceClient userServiceClient(UserServiceClientProperties properties) {
-        requireNonBlank(properties.getBaseUrl(), "user-service.base-url is required");
-        requireNonBlank(properties.getTokenUrl(), "user-service.token-url is required");
-        requireNonBlank(properties.getClientId(), "user-service.client-id is required");
-        requireNonBlank(properties.getClientSecret(), "user-service.client-secret is required");
+    @ConfigurationProperties(prefix = "oauth2")
+    public Oauth2CredentialProperties oauth2CredentialProperties() { return new Oauth2CredentialProperties(); }
+
+    @Bean
+    public UserServiceClient userServiceClient(UserServiceClientProperties userServiceClientProperties, Oauth2CredentialProperties oauth2CredentialProperties) {
+        requireNonBlank(userServiceClientProperties.getBaseUrl(), "user-service.base-url is required");
+        requireNonBlank(oauth2CredentialProperties.getTokenUrl(), "user-service.token-url is required");
+        requireNonBlank(oauth2CredentialProperties.getClientId(), "user-service.client-id is required");
+        requireNonBlank(oauth2CredentialProperties.getClientSecret(), "user-service.client-secret is required");
 
         ClientCredentialsResourceDetails credentials = new ClientCredentialsResourceDetails();
-        credentials.setAccessTokenUri(properties.getTokenUrl());
-        credentials.setClientId(properties.getClientId());
-        credentials.setClientSecret(properties.getClientSecret());
+        credentials.setAccessTokenUri(oauth2CredentialProperties.getTokenUrl());
+        credentials.setClientId(oauth2CredentialProperties.getClientId());
+        credentials.setClientSecret(oauth2CredentialProperties.getClientSecret());
 
-        return new ApiUserServiceClient(properties.getBaseUrl(), new OAuth2RestTemplate(credentials));
+        return new ApiUserServiceClient(userServiceClientProperties.getBaseUrl(), new OAuth2RestTemplate(credentials));
     }
 
     private void requireNonBlank(String value, String message) {
