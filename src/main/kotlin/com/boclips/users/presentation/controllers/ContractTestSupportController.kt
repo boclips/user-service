@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.commands.CreateContract
 import com.boclips.users.application.commands.GetContractById
 import com.boclips.users.application.commands.GetContractByName
+import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
 import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
 import com.boclips.users.presentation.requests.CreateContractRequest
 import com.boclips.users.presentation.resources.ContractConverter
@@ -22,10 +23,11 @@ import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
+@BoclipsE2ETestSupport
 @Validated
 @RestController
 @RequestMapping("/v1/contracts")
-class ContractController(
+class ContractTestSupportController(
     private val createContract: CreateContract,
     private val getContractById: GetContractById,
     private val getContractByName: GetContractByName,

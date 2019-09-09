@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
-class ContractControllerIntegrationTest : AbstractSpringIntegrationTest() {
+class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class CreatingContracts {
         @Test
