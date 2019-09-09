@@ -31,7 +31,8 @@ open class UpdateUserRequest(
     var state: String? = null,
 
     @field:Size(min = 1, max = 200, message = "School name must be between 1 and 200 characters")
-    var schoolName: String? = null
+    var schoolName: String? = null,
+    var schoolId: String? = null
 )
 
 class MarketingTrackingRequest(

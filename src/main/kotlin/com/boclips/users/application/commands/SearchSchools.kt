@@ -24,8 +24,8 @@ class SearchSchools(
             }
 
             else -> organisationAccountRepository.lookupSchools(
-                organisationName = schoolName,
-                country = countryCode
+                schoolName = schoolName,
+                countryCode = countryCode
             )
         }
     }

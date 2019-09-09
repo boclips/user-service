@@ -1,14 +1,19 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
-import com.boclips.users.application.UserUpdatesConverter
+import com.boclips.users.application.UserUpdatesCommandFactory
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.organisation.OrganisationAccount
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.referrals.NewReferral
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.MarketingService
+import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
@@ -24,7 +29,8 @@ class UpdateUser(
     private val userRepository: UserRepository,
     private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
-    private val userUpdatesConverter: UserUpdatesConverter
+    private val userUpdatesCommandFactory: UserUpdatesCommandFactory,
+    private val organisationAccountRepository: OrganisationAccountRepository
 ) {
     companion object : KLogging()
 
@@ -34,15 +40,48 @@ class UpdateUser(
 
         val authenticatedUserId = UserId(authenticatedUser.id)
 
-        val user = userService.findUserById(authenticatedUserId)
+        val school = findOrCreateSchool(updateUserRequest)
 
-        val commands = userUpdatesConverter.convert(updateUserRequest)
-
-        userRepository.update(user, *commands.toTypedArray())
-
-        if (!user.hasProfile()) activate(UserId(authenticatedUser.id))
+        userService.findUserById(authenticatedUserId).let { user ->
+            userUpdatesCommandFactory.buildCommands(updateUserRequest, school).let { commands ->
+                userRepository.update(user, *commands.toTypedArray())
+            }
+            if (!user.hasProfile()) activate(UserId(authenticatedUser.id))
+        }
 
         return userService.findUserById(UserId(authenticatedUser.id))
+    }
+
+    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): OrganisationAccount? {
+        val schoolById = updateUserRequest.schoolId?.let {
+            organisationAccountRepository.findOrganisationAccountById(
+                OrganisationAccountId(it)
+            )
+        }
+
+        return schoolById
+            ?: updateUserRequest.schoolName?.let { schoolName ->
+                findSchoolByName(schoolName, updateUserRequest.country!!)
+                    ?: organisationAccountRepository.save(
+                        School(
+                            schoolName,
+                            Country.fromCode(updateUserRequest.country!!),
+                            null,
+                            null,
+                            null
+                        )
+                    )
+            }
+    }
+
+    private fun findSchoolByName(
+        schoolName: String,
+        countryCode: String
+    ): OrganisationAccount? {
+        return organisationAccountRepository.lookupSchools(
+            schoolName,
+            countryCode
+        ).firstOrNull()?.let { organisationAccountRepository.findOrganisationAccountById(OrganisationAccountId(it.id)) }
     }
 
     private fun activate(id: UserId) {

@@ -8,11 +8,11 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -81,6 +81,60 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         val updateUserRequest = UpdateUserRequestFactory.sample()
         assertThat(updateUser(userId, updateUserRequest)).isEqualTo(updateUser(userId, updateUserRequest))
+    }
+
+    @Nested
+    @DisplayName("When non USA")
+    inner class NonUsaNewSchool {
+
+        @Test
+        fun `unidentified school creates new independent school`() {
+            val userId = UUID.randomUUID().toString()
+            setSecurityContext(userId)
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(id = userId),
+                    profile = ProfileFactory.sample()
+                )
+            )
+
+            val updatedUser =
+                updateUser(userId, UpdateUserRequestFactory.sample(schoolName = "new school", country = "ESP"))
+
+            val newSchool =
+                organisationAccountRepository.lookupSchools(schoolName = "new school", countryCode = "ESP")
+                    .firstOrNull()
+            assertThat(newSchool).isNotNull
+            assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool?.id)
+        }
+
+        @Test
+        fun `identified school links school without creating duplicate`() {
+            val userId = UUID.randomUUID().toString()
+            setSecurityContext(userId)
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(id = userId),
+                    profile = ProfileFactory.sample()
+                )
+            )
+            val school =
+                organisationAccountRepository.save(OrganisationFactory.school(country = Country.fromCode("ESP")))
+
+            val updatedUser = updateUser(
+                userId,
+                UpdateUserRequestFactory.sample(
+                    schoolName = school.organisation.name,
+                    country = "ESP",
+                    schoolId = school.id.value
+                )
+            )
+
+            val newSchool =
+                organisationAccountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "ESP")
+            assertThat(newSchool).hasSize(1)
+            assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool.first().id)
+        }
     }
 
     @Nested

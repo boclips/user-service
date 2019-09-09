@@ -19,10 +19,10 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
 
     override fun lookupSchools(
         schoolName: String,
-        country: String
+        countryCode: String
     ): List<LookupEntry> {
         return repository.findByTypeAndCountryCodeAndNameContainsIgnoreCase(
-            code = country,
+            code = countryCode,
             name = schoolName,
             type = OrganisationType.SCHOOL
         ).toList().map { LookupEntry("${it.id}", it.name) }

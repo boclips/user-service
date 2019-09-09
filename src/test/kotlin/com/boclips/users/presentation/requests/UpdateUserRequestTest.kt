@@ -156,7 +156,7 @@ class UpdateUserRequestTest {
         fun `validates school for empty string`() {
             val violations = validator.validate(
                 UpdateUserRequestFactory.sample(
-                    school = ""
+                    schoolName = ""
                 )
             )
             assertThat(violations).hasSize(1)
@@ -167,7 +167,7 @@ class UpdateUserRequestTest {
         fun `validates school for length`() {
             val violations = validator.validate(
                 UpdateUserRequestFactory.sample(
-                    school = "B".repeat(201)
+                    schoolName = "B".repeat(201)
                 )
             )
             assertThat(violations).hasSize(1)

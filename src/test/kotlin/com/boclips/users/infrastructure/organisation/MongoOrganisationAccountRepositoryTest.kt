@@ -62,8 +62,8 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         )
 
         val schools = organisationAccountRepository.lookupSchools(
-            organisationName = "school",
-            country = "GBR"
+            schoolName = "school",
+            countryCode = "GBR"
         )
 
         assertThat(schools).hasSize(1)

@@ -33,5 +33,5 @@ interface OrganisationAccountRepository {
     fun findApiIntegrationByRole(role: String): OrganisationAccount?
     fun findApiIntegrationByName(name: String): OrganisationAccount?
 
-    fun lookupSchools(organisationName: String, country: String) : List<LookupEntry>
+    fun lookupSchools(schoolName: String, countryCode: String) : List<LookupEntry>
 }
