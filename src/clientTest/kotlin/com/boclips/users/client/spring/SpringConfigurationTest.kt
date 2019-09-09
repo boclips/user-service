@@ -15,6 +15,9 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
     @Autowired(required = false)
     lateinit var userServiceClientProperties: UserServiceClientProperties
 
+    @Autowired(required = false)
+    lateinit var oauth2CredentialProperties: Oauth2CredentialProperties
+
     @Test
     fun `user service client is configured`() {
         assertThat(userServiceClient).isNotNull
@@ -24,20 +27,22 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
     fun `configuration properties are sourced`() {
         assertThat(userServiceClientProperties).isNotNull
         assertThat(userServiceClientProperties.baseUrl).isEqualTo("https://api-gateway")
-        assertThat(userServiceClientProperties.tokenUrl).isEqualTo("https://api-gateway/v1/token")
-        assertThat(userServiceClientProperties.clientId).isEqualTo("user-service-client-id")
-        assertThat(userServiceClientProperties.clientSecret).isEqualTo("user-service-client-secret")
+        assertThat(oauth2CredentialProperties.tokenUrl).isEqualTo("https://api-gateway/v1/token")
+        assertThat(oauth2CredentialProperties.clientId).isEqualTo("user-service-client-id")
+        assertThat(oauth2CredentialProperties.clientSecret).isEqualTo("user-service-client-secret")
     }
 
     @Nested
     inner class MissingConfigurationTest {
         @Test
-        fun `throws an error api gateway url is missing`() {
+        fun `throws an error if user service URL is missing`() {
             assertThatThrownBy {
                 UserServiceClientConfig()
                     .userServiceClient(
                         UserServiceClientProperties().apply {
                             baseUrl = ""
+                        },
+                        Oauth2CredentialProperties().apply {
                             tokenUrl = "not empty"
                             clientId = "not empty"
                             clientSecret = "not empty"
@@ -47,12 +52,14 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
         }
 
         @Test
-        fun `throws an error token url is missing`() {
+        fun `throws an error if token url is missing`() {
             assertThatThrownBy {
                 UserServiceClientConfig()
                     .userServiceClient(
                         UserServiceClientProperties().apply {
                             baseUrl = "not empty"
+                        },
+                        Oauth2CredentialProperties().apply {
                             tokenUrl = ""
                             clientId = "not empty"
                             clientSecret = "not empty"
@@ -68,6 +75,8 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
                     .userServiceClient(
                         UserServiceClientProperties().apply {
                             baseUrl = "not empty"
+                        },
+                        Oauth2CredentialProperties().apply {
                             tokenUrl = "not empty"
                             clientId = ""
                             clientSecret = "not empty"
@@ -83,6 +92,8 @@ class SpringConfigurationTest : AbstractClientIntegrationTest() {
                     .userServiceClient(
                         UserServiceClientProperties().apply {
                             baseUrl = "not empty"
+                        },
+                        Oauth2CredentialProperties().apply {
                             tokenUrl = "not empty"
                             clientId = "not empty"
                             clientSecret = ""

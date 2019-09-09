@@ -24,6 +24,8 @@ spring:
 # Client Spring configuration testing props
 user-service:
   base-url: 'https://api-gateway'
+
+oauth2:
   token-url: 'https://api-gateway/v1/token'
   client-id: 'user-service-client-id'
   client-secret: 'user-service-client-secret'
