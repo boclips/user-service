@@ -14,15 +14,15 @@ import org.springframework.stereotype.Component
 class OrganisationLinkBuilder {
     fun self(id: OrganisationAccountId): Link {
         return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisation(id.value)
+            ControllerLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisationById(id.value)
         ).withSelfRel()
     }
 
-    fun getOrganisationByName(): Link? {
+    fun getApiIntegrationByName(): Link? {
         return getIfHasRole(UserRoles.VIEW_ORGANISATIONS) {
             ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisationByName(null)
-            ).withRel("getOrganisationByName")
+                ControllerLinkBuilder.methodOn(OrganisationController::class.java).fetchApiIntegrationByName(null)
+            ).withRel("getApiIntegrationByName")
         }
     }
 

@@ -29,7 +29,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.createAccount").exists())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
             .andExpect(jsonPath("$._links.getContractByName").doesNotExist())
-            .andExpect(jsonPath("$._links.getOrganisationByName").doesNotExist())
+            .andExpect(jsonPath("$._links.getApiIntegrationByName").doesNotExist())
             .andExpect(jsonPath("$._links.countries").doesNotExist())
     }
 
@@ -95,8 +95,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `user with VIEW_ORGANISATIONS role`() {
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ORGANISATIONS))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.getOrganisationByName.href", endsWith("/organisations{?name}")))
-            .andExpect(jsonPath("$._links.getOrganisationByName.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.getApiIntegrationByName.href", endsWith("/api-integrations{?name}")))
+            .andExpect(jsonPath("$._links.getApiIntegrationByName.templated", equalTo(true)))
     }
 
     @Test

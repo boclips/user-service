@@ -3,7 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.commands.CreateApiIntegration
 import com.boclips.users.application.commands.GetCountries
 import com.boclips.users.application.commands.GetOrganisationById
-import com.boclips.users.application.commands.GetOrganisationByName
+import com.boclips.users.application.commands.GetApiIntegrationByName
 import com.boclips.users.application.commands.GetUsStates
 import com.boclips.users.application.commands.SearchSchools
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
@@ -40,7 +40,7 @@ class OrganisationController(
     private val organisationLinkBuilder: OrganisationLinkBuilder,
     private val createApiIntegration: CreateApiIntegration,
     private val getOrganisationById: GetOrganisationById,
-    private val getOrganisationByName: GetOrganisationByName,
+    private val getApiIntegrationByName: GetApiIntegrationByName,
     private val organisationConverter: OrganisationConverter,
     private val searchSchools: SearchSchools
 ) {
@@ -64,9 +64,8 @@ class OrganisationController(
         )
     }
 
-    @PostMapping("/organisations")
-    fun insertOrganisation(@Valid @RequestBody request: CreateOrganisationRequest): ResponseEntity<Resource<*>> {
-        // TODO An organisation endpoint ends up creating an api integration
+    @PostMapping("/api-integrations")
+    fun insertApiIntegration(@Valid @RequestBody request: CreateOrganisationRequest): ResponseEntity<Resource<*>> {
         val createdOrganisation = createApiIntegration(request)
 
         val headers = HttpHeaders()
@@ -76,7 +75,7 @@ class OrganisationController(
     }
 
     @GetMapping("/organisations/{id}")
-    fun fetchOrganisation(@PathVariable("id") id: String): Resource<OrganisationResource> {
+    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<OrganisationResource> {
         val organisation = getOrganisationById(id)
 
         return Resource(
@@ -87,14 +86,14 @@ class OrganisationController(
         )
     }
 
-    @GetMapping("/organisations")
-    fun fetchOrganisationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<OrganisationResource> {
-        val organisation = getOrganisationByName(name!!)
+    @GetMapping("/api-integrations")
+    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<OrganisationResource> {
+        val apiIntegration = getApiIntegrationByName(name!!)
 
         return Resource(
-            organisationConverter.toResource(organisation),
+            organisationConverter.toResource(apiIntegration),
             listOfNotNull(
-                organisationLinkBuilder.self(organisation.id)
+                organisationLinkBuilder.self(apiIntegration.id)
             )
         )
     }

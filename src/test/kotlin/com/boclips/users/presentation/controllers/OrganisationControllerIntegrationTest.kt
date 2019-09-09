@@ -70,7 +70,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a 403 response when user does not have an INSERT_ORGANISATIONS role`() {
             mvc.perform(
-                post("/v1/organisations")
+                post("/v1/api-integrations")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{ }")
                     .asUser("dont-have-roles@test.com")
@@ -81,7 +81,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `inserts an organisation and returns it's id in Location header`() {
             mvc.perform(
-                post("/v1/organisations")
+                post("/v1/api-integrations")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -95,7 +95,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
             )
                 .andExpect(status().isCreated)
-                .andExpect(header().string("Location", containsString("/v1/organisations/")))
+                .andExpect(header().string("Location", containsString("/organisations/")))
         }
 
         @Test
@@ -108,7 +108,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                post("/v1/organisations")
+                post("/v1/api-integrations")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -134,7 +134,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                post("/v1/organisations")
+                post("/v1/api-integrations")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -153,7 +153,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a 400 response when request data is invalid`() {
             mvc.perform(
-                post("/v1/organisations")
+                post("/v1/api-integrations")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{ }")
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
@@ -166,7 +166,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class FetchingOrganisationsById {
         @Test
-        fun `retrieves an organisation by id`() {
+        fun `retrieves an organisation account by id`() {
             val organisationName = "Test Org"
             val organisation = organisationAccountRepository.save(
                 role = "ROLE_TEST_ORG",
@@ -194,7 +194,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `returns a 404 response when organisation is not found by id`() {
+        fun `returns a 404 response when organisation account is not found by id`() {
             mvc.perform(
                 get("/v1/organisations/this-does-not-exist")
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
@@ -209,7 +209,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `returns a 403 response when caller does not have a VIEW_ORGANISATIONS role`() {
             mvc.perform(
                 get(
-                    UriComponentsBuilder.fromUriString("/v1/organisations")
+                    UriComponentsBuilder.fromUriString("/v1/api-integrations")
                         .queryParam("name", "Some org that does not exist")
                         .build()
                         .toUri()
@@ -230,7 +230,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             mvc.perform(
                 get(
-                    UriComponentsBuilder.fromUriString("/v1/organisations")
+                    UriComponentsBuilder.fromUriString("/v1/api-integrations")
                         .queryParam("name", organisationName)
                         .build()
                         .toUri()
@@ -247,7 +247,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `returns a 404 response when organisation is not found by name`() {
             mvc.perform(
                 get(
-                    UriComponentsBuilder.fromUriString("/v1/organisations")
+                    UriComponentsBuilder.fromUriString("/v1/api-integrations")
                         .queryParam("name", "Some org that does not exist")
                         .build()
                         .toUri()
@@ -260,7 +260,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a 400 response when query parameter is not provided`() {
             mvc.perform(
-                get("/v1/organisations")
+                get("/v1/api-integrations")
                     .asUserWithRoles("viewer@hacker.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(status().isBadRequest)

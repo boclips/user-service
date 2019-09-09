@@ -6,7 +6,7 @@ import com.boclips.users.domain.service.OrganisationAccountRepository
 import org.springframework.stereotype.Service
 
 @Service
-class GetOrganisationByName(
+class GetApiIntegrationByName(
     private val organisationRepository: OrganisationAccountRepository
 ) {
     operator fun invoke(name: String): OrganisationAccount {

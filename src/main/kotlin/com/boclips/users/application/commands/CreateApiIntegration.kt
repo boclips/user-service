@@ -13,7 +13,7 @@ class CreateApiIntegration(
     private val organisationRepository: OrganisationAccountRepository
 ) {
     operator fun invoke(request: CreateOrganisationRequest): OrganisationAccount {
-        assertNewOrganisationDoesNotCollide(request)
+        assertNewApiIntegrationDoesNotCollide(request)
 
         return organisationRepository.save(
             apiIntegration = ApiIntegration(
@@ -24,7 +24,7 @@ class CreateApiIntegration(
         )
     }
 
-    private fun assertNewOrganisationDoesNotCollide(request: CreateOrganisationRequest) {
+    private fun assertNewApiIntegrationDoesNotCollide(request: CreateOrganisationRequest) {
         organisationRepository.findApiIntegrationByName(request.name!!)?.let {
             throw OrganisationAlreadyExistsException(request.name!!)
         }
