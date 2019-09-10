@@ -17,73 +17,56 @@ data class State(
 
         private fun statesAsMap(): Map<String, String> {
             val states = TreeMap<String, String>()
-            states.put("AL", "Alabama")
-            states.put("AK", "Alaska")
-            states.put("AB", "Alberta")
-            states.put("AZ", "Arizona")
-            states.put("AR", "Arkansas")
-            states.put("BC", "British Columbia")
-            states.put("CA", "California")
-            states.put("CO", "Colorado")
-            states.put("CT", "Connecticut")
-            states.put("DE", "Delaware")
-            states.put("DC", "District Of Columbia")
-            states.put("FL", "Florida")
-            states.put("GA", "Georgia")
-            states.put("GU", "Guam")
-            states.put("HI", "Hawaii")
-            states.put("ID", "Idaho")
-            states.put("IL", "Illinois")
-            states.put("IN", "Indiana")
-            states.put("IA", "Iowa")
-            states.put("KS", "Kansas")
-            states.put("KY", "Kentucky")
-            states.put("LA", "Louisiana")
-            states.put("ME", "Maine")
-            states.put("MB", "Manitoba")
-            states.put("MD", "Maryland")
-            states.put("MA", "Massachusetts")
-            states.put("MI", "Michigan")
-            states.put("MN", "Minnesota")
-            states.put("MS", "Mississippi")
-            states.put("MO", "Missouri")
-            states.put("MT", "Montana")
-            states.put("NE", "Nebraska")
-            states.put("NV", "Nevada")
-            states.put("NB", "New Brunswick")
-            states.put("NH", "New Hampshire")
-            states.put("NJ", "New Jersey")
-            states.put("NM", "New Mexico")
-            states.put("NY", "New York")
-            states.put("NF", "Newfoundland")
-            states.put("NC", "North Carolina")
-            states.put("ND", "North Dakota")
-            states.put("NT", "Northwest Territories")
-            states.put("NS", "Nova Scotia")
-            states.put("NU", "Nunavut")
-            states.put("OH", "Ohio")
-            states.put("OK", "Oklahoma")
-            states.put("ON", "Ontario")
-            states.put("OR", "Oregon")
-            states.put("PA", "Pennsylvania")
-            states.put("PE", "Prince Edward Island")
-            states.put("PR", "Puerto Rico")
-            states.put("QC", "Quebec")
-            states.put("RI", "Rhode Island")
-            states.put("SK", "Saskatchewan")
-            states.put("SC", "South Carolina")
-            states.put("SD", "South Dakota")
-            states.put("TN", "Tennessee")
-            states.put("TX", "Texas")
-            states.put("UT", "Utah")
-            states.put("VT", "Vermont")
-            states.put("VI", "Virgin Islands")
-            states.put("VA", "Virginia")
-            states.put("WA", "Washington")
-            states.put("WV", "West Virginia")
-            states.put("WI", "Wisconsin")
-            states.put("WY", "Wyoming")
-            states.put("YT", "Yukon Territory")
+            states["AL"] = "Alabama"
+            states["AK"] = "Alaska"
+            states["AZ"] = "Arizona"
+            states["AR"] = "Arkansas"
+            states["CA"] = "California"
+            states["CO"] = "Colorado"
+            states["CT"] = "Connecticut"
+            states["DE"] = "Delaware"
+            states["FL"] = "Florida"
+            states["GA"] = "Georgia"
+            states["HI"] = "Hawaii"
+            states["ID"] = "Idaho"
+            states["IL"] = "Illinois"
+            states["IN"] = "Indiana"
+            states["IA"] = "Iowa"
+            states["KS"] = "Kansas"
+            states["KY"] = "Kentucky[E]"
+            states["LA"] = "Louisiana"
+            states["ME"] = "Maine"
+            states["MD"] = "Maryland"
+            states["MA"] = "Massachusetts[E]"
+            states["MI"] = "Michigan"
+            states["MN"] = "Minnesota"
+            states["MS"] = "Mississippi"
+            states["MO"] = "Missouri"
+            states["MT"] = "Montana"
+            states["NE"] = "Nebraska"
+            states["NV"] = "Nevada"
+            states["NH"] = "New Hampshire"
+            states["NJ"] = "New Jersey"
+            states["NM"] = "New Mexico"
+            states["NY"] = "New York"
+            states["NC"] = "North Carolina"
+            states["ND"] = "North Dakota"
+            states["OH"] = "Ohio"
+            states["OK"] = "Oklahoma"
+            states["OR"] = "Oregon"
+            states["PA"] = "Pennsylvania"
+            states["RI"] = "Rhode Island"
+            states["SC"] = "South Carolina"
+            states["SD"] = "South Dakota"
+            states["TN"] = "Tennessee"
+            states["TX"] = "Texas"
+            states["UT"] = "Utah"
+            states["VT"] = "Vermont"
+            states["VA"] = "Virginia[E]"
+            states["WA"] = "Washington"
+            states["WV"] = "West Virginia"
+            states["WI"] = "Wisconsin"
+            states["WY"] = "Wyoming"
 
             return states
         }

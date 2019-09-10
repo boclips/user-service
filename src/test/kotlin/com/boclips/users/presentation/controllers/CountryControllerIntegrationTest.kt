@@ -25,9 +25,9 @@ class CountryControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._embedded.countries[0].id", equalTo("AND")))
             .andExpect(jsonPath("$._embedded.countries[0].name", equalTo("Andorra")))
             .andExpect(jsonPath("$.${USA}.name", contains("United States")))
-            .andExpect(jsonPath("$.${USA}.states", contains(hasSize<Int>(67))))
-            .andExpect(jsonPath("$.${USA}.states[0].id", contains(equalTo("AB"))))
-            .andExpect(jsonPath("$.${USA}.states[0].name", contains(equalTo("Alberta"))))
+            .andExpect(jsonPath("$.${USA}.states", contains(hasSize<Int>(50))))
+            .andExpect(jsonPath("$.${USA}.states[0].id", contains(equalTo("AK"))))
+            .andExpect(jsonPath("$.${USA}.states[0].name", contains(equalTo("Alaska"))))
             .andExpect(jsonPath("$.${USA}._links.states.href", contains(endsWith("/countries/USA/states"))))
             .andExpect(jsonPath("$.${USA}._links.schools.href", contains(endsWith("/schools?countryCode=USA{&query,state}"))))
             .andExpect(jsonPath("$._links.self.href", endsWith("/countries")))
@@ -41,9 +41,9 @@ class CountryControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `lists all states when user is authenticated`() {
         mvc.perform(get("/v1/countries/USA/states").asUser("some-teacher"))
-            .andExpect(jsonPath("$._embedded.states", hasSize<Int>(67)))
-            .andExpect(jsonPath("$._embedded.states[0].id", equalTo("AB")))
-            .andExpect(jsonPath("$._embedded.states[0].name", equalTo("Alberta")))
+            .andExpect(jsonPath("$._embedded.states", hasSize<Int>(50)))
+            .andExpect(jsonPath("$._embedded.states[0].id", equalTo("AK")))
+            .andExpect(jsonPath("$._embedded.states[0].name", equalTo("Alaska")))
             .andExpect(jsonPath("$._links.self.href", endsWith("/countries/USA/states")))
     }
 }
