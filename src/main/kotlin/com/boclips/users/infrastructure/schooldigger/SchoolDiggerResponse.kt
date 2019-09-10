@@ -6,3 +6,19 @@ data class SchoolDiggerSchool(
     val schoolid: String,
     val schoolName: String
 )
+
+data class SchoolDiggerSchoolDetail(
+    val schoolid: String,
+    val schoolName: String,
+    val address: SchoolDiggerAddress,
+    val district: SchoolDiggerDistrict
+)
+
+data class SchoolDiggerAddress(
+    val state: String
+)
+
+data class SchoolDiggerDistrict(
+    val districtID: String,
+    val districtName: String
+)

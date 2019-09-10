@@ -1,7 +1,9 @@
 package com.boclips.users.infrastructure.schooldigger
 
 import com.boclips.users.domain.model.LookupEntry
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.AmericanSchoolsProvider
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.loadWireMockStub
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -78,6 +80,9 @@ class AmericanSchoolsProviderContractTest {
 @Profile("test")
 @Service
 class FakeAmericanSchoolsProvider : AmericanSchoolsProvider {
+    override fun fetchSchool(schoolId: String): School? {
+        return OrganisationFactory.school(externalId = schoolId)
+    }
 
     val entries = mutableMapOf<String, List<LookupEntry>>()
 

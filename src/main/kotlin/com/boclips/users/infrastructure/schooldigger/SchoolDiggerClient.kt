@@ -1,14 +1,16 @@
 package com.boclips.users.infrastructure.schooldigger
 
 import com.boclips.users.domain.model.LookupEntry
+import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.AmericanSchoolsProvider
-import org.springframework.boot.web.client.RestTemplateBuilder
-import org.springframework.context.annotation.Profile
+import mu.KLogging
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
@@ -17,22 +19,64 @@ class SchoolDiggerClient(
     val properties: SchoolDiggerProperties,
     private val restTemplate: RestTemplate
 ) : AmericanSchoolsProvider {
+    companion object : KLogging()
+
+    override fun fetchSchool(schoolId: String): School? {
+        val school = try {
+            restTemplate.getForObject(
+                buildSchoolEndpoint(schoolId),
+                SchoolDiggerSchoolDetail::class.java
+            )
+        } catch (e: Exception) {
+            logger.error("cannot fetch school $schoolId in schooldigger", e)
+            return null
+        }
+
+        return school?.let {
+            School(
+                name = it.schoolName,
+                externalId = it.schoolid,
+                state = State.fromCode(it.address.state),
+                country = Country.usa(),
+                district = District(
+                    name = it.district.districtName,
+                    externalId = it.district.districtID,
+                    state = State.fromCode(it.address.state)
+                )
+            )
+        }
+    }
+
     override fun lookupSchools(stateId: String, schoolName: String): List<LookupEntry> {
         val headers = HttpHeaders()
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
         val httpEntity = HttpEntity<String>(HttpHeaders())
 
-        val response = restTemplate.exchange(
-            buildSearchSchoolsEndpoint(stateId, schoolName),
-            HttpMethod.GET,
-            httpEntity,
-            SchoolDiggerMatchesResponse::class.java
-        )
+        val response = try {
+            restTemplate.exchange(
+                buildSearchSchoolsEndpoint(stateId, schoolName),
+                HttpMethod.GET,
+                httpEntity,
+                SchoolDiggerMatchesResponse::class.java
+            )
+        } catch (e: Exception) {
+            logger.error("cannot lookup schools in schooldigger", e)
+            return emptyList()
+        }
 
         return response.body?.schoolMatches
             ?.map { LookupEntry(it.schoolid, it.schoolName) }
             ?: emptyList()
+    }
+
+    private fun buildSchoolEndpoint(schoolId: String): URI {
+        return UriComponentsBuilder
+            .fromUriString("${properties.host}/v1.2/schools")
+            .pathSegment(schoolId)
+            .addKey()
+            .build()
+            .toUri()
     }
 
     private fun buildSearchSchoolsEndpoint(state: String, school: String): URI {
@@ -40,9 +84,15 @@ class SchoolDiggerClient(
             .fromUriString("${properties.host}/v1.2/autocomplete/schools")
             .queryParam("q", school)
             .queryParam("st", state)
-            .queryParam("appID", properties.applicationId)
-            .queryParam("appKey", properties.applicationKey)
+            .addKey()
             .build()
             .toUri()
     }
+
+    private fun UriComponentsBuilder.addKey(): UriComponentsBuilder {
+        this.queryParam("appID", properties.applicationId)
+        this.queryParam("appKey", properties.applicationKey)
+        return this;
+    }
 }
+
