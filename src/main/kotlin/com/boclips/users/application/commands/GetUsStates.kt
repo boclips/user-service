@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service
 @Service
 class GetUsStates {
     operator fun invoke(): List<State> {
-        return states().map { State(id = it.key, name = it.value) }
+        return states()
     }
 }

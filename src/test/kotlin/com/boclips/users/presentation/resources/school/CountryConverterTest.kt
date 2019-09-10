@@ -16,12 +16,13 @@ class CountryConverterTest {
         val countryLinkBuilder: CountryLinkBuilder = mock {
             on { getStatesLink(any()) } doReturn Link("link")
         }
+        val stateConverter = mock<StateConverter> { on { toStatesResource(any()) } doReturn emptyList() }
 
         val countries: List<Country> = listOf(
             Country(id = "USA", name = "United States")
         )
 
-        val countryResources = CountryConverter(mock(), countryLinkBuilder).toCountriesResource(countries)
+        val countryResources = CountryConverter(mock(), countryLinkBuilder, stateConverter).toCountriesResource(countries)
 
         assertThat(countryResources).isNotNull
         assertThat(countryResources).hasSize(1)
@@ -29,7 +30,8 @@ class CountryConverterTest {
             Resource(
                 CountryResource(
                     id = "USA",
-                    name = "United States"
+                    name = "United States",
+                    states = emptyList()
                 ), Link("link")
             )
         )

@@ -4,7 +4,8 @@ import com.boclips.users.domain.model.Countries
 
 data class Country(
     val id: String,
-    val name: String
+    val name: String,
+    val states: List<State>? = null
 ) {
 
     fun isUSA(): Boolean {
@@ -16,7 +17,7 @@ data class Country(
         fun usa() = fromCode(USA_ISO)
 
         fun fromCode(countryCode: String): Country {
-            return Countries.getByCode(countryCode)?.let { it }
+            return Countries.getByCode(countryCode)
                 ?: throw IllegalStateException("Could not find three letter country code for $countryCode")
         }
     }

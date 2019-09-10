@@ -5,6 +5,7 @@ import com.boclips.users.application.commands.GetUsStates
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.boclips.users.presentation.resources.school.CountryConverter
 import com.boclips.users.presentation.resources.school.CountryResource
+import com.boclips.users.presentation.resources.school.StateConverter
 import com.boclips.users.presentation.resources.school.StateResource
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1", "/v1/")
 class CountryController(
-    private val getCountries: GetCountries,
-    private val getUsStates: GetUsStates,
-    private val countryConverter: CountryConverter,
-    private val countryLinkBuilder: CountryLinkBuilder
+        private val getCountries: GetCountries,
+        private val getUsStates: GetUsStates,
+        private val countryConverter: CountryConverter,
+        private val stateConverter: StateConverter,
+        private val countryLinkBuilder: CountryLinkBuilder
 ) {
     @GetMapping("/countries")
     fun getAllCountries(): Resources<Resource<CountryResource>> {
@@ -30,11 +32,11 @@ class CountryController(
     }
 
     @GetMapping("/countries/USA/states")
-    fun getAllUsStates(): Resources<StateResource> {
+    fun getAllUsStates(): Resources<Resource<StateResource>> {
         val states = getUsStates()
 
         return Resources(
-            states.map { StateResource(id = it.id, name = it.name) },
+            stateConverter.toStatesResource(states),
             countryLinkBuilder.getUsStatesSelfLink()
         )
     }

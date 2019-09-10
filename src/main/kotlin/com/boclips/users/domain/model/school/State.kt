@@ -8,12 +8,14 @@ data class State(
 ) {
     companion object {
         fun fromCode(stateCode: String): State {
-            states().get(stateCode)?.let {
+            statesAsMap().get(stateCode)?.let {
                 return State(id = stateCode, name = it)
             } ?: throw IllegalStateException("Could not find US state $stateCode")
         }
 
-        fun states(): Map<String, String> {
+        fun states() : List<State> = statesAsMap().keys.map(::fromCode)
+
+        private fun statesAsMap(): Map<String, String> {
             val states = TreeMap<String, String>()
             states.put("AL", "Alabama")
             states.put("AK", "Alaska")

@@ -16,7 +16,7 @@ class UserConverter {
             subjects = user.profile?.subjects?.map { it.id.value },
             email = user.account.email,
             analyticsId = user.analyticsId?.value,
-            country = user.profile?.country?.let { CountryResource(id = it.id, name = it.name) }
+            country = user.profile?.country?.let { CountryResource(id = it.id, name = it.name, states = null) }
         )
     }
 }

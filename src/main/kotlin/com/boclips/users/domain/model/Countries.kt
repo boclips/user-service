@@ -1,6 +1,7 @@
 package com.boclips.users.domain.model
 
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import java.util.Locale
 
 object Countries {
@@ -22,8 +23,9 @@ object Countries {
                 val locale = Locale("en", country)
                 val code = locale.isO3Country
                 val displayName = locale.displayCountry
+                val states = if(code == "USA") State.states() else null
 
-                code to Country(id = code, name = displayName)
+                code to Country(id = code, name = displayName, states = states)
             }
             .toMap()
     }
