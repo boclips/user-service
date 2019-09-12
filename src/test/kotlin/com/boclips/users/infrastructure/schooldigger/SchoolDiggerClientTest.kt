@@ -30,17 +30,17 @@ class SchoolDiggerClientTest {
 
     @Test
     fun fetchSchool() {
-        val school = client.fetchSchool("020048000180")!!
+        val (school, district) = client.fetchSchool("020048000180")!!
 
         assertThat(school.name).isNotBlank()
         assertThat(school.externalId).isNotBlank()
         assertThat(school.state).isNotNull
         assertThat(school.country).isEqualTo(Country.usa())
-        assertThat(school.district).isNotNull
-        assertThat(school.district!!.externalId).isNotBlank()
-        assertThat(school.district!!.name).isNotBlank()
-        assertThat(school.district!!.country).isEqualTo(Country.usa())
-        assertThat(school.district!!.state).isEqualTo(school.state)
+        assertThat(district).isNotNull
+        assertThat(district!!.externalId).isNotBlank()
+        assertThat(district.name).isNotBlank()
+        assertThat(district.country).isEqualTo(Country.usa())
+        assertThat(district.state).isEqualTo(school.state)
     }
 
     @Test

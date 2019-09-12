@@ -16,12 +16,12 @@ class OrganisationDocumentConverterTest {
             name = "amazing school",
             type = OrganisationType.SCHOOL,
             externalId = "external-id",
-            organisations = emptyList()
+            parentOrganisation = null
         )
 
         val organisationAccount = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
-        assertThat(organisationAccount.id.value).isEqualTo(organisationDocument.id.toHexString())
+        assertThat(organisationAccount.id.value).isEqualTo(organisationDocument.id!!)
         assertThat(organisationAccount.contractIds).containsExactly(ContractId("A"), ContractId("B"))
         assertThat(organisationAccount.organisation).isInstanceOf(School::class.java)
 
@@ -35,16 +35,22 @@ class OrganisationDocumentConverterTest {
     }
 
     @Test
-    fun `district with schools`() {
+    fun `school with district`() {
         val organisationDocument = OrganisationDocumentFactory.sample(
-            name = "district",
-            type = OrganisationType.DISTRICT,
-            organisations = listOf(OrganisationDocumentFactory.sample(name = "school"))
+            contractIds = listOf("A", "B"),
+            name = "amazing school",
+            type = OrganisationType.SCHOOL,
+            externalId = "external-id",
+            parentOrganisation = OrganisationDocumentFactory.sample(
+                name = "amazing district",
+                type = OrganisationType.DISTRICT,
+                externalId = "external-district-id"
+            )
         )
 
-        val district = OrganisationDocumentConverter.fromDocument(organisationDocument).organisation as District
+        val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
-        assertThat(district.name).isEqualTo("district")
-        assertThat(district.schools.first().name).isEqualTo("school")
+        assertThat(school.organisation).isInstanceOf(School::class.java)
+        assertThat((school.organisation as School).district?.organisation).isInstanceOf(District::class.java)
     }
 }

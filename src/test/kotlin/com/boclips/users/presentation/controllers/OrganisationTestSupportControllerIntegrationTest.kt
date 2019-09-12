@@ -59,9 +59,9 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         fun `returns a 409 response when organisation nam collides`() {
             val organisationName = "Test Org"
             organisationAccountRepository.save(
-                role = "ROLE_TEST_ORG",
+                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
                 contractIds = emptyList(),
-                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName)
+                role = "ROLE_TEST_ORG"
             )
 
             mvc.perform(
@@ -85,9 +85,9 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         fun `returns a 409 response when organisation role collides`() {
             val role = "ROLE_TEST_ORG"
             organisationAccountRepository.save(
-                role = role,
+                apiIntegration = OrganisationFactory.apiIntegration(name = "Some name"),
                 contractIds = emptyList(),
-                apiIntegration = OrganisationFactory.apiIntegration(name = "Some name")
+                role = role
             )
 
             mvc.perform(
@@ -126,9 +126,9 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         fun `retrieves an organisation account by id`() {
             val organisationName = "Test Org"
             val organisation = organisationAccountRepository.save(
-                role = "ROLE_TEST_ORG",
+                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
-                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName)
+                role = "ROLE_TEST_ORG"
             )
 
             mvc.perform(
@@ -180,9 +180,9 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         fun `returns given organisation when it's found by name`() {
             val organisationName = "Test Org"
             val organisation = organisationAccountRepository.save(
-                role = "ROLE_TEST_ORG",
+                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
-                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName)
+                role = "ROLE_TEST_ORG"
             )
 
             mvc.perform(

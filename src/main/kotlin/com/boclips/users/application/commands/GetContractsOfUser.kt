@@ -19,7 +19,7 @@ class GetContractsOfUser(
             ?: emptyList()
     }
 
-    private fun findOrganisation(userId: UserId): OrganisationAccount? {
+    private fun findOrganisation(userId: UserId): OrganisationAccount<*>? {
         return getUser(userId.value).organisationAccountId?.let {
             organisationAccountRepository.findOrganisationAccountById(it)
         }

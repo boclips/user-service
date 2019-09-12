@@ -88,7 +88,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     inner class NonUsaNewSchool {
 
         @Test
-        fun `unidentified school creates new independent school`() {
+        fun `unexisting school creates new independent school`() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)
             saveUser(
@@ -109,7 +109,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `identified school links school without creating duplicate`() {
+        fun `existing school links school without creating duplicate`() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)
             saveUser(
@@ -125,13 +125,44 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 userId,
                 UpdateUserRequestFactory.sample(
                     schoolName = school.organisation.name,
-                    country = "ESP",
-                    schoolId = school.id.value
+                    country = "ESP"
                 )
             )
 
             val newSchool =
                 organisationAccountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "ESP")
+            assertThat(newSchool).hasSize(1)
+            assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool.first().id)
+        }
+    }
+
+    @Nested
+    @DisplayName("When USA")
+    inner class UsaNewSchool {
+
+        @Test
+        fun `identified school links school without creating duplicate`() {
+            val userId = UUID.randomUUID().toString()
+            setSecurityContext(userId)
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(id = userId),
+                    profile = ProfileFactory.sample()
+                )
+            )
+            val school =
+                organisationAccountRepository.save(OrganisationFactory.school(country = Country.fromCode("USA")))
+
+            val updatedUser = updateUser(
+                userId,
+                UpdateUserRequestFactory.sample(
+                    country = "USA",
+                    schoolId = school.organisation.externalId
+                )
+            )
+
+            val newSchool =
+                organisationAccountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
             assertThat(newSchool).hasSize(1)
             assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool.first().id)
         }

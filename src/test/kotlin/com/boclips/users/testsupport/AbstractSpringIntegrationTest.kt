@@ -121,6 +121,7 @@ abstract class AbstractSpringIntegrationTest {
         )
 
         eventBus.clearState()
+        fakeAmericanSchoolsProvider.clear()
     }
 
     fun saveUser(user: User): User {
@@ -148,7 +149,7 @@ abstract class AbstractSpringIntegrationTest {
     fun saveOrganisationWithContractDetails(
         organisationName: String = "Boclips for Teachers",
         contractIds: List<Contract> = emptyList()
-    ): OrganisationAccount {
+    ): OrganisationAccount<*> {
         val organisationContracts = mutableListOf<Contract>()
         contractIds.forEach {
             when (it) {
@@ -172,17 +173,17 @@ abstract class AbstractSpringIntegrationTest {
         contractIds: List<ContractId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
         organisation: ApiIntegration = OrganisationFactory.apiIntegration()
-    ): OrganisationAccount {
+    ): OrganisationAccount<ApiIntegration> {
         return organisationAccountRepository.save(
+            apiIntegration = organisation,
             contractIds = contractIds,
-            role = role,
-            apiIntegration = organisation
+            role = role
         )
     }
 
     fun saveDistrict(
         district: District = OrganisationFactory.district()
-    ): OrganisationAccount {
+    ): OrganisationAccount<District> {
         return organisationAccountRepository.save(
             district = district
         )

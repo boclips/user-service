@@ -21,7 +21,7 @@ class SchoolDiggerClient(
 ) : AmericanSchoolsProvider {
     companion object : KLogging()
 
-    override fun fetchSchool(schoolId: String): School? {
+    override fun fetchSchool(schoolId: String): Pair<School, District?>? {
         val school = try {
             restTemplate.getForObject(
                 buildSchoolEndpoint(schoolId),
@@ -32,18 +32,18 @@ class SchoolDiggerClient(
             return null
         }
 
-        return school?.let {
+        return school?.let { school ->
             School(
-                name = it.schoolName,
-                externalId = it.schoolid,
-                state = State.fromCode(it.address.state),
+                name = school.schoolName,
+                externalId = school.schoolid,
+                state = State.fromCode(school.address.state),
                 country = Country.usa(),
-                district = District(
-                    name = it.district.districtName,
-                    externalId = it.district.districtID,
-                    state = State.fromCode(it.address.state)
-                )
-            )
+                district = null
+            ) to school.district?.let { District(
+                name = it.districtName,
+                externalId = it.districtID,
+                state = State.fromCode(school.address.state)
+            ) }
         }
     }
 
@@ -92,7 +92,7 @@ class SchoolDiggerClient(
     private fun UriComponentsBuilder.addKey(): UriComponentsBuilder {
         this.queryParam("appID", properties.applicationId)
         this.queryParam("appKey", properties.applicationKey)
-        return this;
+        return this
     }
 }
 

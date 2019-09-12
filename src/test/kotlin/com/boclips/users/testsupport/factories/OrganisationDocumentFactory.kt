@@ -16,9 +16,9 @@ class OrganisationDocumentFactory {
             externalId: String? = "external-id",
             country: LocationDocument? = LocationDocumentFactory.country(),
             state: LocationDocument? = LocationDocumentFactory.state(),
-            organisations: List<OrganisationDocument> = emptyList()
+            parentOrganisation: OrganisationDocument? = null
         ) = OrganisationDocument(
-            id = ObjectId(),
+            id = ObjectId().toHexString(),
             name = name,
             role = role,
             contractIds = contractIds,
@@ -26,7 +26,7 @@ class OrganisationDocumentFactory {
             type = type,
             country = country,
             state = state,
-            organisations = organisations
+            parentOrganisation = parentOrganisation
         )
     }
 }

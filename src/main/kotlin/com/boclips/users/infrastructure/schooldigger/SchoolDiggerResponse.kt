@@ -11,7 +11,7 @@ data class SchoolDiggerSchoolDetail(
     val schoolid: String,
     val schoolName: String,
     val address: SchoolDiggerAddress,
-    val district: SchoolDiggerDistrict
+    val district: SchoolDiggerDistrict?
 )
 
 data class SchoolDiggerAddress(

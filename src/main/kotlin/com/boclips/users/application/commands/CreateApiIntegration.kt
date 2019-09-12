@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service
 class CreateApiIntegration(
     private val organisationRepository: OrganisationAccountRepository
 ) {
-    operator fun invoke(request: CreateOrganisationRequest): OrganisationAccount {
+    operator fun invoke(request: CreateOrganisationRequest): OrganisationAccount<ApiIntegration> {
         assertNewApiIntegrationDoesNotCollide(request)
 
         return organisationRepository.save(
             apiIntegration = ApiIntegration(
                 name = request.name!!
             ),
-            role = request.role,
-            contractIds = request.contractIds!!.map { ContractId(it) }
+            contractIds = request.contractIds!!.map { ContractId(it) },
+            role = request.role
         )
     }
 

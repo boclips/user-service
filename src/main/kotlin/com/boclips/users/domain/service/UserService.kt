@@ -6,7 +6,6 @@ import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationAccount
 import mu.KLogging
 import org.springframework.stereotype.Service
 
@@ -20,10 +19,10 @@ class UserService(
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
-        val districts = organisationAccountRepository.findDistricts()
+        val schools = organisationAccountRepository.findSchools()
 
         val allUsers = userRepository.findAll().filter {
-            it.organisationAccountId == null || districts.map { district: OrganisationAccount -> district.id }.contains(
+            it.organisationAccountId == null || schools.map { it.id }.contains(
                 it.organisationAccountId
             )
         }

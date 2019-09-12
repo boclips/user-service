@@ -47,7 +47,7 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
                 country = Country.fromCode("USA")
             )
         )
-        fakeAmericanSchoolsProvider.createSchools(
+        fakeAmericanSchoolsProvider.createLookupEntries(
             "NY",
             LookupEntry("", "usa school 1"),
             LookupEntry("", "usa school 2"),

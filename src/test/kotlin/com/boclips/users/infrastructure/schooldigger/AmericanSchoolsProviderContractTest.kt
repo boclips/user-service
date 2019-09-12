@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.schooldigger
 
 import com.boclips.users.domain.model.LookupEntry
+import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.AmericanSchoolsProvider
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -52,7 +53,7 @@ class AmericanSchoolsProviderContractTest {
 
                 Arguments.of(
                     FakeAmericanSchoolsProvider().apply {
-                        createSchools(
+                        createLookupEntries(
                             "NY",
                             LookupEntry("id-1", "Abraham Lincoln High School"),
                             LookupEntry("id-2", "Stella K Abraham High School For Girls")
@@ -80,17 +81,34 @@ class AmericanSchoolsProviderContractTest {
 @Profile("test")
 @Service
 class FakeAmericanSchoolsProvider : AmericanSchoolsProvider {
-    override fun fetchSchool(schoolId: String): School? {
-        return OrganisationFactory.school(externalId = schoolId)
+
+    var calls = 0
+    var entries = mutableMapOf<String, List<LookupEntry>>()
+    var pair: Pair<School, District?>? = null
+
+    override fun fetchSchool(schoolId: String): Pair<School, District?>? {
+        calls++
+        return pair
     }
 
-    val entries = mutableMapOf<String, List<LookupEntry>>()
-
-    fun createSchools(stateId: String, vararg lookupEntries: LookupEntry) {
+    fun createLookupEntries(stateId: String, vararg lookupEntries: LookupEntry) {
         entries.put(stateId, lookupEntries.toList())
     }
 
+    fun createSchoolAndDistrict(pair: Pair<School, District?>?) {
+        this.pair = pair
+    }
+
     override fun lookupSchools(stateId: String, schoolName: String): List<LookupEntry> {
+        calls++
         return entries[stateId]?.filter { it.name.contains(schoolName) } ?: emptyList()
+    }
+
+    fun callCount() = calls
+
+    fun clear() {
+        calls = 0
+        pair = null
+        entries = mutableMapOf()
     }
 }

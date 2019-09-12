@@ -1,11 +1,7 @@
 package com.boclips.users.infrastructure.keycloak
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.util.ResourceUtils
@@ -139,6 +135,7 @@ class KeycloakWrapperContractTest {
         }
 
         @Test
+        @Disabled("https://www.pivotaltracker.com/n/projects/2383097/stories/168451916")
         fun `can fetch user session for a user that has logged in`() {
             val aUser = wrapper.getUserByUsername("user-service@boclips.com")
             val lastLoginEvents = wrapper.getLastUserSession(aUser!!.id)
