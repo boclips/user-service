@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class GetOrganisationById(
     private val organisationRepository: OrganisationAccountRepository
 ) {
-    operator fun invoke(id: String): OrganisationAccount {
+    operator fun invoke(id: String): OrganisationAccount<*> {
         return organisationRepository.findOrganisationAccountById(OrganisationAccountId(id)) ?: throw OrganisationNotFoundException(id)
     }
 }

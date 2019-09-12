@@ -17,7 +17,7 @@ class OrganisationAccountFactory {
             id: OrganisationAccountId = OrganisationAccountId(value = ObjectId().toHexString()),
             contractIds: List<ContractId> = emptyList(),
             organisation: Organisation = OrganisationFactory.school()
-        ): OrganisationAccount {
+        ): OrganisationAccount<*> {
             return OrganisationAccount(
                 id = id,
                 contractIds = contractIds,
@@ -35,7 +35,7 @@ class OrganisationFactory {
             country: Country = Country.fromCode(Country.USA_ISO),
             countryName: String? = null,
             state: State = State.fromCode("IL"),
-            district: District? = null
+            district: OrganisationAccount<District>? = null
         ): School {
             return School(
                 name = name,
@@ -49,14 +49,12 @@ class OrganisationFactory {
         fun district(
             name: String = "Amazing Organisation",
             externalId: String = "externalId",
-            state: State = State.fromCode("IL"),
-            schools: List<School> = emptyList()
+            state: State = State.fromCode("IL")
         ): District {
             return District(
                 name = name,
                 externalId = externalId,
-                state = state,
-                schools = schools
+                state = state
             )
         }
 

@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.schooldigger
 
 import com.boclips.users.domain.model.LookupEntry
+import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.AmericanSchoolsProvider
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -80,8 +81,12 @@ class AmericanSchoolsProviderContractTest {
 @Profile("test")
 @Service
 class FakeAmericanSchoolsProvider : AmericanSchoolsProvider {
-    override fun fetchSchool(schoolId: String): School? {
-        return OrganisationFactory.school(externalId = schoolId)
+
+    var calls = 0
+
+    override fun fetchSchool(schoolId: String): Pair<School, District?>? {
+        calls++
+        return OrganisationFactory.school(externalId = schoolId) to null
     }
 
     val entries = mutableMapOf<String, List<LookupEntry>>()
@@ -91,6 +96,13 @@ class FakeAmericanSchoolsProvider : AmericanSchoolsProvider {
     }
 
     override fun lookupSchools(stateId: String, schoolName: String): List<LookupEntry> {
+        calls++
         return entries[stateId]?.filter { it.name.contains(schoolName) } ?: emptyList()
+    }
+
+    fun callCount() = calls
+
+    fun clearCalls() {
+        calls = 0
     }
 }

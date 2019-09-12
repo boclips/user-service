@@ -4,10 +4,10 @@ import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 
-data class OrganisationAccount(
+data class OrganisationAccount<T: Organisation>(
     val id: OrganisationAccountId,
     val contractIds: List<ContractId>,
-    val organisation: Organisation
+    val organisation: T
 )
 
 sealed class Organisation(
@@ -20,7 +20,7 @@ data class School(
     override val name: String,
     override val country: Country,
     override val state: State? = null,
-    val district: District?,
+    val district: OrganisationAccount<District>?,
     val externalId: String?
 ) : Organisation(
     name = name,
@@ -31,8 +31,7 @@ data class School(
 data class District(
     override val name: String,
     override val state: State,
-    val externalId: String,
-    val schools: List<School> = emptyList()
+    val externalId: String
 ) : Organisation(
     name = name,
     country = Country.usa(),

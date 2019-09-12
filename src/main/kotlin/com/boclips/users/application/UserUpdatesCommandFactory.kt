@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
     fun buildCommands(
         updateUserRequest: UpdateUserRequest,
-        organisation: OrganisationAccount? = null
+        organisation: OrganisationAccount<*>? = null
     ): List<UserUpdateCommand> {
         return listOfNotNull(
             updateUserRequest.firstName?.let { UserUpdateCommand.ReplaceFirstName(firstName = it) },

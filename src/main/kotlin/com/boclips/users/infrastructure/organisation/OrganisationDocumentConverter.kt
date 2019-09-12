@@ -10,7 +10,7 @@ import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 
 object OrganisationDocumentConverter {
-    fun fromDocument(organisationDocument: OrganisationDocument): OrganisationAccount {
+    fun fromDocument(organisationDocument: OrganisationDocument): OrganisationAccount<*> {
         val organisation = when (organisationDocument.type) {
 
             OrganisationType.API -> ApiIntegration(
@@ -24,7 +24,7 @@ object OrganisationDocumentConverter {
                 country = organisationDocument.country?.let { Country.fromCode(it.code) }
                     ?: throw IllegalStateException("School ${organisationDocument.id} must have a country"),
                 state = organisationDocument.state?.let { State.fromCode(it.code) },
-                district = null,
+                district = mapSchoolDistrict(organisationDocument),
                 externalId = organisationDocument.externalId
             )
 
@@ -33,10 +33,8 @@ object OrganisationDocumentConverter {
                 state = organisationDocument.state?.let { State.fromCode(it.code) }
                     ?: throw IllegalStateException("District ${organisationDocument.id} must have a state"),
                 externalId = organisationDocument.externalId
-                    ?: throw IllegalStateException("District ${organisationDocument.id} must have externalId"),
-                schools = mapSchoolsFromDistrict(organisationDocument)
-            )
-
+                    ?: throw IllegalStateException("District ${organisationDocument.id} must have externalId")
+                )
         }
 
         return OrganisationAccount(
@@ -46,14 +44,9 @@ object OrganisationDocumentConverter {
         )
     }
 
-    private fun mapSchoolsFromDistrict(organisationDocument: OrganisationDocument): List<School> {
-        return organisationDocument.organisations.map {
-            val organisation = fromDocument(it).organisation
-            if (organisation is School) {
-                return@map organisation as School
-            } else {
-                throw java.lang.IllegalStateException("Found nested organisation name=${organisation.name} inside district id=${organisationDocument.id} that is not a school. Only schools are supported at the moment.")
-            }
-        }
-    }
+    private fun mapSchoolDistrict(organisationDocument: OrganisationDocument): OrganisationAccount<District>? =
+        organisationDocument.parentOrganisation
+            ?.let { fromDocument(it) }
+            ?.takeIf { it.organisation is District }
+            ?.let { it as OrganisationAccount<District> }
 }

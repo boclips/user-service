@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.organisation
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "organisations")
@@ -15,7 +16,8 @@ data class OrganisationDocument(
     val type: OrganisationType,
     val country: LocationDocument?,
     val state: LocationDocument?,
-    val organisations: List<OrganisationDocument> = emptyList()
+    @DBRef
+    val parentOrganisation: OrganisationDocument? = null
 )
 
 enum class OrganisationType {

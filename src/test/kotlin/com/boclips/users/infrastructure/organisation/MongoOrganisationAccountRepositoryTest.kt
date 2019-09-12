@@ -15,8 +15,8 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         val contractIds = listOf(ContractId("Contract A"), ContractId("Contract B"))
 
         val organisationAccount = organisationAccountRepository.save(
-            contractIds = contractIds,
-            apiIntegration = OrganisationFactory.apiIntegration(name = organisationName)
+            apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
+            contractIds = contractIds
         )
 
         assertThat(organisationAccount.id).isNotNull
@@ -25,11 +25,24 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `persists a school with an existing district`() {
+        val district = organisationAccountRepository.save(
+            OrganisationFactory.district(name = "good stuff")
+        )
+        val school = organisationAccountRepository.save(
+            OrganisationFactory.school(district = district)
+        )
+
+        assertThat(school.id).isNotNull
+        assertThat((school.organisation).district?.organisation?.name).isEqualTo("good stuff")
+    }
+
+    @Test
     fun `looks up an organisation by associated role`() {
         val role = "ROLE_VIEWSONIC"
         val organisation = organisationAccountRepository.save(
-            role = role,
-            apiIntegration = OrganisationFactory.apiIntegration()
+            apiIntegration = OrganisationFactory.apiIntegration(),
+            role = role
         )
 
         val foundOrganisation = organisationAccountRepository.findApiIntegrationByRole(role)
@@ -79,5 +92,27 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         val retrievedOrganisation = organisationAccountRepository.findApiIntegrationByName(name = "api-name")
 
         assertThat(organisation).isEqualTo(retrievedOrganisation)
+    }
+
+    @Test
+    fun `find school by external id`() {
+        val school = organisationAccountRepository.save(
+            school = OrganisationFactory.school(externalId = "external-id")
+        )
+
+        val retrievedOrganisation = organisationAccountRepository.findOrganisationAccountByExternalId("external-id")
+
+        assertThat(school).isEqualTo(retrievedOrganisation)
+    }
+
+    @Test
+    fun `find schools`() {
+        val school = organisationAccountRepository.save(OrganisationFactory.school())
+        organisationAccountRepository.save(OrganisationFactory.district())
+        organisationAccountRepository.save(OrganisationFactory.apiIntegration())
+
+        val allSchools = organisationAccountRepository.findSchools()
+
+        assertThat(allSchools).containsExactlyInAnyOrder(school)
     }
 }

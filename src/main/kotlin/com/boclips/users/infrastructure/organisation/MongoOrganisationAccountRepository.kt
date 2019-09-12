@@ -28,57 +28,66 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         ).toList().map { LookupEntry("${it.id}", it.name) }
     }
 
-    override fun findDistricts(): List<OrganisationAccount> {
-        return repository.findByExternalIdNotNull().toList().map { fromDocument(it) }
-    }
-
-    override fun findApiIntegrationByRole(role: String): OrganisationAccount? {
-        return repository.findByRoleAndType(role = role, type = OrganisationType.API)?.let { fromDocument(it) }
+    override fun findApiIntegrationByRole(role: String): OrganisationAccount<ApiIntegration>? {
+        return repository.findByRoleAndType(role = role, type = OrganisationType.API)
+            ?.let { fromDocument(it) as OrganisationAccount<ApiIntegration> }
     }
 
     override fun save(
-        role: String?,
+        apiIntegration: ApiIntegration,
         contractIds: List<ContractId>,
-        apiIntegration: ApiIntegration
+        role: String?
     ) =
-        doSave(role, contractIds, apiIntegration)
+        doSave(role, contractIds, apiIntegration) as OrganisationAccount<ApiIntegration>
 
     override fun save(school: School) =
-        doSave(organisation = school)
+        doSave(organisation = school) as OrganisationAccount<School>
 
     override fun save(district: District) =
-        doSave(organisation = district)
+        doSave(organisation = district) as OrganisationAccount<District>
 
     private fun doSave(
         role: String? = null,
         contractIds: List<ContractId> = emptyList(),
         organisation: Organisation
-    ): OrganisationAccount {
+    ): OrganisationAccount<*> {
         return fromDocument(
             repository.save(
-                OrganisationDocument(
-                    id = ObjectId(),
-                    name = organisation.name,
-                    role = role,
-                    contractIds = contractIds.map { it.value },
-                    externalId = when (organisation) {
-                        is School -> organisation.externalId
-                        is District -> organisation.externalId
-                        is ApiIntegration -> null
-                    },
-                    type = when (organisation) {
-                        is District -> OrganisationType.DISTRICT
-                        is School -> OrganisationType.SCHOOL
-                        is ApiIntegration -> OrganisationType.API
-                    },
-                    country = organisation.country?.id?.let { LocationDocument(code = it) },
-                    state = organisation.state?.id?.let { LocationDocument(code = it) }
-                )
+                organisationDocument(organisation, role, contractIds)
             )
         )
     }
 
-    override fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount? {
+    private fun organisationDocument(
+        organisation: Organisation,
+        role: String?,
+        contractIds: List<ContractId>
+    ): OrganisationDocument {
+        return OrganisationDocument(
+            id = ObjectId(),
+            name = organisation.name,
+            role = role,
+            contractIds = contractIds.map { it.value },
+            externalId = when (organisation) {
+                is School -> organisation.externalId
+                is District -> organisation.externalId
+                is ApiIntegration -> null
+            },
+            type = when (organisation) {
+                is District -> OrganisationType.DISTRICT
+                is School -> OrganisationType.SCHOOL
+                is ApiIntegration -> OrganisationType.API
+            },
+            country = organisation.country?.id?.let { LocationDocument(code = it) },
+            state = organisation.state?.id?.let { LocationDocument(code = it) },
+            parentOrganisation = when (organisation) {
+                is School -> organisation.district?.let { organisationDocument(it.organisation, null, it.contractIds) }
+                else -> null
+            }
+        )
+    }
+
+    override fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount<*>? {
         val potentialOrganisationDocument = repository.findById(id.value)
         return if (potentialOrganisationDocument.isPresent) {
             fromDocument(potentialOrganisationDocument.get())
@@ -87,7 +96,23 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         }
     }
 
-    override fun findApiIntegrationByName(name: String): OrganisationAccount? {
-        return repository.findByNameAndType(name = name, type = OrganisationType.API)?.let { fromDocument(it) }
+    override fun findSchoolById(id: OrganisationAccountId): OrganisationAccount<School>? {
+        return findOrganisationAccountById(id)
+            ?.takeIf { it.organisation is School }
+            ?.let { it as OrganisationAccount<School> }
+    }
+
+    override fun findSchools(): List<OrganisationAccount<School>> {
+        return repository.findByType(OrganisationType.SCHOOL).toList()
+            .map { fromDocument(it) as OrganisationAccount<School> }
+    }
+
+    override fun findApiIntegrationByName(name: String): OrganisationAccount<ApiIntegration>? {
+        return repository.findByNameAndType(name = name, type = OrganisationType.API)
+            ?.let { fromDocument(it) as OrganisationAccount<ApiIntegration> }
+    }
+
+    override fun findOrganisationAccountByExternalId(id: String): OrganisationAccount<*>? {
+        return repository.findByExternalId(id)?.let { fromDocument(it) }
     }
 }

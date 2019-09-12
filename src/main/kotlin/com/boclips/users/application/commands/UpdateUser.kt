@@ -14,6 +14,7 @@ import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationAccountRepository
+import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
@@ -30,7 +31,8 @@ class UpdateUser(
     private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
     private val userUpdatesCommandFactory: UserUpdatesCommandFactory,
-    private val organisationAccountRepository: OrganisationAccountRepository
+    private val organisationAccountRepository: OrganisationAccountRepository,
+    private val organisationService: OrganisationService
 ) {
     companion object : KLogging()
 
@@ -52,11 +54,9 @@ class UpdateUser(
         return userService.findUserById(UserId(authenticatedUser.id))
     }
 
-    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): OrganisationAccount? {
+    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): OrganisationAccount<School>? {
         val schoolById = updateUserRequest.schoolId?.let {
-            organisationAccountRepository.findOrganisationAccountById(
-                OrganisationAccountId(it)
-            )
+            organisationService.findOrCreateAmericanSchool(it)
         }
 
         return schoolById
@@ -77,11 +77,12 @@ class UpdateUser(
     private fun findSchoolByName(
         schoolName: String,
         countryCode: String
-    ): OrganisationAccount? {
+    ): OrganisationAccount<School>? {
         return organisationAccountRepository.lookupSchools(
             schoolName,
             countryCode
-        ).firstOrNull()?.let { organisationAccountRepository.findOrganisationAccountById(OrganisationAccountId(it.id)) }
+        ).firstOrNull()
+            ?.let { organisationAccountRepository.findSchoolById(OrganisationAccountId(it.id)) }
     }
 
     private fun activate(id: UserId) {
