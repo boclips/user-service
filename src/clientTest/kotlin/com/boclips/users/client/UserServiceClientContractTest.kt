@@ -32,6 +32,7 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
 
             val retrievedUser = client.findUser(user.id)
             assertThat(retrievedUser.id).isEqualTo(user.id)
+            assertThat(retrievedUser.organisationAccountId).isEqualTo(user.organisationAccountId)
         }
     }
 

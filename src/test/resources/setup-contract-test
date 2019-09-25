@@ -3,6 +3,6 @@
 cwd="$(cd "$(dirname "$0")" && pwd)"
 output="$cwd/contract-test-setup.yml"
 
-echo "KEYCLOAK_USERNAME: $(get-k8s-concourse-secret boclips e2e admin-username)"            > "$output"
-echo "KEYCLOAK_PASSWORD: $(get-k8s-concourse-secret boclips e2e admin-password)"            >> "$output"
+echo "KEYCLOAK_USERNAME: $(get-k8s-concourse-secret boclips keycloak user-service-account-username)"            > "$output"
+echo "KEYCLOAK_PASSWORD: $(get-k8s-concourse-secret boclips keycloak user-service-account-password)"            >> "$output"
 echo "HUBSPOT_API_KEY: $(decoded-secret user-service testing | jq -r '.HUBSPOT_API_KEY')"   >> "$output"

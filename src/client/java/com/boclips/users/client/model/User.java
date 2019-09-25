@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User {
     private String id;
-    private String organisationId;
+    private String organisationAccountId;
 }
