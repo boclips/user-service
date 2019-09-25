@@ -3,10 +3,13 @@ package com.boclips.users.presentation.controllers
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contract.CollectionId
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -146,6 +149,13 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `updates a user`() {
         saveUser(UserFactory.sample())
+        val school = saveSchool(
+            school = OrganisationFactory.school(
+                name = "San Fran Forest School",
+                state = State.fromCode("CA"),
+                country = Country.fromCode("USA")
+            )
+        )
 
         setSecurityContext("user-id")
 
@@ -172,8 +182,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.lastName", equalTo("doe")))
             .andExpect(jsonPath("$.ages", equalTo(listOf(4, 5, 6))))
             .andExpect(jsonPath("$.subjects", hasSize<Int>(1)))
-            .andExpect(jsonPath("$.country.id", equalTo("USA")))
-            .andExpect(jsonPath("$.country.name", equalTo("United States")))
+            .andExpect(jsonPath("$.organisationAccountId", equalTo(school.id.value)))
+            .andExpect(jsonPath("$.organisation.name", equalTo("San Fran Forest School")))
+            .andExpect(jsonPath("$.organisation.state", equalTo("California")))
+            .andExpect(jsonPath("$.organisation.country", equalTo("United States")))
     }
 
     @Test

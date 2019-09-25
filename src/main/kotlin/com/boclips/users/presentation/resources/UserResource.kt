@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.presentation.resources.school.CountryResource
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 
 open class UserResource(
     val id: String,
@@ -10,6 +10,6 @@ open class UserResource(
     val subjects: List<String>?,
     val email: String?,
     val analyticsId: String?,
-    val country: CountryResource?,
+    val organisationAccountId: String?,
     val organisation: OrganisationResource?
 )

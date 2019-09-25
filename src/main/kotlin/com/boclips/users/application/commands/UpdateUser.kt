@@ -64,11 +64,11 @@ class UpdateUser(
                 findSchoolByName(schoolName, updateUserRequest.country!!)
                     ?: organisationAccountRepository.save(
                         School(
-                            schoolName,
-                            Country.fromCode(updateUserRequest.country!!),
-                            null,
-                            null,
-                            null
+                            name = schoolName,
+                            country = Country.fromCode(updateUserRequest.country!!),
+                            state = null,
+                            district = null,
+                            externalId = null
                         )
                     )
             }

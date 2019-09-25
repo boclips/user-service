@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class OrganisationConverter {
-    fun toResource(organisation: OrganisationAccount<*>) = OrganisationAccountResource(
-        organisation.organisation.name,
-        organisation.contractIds.map { it.value }
+    fun toResource(organisationAccount: OrganisationAccount<*>) = OrganisationAccountResource(
+        organisationAccount.organisation.name,
+        organisationAccount.contractIds.map { it.value }
     )
 }

@@ -35,6 +35,7 @@ class UserConverterTest {
                     organisationAccountId = OrganisationAccountId("1234")
                 ),
                 organisationAccount = OrganisationAccountFactory.sample(
+                    id = OrganisationAccountId("1234"),
                     organisation = OrganisationFactory.school(
                         name = "My school",
                         state = State.fromCode("NY"),
@@ -48,10 +49,9 @@ class UserConverterTest {
         assertThat(userResource.lastName).isEqualTo("Henry")
         assertThat(userResource.ages).containsExactly(1, 2, 3)
         assertThat(userResource.subjects).containsExactly("subject-id")
-        assertThat(userResource.country!!.id).isEqualTo("US")
-        assertThat(userResource.country!!.name).isEqualTo("United States")
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
+        assertThat(userResource.organisationAccountId).isEqualTo("1234")
         assertThat(userResource.organisation!!.name).isEqualTo("My school")
         assertThat(userResource.organisation!!.state).isEqualTo("New York")
         assertThat(userResource.organisation!!.country).isEqualTo("United States")
@@ -62,15 +62,11 @@ class UserConverterTest {
         val userResource =
             UserConverter().toUserResource(
                 user = UserFactory.sample(
-                    profile = ProfileFactory.sample(
-                        country = null
-                    ),
                     organisationAccountId = null
                 ),
                 organisationAccount = null
             )
 
-        assertThat(userResource.country).isNull()
         assertThat(userResource.organisation).isNull()
     }
 }
