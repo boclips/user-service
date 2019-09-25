@@ -29,7 +29,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
-        val organisationId = ObjectId().toHexString()
+        val school = saveSchool()
         saveUser(
             UserFactory.sample(
                 account = AccountFactory.sample(
@@ -41,18 +41,20 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
                     firstName = "Jane",
                     lastName = "Doe"
                 ),
-                organisationAccountId = OrganisationAccountId(organisationId)
+                organisationAccountId = school.id
             )
         )
 
-        val user = getUser(userId)
+        val userResource = getUser(userId)
 
-        assertThat(user.id.value).isEqualTo(userId)
-        assertThat(user.profile!!.firstName).isEqualTo("Jane")
-        assertThat(user.profile!!.lastName).isEqualTo("Doe")
-        assertThat(user.analyticsId!!.value).isEqualTo("123")
-        assertThat(user.account.email).isEqualTo("jane@doe.com")
-        assertThat(user.organisationAccountId!!.value).isEqualTo(organisationId)
+        assertThat(userResource.id).isEqualTo(userId)
+        assertThat(userResource.firstName).isEqualTo("Jane")
+        assertThat(userResource.lastName).isEqualTo("Doe")
+        assertThat(userResource.analyticsId!!).isEqualTo("123")
+        assertThat(userResource.email).isEqualTo("jane@doe.com")
+        assertThat(userResource.organisation!!.name).isEqualTo(school.organisation.name)
+        assertThat(userResource.organisation!!.state).isEqualTo(school.organisation.state!!.name)
+        assertThat(userResource.organisation!!.country).isEqualTo(school.organisation.country.name)
     }
 
     @Test
@@ -73,7 +75,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("user-that-can-view-users", UserRoles.VIEW_USERS)
         val user = getUser(existingUser.id.value)
 
-        assertThat(user.id).isEqualTo(existingUser.id)
+        assertThat(user.id).isEqualTo(existingUser.id.value)
     }
 
     @Test
@@ -112,7 +114,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             val user = getUser(userId)
 
-            assertThat(user.id.value).isEqualTo(userId)
+            assertThat(user.id).isEqualTo(userId)
         }
     }
 }

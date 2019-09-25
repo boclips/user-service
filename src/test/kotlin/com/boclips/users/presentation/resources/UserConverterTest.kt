@@ -1,11 +1,15 @@
 package com.boclips.users.presentation.resources
 
+import com.boclips.users.application.converters.UserConverter
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.OrganisationAccountFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -27,7 +31,15 @@ class UserConverterTest {
                         subjects = listOf(Subject(SubjectId("subject-id"), name = "Math")),
                         country = Country(id = "US", name = "United States")
                     ),
-                    analyticsId = AnalyticsId(value = "some-analytics-id")
+                    analyticsId = AnalyticsId(value = "some-analytics-id"),
+                    organisationAccountId = OrganisationAccountId("1234")
+                ),
+                organisationAccount = OrganisationAccountFactory.sample(
+                    organisation = OrganisationFactory.school(
+                        name = "My school",
+                        state = State.fromCode("NY"),
+                        country = Country.fromCode("USA")
+                    )
                 )
             )
 
@@ -40,19 +52,25 @@ class UserConverterTest {
         assertThat(userResource.country!!.name).isEqualTo("United States")
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
+        assertThat(userResource.organisation!!.name).isEqualTo("My school")
+        assertThat(userResource.organisation!!.state).isEqualTo("New York")
+        assertThat(userResource.organisation!!.country).isEqualTo("United States")
     }
 
     @Test
-    fun `converts a user without country information`() {
+    fun `converts a user without an organisation`() {
         val userResource =
             UserConverter().toUserResource(
                 user = UserFactory.sample(
                     profile = ProfileFactory.sample(
                         country = null
-                    )
-                )
+                    ),
+                    organisationAccountId = null
+                ),
+                organisationAccount = null
             )
 
         assertThat(userResource.country).isNull()
+        assertThat(userResource.organisation).isNull()
     }
 }

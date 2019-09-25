@@ -10,5 +10,6 @@ open class UserResource(
     val subjects: List<String>?,
     val email: String?,
     val analyticsId: String?,
-    val country: CountryResource?
+    val country: CountryResource?,
+    val organisation: OrganisationResource?
 )

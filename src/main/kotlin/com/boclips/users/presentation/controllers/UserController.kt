@@ -13,7 +13,7 @@ import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.ContractConverter
-import com.boclips.users.presentation.resources.UserConverter
+import com.boclips.users.application.converters.UserConverter
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Resource
@@ -62,13 +62,13 @@ class UserController(
 
     @GetMapping("/{id}")
     fun getAUser(@PathVariable id: String?): Resource<UserResource> {
-        val user = getUser(id!!)
+        val userResource = getUser(id!!)
         return Resource(
-            userConverter.toUserResource(user),
+            userResource,
             listOfNotNull(
                 userLinkBuilder.profileSelfLink(),
                 userLinkBuilder.profileLink(),
-                userLinkBuilder.contractsLink(user.id)
+                userLinkBuilder.contractsLink(UserId(userResource.id))
             )
         )
     }

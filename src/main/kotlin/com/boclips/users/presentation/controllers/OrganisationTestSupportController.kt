@@ -7,7 +7,7 @@ import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.requests.CreateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationConverter
-import com.boclips.users.presentation.resources.OrganisationResource
+import com.boclips.users.presentation.resources.OrganisationAccountResource
 import org.springframework.hateoas.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -45,7 +45,7 @@ class OrganisationTestSupportController(
     }
 
     @GetMapping("/organisations/{id}")
-    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<OrganisationResource> {
+    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<OrganisationAccountResource> {
         val organisation = getOrganisationById(id)
 
         return Resource(
@@ -57,7 +57,7 @@ class OrganisationTestSupportController(
     }
 
     @GetMapping("/api-integrations")
-    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<OrganisationResource> {
+    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<OrganisationAccountResource> {
         val apiIntegration = getApiIntegrationByName(name!!)
 
         return Resource(

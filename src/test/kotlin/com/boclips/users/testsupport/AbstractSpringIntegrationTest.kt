@@ -12,6 +12,7 @@ import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationAccount
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.MarketingService
@@ -187,6 +188,12 @@ abstract class AbstractSpringIntegrationTest {
         return organisationAccountRepository.save(
             district = district
         )
+    }
+
+    fun saveSchool(
+        school: School = OrganisationFactory.school()
+    ): OrganisationAccount<School> {
+        return organisationAccountRepository.save(school = school)
     }
 
     fun saveSelectedContentContract(name: String, collectionIds: List<CollectionId>): Contract.SelectedContent {

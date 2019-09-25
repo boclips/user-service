@@ -178,7 +178,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `get own profile`() {
-        val user = saveUser(UserFactory.sample())
+        val organisation = saveSchool()
+        val user = saveUser(UserFactory.sample(organisationAccountId = organisation.id))
 
         mvc.perform(
             get("/v1/users/${user.id.value}").asUser(user.id.value)
@@ -188,6 +189,9 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.firstName").exists())
             .andExpect(jsonPath("$.lastName").exists())
             .andExpect(jsonPath("$.analyticsId").exists())
+            .andExpect(jsonPath("$.organisation.name").exists())
+            .andExpect(jsonPath("$.organisation.state").exists())
+            .andExpect(jsonPath("$.organisation.country").exists())
             .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
     }
