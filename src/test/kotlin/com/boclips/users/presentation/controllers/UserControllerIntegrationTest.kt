@@ -2,6 +2,8 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
@@ -13,6 +15,7 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -276,6 +279,33 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     )
                 )
                 .andExpect(jsonPath("$._links.self.href", endsWith("/v1/users/${user.id.value}/contracts")))
+        }
+
+        @Test
+        fun `imports the user into the system`() {
+            val userId = "709f86bf-3292-4c96-9c84-5c89a255a07c"
+            val authority = "TEST_ORGANISATION"
+            val organisationMatchingRole = "ROLE_$authority"
+            keycloakClientFake.createAccount(
+                Account(
+                    id = UserId(userId),
+                    username = "service-account@somewhere.com",
+                    roles = listOf(organisationMatchingRole)
+                )
+            )
+            val organisation = saveApiIntegration(
+                role = organisationMatchingRole
+            )
+
+            mvc.perform(
+                get("/v1/users/$userId/contracts").asUserWithRoles(userId, UserRoles.VIEW_CONTRACTS, authority)
+            )
+                .andExpect(status().isOk)
+
+            val importedUser = userRepository.findById(UserId(userId))
+
+            assertThat(importedUser).isNotNull
+            assertThat(importedUser!!.organisationAccountId).isEqualTo(organisation.id)
         }
 
         @Test

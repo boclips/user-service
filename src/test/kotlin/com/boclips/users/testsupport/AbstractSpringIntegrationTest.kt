@@ -2,6 +2,7 @@ package com.boclips.users.testsupport
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
+import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
@@ -60,6 +61,9 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var getOrImportUser: GetOrImportUser
 
     @Autowired
     lateinit var organisationAccountRepository: OrganisationAccountRepository

@@ -1,7 +1,5 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
-
 open class UserResource(
     val id: String,
     val firstName: String?,
