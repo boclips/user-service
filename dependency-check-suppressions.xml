@@ -88,7 +88,7 @@
         <gav regex="true">^org\.springframework\.security:spring-security-.*:.*$</gav>
         <cve>CVE-2018-1258</cve>
     </suppress>
-    <suppress>
+    <suppress until="2019-11-01Z">
         <notes><![CDATA[
    file name: grpc-netty-shaded-1.21.0.jar
 
@@ -98,7 +98,7 @@
         <gav regex="true">^io\.grpc:grpc-netty-shaded:.*$</gav>
         <cve>CVE-2015-2156</cve>
     </suppress>
-    <suppress>
+    <suppress until="2019-11-01Z">
         <notes><![CDATA[
    file name: event-bus-1.26.0.jar (shaded: io.netty:netty-tcnative-boringssl-static:2.0.22.Final)
 
