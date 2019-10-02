@@ -2,9 +2,12 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.commands.CreateContract
 import com.boclips.users.application.commands.GetContractById
-import com.boclips.users.application.commands.GetContractByName
+import com.boclips.users.application.commands.GetContracts
+import com.boclips.users.application.model.ContractFilter
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
-import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
+import com.boclips.users.presentation.hateoas.ContractResourcesHateoasWrapper
+import com.boclips.users.presentation.hateoas.ContractResourcesWrapper
+import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.requests.CreateContractRequest
 import com.boclips.users.presentation.resources.ContractConverter
 import com.boclips.users.presentation.resources.ContractResource
@@ -12,7 +15,6 @@ import org.springframework.hateoas.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,14 +26,13 @@ import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
 @BoclipsE2ETestSupport
-@Validated
 @RestController
 @RequestMapping("/v1/contracts")
 class ContractTestSupportController(
     private val createContract: CreateContract,
     private val getContractById: GetContractById,
-    private val getContractByName: GetContractByName,
-    private val contractsLinkBuilder: ContractsLinkBuilder,
+    private val getContracts: GetContracts,
+    private val contractLinkBuilder: ContractLinkBuilder,
     private val contractConverter: ContractConverter
 ) {
     @PostMapping
@@ -39,7 +40,7 @@ class ContractTestSupportController(
         val createdContract = createContract(request)
 
         val headers = HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, contractsLinkBuilder.self(createdContract.id).href)
+        headers.set(HttpHeaders.LOCATION, contractLinkBuilder.self(createdContract.id).href)
 
         return ResponseEntity(headers, HttpStatus.CREATED)
     }
@@ -52,9 +53,16 @@ class ContractTestSupportController(
     }
 
     @GetMapping
-    fun fetchContractByName(@NotBlank @RequestParam(required = false) name: String?): ContractResource {
-        return contractConverter.toResource(
-            getContractByName(name!!)
+    fun getContracts(@NotBlank @RequestParam(required = false) name: String?): ContractResourcesHateoasWrapper {
+        val contrastFilter = ContractFilter(name = name)
+
+        return ContractResourcesHateoasWrapper(
+            ContractResourcesWrapper(
+                getContracts(contrastFilter).map { contractConverter.toResource(it) }
+            ),
+            listOfNotNull(
+                contractLinkBuilder.searchContracts(name = name, rel = "self")
+            )
         )
     }
 }

@@ -1,12 +1,12 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.contract.Contract
-import com.boclips.users.presentation.hateoas.ContractsLinkBuilder
+import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import org.springframework.stereotype.Service
 
 @Service
 class ContractConverter(
-    private val contractsLinkBuilder: ContractsLinkBuilder
+    private val contractLinkBuilder: ContractLinkBuilder
 ) {
     fun toResource(contract: Contract): ContractResource {
         return when (contract) {
@@ -17,7 +17,7 @@ class ContractConverter(
         }.apply {
             add(
                 listOfNotNull(
-                    contractsLinkBuilder.self(contract.id)
+                    contractLinkBuilder.self(contract.id)
                 )
             )
         }

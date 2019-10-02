@@ -24,6 +24,7 @@ import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.resources.ContractConverter
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
@@ -103,6 +104,9 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var fakeAmericanSchoolsProvider: FakeAmericanSchoolsProvider
+
+    @Autowired
+    lateinit var contractLinkBuilder: ContractLinkBuilder
 
     @BeforeEach
     fun resetState() {

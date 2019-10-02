@@ -29,6 +29,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.createAccount").exists())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
             .andExpect(jsonPath("$._links.countries").doesNotExist())
+            .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
     }
 
     @Test
@@ -49,6 +50,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.activate.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
+            .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
     }
 
     @Test
@@ -69,6 +71,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.countries").exists())
+            .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
     }
 
     @Test
@@ -85,6 +88,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.contracts.href", endsWith("/users/{id}/contracts")))
             .andExpect(jsonPath("$._links.contracts.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.searchContracts.href", endsWith("/contracts{?name}")))
+            .andExpect(jsonPath("$._links.searchContracts.templated", equalTo(true)))
     }
 
     @Test

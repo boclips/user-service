@@ -27,6 +27,6 @@ class CreateContract(
     }
 
     private fun contractAlreadyExists(request: CreateContractRequest): Boolean {
-        return contractRepository.findByName(request.name!!) != null
+        return contractRepository.findAllByName(request.name!!).isNotEmpty()
     }
 }

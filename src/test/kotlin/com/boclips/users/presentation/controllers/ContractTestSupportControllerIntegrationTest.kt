@@ -42,7 +42,7 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
                         """
                         {
                             "type": "SelectedContent",
-                            "name": "Test selected content contract",
+                            "name": "Creation test",
                             "collectionIds": ["A", "B", "C"]
                         }
                     """.trimIndent()
@@ -79,7 +79,7 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
                     .content(
                         """
                         {
-                            "name": "Test selected content contract",
+                            "name": "Contract type is not there...",
                             "collectionIds": ["A", "B", "C"]
                         }
                     """.trimIndent()
@@ -167,7 +167,7 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
         }
 
         @Test
-        fun `returns given contract when the name matches`() {
+        fun `returns given contract on the list when the name matches`() {
             val contractName = "Super contract"
             val contract = selectedContentContractRepository.saveSelectedContentContract(
                 contractName,
@@ -184,15 +184,28 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
                     .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$.type", equalTo("SelectedContent")))
-                .andExpect(jsonPath("$.name", equalTo(contractName)))
-                .andExpect(jsonPath("$.collectionIds", hasSize<Int>(1)))
-                .andExpect(jsonPath("$.collectionIds[0]", equalTo("A")))
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/contracts/${contract.id.value}")))
+                .andExpect(jsonPath("$._embedded.contracts", hasSize<Any>(1)))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(contractName)))
+                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo("A")))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.contracts[0]._links.self.href",
+                        endsWith("/v1/contracts/${contract.id.value}")
+                    )
+                )
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/contracts?name=Super%20contract")))
         }
 
         @Test
-        fun `returns a 404 response when contract is not found by name`() {
+        fun `returns an empty list when contract is not found by name`() {
+            selectedContentContractRepository.saveSelectedContentContract(
+                "Super contract",
+                listOf(CollectionId("A"))
+            )
+
             mvc.perform(
                 get(
                     UriComponentsBuilder.fromUriString("/v1/contracts")
@@ -202,16 +215,74 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
                 )
                     .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
             )
-                .andExpect(status().isNotFound)
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.contracts", hasSize<Any>(0)))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/contracts?name=this%20does%20not%20exist")))
         }
 
         @Test
-        fun `returns a 400 response when name query parameter is not provided`() {
+        fun `returns an empty list when lookup is done with a blank parameter`() {
+            selectedContentContractRepository.saveSelectedContentContract(
+                "Super contract",
+                listOf(CollectionId("A"))
+            )
+
+            mvc.perform(
+                get(
+                    UriComponentsBuilder.fromUriString("/v1/contracts")
+                        .queryParam("name", "")
+                        .build()
+                        .toUri()
+                )
+                    .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.contracts", hasSize<Any>(0)))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/contracts?name=")))
+        }
+
+        @Test
+        fun `returns all contracts in the system when name query parameter is not provided`() {
+            val firstContractName = "first"
+            val firstContract = selectedContentContractRepository.saveSelectedContentContract(
+                firstContractName,
+                listOf(CollectionId("A"))
+            )
+            val secondContractName = "first"
+            val secondContract = selectedContentContractRepository.saveSelectedContentContract(
+                secondContractName,
+                listOf(CollectionId("B"))
+            )
+
             mvc.perform(
                 get("/v1/contracts")
                     .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
             )
-                .andExpect(status().isBadRequest)
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.contracts", hasSize<Any>(2)))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(firstContractName)))
+                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo("A")))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.contracts[0]._links.self.href",
+                        endsWith("/v1/contracts/${firstContract.id.value}")
+                    )
+                )
+                .andExpect(jsonPath("$._embedded.contracts[1].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[1].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[1].name", equalTo(secondContractName)))
+                .andExpect(jsonPath("$._embedded.contracts[1].collectionIds", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.contracts[1].collectionIds[0]", equalTo("B")))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.contracts[1]._links.self.href",
+                        endsWith("/v1/contracts/${secondContract.id.value}")
+                    )
+                )
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/contracts{?name}")))
         }
     }
 }
