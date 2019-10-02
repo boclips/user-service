@@ -4,10 +4,15 @@ import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.eventbus.domain.user.User as EventUser
 import com.boclips.eventbus.domain.user.Organisation as EventOrganisation
 
-class EventPublishingUserRepository(val userRepository: UserRepository, private val eventBus: EventBus) :
+class EventPublishingUserRepository(
+    private val userRepository: UserRepository,
+    private val organisationAccountRepository: OrganisationAccountRepository,
+    private val eventBus: EventBus
+) :
     UserRepository by userRepository {
     override fun save(user: User): User {
         return userRepository.save(user).also(::publishUserCreated)
@@ -17,23 +22,28 @@ class EventPublishingUserRepository(val userRepository: UserRepository, private 
         return userRepository.save(account).also(::publishUserCreated)
     }
 
-    private fun publishUserCreated(createdUser: User) {
+    private fun publishUserCreated(user: User) {
+
         eventBus.publish(
             UserCreated.builder()
                 .user(
                     EventUser.builder()
-                        .id(createdUser.id.value)
-                        .isBoclipsEmployee(createdUser.account.isBoclipsEmployee())
+                        .id(user.id.value)
+                        .isBoclipsEmployee(user.account.isBoclipsEmployee())
                         .build()
                 )
                 .organisation(
-                    createdUser.organisationAccountId?.let { organisationId ->
-                        EventOrganisation.builder()
-                            .id(organisationId.value)
-                            .build()
-                    }
+                    user.organisationAccountId?.let(this::organisation)
                 )
                 .build()
         )
+    }
+
+    private fun organisation(id: OrganisationAccountId): EventOrganisation? {
+        val account = organisationAccountRepository.findOrganisationAccountById(id) ?: return null
+        return EventOrganisation.builder()
+            .id(id.value)
+            .type(account.organisation.type().name)
+            .build()
     }
 }

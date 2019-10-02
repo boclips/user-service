@@ -6,6 +6,7 @@ import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.AmericanSchoolsProvider
 import com.boclips.users.domain.service.EventPublishingUserRepository
 import com.boclips.users.domain.service.MarketingService
+import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserRepository
@@ -123,7 +124,7 @@ class RepositoryConfiguration {
         MongoUserRepository(userDocumentMongoRepository, userDocumentConverter, organisationIdResolver)
 
     @Bean
-    fun userRepository(mongoUserRepository: MongoUserRepository, eventBus: EventBus): UserRepository {
-        return EventPublishingUserRepository(mongoUserRepository, eventBus)
+    fun userRepository(mongoUserRepository: MongoUserRepository, organisationAccountRepository: OrganisationAccountRepository, eventBus: EventBus): UserRepository {
+        return EventPublishingUserRepository(mongoUserRepository, organisationAccountRepository, eventBus)
     }
 }
