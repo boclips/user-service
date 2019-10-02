@@ -1,6 +1,5 @@
 package com.boclips.users.application.commands
 
-import com.boclips.eventbus.events.user.UserActivated
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
@@ -171,22 +170,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     @DisplayName("When account already activated")
     inner class AccountActivated {
-
-        @Test
-        fun `does not publish a UserActivated event`() {
-            val userId = UUID.randomUUID().toString()
-            setSecurityContext(userId)
-            saveUser(
-                UserFactory.sample(
-                    account = AccountFactory.sample(id = userId),
-                    profile = ProfileFactory.sample()
-                )
-            )
-
-            updateUser(userId, UpdateUserRequestFactory.sample())
-
-            assertThat(eventBus.hasReceivedEventOfType(UserActivated::class.java)).isFalse()
-        }
 
         @Test
         fun `ignores referral`() {

@@ -5,6 +5,7 @@ import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
 import com.boclips.eventbus.domain.user.User as EventUser
+import com.boclips.eventbus.domain.user.Organisation as EventOrganisation
 
 class EventPublishingUserRepository(val userRepository: UserRepository, private val eventBus: EventBus) :
     UserRepository by userRepository {
@@ -22,9 +23,15 @@ class EventPublishingUserRepository(val userRepository: UserRepository, private 
                 .user(
                     EventUser.builder()
                         .id(createdUser.id.value)
-                        .organisationId(createdUser.organisationAccountId?.value)
                         .isBoclipsEmployee(createdUser.account.isBoclipsEmployee())
                         .build()
+                )
+                .organisation(
+                    createdUser.organisationAccountId?.let { organisationId ->
+                        EventOrganisation.builder()
+                            .id(organisationId.value)
+                            .build()
+                    }
                 )
                 .build()
         )

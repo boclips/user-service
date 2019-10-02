@@ -20,6 +20,6 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val event = eventBus.getEventOfType(UserCreated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)
-        assertThat(event.user.organisationId).isEqualTo("quite-something")
+        assertThat(event.organisation.id).isEqualTo("quite-something")
     }
 }
