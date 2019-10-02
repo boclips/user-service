@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.controllers
+package com.boclips.users.presentation.controllers.contract
 
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contract.CollectionId
@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
-    inner class SearchingContracts {
+    inner class SearchContracts {
         @Test
         fun `returns a 403 response when caller does not have a VIEW_CONTRACTS role`() {
             mvc.perform(

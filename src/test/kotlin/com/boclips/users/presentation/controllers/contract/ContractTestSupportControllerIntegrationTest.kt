@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.controllers
+package com.boclips.users.presentation.controllers.contract
 
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contract.CollectionId

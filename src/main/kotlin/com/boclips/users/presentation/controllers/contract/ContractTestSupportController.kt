@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.controllers
+package com.boclips.users.presentation.controllers.contract
 
 import com.boclips.users.application.commands.CreateContract
 import com.boclips.users.application.commands.GetContractById
