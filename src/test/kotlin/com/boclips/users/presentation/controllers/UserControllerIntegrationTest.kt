@@ -187,8 +187,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.subjects", hasSize<Int>(1)))
             .andExpect(jsonPath("$.organisationAccountId", equalTo(school.id.value)))
             .andExpect(jsonPath("$.organisation.name", equalTo("San Fran Forest School")))
-            .andExpect(jsonPath("$.organisation.state", equalTo("California")))
-            .andExpect(jsonPath("$.organisation.country", equalTo("United States")))
+            .andExpect(jsonPath("$.organisation.state.name", equalTo("California")))
+            .andExpect(jsonPath("$.organisation.state.id", equalTo("CA")))
+            .andExpect(jsonPath("$.organisation.country.name", equalTo("United States")))
+            .andExpect(jsonPath("$.organisation.country.id", equalTo("USA")))
     }
 
     @Test

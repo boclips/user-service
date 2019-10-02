@@ -1,11 +1,11 @@
 package com.boclips.users.application.converters
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.presentation.resources.OrganisationResource
 import com.boclips.users.presentation.resources.UserResource
 import com.boclips.users.presentation.resources.school.CountryResource
+import com.boclips.users.presentation.resources.school.StateResource
 import org.springframework.stereotype.Component
 
 @Component
@@ -21,11 +21,23 @@ class UserConverter {
             analyticsId = user.analyticsId?.value,
             organisationAccountId = user.organisationAccountId?.value,
             organisation = user.organisationAccountId?.let {
-                organisationAccount?.let {
+                organisationAccount?.let { orgAccount ->
                     OrganisationResource(
-                        name = organisationAccount.organisation.name,
-                        state = organisationAccount.organisation.state?.name,
-                        country = organisationAccount.organisation.country?.name
+                        name = orgAccount.organisation.name,
+                        state = orgAccount.organisation.state?.let {
+                            StateResource(
+                                name = it.name,
+                                id = it.id
+                            )
+                        },
+
+                        country = orgAccount.organisation.country?.let {
+                            CountryResource(
+                                name = it.name,
+                                id = it.id,
+                                states = null
+                            )
+                        }
                     )
                 }
             }

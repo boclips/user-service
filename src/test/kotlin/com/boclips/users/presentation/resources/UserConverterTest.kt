@@ -53,8 +53,10 @@ class UserConverterTest {
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
         assertThat(userResource.organisationAccountId).isEqualTo("1234")
         assertThat(userResource.organisation!!.name).isEqualTo("My school")
-        assertThat(userResource.organisation!!.state).isEqualTo("New York")
-        assertThat(userResource.organisation!!.country).isEqualTo("United States")
+        assertThat(userResource.organisation!!.state!!.name).isEqualTo("New York")
+        assertThat(userResource.organisation!!.state!!.id).isEqualTo("NY")
+        assertThat(userResource.organisation!!.country!!.name).isEqualTo("United States")
+        assertThat(userResource.organisation!!.country!!.id).isEqualTo("USA")
     }
 
     @Test
