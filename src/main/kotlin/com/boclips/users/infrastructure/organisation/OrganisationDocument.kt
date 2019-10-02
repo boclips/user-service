@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.organisation.OrganisationType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
@@ -18,10 +19,6 @@ data class OrganisationDocument(
         @DBRef
         val parentOrganisation: OrganisationDocument? = null
 )
-
-enum class OrganisationType {
-    API, SCHOOL, DISTRICT
-}
 
 data class LocationDocument(
     val code: String

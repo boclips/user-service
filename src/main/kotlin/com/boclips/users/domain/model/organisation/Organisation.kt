@@ -10,11 +10,17 @@ data class OrganisationAccount<T: Organisation>(
     val organisation: T
 )
 
+enum class OrganisationType {
+    API, SCHOOL, DISTRICT
+}
+
 sealed class Organisation(
     open val name: String,
     open val country: Country? = null,
     open val state: State? = null
-)
+) {
+    abstract fun type(): OrganisationType
+}
 
 data class School(
     override val name: String,
@@ -26,7 +32,11 @@ data class School(
     name = name,
     country = country,
     state = state
-)
+) {
+    override fun type(): OrganisationType {
+        return OrganisationType.SCHOOL
+    }
+}
 
 data class District(
     override val name: String,
@@ -36,7 +46,11 @@ data class District(
     name = name,
     country = Country.usa(),
     state = state
-)
+) {
+    override fun type(): OrganisationType {
+        return OrganisationType.DISTRICT
+    }
+}
 
 data class ApiIntegration(
     override val name: String,
@@ -46,5 +60,9 @@ data class ApiIntegration(
     name = name,
     country = country,
     state = state
-)
+) {
+    override fun type(): OrganisationType {
+        return OrganisationType.API
+    }
+}
 

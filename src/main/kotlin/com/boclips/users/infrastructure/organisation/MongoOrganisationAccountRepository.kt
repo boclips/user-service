@@ -7,10 +7,10 @@ import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
-import org.bson.types.ObjectId
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -74,11 +74,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
                 is District -> organisation.externalId
                 is ApiIntegration -> null
             },
-            type = when (organisation) {
-                is District -> OrganisationType.DISTRICT
-                is School -> OrganisationType.SCHOOL
-                is ApiIntegration -> OrganisationType.API
-            },
+            type = organisation.type(),
             country = organisation.country?.id?.let { LocationDocument(code = it) },
             state = organisation.state?.id?.let { LocationDocument(code = it) },
             parentOrganisation = when (organisation) {

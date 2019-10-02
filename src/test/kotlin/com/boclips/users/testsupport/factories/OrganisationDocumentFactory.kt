@@ -1,8 +1,8 @@
 package com.boclips.users.testsupport.factories
 
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
-import com.boclips.users.infrastructure.organisation.OrganisationType
 import org.bson.types.ObjectId
 import java.util.Collections.emptyList
 

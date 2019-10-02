@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import org.assertj.core.api.Assertions.assertThat
