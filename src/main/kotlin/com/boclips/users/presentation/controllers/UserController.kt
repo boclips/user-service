@@ -13,7 +13,6 @@ import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.ContractConverter
-import com.boclips.users.application.converters.UserConverter
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Resource
@@ -36,7 +35,6 @@ class UserController(
     private val createTeacherAccount: CreateTeacherAccount,
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
-    private val userConverter: UserConverter,
     private val userLinkBuilder: UserLinkBuilder,
     private val userContractsLinkBuilder: UserContractsLinkBuilder,
     private val synchronisationService: SynchronisationService,

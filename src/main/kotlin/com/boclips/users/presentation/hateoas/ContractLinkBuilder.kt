@@ -4,6 +4,7 @@ import com.boclips.security.utils.UserExtractor.getIfHasRole
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.presentation.controllers.ContractTestSupportController
+import com.boclips.users.presentation.controllers.ContractsController
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
 import org.springframework.stereotype.Service
@@ -19,7 +20,7 @@ class ContractLinkBuilder {
     fun searchContracts(name: String? = null, rel: String? = null): Link? {
         return getIfHasRole(UserRoles.VIEW_CONTRACTS) {
             ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(ContractTestSupportController::class.java).getContracts(name)
+                ControllerLinkBuilder.methodOn(ContractsController::class.java).getContracts(name)
             ).withRel(rel ?: "searchContracts")
         }
     }
