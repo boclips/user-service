@@ -2,9 +2,9 @@ package com.boclips.users.domain.service
 
 import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.user.UserCreated
+import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.eventbus.domain.user.User as EventUser
 import com.boclips.eventbus.domain.user.Organisation as EventOrganisation
 
@@ -22,27 +22,42 @@ class EventPublishingUserRepository(
         return userRepository.save(account).also(::publishUserCreated)
     }
 
-    private fun publishUserCreated(user: User) {
+    override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {
+        return userRepository.update(user, *updateCommands).also(::publishUserUpdated)
+    }
 
+    private fun publishUserCreated(user: User) {
         eventBus.publish(
             UserCreated.builder()
-                .user(
-                    EventUser.builder()
-                        .id(user.id.value)
-                        .isBoclipsEmployee(user.account.isBoclipsEmployee())
-                        .build()
-                )
-                .organisation(
-                    user.organisationAccountId?.let(this::organisation)
-                )
+                .user(user(user))
+                .userId(user.id.value)
+                .organisation(organisation(user))
                 .build()
         )
     }
 
-    private fun organisation(id: OrganisationAccountId): EventOrganisation? {
-        val account = organisationAccountRepository.findOrganisationAccountById(id) ?: return null
+    private fun publishUserUpdated(user: User) {
+        eventBus.publish(
+            UserUpdated.builder()
+                .user(user(user))
+                .userId(user.id.value)
+                .organisation(organisation(user))
+                .build()
+        )
+    }
+
+    private fun user(user: User): EventUser {
+        return EventUser.builder()
+            .id(user.id.value)
+            .isBoclipsEmployee(user.account.isBoclipsEmployee())
+            .build()
+    }
+
+    private fun organisation(user: User): EventOrganisation? {
+        val organisationId = user.organisationAccountId ?: return null
+        val account = organisationAccountRepository.findOrganisationAccountById(organisationId) ?: return null
         return EventOrganisation.builder()
-            .id(id.value)
+            .id(organisationId.value)
             .type(account.organisation.type().name)
             .build()
     }

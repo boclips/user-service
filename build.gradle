@@ -124,7 +124,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-aop')
     implementation(springSecurityOAuth2)
 
-    implementation('com.github.boclips:event-bus:1.36.0')
+    implementation('com.github.boclips:event-bus:1.36.1')
     implementation('com.github.boclips:boclips-spring-web:0.1.0')
     implementation('com.github.boclips:boclips-spring-security:0.190.0')
     implementation('com.github.boclips:videos:0.0.619')

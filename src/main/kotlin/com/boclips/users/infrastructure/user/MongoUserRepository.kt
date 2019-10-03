@@ -13,7 +13,7 @@ class MongoUserRepository(
     private val organisationIdResolver: OrganisationIdResolver
 ) : UserRepository {
 
-    override fun update(user: User, vararg updateCommands: UserUpdateCommand) {
+    override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {
         val userDocument = UserDocument.from(user)
 
         updateCommands.map { updateCommand ->
@@ -47,7 +47,7 @@ class MongoUserRepository(
             }
         }
 
-        userDocumentMongoRepository.save(userDocument)
+        return saveUserDocument(userDocument)
     }
 
     override fun findAll(ids: List<UserId>) = userDocumentMongoRepository
