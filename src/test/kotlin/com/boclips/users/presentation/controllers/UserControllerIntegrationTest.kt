@@ -11,6 +11,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
@@ -19,7 +20,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
-import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -112,7 +112,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     """.trimIndent()
                 )
         )
-            .andExpect(status().is4xxClientError)
+            .andExpect(status().isBadRequest)
             .andExpectApiErrorPayload()
     }
 
@@ -135,89 +135,114 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     """.trimIndent()
                 )
         )
-            .andExpect(status().is4xxClientError)
-    }
-
-    @Test
-    fun `update a user without a payload`() {
-        saveUser(UserFactory.sample())
-
-        setSecurityContext("user-id")
-
-        mvc.perform(put("/v1/users/user-id").asUser("user-id"))
             .andExpect(status().isBadRequest)
     }
 
-    @Test
-    fun `updates a user`() {
-        saveUser(UserFactory.sample())
-        val school = saveSchool(
-            school = OrganisationFactory.school(
-                name = "San Fran Forest School",
-                state = State.fromCode("CA"),
-                country = Country.fromCode("USA")
+    @Nested
+    inner class UpdateUser {
+        @Test
+        fun `returns a 403 response if caller tries to update a different user`() {
+            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "user-id")))
+
+            mvc.perform(
+                put("/v1/users/user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                             "firstName": "change this",
+                             "lastName": "and that"
+                        }
+                        """.trimIndent()
+                    ).asUser("different-users-id")
             )
-        )
+                .andExpect(status().isForbidden)
+        }
 
-        setSecurityContext("user-id")
+        @Test
+        fun `updating without a payload is a bad request`() {
+            saveUser(UserFactory.sample())
 
-        mvc.perform(
-            put("/v1/users/user-id").asUser("user-id")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
-                    {"firstName": "jane",
-                     "lastName": "doe",
-                     "subjects": ["Maths"],
-                     "ages": [4,5,6],
-                     "country": "USA",
-                     "state": "CA",
-                     "schoolName": "San Fran Forest School"
-                     }
-                    """.trimIndent()
+            setSecurityContext("user-id")
+
+            mvc.perform(put("/v1/users/user-id").asUser("user-id"))
+                .andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `updates a user`() {
+            saveUser(UserFactory.sample())
+            val school = saveSchool(
+                school = OrganisationFactory.school(
+                    name = "San Fran Forest School",
+                    state = State.fromCode("CA"),
+                    country = Country.fromCode("USA")
                 )
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.firstName", equalTo("jane")))
-            .andExpect(jsonPath("$.lastName", equalTo("doe")))
-            .andExpect(jsonPath("$.ages", equalTo(listOf(4, 5, 6))))
-            .andExpect(jsonPath("$.subjects", hasSize<Int>(1)))
-            .andExpect(jsonPath("$.organisationAccountId", equalTo(school.id.value)))
-            .andExpect(jsonPath("$.organisation.name", equalTo("San Fran Forest School")))
-            .andExpect(jsonPath("$.organisation.state.name", equalTo("California")))
-            .andExpect(jsonPath("$.organisation.state.id", equalTo("CA")))
-            .andExpect(jsonPath("$.organisation.country.name", equalTo("United States")))
-            .andExpect(jsonPath("$.organisation.country.id", equalTo("USA")))
+            )
+
+            setSecurityContext("user-id")
+
+            mvc.perform(
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "jane",
+                         "lastName": "doe",
+                         "subjects": ["Maths"],
+                         "ages": [4,5,6],
+                         "country": "USA",
+                         "state": "CA",
+                         "schoolName": "San Fran Forest School"
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.firstName", equalTo("jane")))
+                .andExpect(jsonPath("$.lastName", equalTo("doe")))
+                .andExpect(jsonPath("$.ages", equalTo(listOf(4, 5, 6))))
+                .andExpect(jsonPath("$.subjects", hasSize<Int>(1)))
+                .andExpect(jsonPath("$.organisationAccountId", equalTo(school.id.value)))
+                .andExpect(jsonPath("$.organisation.name", equalTo("San Fran Forest School")))
+                .andExpect(jsonPath("$.organisation.state.name", equalTo("California")))
+                .andExpect(jsonPath("$.organisation.state.id", equalTo("CA")))
+                .andExpect(jsonPath("$.organisation.country.name", equalTo("United States")))
+                .andExpect(jsonPath("$.organisation.country.id", equalTo("USA")))
+        }
     }
 
-    @Test
-    fun `get own profile`() {
-        val organisation = saveSchool()
-        val user = saveUser(UserFactory.sample(organisationAccountId = organisation.id))
+    @Nested
+    inner class GetUser {
+        @Test
+        fun `get own profile`() {
+            val organisation = saveSchool()
+            val user = saveUser(UserFactory.sample(organisationAccountId = organisation.id))
 
-        mvc.perform(
-            get("/v1/users/${user.id.value}").asUser(user.id.value)
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.firstName").exists())
-            .andExpect(jsonPath("$.lastName").exists())
-            .andExpect(jsonPath("$.analyticsId").exists())
-            .andExpect(jsonPath("$.organisation.name").exists())
-            .andExpect(jsonPath("$.organisation.state").exists())
-            .andExpect(jsonPath("$.organisation.country").exists())
-            .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
-            .andExpect(jsonPath("$._links.contracts").doesNotExist())
-    }
+            mvc.perform(
+                get("/v1/users/${user.id.value}").asUser(user.id.value)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.firstName").exists())
+                .andExpect(jsonPath("$.lastName").exists())
+                .andExpect(jsonPath("$.analyticsId").exists())
+                .andExpect(jsonPath("$.organisation.name").exists())
+                .andExpect(jsonPath("$.organisation.state").exists())
+                .andExpect(jsonPath("$.organisation.country").exists())
+                .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
+                .andExpect(jsonPath("$._links.contracts").doesNotExist())
+        }
 
-    @Test
-    fun `get user that does not exist`() {
-        mvc.perform(
-            get("/v1/users/rafal").asUserWithRoles("ben", UserRoles.VIEW_USERS)
-        )
-            .andExpect(status().isNotFound)
+        @Test
+        fun `get user that does not exist`() {
+            mvc.perform(
+                get("/v1/users/rafal").asUserWithRoles("ben", UserRoles.VIEW_USERS)
+            )
+                .andExpect(status().isNotFound)
+        }
     }
 
     @Test

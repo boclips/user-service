@@ -55,7 +55,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         }
 
         @Test
-        fun `returns a 409 response when organisation nam collides`() {
+        fun `returns a 409 response when organisation name collides`() {
             val organisationName = "Test Org"
             organisationAccountRepository.save(
                 apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
