@@ -3,6 +3,7 @@ package com.boclips.users.config.security
 object UserRoles {
     const val INSERT_CONTRACTS = "INSERT_CONTRACTS"
     const val VIEW_CONTRACTS = "VIEW_CONTRACTS"
+    const val UPDATE_CONTRACTS = "UPDATE_CONTRACTS"
 
     const val VIEW_USERS = "VIEW_USERS"
 

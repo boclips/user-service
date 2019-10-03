@@ -27,6 +27,10 @@ class MongoContractRepository(
         return contractDocumentMongoRepository.findByName(name).map(contractDocumentConverter::fromDocument)
     }
 
+    override fun save(contract: Contract) {
+        contractDocumentMongoRepository.save(contractDocumentConverter.toDocument(contract))
+    }
+
     private fun asNullable(potentialDocument: Optional<ContractDocument>): ContractDocument? {
         return if (potentialDocument.isPresent) {
             potentialDocument.get()

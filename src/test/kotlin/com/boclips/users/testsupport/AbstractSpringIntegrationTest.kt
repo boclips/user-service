@@ -2,6 +2,7 @@ package com.boclips.users.testsupport
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
+import com.boclips.users.application.commands.AddCollectionToContract
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.Subject
@@ -107,6 +108,9 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var contractLinkBuilder: ContractLinkBuilder
+
+    @Autowired
+    lateinit var addCollectionToContract: AddCollectionToContract
 
     @BeforeEach
     fun resetState() {

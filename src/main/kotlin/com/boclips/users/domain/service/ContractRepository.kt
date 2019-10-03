@@ -7,4 +7,5 @@ interface ContractRepository {
     fun findById(id: ContractId): Contract?
     fun findAll(): List<Contract>
     fun findAllByName(name: String): List<Contract>
+    fun save(contract: Contract)
 }

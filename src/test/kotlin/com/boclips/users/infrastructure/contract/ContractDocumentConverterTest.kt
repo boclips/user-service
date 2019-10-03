@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.contract
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.testsupport.factories.ContractDocumentFactory
+import com.boclips.users.testsupport.factories.ContractFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -22,6 +23,17 @@ class ContractDocumentConverterTest {
             CollectionId("B"),
             CollectionId("C")
         )
+    }
+
+    @Test
+    fun `converts selected content contract to document`() {
+        val contract = ContractFactory.sampleSelectedContentContract()
+
+        val document = converter.toDocument(contract) as ContractDocument.SelectedContent
+
+        assertThat(document.id.toHexString()).isEqualTo(contract.id.value)
+        assertThat(document.name).isEqualTo(contract.name)
+        assertThat(document.collectionIds.map { CollectionId(it) }).isEqualTo(contract.collectionIds)
     }
 
     private val converter = ContractDocumentConverter()

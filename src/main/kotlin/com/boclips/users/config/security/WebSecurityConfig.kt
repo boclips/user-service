@@ -36,6 +36,8 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.GET, "/v1/contracts").hasRole(UserRoles.VIEW_CONTRACTS)
             .antMatchers(HttpMethod.GET, "/v1/contracts/*").hasRole(UserRoles.VIEW_CONTRACTS)
 
+            .antMatchers(HttpMethod.PUT, "/v1/selected-content-contracts/**").hasRole(UserRoles.UPDATE_CONTRACTS)
+
             .antMatchers(HttpMethod.POST, "/v1/api-integrations").hasRole(UserRoles.INSERT_ORGANISATIONS)
             .antMatchers(HttpMethod.GET, "/v1/api-integrations").hasRole(UserRoles.VIEW_ORGANISATIONS)
 
