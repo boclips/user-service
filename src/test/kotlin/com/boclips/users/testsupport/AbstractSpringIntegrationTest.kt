@@ -43,6 +43,8 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.ResultActions
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.Instant
 
 @ExtendWith(SpringExtension::class)
@@ -210,5 +212,13 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveSelectedContentContract(name: String, collectionIds: List<CollectionId>): Contract.SelectedContent {
         return selectedContentContractRepository.saveSelectedContentContract(name, collectionIds)
+    }
+
+    fun ResultActions.andExpectApiErrorPayload(): ResultActions {
+        return this.andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.error").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.path").exists())
     }
 }

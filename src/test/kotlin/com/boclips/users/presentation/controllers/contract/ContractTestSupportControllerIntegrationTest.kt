@@ -67,7 +67,7 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
                     .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_CONTRACTS)
             )
                 .andExpect(status().isBadRequest)
-                .andExpect(jsonPath("$.errors", hasSize<Any>(2)))
+                .andExpectApiErrorPayload()
         }
 
         @Test

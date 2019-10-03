@@ -19,6 +19,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -112,9 +113,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
         )
             .andExpect(status().is4xxClientError)
-            .andExpect(jsonPath("$.errors", hasSize<Any>(4)))
-            .andExpect(jsonPath("$.errors[0].field").exists())
-            .andExpect(jsonPath("$.errors[0].message").exists())
+            .andExpectApiErrorPayload()
     }
 
     @Test

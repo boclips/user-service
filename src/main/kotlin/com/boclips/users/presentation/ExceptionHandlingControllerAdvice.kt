@@ -42,12 +42,6 @@ class ExceptionHandlingControllerAdvice {
         logger.info { "It is assumed ${ex.identifier} is a robot" }
     }
 
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Not found")
-    @ExceptionHandler(NotFoundException::class)
-    fun handleNotFound(ex: NotFoundException) {
-        logger.info { ex.message }
-    }
-
     @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Contract already exists for given name")
     @ExceptionHandler(ContractExistsException::class)
     fun handleContractExists(ex: ContractExistsException) {

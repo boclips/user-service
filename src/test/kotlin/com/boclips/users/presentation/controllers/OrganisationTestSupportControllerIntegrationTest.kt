@@ -10,7 +10,6 @@ import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -116,7 +115,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
             )
                 .andExpect(status().isBadRequest)
-                .andExpect(jsonPath("$.errors", hasSize<Int>(2)))
+                .andExpectApiErrorPayload()
         }
     }
 
