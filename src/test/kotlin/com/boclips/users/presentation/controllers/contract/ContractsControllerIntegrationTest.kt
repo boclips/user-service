@@ -5,8 +5,8 @@ import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.endsWith
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -46,11 +46,25 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.contracts", hasSize<Any>(1)))
-                .andExpect(jsonPath("$._embedded.contracts[0].type", Matchers.equalTo("SelectedContent")))
-                .andExpect(jsonPath("$._embedded.contracts[0].type", Matchers.equalTo("SelectedContent")))
-                .andExpect(jsonPath("$._embedded.contracts[0].name", Matchers.equalTo(contractName)))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(contractName)))
                 .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
-                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", Matchers.equalTo("A")))
+                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo("A")))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.contracts[0]._links.addCollection.href",
+                        endsWith("/v1/selected-content-contracts/${contract.id.value}/collections/{collectionId}")
+                    )
+                )
+                .andExpect(jsonPath("$._embedded.contracts[0]._links.addCollection.templated", equalTo(true)))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.contracts[0]._links.removeCollection.href",
+                        endsWith("/v1/selected-content-contracts/${contract.id.value}/collections/{collectionId}")
+                    )
+                )
+                .andExpect(jsonPath("$._embedded.contracts[0]._links.removeCollection.templated", equalTo(true)))
                 .andExpect(
                     jsonPath(
                         "$._embedded.contracts[0]._links.self.href",
@@ -121,22 +135,22 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.contracts", hasSize<Any>(2)))
-                .andExpect(jsonPath("$._embedded.contracts[0].type", Matchers.equalTo("SelectedContent")))
-                .andExpect(jsonPath("$._embedded.contracts[0].type", Matchers.equalTo("SelectedContent")))
-                .andExpect(jsonPath("$._embedded.contracts[0].name", Matchers.equalTo(firstContractName)))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(firstContractName)))
                 .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
-                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", Matchers.equalTo("A")))
+                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo("A")))
                 .andExpect(
                     jsonPath(
                         "$._embedded.contracts[0]._links.self.href",
                         endsWith("/v1/contracts/${firstContract.id.value}")
                     )
                 )
-                .andExpect(jsonPath("$._embedded.contracts[1].type", Matchers.equalTo("SelectedContent")))
-                .andExpect(jsonPath("$._embedded.contracts[1].type", Matchers.equalTo("SelectedContent")))
-                .andExpect(jsonPath("$._embedded.contracts[1].name", Matchers.equalTo(secondContractName)))
+                .andExpect(jsonPath("$._embedded.contracts[1].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[1].type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$._embedded.contracts[1].name", equalTo(secondContractName)))
                 .andExpect(jsonPath("$._embedded.contracts[1].collectionIds", hasSize<Int>(1)))
-                .andExpect(jsonPath("$._embedded.contracts[1].collectionIds[0]", Matchers.equalTo("B")))
+                .andExpect(jsonPath("$._embedded.contracts[1].collectionIds[0]", equalTo("B")))
                 .andExpect(
                     jsonPath(
                         "$._embedded.contracts[1]._links.self.href",
