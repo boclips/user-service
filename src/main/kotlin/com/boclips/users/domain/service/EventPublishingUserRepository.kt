@@ -5,6 +5,9 @@ import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationAccount
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.eventbus.domain.user.User as EventUser
 import com.boclips.eventbus.domain.user.Organisation as EventOrganisation
 
@@ -29,9 +32,9 @@ class EventPublishingUserRepository(
     private fun publishUserCreated(user: User) {
         eventBus.publish(
             UserCreated.builder()
-                .user(user(user))
+                .user(toEventUser(user))
                 .userId(user.id.value)
-                .organisation(organisation(user))
+                .organisation(toEventOrganisation(user))
                 .build()
         )
     }
@@ -39,26 +42,40 @@ class EventPublishingUserRepository(
     private fun publishUserUpdated(user: User) {
         eventBus.publish(
             UserUpdated.builder()
-                .user(user(user))
+                .user(toEventUser(user))
                 .userId(user.id.value)
-                .organisation(organisation(user))
+                .organisation(toEventOrganisation(user))
                 .build()
         )
     }
 
-    private fun user(user: User): EventUser {
+    private fun toEventUser(user: User): EventUser {
         return EventUser.builder()
             .id(user.id.value)
             .isBoclipsEmployee(user.account.isBoclipsEmployee())
             .build()
     }
 
-    private fun organisation(user: User): EventOrganisation? {
+    private fun toEventOrganisation(user: User): EventOrganisation? {
         val organisationId = user.organisationAccountId ?: return null
         val account = organisationAccountRepository.findOrganisationAccountById(organisationId) ?: return null
+        return toEventOrganisation(account)
+    }
+
+    private fun toEventOrganisation(account: OrganisationAccount<*>): EventOrganisation {
+        val parent = parentOrganisation(account.organisation)
         return EventOrganisation.builder()
-            .id(organisationId.value)
+            .id(account.id.value)
             .type(account.organisation.type().name)
+            .name(account.organisation.name)
+            .parent(parent)
             .build()
+    }
+
+    private fun parentOrganisation(organisation: Organisation): EventOrganisation? {
+        return when (organisation) {
+            is School -> organisation.district?.let(this::toEventOrganisation)
+            else -> null
+        }
     }
 }
