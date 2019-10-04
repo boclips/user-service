@@ -138,7 +138,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     @DisplayName("When USA")
     inner class UsaNewSchool {
-
         @Test
         fun `identified school links school without creating duplicate`() {
             val userId = UUID.randomUUID().toString()
@@ -164,29 +163,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 organisationAccountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
             assertThat(newSchool).hasSize(1)
             assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool.first().id)
-        }
-    }
-
-    @Nested
-    @DisplayName("When account already activated")
-    inner class AccountActivated {
-
-        @Test
-        fun `ignores referral`() {
-            val userId = UUID.randomUUID().toString()
-            setSecurityContext(userId)
-
-            saveUser(
-                UserFactory.sample(
-                    account = AccountFactory.sample(id = userId),
-                    profile = ProfileFactory.sample(),
-                    referralCode = "it-is-a-referral"
-                )
-            )
-
-            updateUser(userId, UpdateUserRequestFactory.sample())
-
-            verifyZeroInteractions(referralProvider)
         }
     }
 

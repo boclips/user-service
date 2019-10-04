@@ -7,7 +7,6 @@ import com.boclips.users.domain.service.AmericanSchoolsProvider
 import com.boclips.users.domain.service.EventPublishingUserRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationAccountRepository
-import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
@@ -21,8 +20,6 @@ import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
-import com.boclips.users.infrastructure.referralrock.ReferralRockClient
-import com.boclips.users.infrastructure.referralrock.ReferralRockProperties
 import com.boclips.users.infrastructure.schooldigger.SchoolDiggerClient
 import com.boclips.users.infrastructure.schooldigger.SchoolDiggerProperties
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
@@ -82,10 +79,6 @@ class ContextConfig(val objectMapper: ObjectMapper) {
             hubspotProperties = properties,
             restTemplate = RestTemplate()
         )
-
-    @Bean
-    fun referralProvider(referralRockProperties: ReferralRockProperties): ReferralProvider =
-        ReferralRockClient(properties = referralRockProperties, objectMapper = objectMapper)
 
     @Bean
     fun captchaProvider(googleRecaptchaProperties: GoogleRecaptchaProperties): CaptchaProvider =

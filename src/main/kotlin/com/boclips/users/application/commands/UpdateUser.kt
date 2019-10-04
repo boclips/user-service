@@ -10,12 +10,10 @@ import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.model.referrals.NewReferral
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.OrganisationService
-import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.convertUserToCrmProfile
@@ -28,7 +26,6 @@ import java.time.Instant
 class UpdateUser(
     private val userService: UserService,
     private val userRepository: UserRepository,
-    private val referralProvider: ReferralProvider,
     private val marketingService: MarketingService,
     private val userUpdatesCommandFactory: UserUpdatesCommandFactory,
     private val organisationAccountRepository: OrganisationAccountRepository,
@@ -88,34 +85,10 @@ class UpdateUser(
     private fun activate(id: UserId) {
         val user = userService.findUserById(id)
 
-        if (user.isReferral()) {
-            registerReferral(user)
-        }
-
         convertUserToCrmProfile(user, UserSessions(Instant.now()))?.let {
             marketingService.updateProfile(listOf(it))
         }
 
         logger.info { "User $user has logged in for the first time" }
-    }
-
-    private fun registerReferral(activatedUser: User) {
-        if (activatedUser.referralCode.isNullOrBlank()) {
-            return
-        }
-
-        activatedUser.runIfHasContactDetails {
-            referralProvider.createReferral(
-                NewReferral(
-                    referralCode = activatedUser.referralCode,
-                    firstName = it.firstName,
-                    lastName = it.lastName,
-                    email = it.email,
-                    externalIdentifier = activatedUser.id.value,
-                    status = "qualified"
-                )
-            )
-            logger.info { "Confirmed referral of user ${activatedUser.id}" }
-        }
     }
 }

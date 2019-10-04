@@ -19,7 +19,6 @@ import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationAccountRepository
-import com.boclips.users.domain.service.ReferralProvider
 import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
@@ -82,9 +81,6 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var repositories: Collection<CrudRepository<*, *>>
 
     @Autowired
-    lateinit var referralProvider: ReferralProvider
-
-    @Autowired
     lateinit var captchaProvider: CaptchaProvider
 
     @Autowired
@@ -120,7 +116,6 @@ abstract class AbstractSpringIntegrationTest {
         keycloakClientFake.clear()
         wireMockServer.resetAll()
 
-        Mockito.reset(referralProvider)
         Mockito.reset(captchaProvider)
         Mockito.reset(marketingService)
 
