@@ -2,85 +2,6 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.2.xsd">
     <suppress>
         <notes><![CDATA[
-      file name: emailaddress-rfc2822-1.1.2.jar
-      ]]></notes>
-        <gav regex="true">^com\.github\.bbottema:emailaddress-rfc2822:.*$</gav>
-        <cve>CVE-2014-1474</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: emailaddress-rfc2822-1.1.2.jar
-   ]]></notes>
-        <gav regex="true">^com\.github\.bbottema:emailaddress-rfc2822:.*$</gav>
-        <cve>CVE-2015-7686</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: opencensus-contrib-grpc-metrics-0.12.3.jar
-   ]]></notes>
-        <gav regex="true">^io\.opencensus:opencensus-contrib-grpc-metrics:.*$</gav>
-        <cpe>cpe:/a:grpc:grpc</cpe>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: spring-cloud-stream-2.1.2.RELEASE.jar
-   ]]></notes>
-        <gav regex="true">^org\.springframework\.cloud:spring-cloud-stream:.*$</gav>
-        <cpe>cpe:/a:pivotal_software:spring_integration</cpe>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: spring-tuple-1.0.0.RELEASE.jar
-   ]]></notes>
-        <gav regex="true">^org\.springframework:spring-tuple:.*$</gav>
-        <cve>CVE-2011-2730</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: spring-integration-tuple-1.0.0.RELEASE.jar
-   ]]></notes>
-        <gav regex="true">^org\.springframework.integration:spring-integration-tuple:.*$</gav>
-        <cve>CVE-2019-3772</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-      File name: spring-tuple-1.0.0.RELEASE.jar
-
-      Affects Spring Framework 4.X and below.
-      ]]></notes>
-        <gav regex="true">^org\.springframework:spring-tuple:.*$</gav>
-        <cve>CVE-2016-9878</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-      File name: spring-tuple-1.0.0.RELEASE.jar
-
-      Affects Spring Framework 5.0.5 and below.
-      ]]></notes>
-        <gav regex="true">^org\.springframework:spring-tuple:.*$</gav>
-        <cve>CVE-2018-1270</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-      File name: spring-tuple-1.0.0.RELEASE.jar
-
-      Affects Spring Framework 5.0.5 and below.
-      ]]></notes>
-        <gav regex="true">^org\.springframework:spring-tuple:.*$</gav>
-        <cve>CVE-2018-1272</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-      File name: jackson-databind-2.9.8.jar
-
-      This vulnerability is related to applications that include a MySQL connector
-      on the classpath (not our case).
-      ]]></notes>
-        <cpe>cpe:/a:fasterxml:jackson:2.9.8</cpe>
-        <cve>CVE-2019-12086</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
       File name: spring-security-*.jar in combination with Spring Framework 5.0.5.RELEASE
 
       Affects Spring Framework 5.0.5.RELEASE only.
@@ -108,4 +29,22 @@
         <gav regex="true">^io\.netty:netty-tcnative-boringssl-static:.*$</gav>
         <cve>CVE-2015-2156</cve>
     </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: jackson-databind-2.9.10.jar
+   ]]></notes>
+        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind.*$</gav>
+        <cve>CVE-2019-16942</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: jackson-databind-2.9.10.jar
+   ]]></notes>
+        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind.*$</gav>
+        <cve>CVE-2019-16943</cve>
+    </suppress>
+
+
 </suppressions>
