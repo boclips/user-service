@@ -35,7 +35,7 @@ object OrganisationDocumentConverter {
                     ?: throw IllegalStateException("District ${organisationDocument.id} must have a state"),
                 externalId = organisationDocument.externalId
                     ?: throw IllegalStateException("District ${organisationDocument.id} must have externalId")
-                )
+            )
         }
 
         return OrganisationAccount(
@@ -49,5 +49,8 @@ object OrganisationDocumentConverter {
         organisationDocument.parentOrganisation
             ?.let { fromDocument(it) }
             ?.takeIf { it.organisation is District }
-            ?.let { it as OrganisationAccount<District> }
+            ?.let {
+                @Suppress("UNCHECKED_CAST")
+                it as OrganisationAccount<District>
+            }
 }

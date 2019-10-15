@@ -30,9 +30,13 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
 
     override fun findApiIntegrationByRole(role: String): OrganisationAccount<ApiIntegration>? {
         return repository.findByRoleAndType(role = role, type = OrganisationType.API)
-            ?.let { fromDocument(it) as OrganisationAccount<ApiIntegration> }
+            ?.let {
+                @Suppress("UNCHECKED_CAST")
+                fromDocument(it) as OrganisationAccount<ApiIntegration>
+            }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun save(
         apiIntegration: ApiIntegration,
         contractIds: List<ContractId>,
@@ -40,9 +44,11 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
     ) =
         doSave(role, contractIds, apiIntegration) as OrganisationAccount<ApiIntegration>
 
+    @Suppress("UNCHECKED_CAST")
     override fun save(school: School) =
         doSave(organisation = school) as OrganisationAccount<School>
 
+    @Suppress("UNCHECKED_CAST")
     override fun save(district: District) =
         doSave(organisation = district) as OrganisationAccount<District>
 
@@ -78,12 +84,14 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
             country = organisation.country?.id?.let { LocationDocument(code = it) },
             state = organisation.state?.id?.let { LocationDocument(code = it) },
             parentOrganisation = when (organisation) {
-                is School -> organisation.district?.let { organisationDocument(
+                is School -> organisation.district?.let {
+                    organisationDocument(
                         organisation = it.organisation,
                         role = null,
                         contractIds = it.contractIds,
                         id = it.id.value
-                ) }
+                    )
+                }
                 else -> null
             }
         )
@@ -101,17 +109,26 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
     override fun findSchoolById(id: OrganisationAccountId): OrganisationAccount<School>? {
         return findOrganisationAccountById(id)
             ?.takeIf { it.organisation is School }
-            ?.let { it as OrganisationAccount<School> }
+            ?.let {
+                @Suppress("UNCHECKED_CAST")
+                it as OrganisationAccount<School>
+            }
     }
 
     override fun findSchools(): List<OrganisationAccount<School>> {
         return repository.findByType(OrganisationType.SCHOOL).toList()
-            .map { fromDocument(it) as OrganisationAccount<School> }
+            .map {
+                @Suppress("UNCHECKED_CAST")
+                fromDocument(it) as OrganisationAccount<School>
+            }
     }
 
     override fun findApiIntegrationByName(name: String): OrganisationAccount<ApiIntegration>? {
         return repository.findByNameAndType(name = name, type = OrganisationType.API)
-            ?.let { fromDocument(it) as OrganisationAccount<ApiIntegration> }
+            ?.let {
+                @Suppress("UNCHECKED_CAST")
+                fromDocument(it) as OrganisationAccount<ApiIntegration>
+            }
     }
 
     override fun findOrganisationAccountByExternalId(id: String): OrganisationAccount<*>? {

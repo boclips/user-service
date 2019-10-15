@@ -7,19 +7,22 @@ import org.springframework.stereotype.Service
 
 @Service
 class OrganisationService(
-        val americanSchoolsProvider: AmericanSchoolsProvider,
-        val organisationAccountRepository: OrganisationAccountRepository
+    val americanSchoolsProvider: AmericanSchoolsProvider,
+    val organisationAccountRepository: OrganisationAccountRepository
 ) {
     fun findOrCreateAmericanSchool(externalSchoolId: String): OrganisationAccount<School>? {
         var schoolAccount = organisationAccountRepository.findOrganisationAccountByExternalId(externalSchoolId)
-                ?.takeIf { it.organisation is School }
-                ?.let { it as OrganisationAccount<School> }
+            ?.takeIf { it.organisation is School }
+            ?.let {
+                @Suppress("UNCHECKED_CAST")
+                it as OrganisationAccount<School>
+            }
 
         if (schoolAccount == null) {
             val (school, district) = americanSchoolsProvider.fetchSchool(externalSchoolId) ?: null to null
             schoolAccount = school
-                    ?.copy(district = district?.let { getOrCreateDistrict(district) })
-                    ?.let { organisationAccountRepository.save(it) }
+                ?.copy(district = district?.let { getOrCreateDistrict(district) })
+                ?.let { organisationAccountRepository.save(it) }
         }
 
         return schoolAccount
@@ -27,8 +30,11 @@ class OrganisationService(
 
     private fun getOrCreateDistrict(district: District): OrganisationAccount<District>? {
         return organisationAccountRepository.findOrganisationAccountByExternalId(district.externalId)
-                ?.takeIf { it.organisation is District }
-                ?.let { it as OrganisationAccount<District> }
-                ?: organisationAccountRepository.save(district)
+            ?.takeIf { it.organisation is District }
+            ?.let {
+                @Suppress("UNCHECKED_CAST")
+                it as OrganisationAccount<District>
+            }
+            ?: organisationAccountRepository.save(district)
     }
 }

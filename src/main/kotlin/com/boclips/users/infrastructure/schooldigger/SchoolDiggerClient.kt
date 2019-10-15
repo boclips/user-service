@@ -32,18 +32,20 @@ class SchoolDiggerClient(
             return null
         }
 
-        return school?.let { school ->
+        return school?.let { existingSchool ->
             School(
-                name = school.schoolName,
-                externalId = school.schoolid,
-                state = State.fromCode(school.address.state),
+                name = existingSchool.schoolName,
+                externalId = existingSchool.schoolid,
+                state = State.fromCode(existingSchool.address.state),
                 country = Country.usa(),
                 district = null
-            ) to school.district?.let { District(
-                name = it.districtName,
-                externalId = it.districtID,
-                state = State.fromCode(school.address.state)
-            ) }
+            ) to existingSchool.district?.let { existingDistrict ->
+                District(
+                    name = existingDistrict.districtName,
+                    externalId = existingDistrict.districtID,
+                    state = State.fromCode(existingSchool.address.state)
+                )
+            }
         }
     }
 
