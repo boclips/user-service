@@ -106,20 +106,14 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `update profile`() {
-        whenever(subjectService.getSubjectsById(any())).thenReturn(
-            listOf(
-                Subject(
-                    name = "Maths",
-                    id = SubjectId(value = "1")
-                )
-            )
-        )
+        val maths = Subject(name = "Maths", id = SubjectId(value = "1"))
+        subjectService.addSubject(maths)
         saveUser(UserFactory.sample(id = "user-id"))
 
         val profile = Profile(
             firstName = "Joe",
             lastName = "Dough",
-            subjects = listOf(Subject(id = SubjectId("test"), name = "subject")),
+            subjects = listOf(maths),
             ages = listOf(1, 2),
             hasOptedIntoMarketing = true
         )

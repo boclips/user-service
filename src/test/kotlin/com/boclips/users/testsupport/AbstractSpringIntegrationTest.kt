@@ -5,8 +5,6 @@ import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.commands.AddCollectionToContract
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Account
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.Contract
@@ -23,7 +21,6 @@ import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
-import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.resources.ContractConverter
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -31,7 +28,6 @@ import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.Ignore
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -88,7 +84,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var marketingService: MarketingService
 
     @Autowired
-    lateinit var subjectService: VideoServiceSubjectsClient
+    lateinit var subjectService: FakeSubjectService
 
     @Autowired
     lateinit var organisationIdResolver: OrganisationIdResolver
@@ -116,13 +112,12 @@ abstract class AbstractSpringIntegrationTest {
         repositories.forEach { it.deleteAll() }
         keycloakClientFake.clear()
         wireMockServer.resetAll()
+        subjectService.reset()
 
         Mockito.reset(captchaProvider)
         Mockito.reset(marketingService)
-        Mockito.reset(subjectService)
 
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(true)
-        whenever(subjectService.allSubjectsExist(any())).thenReturn(true)
 
         eventBus.clearState()
         fakeAmericanSchoolsProvider.clear()

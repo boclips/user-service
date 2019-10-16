@@ -16,9 +16,6 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import com.boclips.users.testsupport.factories.UserFactory
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -33,14 +30,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `update user information`() {
-        whenever(subjectService.getSubjectsById(any())).thenReturn(
-            listOf(
-                Subject(
-                    name = "Maths",
-                    id = SubjectId(value = "1")
-                )
-            )
-        )
+        subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
 
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
@@ -51,7 +41,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 firstName = "josh",
                 lastName = "fleck",
                 hasOptedIntoMarketing = true,
-                subjects = listOf("Maths"),
+                subjects = listOf("subject-1"),
                 ages = listOf(4, 5, 6),
                 country = "USA",
                 referralCode = "1234",
@@ -73,7 +63,8 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(profile.hasOptedIntoMarketing).isTrue()
         assertThat(profile.ages).containsExactly(4, 5, 6)
         assertThat(profile.subjects).hasSize(1)
-        assertThat(profile.subjects.first().id).isEqualTo(SubjectId("1"))
+        assertThat(profile.subjects.first().name).isEqualTo("Maths")
+        assertThat(profile.subjects.first().id).isEqualTo(SubjectId("subject-1"))
         assertThat(profile.country?.id).isEqualTo("USA")
         assertThat(user.referralCode).isEqualTo("1234")
         assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")

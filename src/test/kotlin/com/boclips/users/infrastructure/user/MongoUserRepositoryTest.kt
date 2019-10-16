@@ -33,15 +33,6 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists user`() {
-        whenever(subjectService.getSubjectsById(any())).thenReturn(
-            listOf(
-                Subject(
-                    name = "Maths",
-                    id = SubjectId(value = "1")
-                )
-            )
-        )
-
         val user = UserFactory.sample(
             marketing = MarketingTrackingFactory.sample(
                 utmCampaign = "campaign",
@@ -129,18 +120,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updating user subjects`() {
-        val maths = Subject(
+        val maths = subjectService.addSubject(Subject(
             id = SubjectId(value = "1"),
             name = "Maths"
-        )
-        val physics = Subject(
+        ))
+        val physics = subjectService.addSubject(Subject(
             id = SubjectId(value = "2"),
             name = "Physics"
-        )
-
-        whenever(subjectService.getSubjectsById(any())).thenReturn(
-            listOf(maths, physics)
-        )
+        ))
 
         val user = userRepository.save(
             UserFactory.sample(

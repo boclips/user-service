@@ -8,7 +8,7 @@ class UpdateUserRequestFactory {
         fun sample(
             firstName: String? = "Hans",
             lastName: String? = "Zimmer",
-            subjects: List<String>? = listOf("argriculture"),
+            subjects: List<String>? = emptyList(),
             ages: List<Int>? = listOf(1, 2, 4),
             hasOptedIntoMarketing: Boolean? = false,
             referralCode: String? = "ABCD",

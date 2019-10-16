@@ -20,10 +20,6 @@ class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `create account without optional values`() {
-        whenever(subjectService.getSubjectsById(any())).thenReturn(
-            emptyList()
-        )
-
         val createdAccount = createTeacherAccount(
             CreateTeacherRequest(
                 email = "hans@muster.com",

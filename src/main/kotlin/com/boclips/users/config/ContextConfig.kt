@@ -8,6 +8,7 @@ import com.boclips.users.domain.service.EventPublishingUserRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.SessionProvider
+import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
@@ -96,7 +97,7 @@ class ContextConfig(val objectMapper: ObjectMapper) {
         VideoServiceSubjectsClient(cacheableSubjectsClient)
 
     @Bean
-    fun userDocumentConverter(subjectService: VideoServiceSubjectsClient): UserDocumentConverter {
+    fun userDocumentConverter(subjectService: SubjectService): UserDocumentConverter {
         return UserDocumentConverter(subjectService)
     }
 

@@ -9,12 +9,7 @@ import com.boclips.users.domain.model.school.State
 class ProfileFactory {
     companion object {
         fun sample(
-            subjects: List<Subject> = listOf(
-                Subject(
-                    id = SubjectId(value = "1"),
-                    name = "Maths"
-                )
-            ),
+            subjects: List<Subject> = emptyList(),
             ages: List<Int> = listOf(1, 2),
             firstName: String = "Joe",
             lastName: String = "Dough",

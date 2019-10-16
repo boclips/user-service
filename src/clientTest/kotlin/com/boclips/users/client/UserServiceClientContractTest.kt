@@ -104,14 +104,7 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
     }
 
     override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String): User {
-        whenever(subjectService.getSubjectsById(any())).thenReturn(
-            listOf(
-                com.boclips.users.domain.model.Subject(
-                    name = "Maths",
-                    id = SubjectId(value = subjectId)
-                )
-            )
-        )
+        subjectService.addSubject(com.boclips.users.domain.model.Subject(id = SubjectId(subjectId), name = subjectId))
 
         val user = UserFactory.sample(organisationAccountId = organisation.id, profile = ProfileFactory.sample(subjects = listOf(com.boclips.users.domain.model.Subject(id = SubjectId(subjectId), name = ""))))
 

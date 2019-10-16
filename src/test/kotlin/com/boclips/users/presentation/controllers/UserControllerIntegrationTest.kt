@@ -173,14 +173,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `updates a user`() {
-            whenever(subjectService.getSubjectsById(any())).thenReturn(
-                listOf(
-                    Subject(
-                        name = "Maths",
-                        id = SubjectId(value = "1")
-                    )
-                )
-            )
+            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
             saveUser(UserFactory.sample())
             val school = saveSchool(
                 school = OrganisationFactory.school(
@@ -199,7 +192,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         """
                         {"firstName": "jane",
                          "lastName": "doe",
-                         "subjects": ["Maths"],
+                         "subjects": ["subject-1"],
                          "ages": [4,5,6],
                          "country": "USA",
                          "state": "CA",
