@@ -11,6 +11,8 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -104,6 +106,14 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `update profile`() {
+        whenever(subjectService.getSubjectsById(any())).thenReturn(
+            listOf(
+                Subject(
+                    name = "Maths",
+                    id = SubjectId(value = "1")
+                )
+            )
+        )
         saveUser(UserFactory.sample(id = "user-id"))
 
         val profile = Profile(

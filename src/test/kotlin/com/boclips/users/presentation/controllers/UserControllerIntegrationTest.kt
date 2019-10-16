@@ -3,6 +3,8 @@ package com.boclips.users.presentation.controllers
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.school.Country
@@ -171,6 +173,14 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `updates a user`() {
+            whenever(subjectService.getSubjectsById(any())).thenReturn(
+                listOf(
+                    Subject(
+                        name = "Maths",
+                        id = SubjectId(value = "1")
+                    )
+                )
+            )
             saveUser(UserFactory.sample())
             val school = saveSchool(
                 school = OrganisationFactory.school(

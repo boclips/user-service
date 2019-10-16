@@ -3,6 +3,7 @@ package com.boclips.users.application.converters
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.presentation.resources.OrganisationResource
+import com.boclips.users.presentation.resources.SubjectResource
 import com.boclips.users.presentation.resources.UserResource
 import com.boclips.users.presentation.resources.school.CountryResource
 import com.boclips.users.presentation.resources.school.StateResource
@@ -16,7 +17,7 @@ class UserConverter {
             firstName = user.profile?.firstName,
             lastName = user.profile?.lastName,
             ages = user.profile?.ages,
-            subjects = user.profile?.subjects?.map { it.id.value },
+            subjects = user.profile?.subjects?.map { SubjectResource(it.id.value) },
             email = user.account.email,
             analyticsId = user.analyticsId?.value,
             organisationAccountId = user.organisationAccountId?.value,

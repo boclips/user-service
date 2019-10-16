@@ -4,6 +4,7 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
+import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.school.Country
@@ -15,7 +16,9 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -30,6 +33,15 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `update user information`() {
+        whenever(subjectService.getSubjectsById(any())).thenReturn(
+            listOf(
+                Subject(
+                    name = "Maths",
+                    id = SubjectId(value = "1")
+                )
+            )
+        )
+
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 

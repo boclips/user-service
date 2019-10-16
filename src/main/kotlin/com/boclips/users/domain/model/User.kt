@@ -36,10 +36,6 @@ data class User(
         }
     }
 
-    override fun toString(): String {
-        return "User(id=$id)"
-    }
-
     data class ContactDetails(
         val firstName: String,
         val lastName: String,

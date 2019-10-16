@@ -2,14 +2,24 @@ package com.boclips.users.client
 
 import com.boclips.users.client.implementation.ApiUserServiceClient
 import com.boclips.users.client.implementation.FakeUserServiceClient
+import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.User
 import com.boclips.users.client.model.contract.SelectedContentContract
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testUser
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.contract.CollectionId
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationAccount
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.factories.ContractFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -27,12 +37,13 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
 
         @Test
         fun `returns user corresponding to provided id`() {
-            val organisationName = "test-organisation-id"
-            val user = insertTestUser(organisationName)
+            val organisation = insertTestOrganisation("test-organisation-id")
+            val user = insertTestUser(organisation, subjectId = "subject-1")
 
             val retrievedUser = client.findUser(user.id)
             assertThat(retrievedUser.id).isEqualTo(user.id)
             assertThat(retrievedUser.organisationAccountId).isEqualTo(user.organisationAccountId)
+            assertThat(retrievedUser.subjects).containsExactly(Subject("subject-1"))
         }
     }
 
@@ -40,26 +51,28 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     inner class GetContractsOfUser {
         @Test
         fun `returns an empty list when user is not eligible to any contracts`() {
-            val organisationName = "test-organisation-id"
-            val user = insertTestUser(organisationName)
+            val organisation = insertTestOrganisation("test-organisation-id")
+            val user = insertTestUser(organisation)
 
             assertThat(client.getContracts(user.id)).isEmpty()
         }
 
         @Test
         fun `returns a list of contracts user is eligible to`() {
-            val organisationName = "test-organisation-id"
-            val user = insertTestUser(
-                organisationName,
-                ContractFactory.sampleSelectedContentContract(
-                    name = "First",
-                    collectionIds = listOf(CollectionId("A"), CollectionId("B"))
-                ),
-                ContractFactory.sampleSelectedContentContract(
-                    name = "Second",
-                    collectionIds = listOf(CollectionId("C"), CollectionId("D"))
+            val organisation = insertTestOrganisation(
+                "test-organisation-id",
+                listOf(
+                    ContractFactory.sampleSelectedContentContract(
+                        name = "First",
+                        collectionIds = listOf(CollectionId("A"), CollectionId("B"))
+                    ),
+                    ContractFactory.sampleSelectedContentContract(
+                        name = "Second",
+                        collectionIds = listOf(CollectionId("C"), CollectionId("D"))
+                    )
                 )
             )
+            val user = insertTestUser(organisation)
 
             assertThat(client.getContracts(user.id))
                 .flatExtracting("collectionIds")
@@ -67,7 +80,9 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
         }
     }
 
-    abstract fun insertTestUser(organisationName: String, vararg contracts: DomainContract): User
+    abstract fun insertTestOrganisation(name: String, contracts: List<DomainContract> = emptyList()): OrganisationAccount<*>
+
+    abstract fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String = "1"): User
 
     lateinit var client: UserServiceClient
 }
@@ -75,6 +90,7 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
 class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
     @BeforeEach
     fun initialiseApiClient() {
+
         client = ApiUserServiceClient(
             userServiceUrl(),
             RestTemplateBuilder()
@@ -83,13 +99,25 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
         )
     }
 
-    override fun insertTestUser(organisationName: String, vararg contracts: DomainContract): User {
-        val organisation = saveOrganisationWithContractDetails(organisationName, contracts.toList())
-        val user = UserFactory.sample(organisationAccountId = organisation.id)
+    override fun insertTestOrganisation(organisationName: String, contracts: List<DomainContract>): OrganisationAccount<*> {
+        return saveOrganisationWithContractDetails(organisationName, contracts.toList())
+    }
+
+    override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String): User {
+        whenever(subjectService.getSubjectsById(any())).thenReturn(
+            listOf(
+                com.boclips.users.domain.model.Subject(
+                    name = "Maths",
+                    id = SubjectId(value = subjectId)
+                )
+            )
+        )
+
+        val user = UserFactory.sample(organisationAccountId = organisation.id, profile = ProfileFactory.sample(subjects = listOf(com.boclips.users.domain.model.Subject(id = SubjectId(subjectId), name = ""))))
 
         saveUser(user)
 
-        return User(user.id.value, user.organisationAccountId!!.value)
+        return User(user.id.value, user.organisationAccountId!!.value, listOf(Subject(subjectId)))
     }
 }
 
@@ -99,7 +127,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
         client = FakeUserServiceClient()
     }
 
-    override fun insertTestUser(organisationName: String, vararg contracts: DomainContract): User {
+    override fun insertTestOrganisation(organisationName: String, contracts: List<DomainContract>): OrganisationAccount<*> {
         contracts.forEach { domainContract ->
             domainContract as DomainContract.SelectedContent
             (client as FakeUserServiceClient).addContract(
@@ -109,6 +137,11 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                 }
             )
         }
-        return (client as FakeUserServiceClient).addUser(User("idontcare", "scam"))
+        val organisation: Organisation = School(organisationName, Country.usa(), state = null, district = null, externalId = null)
+        return OrganisationAccount(OrganisationAccountId(organisationName), emptyList(), organisation)
+    }
+
+    override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String): User {
+        return (client as FakeUserServiceClient).addUser(User("idontcare", "scam", listOf(Subject(subjectId))))
     }
 }

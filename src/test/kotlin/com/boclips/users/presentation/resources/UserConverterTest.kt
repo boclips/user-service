@@ -48,7 +48,7 @@ class UserConverterTest {
         assertThat(userResource.firstName).isEqualTo("Thierry")
         assertThat(userResource.lastName).isEqualTo("Henry")
         assertThat(userResource.ages).containsExactly(1, 2, 3)
-        assertThat(userResource.subjects).containsExactly("subject-id")
+        assertThat(userResource.subjects).containsExactly(SubjectResource("subject-id"))
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
         assertThat(userResource.organisationAccountId).isEqualTo("1234")

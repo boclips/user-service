@@ -5,7 +5,7 @@ open class UserResource(
     val firstName: String?,
     val lastName: String?,
     val ages: List<Int>?,
-    val subjects: List<String>?,
+    val subjects: List<SubjectResource>?,
     val email: String?,
     val analyticsId: String?,
     val organisationAccountId: String?,

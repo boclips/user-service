@@ -31,6 +31,7 @@ import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
+import org.junit.Ignore
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -118,17 +119,10 @@ abstract class AbstractSpringIntegrationTest {
 
         Mockito.reset(captchaProvider)
         Mockito.reset(marketingService)
+        Mockito.reset(subjectService)
 
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(true)
         whenever(subjectService.allSubjectsExist(any())).thenReturn(true)
-        whenever(subjectService.getSubjectsById(any())).thenReturn(
-            listOf(
-                Subject(
-                    name = "Maths",
-                    id = SubjectId(value = "1")
-                )
-            )
-        )
 
         eventBus.clearState()
         fakeAmericanSchoolsProvider.clear()

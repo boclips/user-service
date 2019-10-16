@@ -33,6 +33,15 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists user`() {
+        whenever(subjectService.getSubjectsById(any())).thenReturn(
+            listOf(
+                Subject(
+                    name = "Maths",
+                    id = SubjectId(value = "1")
+                )
+            )
+        )
+
         val user = UserFactory.sample(
             marketing = MarketingTrackingFactory.sample(
                 utmCampaign = "campaign",
