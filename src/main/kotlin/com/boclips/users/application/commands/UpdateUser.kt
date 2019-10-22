@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 
 @Component
-class  UpdateUser(
+class UpdateUser(
     private val userService: UserService,
     private val userRepository: UserRepository,
     private val marketingService: MarketingService,
