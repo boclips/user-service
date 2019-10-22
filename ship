@@ -3,5 +3,6 @@
 set -e
 
 git pull -r
+./src/test/resources/setup-contract-test
 ./gradlew build dependencyCheckAnalyze
 git push
