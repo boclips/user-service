@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
@@ -15,6 +16,7 @@ import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -214,6 +216,58 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.organisation.state.id", equalTo("CA")))
                 .andExpect(jsonPath("$.organisation.country.name", equalTo("United States")))
                 .andExpect(jsonPath("$.organisation.country.id", equalTo("USA")))
+        }
+
+        @Test
+        fun `remove a user's school`() {
+            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            val school = saveSchool(
+                school = OrganisationFactory.school(
+                    name = "San Fran Forest School",
+                    state = State.fromCode("CA"),
+                    country = Country.fromCode("USA")
+                )
+            )
+
+            saveUser(UserFactory.sample(
+                profile = ProfileFactory.sample(
+                    country = Country.fromCode("USA"),
+                    state = State.fromCode("IL")
+                ),
+                organisationAccountId = school.id
+            ))
+
+
+            setSecurityContext("user-id")
+
+            mvc.perform(
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "jane",
+                         "lastName": "doe",
+                         "subjects": ["subject-1"],
+                         "ages": [4,5,6],
+                         "country": "USA",
+                         "state": "IL",
+                         "schoolId": ""
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.firstName", equalTo("jane")))
+                .andExpect(jsonPath("$.lastName", equalTo("doe")))
+                .andExpect(jsonPath("$.ages", equalTo(listOf(4, 5, 6))))
+                .andExpect(jsonPath("$.subjects", hasSize<Int>(1)))
+                .andExpect(jsonPath("$.country.name", equalTo("United States")))
+                .andExpect(jsonPath("$.state.name", equalTo("Illinois")))
+                .andExpect(jsonPath("$.state.id", equalTo("IL")))
+                .andExpect(jsonPath("$.country.id", equalTo("USA")))
+                .andExpect(jsonPath("$.organisation.name").doesNotExist())
         }
     }
 

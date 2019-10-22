@@ -11,6 +11,7 @@ import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.OrganisationService
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 
 @Component
-class UpdateUser(
+class  UpdateUser(
     private val userService: UserService,
     private val userRepository: UserRepository,
     private val marketingService: MarketingService,
@@ -63,7 +64,7 @@ class UpdateUser(
                         School(
                             name = schoolName,
                             country = Country.fromCode(updateUserRequest.country!!),
-                            state = null,
+                            state = State.fromCode(updateUserRequest.state!!),
                             district = null,
                             externalId = null
                         )

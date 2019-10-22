@@ -4,7 +4,9 @@ import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.organisation.OrganisationAccount
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.presentation.requests.UpdateUserRequest
@@ -36,6 +38,7 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
                     utmSource = it.source
                 )
             },
+            updateUserRequest.state?.let { UserUpdateCommand.ReplaceState(state = State.fromCode(it)) },
             updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = Country.fromCode(it)) },
             organisation?.let { UserUpdateCommand.ReplaceOrganisationId(it.id) }
         )

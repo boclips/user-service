@@ -21,6 +21,8 @@ data class UserDocument(
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
     var country: String?,
+    var state: String?,
+    var school: String?,
     var organisationId: String?
 ) {
     companion object {
@@ -44,7 +46,9 @@ data class UserDocument(
                     utmContent = user.marketingTracking.utmContent
                 ),
                 organisationId = user.organisationAccountId?.value,
-                country = user.profile?.country?.id
+                country = user.profile?.country?.id,
+                state = user.profile?.state?.id,
+                school = user.profile?.school
             )
         }
 
@@ -62,7 +66,9 @@ data class UserDocument(
                 hasOptedIntoMarketing = false,
                 marketing = null,
                 organisationId = organisationAccountId?.value,
-                country = null
+                country = null,
+                state = null,
+                school = null
             )
         }
     }

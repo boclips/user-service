@@ -85,7 +85,14 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `converts country change to a command`() {
-        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(country = "USA"))
+        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(country = "USA"), null)
+
+        assertThat(commands).hasSize(1)
+    }
+
+    @Test
+    fun `converts state change to a command`() {
+        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(state = "FL"))
 
         assertThat(commands).hasSize(1)
     }

@@ -7,7 +7,9 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -166,6 +168,39 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 organisationAccountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
             assertThat(newSchool).hasSize(1)
             assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool.first().id)
+        }
+
+        @Test
+        fun `updating with a null school removes user's school`() {
+            val userId = UUID.randomUUID().toString()
+            setSecurityContext(userId)
+            val school =
+                organisationAccountRepository.save(OrganisationFactory.school(country = Country.fromCode("USA")))
+
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(id = userId),
+                    profile = ProfileFactory.sample(
+                        country = Country(
+                            id= "USA",
+                            name = "Untied State of America",
+                            states = listOf(State(id = "10", name = "New York"))
+                        )
+                    ),
+                    organisationAccountId= school.id
+                )
+            )
+            val updatedUser = updateUser(
+                userId,
+                UpdateUserRequestFactory.sample(
+                    schoolId = "",
+                    schoolName = "",
+                    state = "AZ"
+                )
+            )
+
+            assertThat(updatedUser.profile?.state).isEqualTo(State.fromCode("AZ"))
+            assertThat(updatedUser.organisationAccountId?.value).isEqualTo("")
         }
     }
 

@@ -51,12 +51,10 @@ class UserConverterTest {
         assertThat(userResource.subjects).containsExactly(SubjectResource("subject-id"))
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
+        assertThat(userResource.country!!.name).isEqualTo("United States")
+        assertThat(userResource.country!!.id).isEqualTo("US")
         assertThat(userResource.organisationAccountId).isEqualTo("1234")
         assertThat(userResource.organisation!!.name).isEqualTo("My school")
-        assertThat(userResource.organisation!!.state!!.name).isEqualTo("New York")
-        assertThat(userResource.organisation!!.state!!.id).isEqualTo("NY")
-        assertThat(userResource.organisation!!.country!!.name).isEqualTo("United States")
-        assertThat(userResource.organisation!!.country!!.id).isEqualTo("USA")
     }
 
     @Test
@@ -64,7 +62,30 @@ class UserConverterTest {
         val userResource =
             UserConverter().toUserResource(
                 user = UserFactory.sample(
-                    organisationAccountId = null
+                    organisationAccountId = null,
+                    profile = ProfileFactory.sample(
+                        firstName = "Thierry",
+                        lastName = "Henry",
+                        ages = listOf(1, 2, 3),
+                        subjects = listOf(Subject(SubjectId("subject-id"), name = "Math")),
+                        country = Country(id = "US", name = "United States")
+                    )
+                ),
+                organisationAccount = null
+            )
+
+        assertThat(userResource.organisation).isNull()
+    }
+
+    @Test
+    fun `converts a user without an organisation but with a country and state`() {
+        val userResource =
+            UserConverter().toUserResource(
+                user = UserFactory.sample(
+                    organisationAccountId = null,
+                    profile = ProfileFactory.sample(
+
+                    )
                 ),
                 organisationAccount = null
             )

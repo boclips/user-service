@@ -164,6 +164,26 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `removing user organisation`() {
+        val user = userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(
+                    id = "user-1"
+                ),
+                profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace", ages = listOf(9, 10, 11)),
+                organisationAccountId = OrganisationAccountId("123")
+
+            )
+        )
+
+        userRepository.update(user, UserUpdateCommand.ReplaceOrganisationId(null))
+
+        val updatedUser = userRepository.findById(user.id)!!
+
+        assertThat(updatedUser.organisationAccountId?.value).isEqualTo("")
+    }
+
+    @Test
     fun `updating marketing tracking fields`() {
         val user = userRepository.save(
             UserFactory.sample(

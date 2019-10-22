@@ -21,6 +21,19 @@ class UserConverter {
             email = user.account.email,
             analyticsId = user.analyticsId?.value,
             organisationAccountId = user.organisationAccountId?.value,
+            country = user.profile?.country?.let {
+                CountryResource(
+                    name = it.name,
+                    id = it.id,
+                    states = null
+                )
+            },
+            state = user.profile?.state?.let{
+                StateResource(
+                    id = it.id,
+                    name = it.name
+                )
+            },
             organisation = user.organisationAccountId?.let {
                 organisationAccount?.let { orgAccount ->
                     OrganisationResource(
@@ -31,7 +44,6 @@ class UserConverter {
                                 id = it.id
                             )
                         },
-
                         country = orgAccount.organisation.country?.let {
                             CountryResource(
                                 name = it.name,
