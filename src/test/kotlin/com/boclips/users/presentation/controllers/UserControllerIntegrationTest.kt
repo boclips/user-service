@@ -142,34 +142,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Nested
     inner class UpdateUser {
-        @Test
-        fun `returns a 403 response if caller tries to update a different user`() {
-            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "user-id")))
-
-            mvc.perform(
-                put("/v1/users/user-id")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
-                        {
-                             "firstName": "change this",
-                             "lastName": "and that"
-                        }
-                        """.trimIndent()
-                    ).asUser("different-users-id")
-            )
-                .andExpect(status().isForbidden)
-        }
-
-        @Test
-        fun `updating without a payload is a bad request`() {
-            saveUser(UserFactory.sample())
-
-            setSecurityContext("user-id")
-
-            mvc.perform(put("/v1/users/user-id").asUser("user-id"))
-                .andExpect(status().isBadRequest)
-        }
 
         @Test
         fun `updates a user`() {
@@ -214,6 +186,69 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.organisation.state.id", equalTo("CA")))
                 .andExpect(jsonPath("$.organisation.country.name", equalTo("United States")))
                 .andExpect(jsonPath("$.organisation.country.id", equalTo("USA")))
+        }
+
+        @Test
+        fun `returns a 403 response if caller tries to update a different user`() {
+            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "user-id")))
+
+            mvc.perform(
+                put("/v1/users/user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                             "firstName": "change this",
+                             "lastName": "and that"
+                        }
+                        """.trimIndent()
+                    ).asUser("different-users-id")
+            )
+                .andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `updating without a payload is a bad request`() {
+            saveUser(UserFactory.sample())
+
+            setSecurityContext("user-id")
+
+            mvc.perform(put("/v1/users/user-id").asUser("user-id"))
+                .andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `invalid state`() {
+            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            saveUser(UserFactory.sample())
+            saveSchool(
+                school = OrganisationFactory.school(
+                    name = "San Fran Forest School",
+                    state = State.fromCode("CA"),
+                    country = Country.fromCode("USA")
+                )
+            )
+
+            setSecurityContext("user-id")
+
+            mvc.perform(
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "jane",
+                         "lastName": "doe",
+                         "subjects": ["subject-1"],
+                         "ages": [4,5,6],
+                         "country": "USA",
+                         "state": "XX",
+                         "schoolName": "A new school name"
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isBadRequest)
+                .andExpectApiErrorPayload()
         }
     }
 

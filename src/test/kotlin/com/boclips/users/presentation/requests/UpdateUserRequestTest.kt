@@ -224,17 +224,17 @@ class UpdateUserRequestTest {
             )
 
             assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("US state must be 2 characters")
+            assertThat(violations.map { it.message }).contains("Invalid USA state code")
         }
 
         @Test
-        fun `states longer than 2 characters are invalid`() {
+        fun `random characters are invalid`() {
             val violations = validator.validate(
                 UpdateUserRequestFactory.sample(state = "CAL")
             )
 
             assertThat(violations).hasSize(1)
-            assertThat(violations.map { it.message }).contains("US state must be 2 characters")
+            assertThat(violations.map { it.message }).contains("Invalid USA state code")
         }
     }
 
