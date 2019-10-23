@@ -11,6 +11,7 @@ import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.OrganisationService
@@ -53,7 +54,7 @@ class UpdateUser(
 
     private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): OrganisationAccount<School>? {
         val schoolById = updateUserRequest.schoolId?.let {
-            organisationService.findOrCreateAmericanSchool(it)
+            organisationService.findOrCreateSchooldiggerSchool(it)
         }
 
         return schoolById
@@ -63,7 +64,7 @@ class UpdateUser(
                         School(
                             name = schoolName,
                             country = Country.fromCode(updateUserRequest.country!!),
-                            state = null,
+                            state = updateUserRequest.state?.let { State.fromCode(it) },
                             district = null,
                             externalId = null
                         )
@@ -78,7 +79,7 @@ class UpdateUser(
         return organisationAccountRepository.lookupSchools(
             schoolName,
             countryCode
-        ).firstOrNull()
+        ).firstOrNull{ it.name == schoolName }
             ?.let { organisationAccountRepository.findSchoolById(OrganisationAccountId(it.id)) }
     }
 

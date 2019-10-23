@@ -1,14 +1,11 @@
 package com.boclips.users.domain.model
 
-import com.boclips.users.domain.model.school.Country
-
 data class Profile(
     val firstName: String,
     val lastName: String,
     val subjects: List<Subject> = emptyList(),
     val ages: List<Int> = emptyList(),
-    val hasOptedIntoMarketing: Boolean = false,
-    val country: Country? = null
+    val hasOptedIntoMarketing: Boolean = false
 )
 
 fun Profile?.getSubjects() = this?.subjects ?: emptyList()

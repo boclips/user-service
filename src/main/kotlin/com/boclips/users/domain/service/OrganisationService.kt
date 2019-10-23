@@ -10,7 +10,7 @@ class OrganisationService(
     val americanSchoolsProvider: AmericanSchoolsProvider,
     val organisationAccountRepository: OrganisationAccountRepository
 ) {
-    fun findOrCreateAmericanSchool(externalSchoolId: String): OrganisationAccount<School>? {
+    fun findOrCreateSchooldiggerSchool(externalSchoolId: String): OrganisationAccount<School>? {
         var schoolAccount = organisationAccountRepository.findOrganisationAccountByExternalId(externalSchoolId)
             ?.takeIf { it.organisation is School }
             ?.let {

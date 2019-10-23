@@ -7,7 +7,10 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
+import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -65,7 +68,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(profile.subjects).hasSize(1)
         assertThat(profile.subjects.first().name).isEqualTo("Maths")
         assertThat(profile.subjects.first().id).isEqualTo(SubjectId("subject-1"))
-        assertThat(profile.country?.id).isEqualTo("USA")
         assertThat(user.referralCode).isEqualTo("1234")
         assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(user.marketingTracking.utmMedium).isEqualTo("test-medium")
@@ -166,6 +168,35 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 organisationAccountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
             assertThat(newSchool).hasSize(1)
             assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool.first().id)
+        }
+
+        @Test
+        fun `updating to unlisted school-digger school preserves school address`() {
+            val userId = UUID.randomUUID().toString()
+            setSecurityContext(userId)
+            val school =
+                organisationAccountRepository.save(OrganisationFactory.school(country = Country.fromCode("USA"), state = State.fromCode("CA"), externalId = "i'm in schooldigger"))
+
+            saveUser(
+                UserFactory.sample(
+                    account = AccountFactory.sample(id = userId),
+                    organisationAccountId= school.id
+                )
+            )
+            val updatedUser = updateUser(
+                userId,
+                UpdateUserRequestFactory.sample(
+                    schoolId = "",
+                    schoolName = "",
+                    state = "AZ",
+                    country = "USA"
+                )
+            )
+
+            val organisationAccount = organisationAccountRepository.findSchoolById(updatedUser.organisationAccountId!!)!!
+            assertThat(organisationAccount.organisation.country.isUSA()).isEqualTo(true)
+            assertThat(organisationAccount.organisation.state!!.id).isEqualTo("AZ")
+            assertThat(organisationAccount.organisation.externalId).isNull()
         }
     }
 

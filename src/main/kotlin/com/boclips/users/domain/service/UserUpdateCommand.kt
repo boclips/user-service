@@ -11,7 +11,6 @@ sealed class UserUpdateCommand {
     data class ReplaceAges(val ages: List<Int>) : UserUpdateCommand()
     data class ReplaceHasOptedIntoMarketing(val hasOptedIntoMarketing: Boolean) : UserUpdateCommand()
     data class ReplaceReferralCode(val referralCode: String) : UserUpdateCommand()
-    data class ReplaceCountry(val country: Country) : UserUpdateCommand()
     data class ReplaceOrganisationId(val organisationAccountId: OrganisationAccountId) : UserUpdateCommand()
     data class ReplaceMarketingTracking(
         val utmCampaign: String?,

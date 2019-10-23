@@ -12,6 +12,10 @@ data class Country(
         return id == USA_ISO
     }
 
+    override fun toString(): String {
+        return "Country(id='$id', name='$name')"
+    }
+
     companion object {
         const val USA_ISO = "USA"
         fun usa() = fromCode(USA_ISO)

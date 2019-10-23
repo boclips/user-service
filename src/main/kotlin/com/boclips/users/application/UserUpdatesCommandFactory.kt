@@ -36,7 +36,6 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
                     utmSource = it.source
                 )
             },
-            updateUserRequest.country?.let { UserUpdateCommand.ReplaceCountry(country = Country.fromCode(it)) },
             organisation?.let { UserUpdateCommand.ReplaceOrganisationId(it.id) }
         )
     }

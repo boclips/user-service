@@ -39,8 +39,6 @@ class MongoUserRepository(
                         utmTerm = updateCommand.utmTerm
                     )
                 }
-                // TODO: think about country updates...
-                is UserUpdateCommand.ReplaceCountry -> userDocument.apply { country = updateCommand.country.id }
                 is UserUpdateCommand.ReplaceOrganisationId -> userDocument.apply {
                     organisationId = updateCommand.organisationAccountId.value
                 }

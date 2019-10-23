@@ -28,8 +28,7 @@ class UserConverterTest {
                         firstName = "Thierry",
                         lastName = "Henry",
                         ages = listOf(1, 2, 3),
-                        subjects = listOf(Subject(SubjectId("subject-id"), name = "Math")),
-                        country = Country(id = "US", name = "United States")
+                        subjects = listOf(Subject(SubjectId("subject-id"), name = "Math"))
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id"),
                     organisationAccountId = OrganisationAccountId("1234")
