@@ -8,7 +8,7 @@ import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.requests.CreateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationConverter
 import com.boclips.users.presentation.resources.OrganisationAccountResource
-import org.springframework.hateoas.Resource
+import org.springframework.hateoas.EntityModel
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -35,7 +35,7 @@ class OrganisationTestSupportController(
     private val organisationConverter: OrganisationConverter
 ) {
     @PostMapping("/api-integrations")
-    fun insertApiIntegration(@Valid @RequestBody request: CreateOrganisationRequest): ResponseEntity<Resource<*>> {
+    fun insertApiIntegration(@Valid @RequestBody request: CreateOrganisationRequest): ResponseEntity<EntityModel<*>> {
         val createdOrganisation = createApiIntegration(request)
 
         val headers = HttpHeaders()
@@ -45,10 +45,10 @@ class OrganisationTestSupportController(
     }
 
     @GetMapping("/organisations/{id}")
-    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<OrganisationAccountResource> {
+    fun fetchOrganisationById(@PathVariable("id") id: String): EntityModel<OrganisationAccountResource> {
         val organisation = getOrganisationById(id)
 
-        return Resource(
+        return EntityModel(
             organisationConverter.toResource(organisation),
             listOfNotNull(
                 organisationLinkBuilder.self(organisation.id)
@@ -57,10 +57,10 @@ class OrganisationTestSupportController(
     }
 
     @GetMapping("/api-integrations")
-    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<OrganisationAccountResource> {
+    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): EntityModel<OrganisationAccountResource> {
         val apiIntegration = getApiIntegrationByName(name!!)
 
-        return Resource(
+        return EntityModel(
             organisationConverter.toResource(apiIntegration),
             listOfNotNull(
                 organisationLinkBuilder.self(apiIntegration.id)

@@ -14,8 +14,8 @@ import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.ContractConverter
 import com.boclips.users.presentation.resources.UserResource
-import org.springframework.hateoas.ExposesResourceFor
-import org.springframework.hateoas.Resource
+import org.springframework.hateoas.EntityModel
+import org.springframework.hateoas.server.ExposesResourceFor
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -43,7 +43,7 @@ class UserController(
 ) {
 
     @PostMapping
-    fun createAUser(@Valid @RequestBody createTeacherRequest: CreateTeacherRequest?): ResponseEntity<Resource<*>> {
+    fun createAUser(@Valid @RequestBody createTeacherRequest: CreateTeacherRequest?): ResponseEntity<EntityModel<*>> {
         val user = createTeacherAccount(createTeacherRequest!!)
 
         val headers = HttpHeaders()
@@ -53,15 +53,15 @@ class UserController(
     }
 
     @PutMapping("/{id}")
-    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest): Resource<UserResource> {
+    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest): EntityModel<UserResource> {
         updateUser(id, updateUserRequest)
         return getAUser(id)
     }
 
     @GetMapping("/{id}")
-    fun getAUser(@PathVariable id: String?): Resource<UserResource> {
+    fun getAUser(@PathVariable id: String?): EntityModel<UserResource> {
         val userResource = getUser(id!!)
-        return Resource(
+        return EntityModel(
             userResource,
             listOfNotNull(
                 userLinkBuilder.profileSelfLink(),

@@ -7,7 +7,7 @@ import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.requests.CreateContractRequest
 import com.boclips.users.presentation.resources.ContractConverter
 import com.boclips.users.presentation.resources.ContractResource
-import org.springframework.hateoas.Resource
+import org.springframework.hateoas.EntityModel
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -29,7 +29,7 @@ class ContractTestSupportController(
     private val contractConverter: ContractConverter
 ) {
     @PostMapping
-    fun insertContract(@Valid @RequestBody request: CreateContractRequest): ResponseEntity<Resource<*>> {
+    fun insertContract(@Valid @RequestBody request: CreateContractRequest): ResponseEntity<EntityModel<*>> {
         val createdContract = createContract(request)
 
         val headers = HttpHeaders()

@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.hateoas
 
 import org.springframework.hateoas.Link
-import org.springframework.hateoas.ResourceSupport
+import org.springframework.hateoas.RepresentationModel
 
 /**
  * Spring HATEOAS does not play very well with JSON polymorphic serialisation. I've given up after a couple of hours
@@ -13,7 +13,7 @@ import org.springframework.hateoas.ResourceSupport
 open class ContractResourcesHateoasWrapper(
     val _embedded: ContractResourcesWrapper,
     resourceLinks: List<Link> = emptyList()
-) : ResourceSupport() {
+) : RepresentationModel<ContractResourcesHateoasWrapper>() {
     init {
         this.add(resourceLinks)
     }

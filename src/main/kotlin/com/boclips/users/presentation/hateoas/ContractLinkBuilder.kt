@@ -6,21 +6,21 @@ import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.presentation.controllers.contract.ContractTestSupportController
 import com.boclips.users.presentation.controllers.contract.ContractsController
 import org.springframework.hateoas.Link
-import org.springframework.hateoas.mvc.ControllerLinkBuilder
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder
 import org.springframework.stereotype.Service
 
 @Service
 class ContractLinkBuilder {
     fun self(contractId: ContractId): Link {
-        return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(ContractTestSupportController::class.java).fetchContract(contractId.value)
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(ContractTestSupportController::class.java).fetchContract(contractId.value)
         ).withRel("self")
     }
 
     fun searchContracts(name: String? = null, rel: String? = null): Link? {
         return getIfHasRole(UserRoles.VIEW_CONTRACTS) {
-            ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(ContractsController::class.java).getContracts(name)
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(ContractsController::class.java).getContracts(name)
             ).withRel(rel ?: "searchContracts")
         }
     }

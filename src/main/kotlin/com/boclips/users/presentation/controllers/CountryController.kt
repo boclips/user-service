@@ -7,8 +7,8 @@ import com.boclips.users.presentation.resources.school.CountryConverter
 import com.boclips.users.presentation.resources.school.CountryResource
 import com.boclips.users.presentation.resources.school.StateConverter
 import com.boclips.users.presentation.resources.school.StateResource
-import org.springframework.hateoas.Resource
-import org.springframework.hateoas.Resources
+import org.springframework.hateoas.CollectionModel
+import org.springframework.hateoas.EntityModel
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -23,19 +23,19 @@ class CountryController(
         private val countryLinkBuilder: CountryLinkBuilder
 ) {
     @GetMapping("/countries")
-    fun getAllCountries(): Resources<Resource<CountryResource>> {
+    fun getAllCountries(): CollectionModel<EntityModel<CountryResource>> {
         val countries = getCountries()
 
-        return Resources(
+        return CollectionModel(
             countryConverter.toCountriesResource(countries), countryLinkBuilder.getCountriesSelfLink()
         )
     }
 
     @GetMapping("/countries/USA/states")
-    fun getAllUsStates(): Resources<Resource<StateResource>> {
+    fun getAllUsStates(): CollectionModel<EntityModel<StateResource>> {
         val states = getUsStates()
 
-        return Resources(
+        return CollectionModel(
             stateConverter.toStatesResource(states),
             countryLinkBuilder.getUsStatesSelfLink()
         )
