@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.requests
 
+import com.boclips.users.application.commands.UsaState
 import javax.validation.Valid
 import javax.validation.constraints.Size
 
@@ -27,7 +28,7 @@ open class UpdateUserRequest(
     @field:Size(min = 3, max = 3, message = "Country must be 3 characters")
     var country: String? = null,
 
-    @field:Size(min = 2, max = 2, message = "US state must be 2 characters")
+    @field:UsaState
     var state: String? = null,
 
     @field:Size(min = 1, max = 200, message = "School name must be between 1 and 200 characters")
