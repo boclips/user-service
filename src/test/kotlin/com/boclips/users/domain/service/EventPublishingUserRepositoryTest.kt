@@ -21,7 +21,7 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val event = eventBus.getEventOfType(UserCreated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)
-        assertThat(event.organisation.id).isEqualTo(organisation.id.value)
+        assertThat(event.user.organisation.id).isEqualTo(organisation.id.value)
     }
 
     @Test
@@ -33,8 +33,8 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val event = eventBus.getEventOfType(UserUpdated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)
-        assertThat(event.organisation.id).isEqualTo(school.id.value)
-        assertThat(event.organisation.name).isEqualTo("The Street Wise Academy")
-        assertThat(event.organisation.parent.name).isEqualTo("District 9")
+        assertThat(event.user.organisation.id).isEqualTo(school.id.value)
+        assertThat(event.user.organisation.name).isEqualTo("The Street Wise Academy")
+        assertThat(event.user.organisation.parent.name).isEqualTo("District 9")
     }
 }

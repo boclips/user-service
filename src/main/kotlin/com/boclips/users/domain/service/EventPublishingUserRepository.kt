@@ -33,8 +33,6 @@ class EventPublishingUserRepository(
         eventBus.publish(
             UserCreated.builder()
                 .user(toEventUser(user))
-                .userId(user.id.value)
-                .organisation(toEventOrganisation(user))
                 .build()
         )
     }
@@ -43,8 +41,6 @@ class EventPublishingUserRepository(
         eventBus.publish(
             UserUpdated.builder()
                 .user(toEventUser(user))
-                .userId(user.id.value)
-                .organisation(toEventOrganisation(user))
                 .build()
         )
     }
@@ -53,6 +49,7 @@ class EventPublishingUserRepository(
         return EventUser.builder()
             .id(user.id.value)
             .isBoclipsEmployee(user.account.isBoclipsEmployee())
+            .organisation(toEventOrganisation(user))
             .build()
     }
 
