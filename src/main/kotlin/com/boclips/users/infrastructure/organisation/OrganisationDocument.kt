@@ -16,6 +16,7 @@ data class OrganisationDocument(
         val type: OrganisationType,
         val country: LocationDocument?,
         val state: LocationDocument?,
+        val postCode: String?,
         @DBRef
         val parentOrganisation: OrganisationDocument? = null
 )

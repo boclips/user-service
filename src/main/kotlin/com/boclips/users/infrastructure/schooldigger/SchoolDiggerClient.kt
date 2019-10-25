@@ -37,6 +37,7 @@ class SchoolDiggerClient(
                 name = existingSchool.schoolName,
                 externalId = existingSchool.schoolid,
                 state = State.fromCode(existingSchool.address.state),
+                postCode = existingSchool.address.zip,
                 country = Country.usa(),
                 district = null
             ) to existingSchool.district?.let { existingDistrict ->

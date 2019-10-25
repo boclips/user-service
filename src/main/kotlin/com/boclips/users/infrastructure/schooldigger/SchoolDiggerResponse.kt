@@ -15,7 +15,8 @@ data class SchoolDiggerSchoolDetail(
 )
 
 data class SchoolDiggerAddress(
-    val state: String
+    val state: String,
+    val zip: String
 )
 
 data class SchoolDiggerDistrict(

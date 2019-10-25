@@ -30,13 +30,14 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             OrganisationFactory.district(name = "good stuff")
         )
         val school = organisationAccountRepository.save(
-            OrganisationFactory.school(district = district)
+            OrganisationFactory.school(district = district, postCode = "12345")
         )
         val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
 
         assertThat(school.id).isNotNull
-        assertThat((school.organisation).district?.organisation?.name).isEqualTo("good stuff")
-        assertThat((fetchedSchool?.organisation)?.district?.organisation?.name).isEqualTo("good stuff")
+        assertThat(school.organisation.postCode).isEqualTo("12345")
+        assertThat(school.organisation.district?.organisation?.name).isEqualTo("good stuff")
+        assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
     }
 
     @Test

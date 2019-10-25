@@ -34,6 +34,7 @@ class OrganisationFactory {
             externalId: String = "externalId",
             country: Country = Country.fromCode(Country.USA_ISO),
             countryName: String? = null,
+            postCode: String? = null,
             state: State = State.fromCode("IL"),
             district: OrganisationAccount<District>? = null
         ): School {
@@ -42,6 +43,7 @@ class OrganisationFactory {
                 externalId = externalId,
                 country = countryName?.let { Country.fromCode(it) } ?: country,
                 state = state,
+                postCode = postCode,
                 district = district
             )
         }

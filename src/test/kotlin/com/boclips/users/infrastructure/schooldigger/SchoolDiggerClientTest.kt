@@ -36,6 +36,7 @@ class SchoolDiggerClientTest {
         assertThat(school.externalId).isNotBlank()
         assertThat(school.state).isNotNull
         assertThat(school.country).isEqualTo(Country.usa())
+        assertThat(school.postCode).isNotBlank()
         assertThat(district).isNotNull
         assertThat(district!!.externalId).isNotBlank()
         assertThat(district.name).isNotBlank()
