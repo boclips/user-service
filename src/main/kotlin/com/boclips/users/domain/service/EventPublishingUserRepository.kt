@@ -65,6 +65,7 @@ class EventPublishingUserRepository(
             .id(account.id.value)
             .type(account.organisation.type().name)
             .name(account.organisation.name)
+            .postcode(account.organisation.postCode)
             .parent(parent)
             .build()
     }

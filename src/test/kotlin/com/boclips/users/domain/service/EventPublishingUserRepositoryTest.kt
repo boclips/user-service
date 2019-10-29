@@ -27,7 +27,10 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it publishes an event when user is updated`() {
         val district = organisationAccountRepository.save(OrganisationFactory.district(name = "District 9"))
-        val school = organisationAccountRepository.save(OrganisationFactory.school(name = "The Street Wise Academy", district = district))
+        val school = organisationAccountRepository.save(OrganisationFactory.school(
+            name = "The Street Wise Academy",
+            district = district,
+            postCode = "012345"))
         val user = userRepository.save(UserFactory.sample())
         userRepository.update(user, UserUpdateCommand.ReplaceOrganisationId(school.id))
 
@@ -36,5 +39,6 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(event.user.organisation.id).isEqualTo(school.id.value)
         assertThat(event.user.organisation.name).isEqualTo("The Street Wise Academy")
         assertThat(event.user.organisation.parent.name).isEqualTo("District 9")
+        assertThat(event.user.organisation.postcode).isEqualTo("012345")
     }
 }
