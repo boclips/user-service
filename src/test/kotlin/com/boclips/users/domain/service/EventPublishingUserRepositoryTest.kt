@@ -2,11 +2,15 @@ package com.boclips.users.domain.service
 
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
+import com.boclips.users.domain.model.Profile
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
 
@@ -31,11 +35,17 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
             name = "The Street Wise Academy",
             district = district,
             postCode = "012345"))
-        val user = userRepository.save(UserFactory.sample())
+        val user = userRepository.save(UserFactory.sample(
+            account = AccountFactory.sample(username = "dave@davidson.com"),
+            profile = ProfileFactory.sample(firstName = "Dave", lastName = "Davidson"))
+        )
         userRepository.update(user, UserUpdateCommand.ReplaceOrganisationId(school.id))
 
         val event = eventBus.getEventOfType(UserUpdated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)
+        assertThat(event.user.firstName).isEqualTo("Dave")
+        assertThat(event.user.lastName).isEqualTo("Davidson")
+        assertThat(event.user.email).isEqualTo("dave@davidson.com")
         assertThat(event.user.organisation.id).isEqualTo(school.id.value)
         assertThat(event.user.organisation.name).isEqualTo("The Street Wise Academy")
         assertThat(event.user.organisation.parent.name).isEqualTo("District 9")

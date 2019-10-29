@@ -48,6 +48,9 @@ class EventPublishingUserRepository(
     private fun toEventUser(user: User): EventUser {
         return EventUser.builder()
             .id(user.id.value)
+            .email(user.account.email)
+            .firstName(user.profile?.firstName)
+            .lastName(user.profile?.lastName)
             .isBoclipsEmployee(user.account.isBoclipsEmployee())
             .organisation(toEventOrganisation(user))
             .build()
