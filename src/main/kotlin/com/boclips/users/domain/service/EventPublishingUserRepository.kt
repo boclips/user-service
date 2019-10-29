@@ -1,6 +1,8 @@
 package com.boclips.users.domain.service
 
 import com.boclips.eventbus.EventBus
+import com.boclips.eventbus.domain.Subject
+import com.boclips.eventbus.domain.SubjectId
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.Account
@@ -51,6 +53,7 @@ class EventPublishingUserRepository(
             .email(user.account.email)
             .firstName(user.profile?.firstName)
             .lastName(user.profile?.lastName)
+            .subjects(user.profile?.subjects?.map { subject -> Subject.builder().id(SubjectId(subject.id.value)).name(subject.name).build() }.orEmpty())
             .isBoclipsEmployee(user.account.isBoclipsEmployee())
             .organisation(toEventOrganisation(user))
             .build()
