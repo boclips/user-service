@@ -43,7 +43,7 @@ class OrganisationFactory {
                 externalId = externalId,
                 country = countryName?.let { Country.fromCode(it) } ?: country,
                 state = state,
-                postCode = postCode,
+                postcode = postCode,
                 district = district
             )
         }

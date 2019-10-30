@@ -25,7 +25,7 @@ object OrganisationDocumentConverter {
                 country = organisationDocument.country?.let { Country.fromCode(it.code) }
                     ?: throw IllegalStateException("School ${organisationDocument.id} must have a country"),
                 state = organisationDocument.state?.let { State.fromCode(it.code) },
-                postCode = organisationDocument.postCode,
+                postcode = organisationDocument.postcode,
                 district = mapSchoolDistrict(organisationDocument),
                 externalId = organisationDocument.externalId
             )

@@ -18,7 +18,7 @@ sealed class Organisation(
     open val name: String,
     open val country: Country? = null,
     open val state: State? = null,
-    open val postCode: String? = null
+    open val postcode: String? = null
 ) {
     abstract fun type(): OrganisationType
 }
@@ -27,7 +27,7 @@ data class School(
     override val name: String,
     override val country: Country,
     override val state: State? = null,
-    override val postCode: String? = null,
+    override val postcode: String? = null,
     val district: OrganisationAccount<District>?,
     val externalId: String?
 ) : Organisation(

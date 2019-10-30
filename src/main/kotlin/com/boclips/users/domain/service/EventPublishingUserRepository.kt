@@ -71,7 +71,7 @@ class EventPublishingUserRepository(
             .id(account.id.value)
             .type(account.organisation.type().name)
             .name(account.organisation.name)
-            .postcode(account.organisation.postCode)
+            .postcode(account.organisation.postcode)
             .parent(parent)
             .build()
     }

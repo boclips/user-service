@@ -83,7 +83,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
             type = organisation.type(),
             country = organisation.country?.id?.let { LocationDocument(code = it) },
             state = organisation.state?.id?.let { LocationDocument(code = it) },
-            postCode = organisation.postCode,
+            postcode = organisation.postcode,
             parentOrganisation = when (organisation) {
                 is School -> organisation.district?.let {
                     organisationDocument(
