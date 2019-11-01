@@ -54,6 +54,7 @@ class EventPublishingUserRepository(
             .firstName(user.profile?.firstName)
             .lastName(user.profile?.lastName)
             .subjects(user.profile?.subjects?.map { subject -> Subject.builder().id(SubjectId(subject.id.value)).name(subject.name).build() }.orEmpty())
+            .ages(user.profile?.ages?.toMutableList().orEmpty())
             .isBoclipsEmployee(user.account.isBoclipsEmployee())
             .organisation(toEventOrganisation(user))
             .build()

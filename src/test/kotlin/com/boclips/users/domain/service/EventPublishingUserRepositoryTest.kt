@@ -43,7 +43,7 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
             postCode = "012345"))
         val user = userRepository.save(UserFactory.sample(
             account = AccountFactory.sample(username = "dave@davidson.com"),
-            profile = ProfileFactory.sample(firstName = "Dave", lastName = "Davidson", subjects = listOf(maths)))
+            profile = ProfileFactory.sample(firstName = "Dave", lastName = "Davidson", subjects = listOf(maths), ages = listOf(7)))
         )
         userRepository.update(user, UserUpdateCommand.ReplaceOrganisationId(school.id))
 
@@ -55,6 +55,8 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(event.user.subjects).hasSize(1)
         assertThat(event.user.subjects.first().id.value).isEqualTo("1")
         assertThat(event.user.subjects.first().name).isEqualTo("Maths")
+        assertThat(event.user.ages).hasSize(1)
+        assertThat(event.user.ages.first()).isEqualTo(7)
         assertThat(event.user.organisation.id).isEqualTo(school.id.value)
         assertThat(event.user.organisation.name).isEqualTo("The Street Wise Academy")
         assertThat(event.user.organisation.parent.name).isEqualTo("District 9")
