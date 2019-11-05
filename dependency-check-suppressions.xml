@@ -9,7 +9,7 @@
         <gav regex="true">^org\.springframework\.security:spring-security-.*:.*$</gav>
         <cve>CVE-2018-1258</cve>
     </suppress>
-    <suppress until="2019-11-01Z">
+    <suppress until="2019-12-01Z">
         <notes><![CDATA[
    file name: grpc-netty-shaded-1.21.0.jar
 
@@ -19,9 +19,9 @@
         <gav regex="true">^io\.grpc:grpc-netty-shaded:.*$</gav>
         <cve>CVE-2015-2156</cve>
     </suppress>
-    <suppress until="2019-11-01Z">
+    <suppress until="2019-12-01Z">
         <notes><![CDATA[
-   file name: event-bus-1.26.0.jar (shaded: io.netty:netty-tcnative-boringssl-static:2.0.22.Final)
+   file name: event-bus-1.37.0.jar (shaded: io.netty:netty-tcnative-boringssl-static:2.0.22.Final)
 
    The vulnerability is related to cookies and httpOnly flag. This dependency
    is a transitive of pubsub.
@@ -52,5 +52,20 @@
    ]]></notes>
         <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind.*$</gav>
         <cve>CVE-2019-17531</cve>
+    </suppress>
+
+    <suppress until="2019-12-01Z">
+        <notes><![CDATA[
+      File name: jackson-mapper-asl-1.9.13.jar
+
+      We need to wait for Spring Security OAuth2 to update their dependency: https://github.com/spring-projects/spring-security-oauth/issues/996#issuecomment-542856240
+      ]]></notes>
+        <cpe>cpe:/a:fasterxml:jackson:1.9.13</cpe>
+        <cve>CVE-2017-17485</cve>
+        <cve>CVE-2018-5968</cve>
+        <cve>CVE-2017-15095</cve>
+        <cve>CVE-2018-14718</cve>
+        <cve>CVE-2018-7489</cve>
+        <cve>CVE-2017-7525</cve>
     </suppress>
 </suppressions>
