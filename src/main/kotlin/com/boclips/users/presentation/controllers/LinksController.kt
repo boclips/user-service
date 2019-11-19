@@ -2,6 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
+import com.boclips.users.presentation.hateoas.EventLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import org.springframework.hateoas.Resource
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController
 class LinksController(
     private val userLinkBuilder: UserLinkBuilder,
     private val countryLinkBuilder: CountryLinkBuilder,
-    private val contractLinkBuilder: ContractLinkBuilder
+    private val contractLinkBuilder: ContractLinkBuilder,
+    private val eventLinkBuilder: EventLinkBuilder
 ) {
     @GetMapping
     fun getLinks() = Resource(
@@ -24,7 +26,8 @@ class LinksController(
             userLinkBuilder.userLink(),
             userLinkBuilder.contractsLink(),
             countryLinkBuilder.getCountriesLink(),
-            contractLinkBuilder.searchContracts()
+            contractLinkBuilder.searchContracts(),
+            eventLinkBuilder.logPageRenderedEventLink()
         )
     )
 }

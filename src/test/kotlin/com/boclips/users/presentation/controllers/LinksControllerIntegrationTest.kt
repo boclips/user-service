@@ -30,6 +30,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
             .andExpect(jsonPath("$._links.countries").doesNotExist())
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
+            .andExpect(jsonPath("$._links.trackPageRendered").exists())
     }
 
     @Test
@@ -51,6 +52,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
+            .andExpect(jsonPath("$._links.trackPageRendered").exists())
     }
 
     @Test
@@ -72,6 +74,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.countries").exists())
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
+            .andExpect(jsonPath("$._links.trackPageRendered").exists())
     }
 
     @Test

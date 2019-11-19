@@ -16,8 +16,8 @@ class EventController(
 ) {
 
     @PostMapping("/events/page-render")
-    fun logPageRenderedEvent(@RequestBody pageRenderedEvent: PageRenderedEventRequest): ResponseEntity<Void> {
-        trackPageRenderedEvent.invoke(pageRenderedEvent)
+    fun logPageRenderedEvent(@RequestBody pageRenderedEvent: PageRenderedEventRequest?): ResponseEntity<Void> {
+        trackPageRenderedEvent.invoke(pageRenderedEvent!!)
         return ResponseEntity(HttpStatus.CREATED)
     }
 }
