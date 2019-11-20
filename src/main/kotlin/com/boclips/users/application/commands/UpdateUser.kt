@@ -30,7 +30,8 @@ class UpdateUser(
     private val marketingService: MarketingService,
     private val userUpdatesCommandFactory: UserUpdatesCommandFactory,
     private val organisationAccountRepository: OrganisationAccountRepository,
-    private val organisationService: OrganisationService
+    private val organisationService: OrganisationService,
+    private val getOrImportUser: GetOrImportUser
 ) {
     companion object : KLogging()
 
@@ -42,7 +43,7 @@ class UpdateUser(
 
         val school = findOrCreateSchool(updateUserRequest)
 
-        userService.findUserById(authenticatedUserId).let { user ->
+        getOrImportUser(authenticatedUserId).let { user ->
             userUpdatesCommandFactory.buildCommands(updateUserRequest, school).let { commands ->
                 userRepository.update(user, *commands.toTypedArray())
             }

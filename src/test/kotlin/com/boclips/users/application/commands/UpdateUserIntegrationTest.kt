@@ -7,10 +7,8 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -175,12 +173,18 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)
             val school =
-                organisationAccountRepository.save(OrganisationFactory.school(country = Country.fromCode("USA"), state = State.fromCode("CA"), externalId = "i'm in schooldigger"))
+                organisationAccountRepository.save(
+                    OrganisationFactory.school(
+                        country = Country.fromCode("USA"),
+                        state = State.fromCode("CA"),
+                        externalId = "i'm in schooldigger"
+                    )
+                )
 
             saveUser(
                 UserFactory.sample(
                     account = AccountFactory.sample(id = userId),
-                    organisationAccountId= school.id
+                    organisationAccountId = school.id
                 )
             )
             val updatedUser = updateUser(
@@ -193,7 +197,8 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val organisationAccount = organisationAccountRepository.findSchoolById(updatedUser.organisationAccountId!!)!!
+            val organisationAccount =
+                organisationAccountRepository.findSchoolById(updatedUser.organisationAccountId!!)!!
             assertThat(organisationAccount.organisation.country.isUSA()).isEqualTo(true)
             assertThat(organisationAccount.organisation.state!!.id).isEqualTo("AZ")
             assertThat(organisationAccount.organisation.externalId).isNull()
@@ -223,5 +228,32 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext(userId)
 
         assertThrows<UserNotFoundException> { updateUser(userId, UpdateUserRequestFactory.sample()) }
+    }
+
+    @Test
+    fun `update profile of external user`() {
+        // this mimics a user not being in our local database,
+        // but is instead provided by some SSO source
+        val userId = UserId("some-user-id")
+        keycloakClientFake.createAccount(AccountFactory.sample(id = userId.value))
+        setSecurityContext(userId.value)
+
+        val mySubject = subjectService.addSubject(Subject(name = "Maths", id = SubjectId("subject-1")))
+
+        val persistedUser = updateUser(
+            userId.value, UpdateUserRequest(
+                firstName = "josh",
+                lastName = "fleck",
+                hasOptedIntoMarketing = true,
+                subjects = listOf(mySubject.id.value),
+                ages = listOf(4, 5, 6)
+            )
+        )
+
+        assertThat(persistedUser.profile!!.firstName).isEqualTo("josh")
+        assertThat(persistedUser.profile!!.lastName).isEqualTo("fleck")
+        assertThat(persistedUser.profile!!.subjects).containsExactly(mySubject)
+        assertThat(persistedUser.profile!!.ages).isEqualTo(listOf(4, 5, 6))
+        assertThat(persistedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
     }
 }
