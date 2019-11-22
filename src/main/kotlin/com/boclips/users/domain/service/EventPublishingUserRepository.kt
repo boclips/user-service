@@ -70,6 +70,7 @@ class EventPublishingUserRepository(
         val parent = parentOrganisation(account.organisation)
         return EventOrganisation.builder()
             .id(account.id.value)
+            .accountType(account.type.name)
             .type(account.organisation.type().name)
             .name(account.organisation.name)
             .postcode(account.organisation.postcode)

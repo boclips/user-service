@@ -58,6 +58,7 @@ class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(event.user.ages).hasSize(1)
         assertThat(event.user.ages.first()).isEqualTo(7)
         assertThat(event.user.organisation.id).isEqualTo(school.id.value)
+        assertThat(event.user.organisation.accountType).isEqualTo("STANDARD")
         assertThat(event.user.organisation.name).isEqualTo("The Street Wise Academy")
         assertThat(event.user.organisation.parent.name).isEqualTo("District 9")
         assertThat(event.user.organisation.postcode).isEqualTo("012345")
