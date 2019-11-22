@@ -1,4 +1,4 @@
-package com.boclips.users.domain.service
+package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.page.PageRendered

@@ -1,7 +1,8 @@
-package com.boclips.users.domain.service
+package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
+import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -23,7 +24,12 @@ class OrganisationAccountRepositoryEventDecoratorIntegrationTest : AbstractSprin
         saveUser(UserFactory.sample(organisationAccountId = school.id, account = AccountFactory.sample("u2")))
         saveUser(UserFactory.sample(organisationAccountId = null, account = AccountFactory.sample("u3")))
 
-        repository.update(OrganisationAccountTypeUpdate(district.id, OrganisationAccountType.DESIGN_PARTNER))
+        repository.update(
+            OrganisationAccountTypeUpdate(
+                district.id,
+                OrganisationAccountType.DESIGN_PARTNER
+            )
+        )
 
         val events = eventBus.getEventsOfType(UserUpdated::class.java)
         assertThat(events).hasSize(2)
@@ -36,7 +42,12 @@ class OrganisationAccountRepositoryEventDecoratorIntegrationTest : AbstractSprin
         saveUser(UserFactory.sample(organisationAccountId = school.id, account = AccountFactory.sample("u2")))
         saveUser(UserFactory.sample(organisationAccountId = null, account = AccountFactory.sample("u3")))
 
-        repository.update(OrganisationAccountTypeUpdate(school.id, OrganisationAccountType.DESIGN_PARTNER))
+        repository.update(
+            OrganisationAccountTypeUpdate(
+                school.id,
+                OrganisationAccountType.DESIGN_PARTNER
+            )
+        )
 
         val events = eventBus.getEventsOfType(UserUpdated::class.java)
         assertThat(events).hasSize(2)

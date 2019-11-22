@@ -1,38 +1,18 @@
-package com.boclips.users.domain.service
+package com.boclips.users.domain.service.events
 
-import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.domain.Subject
 import com.boclips.eventbus.domain.SubjectId
 import com.boclips.eventbus.domain.user.Organisation
-import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.service.OrganisationAccountRepository
 
-class OrganisationAccountRepositoryEventDecorator(
-    private val repository: OrganisationAccountRepository,
-    private val userRepository: UserRepository,
-    private val eventBus: EventBus
-) : OrganisationAccountRepository by repository {
+class EventConverter(
+    private val organisationAccountRepository: OrganisationAccountRepository
+) {
 
-    override fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>? {
-        val updatedOrganisation = repository.update(update) ?: return null
-
-        val childOrganisations = repository.findOrganisationAccountsByParentId(update.id) + updatedOrganisation
-
-        childOrganisations.forEach { childOrganisation ->
-            userRepository.findAllByOrganisationId(childOrganisation.id).forEach { user ->
-                eventBus.publish(UserUpdated.builder()
-                    .user(toEventUser(user))
-                    .build())
-            }
-        }
-
-
-        return updatedOrganisation
-    }
-
-    private fun toEventUser(user: User): com.boclips.eventbus.domain.user.User {
+    fun toEventUser(user: User): com.boclips.eventbus.domain.user.User {
         return com.boclips.eventbus.domain.user.User.builder()
             .id(user.id.value)
             .email(user.account.email)
@@ -47,7 +27,7 @@ class OrganisationAccountRepositoryEventDecorator(
 
     private fun toEventOrganisation(user: User): Organisation? {
         val organisationId = user.organisationAccountId ?: return null
-        val account = repository.findOrganisationAccountById(organisationId) ?: return null
+        val account = organisationAccountRepository.findOrganisationAccountById(organisationId) ?: return null
         return toEventOrganisation(account)
     }
 
@@ -69,4 +49,5 @@ class OrganisationAccountRepositoryEventDecorator(
             else -> null
         }
     }
+
 }
