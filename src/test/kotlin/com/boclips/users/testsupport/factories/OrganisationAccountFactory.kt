@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
@@ -15,11 +16,13 @@ class OrganisationAccountFactory {
     companion object {
         fun sample(
             id: OrganisationAccountId = OrganisationAccountId(value = ObjectId().toHexString()),
+            type: OrganisationAccountType = OrganisationAccountType.STANDARD,
             contractIds: List<ContractId> = emptyList(),
             organisation: Organisation = OrganisationFactory.school()
         ): OrganisationAccount<*> {
             return OrganisationAccount(
                 id = id,
+                type = type,
                 contractIds = contractIds,
                 organisation = organisation
             )

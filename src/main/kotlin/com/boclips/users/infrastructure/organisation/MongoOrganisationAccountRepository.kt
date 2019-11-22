@@ -72,6 +72,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
     ): OrganisationDocument {
         return OrganisationDocument(
             id = id,
+            accountType = null,
             name = organisation.name,
             role = role,
             contractIds = contractIds.map { it.value },

@@ -13,6 +13,7 @@ import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.factories.ContractFactory
@@ -131,7 +132,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
             )
         }
         val organisation: Organisation = School(organisationName, Country.usa(), state = null, district = null, externalId = null)
-        return OrganisationAccount(OrganisationAccountId(organisationName), emptyList(), organisation)
+        return OrganisationAccount(OrganisationAccountId(organisationName), OrganisationAccountType.STANDARD, emptyList(), organisation)
     }
 
     override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String): User {

@@ -6,9 +6,15 @@ import com.boclips.users.domain.model.school.State
 
 data class OrganisationAccount<T: Organisation>(
     val id: OrganisationAccountId,
+    val type: OrganisationAccountType,
     val contractIds: List<ContractId>,
     val organisation: T
 )
+
+enum class OrganisationAccountType {
+    DESIGN_PARTNER,
+    STANDARD
+}
 
 enum class OrganisationType {
     API, SCHOOL, DISTRICT

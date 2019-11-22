@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -20,6 +21,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         )
 
         assertThat(organisationAccount.id).isNotNull
+        assertThat(organisationAccount.type).isEqualTo(OrganisationAccountType.STANDARD)
         assertThat(organisationAccount.organisation.name).isEqualTo(organisationName)
         assertThat(organisationAccount.contractIds).isEqualTo(contractIds)
     }
@@ -35,8 +37,10 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
 
         assertThat(school.id).isNotNull
+        assertThat(school.type).isEqualTo(OrganisationAccountType.STANDARD)
         assertThat(school.organisation.postcode).isEqualTo("12345")
         assertThat(school.organisation.district?.organisation?.name).isEqualTo("good stuff")
+        assertThat(school.organisation.district?.type).isEqualTo(OrganisationAccountType.STANDARD)
         assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
     }
 
