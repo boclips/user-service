@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.organisation.OrganisationType
 import org.springframework.data.mongodb.repository.MongoRepository
 
@@ -14,4 +13,5 @@ interface OrganisationSpringDataRepository : MongoRepository<OrganisationDocumen
     ): Iterable<OrganisationDocument>
     fun findByType(type: OrganisationType): List<OrganisationDocument>
     fun findByExternalId(id: String): OrganisationDocument?
+    fun findByParentOrganisationId(ParentOrganisationId: String): List<OrganisationDocument>
 }

@@ -14,9 +14,7 @@ import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
 import com.boclips.users.domain.service.OrganisationAccountUpdate
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Repository
 
-@Repository
 class MongoOrganisationAccountRepository(private val repository: OrganisationSpringDataRepository) :
     OrganisationAccountRepository {
 
@@ -63,6 +61,10 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         }
 
         return fromDocument(repository.save(updatedDocument))
+    }
+
+    override fun findOrganisationAccountsByParentId(parentId: OrganisationAccountId): List<OrganisationAccount<*>> {
+        return repository.findByParentOrganisationId(parentId.value).map { fromDocument(it) }
     }
 
     private fun doSave(

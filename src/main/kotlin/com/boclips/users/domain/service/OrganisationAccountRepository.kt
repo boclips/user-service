@@ -34,6 +34,7 @@ interface OrganisationAccountRepository {
 
     fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>?
 
+    fun findOrganisationAccountsByParentId(parentId: OrganisationAccountId): List<OrganisationAccount<*>>
     fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount<*>?
     fun findOrganisationAccountByExternalId(id: String): OrganisationAccount<*>?
 

@@ -148,4 +148,15 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         )
         assertThat(updatedOrganisation).isNull()
     }
+
+    @Test
+    fun `find organisations by parent id`() {
+        val district = organisationAccountRepository.save(OrganisationFactory.district())
+        organisationAccountRepository.save(OrganisationFactory.school(district = district))
+        organisationAccountRepository.save(OrganisationFactory.school(district = null))
+        organisationAccountRepository.save(OrganisationFactory.school(district = null))
+
+        assertThat(organisationAccountRepository.findSchools()).hasSize(3)
+        assertThat(organisationAccountRepository.findOrganisationAccountsByParentId(district.id)).hasSize(1)
+    }
 }

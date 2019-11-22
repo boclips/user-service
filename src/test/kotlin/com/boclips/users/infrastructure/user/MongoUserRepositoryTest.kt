@@ -185,4 +185,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(updatedUser.marketingTracking.utmTerm).isEqualTo("test-term")
     }
+
+    @Test
+    fun `find users by organisation id`() {
+        userRepository.save(UserFactory.sample(account = AccountFactory.sample(id = "user-1"), organisationAccountId = OrganisationAccountId("org-id-1")))
+        userRepository.save(UserFactory.sample(account = AccountFactory.sample(id = "user-2"), organisationAccountId = OrganisationAccountId("org-id-2")))
+
+        val usersInOrg = userRepository.findAllByOrganisationId(OrganisationAccountId("org-id-1"))
+
+        assertThat(usersInOrg).hasSize(1)
+    }
 }

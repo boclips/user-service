@@ -13,7 +13,7 @@ import com.boclips.users.domain.model.organisation.School
 import com.boclips.eventbus.domain.user.User as EventUser
 import com.boclips.eventbus.domain.user.Organisation as EventOrganisation
 
-class EventPublishingUserRepository(
+class UserRepositoryEventDecorator(
     private val userRepository: UserRepository,
     private val organisationAccountRepository: OrganisationAccountRepository,
     private val eventBus: EventBus

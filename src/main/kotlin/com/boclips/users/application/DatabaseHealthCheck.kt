@@ -5,9 +5,7 @@ import com.boclips.users.domain.service.UserRepository
 import mu.KLogging
 import org.springframework.boot.actuate.health.Health
 import org.springframework.boot.actuate.health.HealthIndicator
-import org.springframework.stereotype.Component
 
-@Component
 class DatabaseHealthCheck(val userRepository: UserRepository) : HealthIndicator {
     companion object : KLogging()
 

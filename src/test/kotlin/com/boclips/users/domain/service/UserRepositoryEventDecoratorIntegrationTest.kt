@@ -14,7 +14,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
-class EventPublishingUserRepositoryTest : AbstractSpringIntegrationTest() {
+class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it publishes an event when user is created`() {

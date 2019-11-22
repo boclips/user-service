@@ -1,4 +1,4 @@
-package com.boclips.users.config
+package com.boclips.users.config.application
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.filter.ForwardedHeaderFilter
 
 @Configuration
-class PresentationConfig {
+class PresentationConfiguration {
 
     @Bean
     fun forwardedHeaderFilter(): FilterRegistrationBean<ForwardedHeaderFilter> {

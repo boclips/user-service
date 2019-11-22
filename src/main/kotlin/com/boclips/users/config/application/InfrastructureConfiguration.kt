@@ -1,15 +1,11 @@
-package com.boclips.users.config
+package com.boclips.users.config.application
 
-import com.boclips.eventbus.EventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.AmericanSchoolsProvider
-import com.boclips.users.domain.service.EventPublishingUserRepository
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.SubjectService
-import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
@@ -18,7 +14,10 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
+import com.boclips.users.infrastructure.organisation.MongoOrganisationAccountRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
+import com.boclips.users.infrastructure.organisation.OrganisationSpringDataRepository
+import com.boclips.users.infrastructure.organisation.RoleBasedOrganisationIdResolver
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.schooldigger.SchoolDiggerClient
@@ -37,15 +36,21 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.web.client.RestTemplate
 
-@Profile("!test")
 @Configuration
-class ContextConfig(val objectMapper: ObjectMapper) {
+class InfrastructureConfiguration(
+    private val objectMapper: ObjectMapper,
+    private val organisationSpringDataRepository: OrganisationSpringDataRepository
+) {
+
+    @Profile("!test")
     @Bean
     fun analyticsClient(properties: MixpanelProperties) = MixpanelClient(properties)
 
+    @Profile("!test")
     @Bean
     fun keycloakWrapper(keycloak: Keycloak) = KeycloakWrapper(keycloak)
 
+    @Profile("!test")
     @Bean
     fun keycloakClient(keycloakWrapper: KeycloakWrapper, organisationIdResolver: OrganisationIdResolver) =
         KeycloakClient(
@@ -53,12 +58,15 @@ class ContextConfig(val objectMapper: ObjectMapper) {
             KeycloakUserToAccountConverter()
         )
 
+    @Profile("!test")
     @Bean
     fun accountProvider(keycloakClient: KeycloakClient): AccountProvider = keycloakClient
 
+    @Profile("!test")
     @Bean
     fun sessionProvider(keycloakClient: KeycloakClient): SessionProvider = keycloakClient
 
+    @Profile("!test")
     @Bean
     fun keycloak(properties: KeycloakProperties): Keycloak {
         return Keycloak.getInstance(
@@ -70,6 +78,7 @@ class ContextConfig(val objectMapper: ObjectMapper) {
         )
     }
 
+    @Profile("!test")
     @Bean
     fun customerManagement(
         properties: HubSpotProperties,
@@ -81,21 +90,26 @@ class ContextConfig(val objectMapper: ObjectMapper) {
             restTemplate = RestTemplate()
         )
 
+    @Profile("!test")
     @Bean
     fun captchaProvider(googleRecaptchaProperties: GoogleRecaptchaProperties): CaptchaProvider =
         GoogleRecaptchaClient(properties = googleRecaptchaProperties)
 
+    @Profile("!test")
     @Bean
     fun videoServiceClient(videoServiceProperties: VideoServiceProperties) =
         VideoServiceClient.getUnauthorisedApiClient(videoServiceProperties.baseUrl)
 
+    @Profile("!test")
     @Bean
     fun cacheableSubjectsClient(videoServiceClient: VideoServiceClient) = CacheableSubjectsClient(videoServiceClient)
 
+    @Profile("!test")
     @Bean
     fun subjectService(cacheableSubjectsClient: CacheableSubjectsClient) =
         VideoServiceSubjectsClient(cacheableSubjectsClient)
 
+    @Profile("!test")
     @Bean
     fun userDocumentConverter(subjectService: SubjectService): UserDocumentConverter {
         return UserDocumentConverter(subjectService)
@@ -105,20 +119,32 @@ class ContextConfig(val objectMapper: ObjectMapper) {
     @Bean
     fun americanSchoolsProvider(schoolDiggerProperties: SchoolDiggerProperties): AmericanSchoolsProvider =
         SchoolDiggerClient(properties = schoolDiggerProperties, restTemplate = RestTemplate())
-}
 
-@Configuration
-class RepositoryConfiguration {
+
+
+    @Bean
+    fun roleBasedOrganisationIdResolver(): RoleBasedOrganisationIdResolver {
+        return RoleBasedOrganisationIdResolver(mongoOrganisationAccountRepository())
+    }
+
     @Bean
     fun mongoUserRepository(
         userDocumentMongoRepository: UserDocumentMongoRepository,
-        userDocumentConverter: UserDocumentConverter,
-        organisationIdResolver: OrganisationIdResolver
-    ) =
-        MongoUserRepository(userDocumentMongoRepository, userDocumentConverter, organisationIdResolver)
+        userDocumentConverter: UserDocumentConverter
+    ): MongoUserRepository {
+        return MongoUserRepository(
+            userDocumentMongoRepository,
+            userDocumentConverter,
+            roleBasedOrganisationIdResolver()
+        )
+    }
 
     @Bean
-    fun userRepository(mongoUserRepository: MongoUserRepository, organisationAccountRepository: OrganisationAccountRepository, eventBus: EventBus): UserRepository {
-        return EventPublishingUserRepository(mongoUserRepository, organisationAccountRepository, eventBus)
+    fun mongoOrganisationAccountRepository(
+
+    ): MongoOrganisationAccountRepository {
+        return MongoOrganisationAccountRepository(
+            repository = organisationSpringDataRepository
+        )
     }
 }
