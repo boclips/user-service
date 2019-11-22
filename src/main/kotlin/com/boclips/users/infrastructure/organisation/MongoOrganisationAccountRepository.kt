@@ -10,7 +10,10 @@ import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.OrganisationAccountRepository
+import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
+import com.boclips.users.domain.service.OrganisationAccountUpdate
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -51,6 +54,16 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
     @Suppress("UNCHECKED_CAST")
     override fun save(district: District) =
         doSave(organisation = district) as OrganisationAccount<District>
+
+    override fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>? {
+        val document = repository.findByIdOrNull(update.id.value) ?: return null
+
+        val updatedDocument = when(update) {
+            is OrganisationAccountTypeUpdate -> document.copy(accountType = update.type)
+        }
+
+        return fromDocument(repository.save(updatedDocument))
+    }
 
     private fun doSave(
         role: String? = null,

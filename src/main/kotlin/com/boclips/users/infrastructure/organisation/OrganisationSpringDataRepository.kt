@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.organisation.OrganisationType
 import org.springframework.data.mongodb.repository.MongoRepository
 

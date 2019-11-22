@@ -6,8 +6,16 @@ import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.organisation.School
 import java.util.Collections.emptyList
+
+sealed class OrganisationAccountUpdate(val id: OrganisationAccountId)
+
+class OrganisationAccountTypeUpdate(
+    id: OrganisationAccountId,
+    val type: OrganisationAccountType
+): OrganisationAccountUpdate(id)
 
 interface OrganisationAccountRepository {
     fun save(
@@ -23,6 +31,8 @@ interface OrganisationAccountRepository {
     fun save(
         district: District
     ): OrganisationAccount<District>
+
+    fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>?
 
     fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount<*>?
     fun findOrganisationAccountByExternalId(id: String): OrganisationAccount<*>?

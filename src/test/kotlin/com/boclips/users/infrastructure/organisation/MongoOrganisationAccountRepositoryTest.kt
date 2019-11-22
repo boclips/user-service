@@ -1,7 +1,9 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
+import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -121,5 +123,29 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         val allSchools = organisationAccountRepository.findSchools()
 
         assertThat(allSchools).containsExactlyInAnyOrder(school)
+    }
+
+    @Test
+    fun `account type update`() {
+        val organisation = organisationAccountRepository.save(OrganisationFactory.district())
+
+        assertThat(organisation.type).isEqualTo(OrganisationAccountType.STANDARD)
+
+        val updatedOrganisation = organisationAccountRepository.update(OrganisationAccountTypeUpdate(id = organisation.id, type = OrganisationAccountType.DESIGN_PARTNER))
+
+        assertThat(updatedOrganisation).isNotNull
+        assertThat(updatedOrganisation?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
+        assertThat(organisationAccountRepository.findOrganisationAccountById(organisation.id)?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
+    }
+
+    @Test
+    fun `update returns null when organisation not found`() {
+        val updatedOrganisation = organisationAccountRepository.update(
+            OrganisationAccountTypeUpdate(
+                id = OrganisationAccountId("doesnotexist"),
+                type = OrganisationAccountType.DESIGN_PARTNER
+            )
+        )
+        assertThat(updatedOrganisation).isNull()
     }
 }
