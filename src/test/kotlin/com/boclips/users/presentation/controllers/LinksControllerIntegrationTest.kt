@@ -6,6 +6,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.Matchers.containsString
@@ -56,13 +57,38 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `registered user with profile`() {
+    fun `registered user with no mapped organisation`() {
         setSecurityContext("a-user-id")
 
         userRepository.save(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
-                profile = ProfileFactory.sample()
+                profile = ProfileFactory.sample(),
+                organisationAccountId = null
+            )
+        )
+
+        mvc.perform(get("/v1/").asUser("a-user-id"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.profile").exists())
+            .andExpect(jsonPath("$._links.countries").exists())
+            .andExpect(jsonPath("$._links.activate.href", endsWith("/users/a-user-id")))
+            .andExpect(jsonPath("$._links.createAccount").doesNotExist())
+            .andExpect(jsonPath("$._links.contracts").doesNotExist())
+            .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
+            .andExpect(jsonPath("$._links.trackPageRendered").exists())
+    }
+
+    @Test
+    fun `registered user with profile and organization is set up`() {
+        setSecurityContext("a-user-id")
+
+        val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
+        userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(id = "a-user-id"),
+                profile = ProfileFactory.sample(),
+                organisationAccountId = organisationAccount.id
             )
         )
 

@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component
 @Component
 class UserLinkBuilder(private val userRepository: UserRepository) : KLogging() {
 
-    fun updateUserLink(): Link? {
+    fun activateUserLink(): Link? {
         return getIfAuthenticated { currentUserId ->
-            if (userRepository.findById(UserId(value = currentUserId))?.hasProfile() == true)
+            if (userRepository.findById(UserId(value = currentUserId))?.isOnboarded() == true)
                 null
             else {
                 profileLink()?.withRel("activate")

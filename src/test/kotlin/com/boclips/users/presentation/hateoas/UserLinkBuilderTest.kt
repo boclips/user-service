@@ -3,6 +3,7 @@ package com.boclips.users.presentation.hateoas
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -34,11 +35,31 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         userRepository.save(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "lovely-user"),
-                profile = null
+                profile = null,
+                organisationAccountId = null
             )
         )
 
-        val activateUserLink = userLinkBuilder.updateUserLink()
+        val activateUserLink = userLinkBuilder.activateUserLink()
+
+        assertThat(activateUserLink).isNotNull()
+        assertThat(activateUserLink!!.href).endsWith("/users/lovely-user")
+        assertThat(activateUserLink.rel).isEqualTo("activate")
+    }
+
+    @Test
+    fun `activate link when authenticated, has partial profile information but no organisation mapped`() {
+        setSecurityContext("lovely-user")
+
+        userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(id = "lovely-user"),
+                profile = ProfileFactory.sample(),
+                organisationAccountId = null
+            )
+        )
+
+        val activateUserLink = userLinkBuilder.activateUserLink()
 
         assertThat(activateUserLink).isNotNull()
         assertThat(activateUserLink!!.href).endsWith("/users/lovely-user")
@@ -49,7 +70,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `activate link when authenticated and but not in the database`() {
         setSecurityContext("sso-first-time-user")
 
-        val activateUserLink = userLinkBuilder.updateUserLink()
+        val activateUserLink = userLinkBuilder.activateUserLink()
 
         assertThat(activateUserLink).isNotNull()
         assertThat(activateUserLink!!.href).endsWith("/users/sso-first-time-user")
@@ -63,18 +84,19 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         userRepository.save(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "lovely-user"),
-                profile = ProfileFactory.sample()
+                profile = ProfileFactory.sample(),
+                organisationAccountId = OrganisationAccountId("test")
             )
         )
 
-        val activateUserLink = userLinkBuilder.updateUserLink()
+        val activateUserLink = userLinkBuilder.activateUserLink()
 
         assertThat(activateUserLink).isNull()
     }
 
     @Test
     fun `no activate link when not authenticated`() {
-        val activateUserLink = userLinkBuilder.updateUserLink()
+        val activateUserLink = userLinkBuilder.activateUserLink()
 
         assertThat(activateUserLink).isNull()
     }

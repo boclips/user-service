@@ -2,6 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.eventbus.events.page.PageRendered
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.factories.AccountFactory
@@ -24,7 +25,9 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
     fun `page rendered events by trackable user navigation are being saved`() {
         val userId = "test-user-id"
         setSecurityContext(userId)
-        saveUser(UserFactory.sample(id = userId))
+
+        val organisationAccount = saveSchool()
+        saveUser(UserFactory.sample(account = AccountFactory.sample(id = userId), organisationAccountId = organisationAccount.id))
 
         val path = "/v1/events/page-render"
         val content = """{
