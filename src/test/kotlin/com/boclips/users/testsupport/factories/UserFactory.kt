@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import java.time.ZonedDateTime
 
 class UserFactory {
     companion object {
@@ -17,14 +18,16 @@ class UserFactory {
             marketing: MarketingTracking = MarketingTrackingFactory.sample(),
             account: Account = AccountFactory.sample(),
             profile: Profile? = ProfileFactory.sample(),
-            organisationAccountId: OrganisationAccountId? = null
+            organisationAccountId: OrganisationAccountId? = null,
+            accessExpiry: ZonedDateTime? = null
         ) = User(
             account = account,
             profile = profile,
             analyticsId = analyticsId,
             referralCode = referralCode,
             marketingTracking = marketing,
-            organisationAccountId = organisationAccountId
+            organisationAccountId = organisationAccountId,
+            accessExpiry = accessExpiry
         )
 
         fun sample(

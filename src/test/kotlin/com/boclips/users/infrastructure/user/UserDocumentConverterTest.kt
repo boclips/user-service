@@ -11,6 +11,9 @@ import com.boclips.videos.service.client.internal.FakeClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 class UserDocumentConverterTest {
     private val fakeClient = FakeClient()
@@ -37,10 +40,38 @@ class UserDocumentConverterTest {
     }
 
     @Test
+    fun `can convert document to user with an expiryDate`() {
+        val user = UserFactory.sample(
+            accessExpiry = ZonedDateTime.now(ZoneOffset.UTC)
+        )
+
+        val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
+
+        assertThat(convertedUser).isEqualTo(user)
+    }
+
+    @Test
     fun `users missing optedIntoMarketing is defaulted to true`() {
         val convertedUser =
             userDocumentConverter.convertToUser(UserDocumentFactory.sample(hasOptedIntoMarketing = null))
 
         assertThat(convertedUser.profile?.hasOptedIntoMarketing).isFalse()
+    }
+
+    @Test
+    fun `users without accessExpiry have no expiry`() {
+        val convertedUser =
+            userDocumentConverter.convertToUser(UserDocumentFactory.sample(accessExpiry = null))
+
+        assertThat(convertedUser.accessExpiry).isNull()
+    }
+
+    @Test
+    fun `users with accessExpiry have expiry`() {
+        val accessExpiryInstant = Instant.now()
+        val convertedUser =
+            userDocumentConverter.convertToUser(UserDocumentFactory.sample(accessExpiry = accessExpiryInstant))
+
+        assertThat(convertedUser.accessExpiry?.toInstant()).isEqualTo(accessExpiryInstant)
     }
 }

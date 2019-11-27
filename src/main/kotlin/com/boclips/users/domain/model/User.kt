@@ -3,6 +3,7 @@ package com.boclips.users.domain.model
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import java.time.ZonedDateTime
 
 data class User(
     val account: Account,
@@ -10,12 +11,17 @@ data class User(
     val marketingTracking: MarketingTracking,
     val referralCode: String?,
     val analyticsId: AnalyticsId? = null,
-    val organisationAccountId: OrganisationAccountId?
+    val organisationAccountId: OrganisationAccountId?,
+    val accessExpiry: ZonedDateTime?
 ) {
     val id get() = this.account.id
 
     fun hasProfile(): Boolean {
         return profile?.firstName?.isNotEmpty() ?: false
+    }
+
+    fun hasAccess(): Boolean {
+        return accessExpiry?.isAfter(ZonedDateTime.now()) ?: true
     }
 
     fun isOnboarded(): Boolean {

@@ -51,7 +51,8 @@ class UserService(
                     utmContent = newTeacher.utmContent,
                     utmTerm = newTeacher.utmTerm
                 ),
-                organisationAccountId = null
+                organisationAccountId = null,
+                accessExpiry = null
             )
         )
 

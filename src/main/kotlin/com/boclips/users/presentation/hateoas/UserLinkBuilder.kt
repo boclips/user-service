@@ -75,4 +75,14 @@ class UserLinkBuilder(private val userRepository: UserRepository) : KLogging() {
             null
         }
     }
+
+    fun renewAccessLink(): Link? {
+        return getIfAuthenticated { currentUserId ->
+            if (userRepository.findById(UserId(value = currentUserId))?.hasAccess() == true)
+                null
+            else {
+                Link("https://boclips.com/teachers", "renewAccess")
+            }
+        }
+    }
 }

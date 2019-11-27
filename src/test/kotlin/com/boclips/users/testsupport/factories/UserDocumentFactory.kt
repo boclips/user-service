@@ -2,6 +2,7 @@ package com.boclips.users.testsupport.factories
 
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
+import java.time.Instant
 import java.util.UUID
 
 class UserDocumentFactory {
@@ -16,7 +17,8 @@ class UserDocumentFactory {
             referralCode: String? = "code",
             subjects: List<String> = listOf("maths"),
             ageRange: List<Int> = listOf(1, 2),
-            hasOptedIntoMarketing: Boolean? = false
+            hasOptedIntoMarketing: Boolean? = false,
+            accessExpiry: Instant? = null
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
@@ -35,7 +37,8 @@ class UserDocumentFactory {
                 utmTerm = null,
                 utmContent = null
             ),
-            organisationId = "some-org-id"
+            organisationId = "some-org-id",
+            accessExpiry = accessExpiry
         )
     }
 }

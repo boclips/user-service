@@ -8,8 +8,9 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.SubjectService
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 data class UserDocumentConverter(private val subjectService: SubjectService) {
     fun convertToUser(userDocument: UserDocument): User {
@@ -38,7 +39,8 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                 utmTerm = userDocument.marketing?.utmTerm ?: "",
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
-            organisationAccountId = userDocument.organisationId?.let { OrganisationAccountId(it) }
+            organisationAccountId = userDocument.organisationId?.let { OrganisationAccountId(it) },
+            accessExpiry = userDocument.accessExpiry?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
         )
     }
 }

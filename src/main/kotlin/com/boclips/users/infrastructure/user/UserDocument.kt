@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.Instant
 
 @Document(collection = "users")
 data class UserDocument(
@@ -20,7 +21,8 @@ data class UserDocument(
     var referralCode: String?,
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
-    var organisationId: String?
+    var organisationId: String?,
+    var accessExpiry: Instant?
 ) {
     companion object {
         fun from(user: User): UserDocument {
@@ -42,7 +44,8 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = user.organisationAccountId?.value
+                organisationId = user.organisationAccountId?.value,
+                accessExpiry = user.accessExpiry?.toInstant()
             )
         }
 
@@ -59,7 +62,8 @@ data class UserDocument(
                 username = account.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
-                organisationId = organisationAccountId?.value
+                organisationId = organisationAccountId?.value,
+                accessExpiry = null
             )
         }
     }

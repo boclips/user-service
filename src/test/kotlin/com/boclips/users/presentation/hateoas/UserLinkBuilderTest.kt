@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.core.context.SecurityContextHolder
+import java.time.ZonedDateTime
 
 class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
@@ -192,5 +193,41 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         val contractsLink = userLinkBuilder.contractsLink(UserId("a-user"))
 
         assertThat(contractsLink).isNull()
+    }
+
+    @Test
+    fun `no renewAccess link when user has access`() {
+        setSecurityContext("lovely-user")
+
+        userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(id = "lovely-user"),
+                profile = ProfileFactory.sample(),
+                organisationAccountId = OrganisationAccountId("test"),
+                accessExpiry = null
+            )
+        )
+
+        val renewAccessLink = userLinkBuilder.renewAccessLink()
+
+        assertThat(renewAccessLink).isNull()
+    }
+
+    @Test
+    fun `no renewAccess link when user has expired`() {
+        setSecurityContext("lovely-user")
+
+        userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(id = "lovely-user"),
+                profile = ProfileFactory.sample(),
+                organisationAccountId = OrganisationAccountId("test"),
+                accessExpiry = ZonedDateTime.now().minusDays(1)
+            )
+        )
+
+        val renewAccessLink = userLinkBuilder.renewAccessLink()
+
+        assertThat(renewAccessLink).isNotNull
     }
 }

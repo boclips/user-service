@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.ZonedDateTime
 
 class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
@@ -94,6 +95,70 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.activate").doesNotExist())
+            .andExpect(jsonPath("$._links.createAccount").doesNotExist())
+            .andExpect(jsonPath("$._links.contracts").doesNotExist())
+            .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
+            .andExpect(jsonPath("$._links.countries").exists())
+            .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
+            .andExpect(jsonPath("$._links.trackPageRendered").exists())
+    }
+
+    @Test
+    fun `registered lifetime user`() {
+        setSecurityContext("a-user-id")
+
+        val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
+        userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(id = "a-user-id"),
+                profile = ProfileFactory.sample(),
+                organisationAccountId = organisationAccount.id,
+                accessExpiry = null
+            )
+        )
+
+        mvc.perform(get("/v1/").asUser("a-user-id"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.renewAccess").doesNotExist())
+    }
+
+    @Test
+    fun `registered user with an unexpired access period`() {
+        setSecurityContext("a-user-id")
+
+        val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
+        userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(id = "a-user-id"),
+                profile = ProfileFactory.sample(),
+                organisationAccountId = organisationAccount.id,
+                accessExpiry = ZonedDateTime.now().plusDays(1)
+            )
+        )
+
+        mvc.perform(get("/v1/").asUser("a-user-id"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.renewAccess").doesNotExist())
+    }
+
+    @Test
+    fun `registered user with an expired access period`() {
+        setSecurityContext("a-user-id")
+
+        val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
+        userRepository.save(
+            UserFactory.sample(
+                account = AccountFactory.sample(id = "a-user-id"),
+                profile = ProfileFactory.sample(),
+                organisationAccountId = organisationAccount.id,
+                accessExpiry = ZonedDateTime.now().minusDays(1)
+            )
+        )
+
+        mvc.perform(get("/v1/").asUser("a-user-id"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.renewAccess").exists())
             .andExpect(jsonPath("$._links.activate").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
