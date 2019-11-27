@@ -5,6 +5,7 @@ import com.boclips.security.utils.UserExtractor.getCurrentUserIfNotAnonymous
 import com.boclips.security.utils.UserExtractor.getIfAuthenticated
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.service.AccessService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.presentation.controllers.UserController
 import mu.KLogging
@@ -13,7 +14,8 @@ import org.springframework.hateoas.mvc.ControllerLinkBuilder
 import org.springframework.stereotype.Component
 
 @Component
-class UserLinkBuilder(private val userRepository: UserRepository) : KLogging() {
+class UserLinkBuilder(private val userRepository: UserRepository, private val accessService: AccessService) :
+    KLogging() {
 
     fun activateUserLink(): Link? {
         return getIfAuthenticated { currentUserId ->
@@ -78,9 +80,9 @@ class UserLinkBuilder(private val userRepository: UserRepository) : KLogging() {
 
     fun renewAccessLink(): Link? {
         return getIfAuthenticated { currentUserId ->
-            if (userRepository.findById(UserId(value = currentUserId))?.hasAccess() == true)
+            if (userRepository.findById(UserId(value = currentUserId))?.let { accessService.userHasAccess(it) } != false) {
                 null
-            else {
+            } else {
                 Link("https://boclips.com/teachers", "renewAccess")
             }
         }

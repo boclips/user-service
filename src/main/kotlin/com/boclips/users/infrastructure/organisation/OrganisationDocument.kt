@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.organisation.OrganisationType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.Instant
 
 @Document(collection = "organisations")
 data class OrganisationDocument(
@@ -20,7 +21,8 @@ data class OrganisationDocument(
         val state: LocationDocument?,
         val postcode: String?,
         @DBRef
-        val parentOrganisation: OrganisationDocument? = null
+        val parentOrganisation: OrganisationDocument? = null,
+        val accessExpiry: Instant? = null
 )
 
 data class LocationDocument(

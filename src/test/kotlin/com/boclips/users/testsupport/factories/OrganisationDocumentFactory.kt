@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import org.bson.types.ObjectId
+import java.time.ZonedDateTime
 import java.util.Collections.emptyList
 
 class OrganisationDocumentFactory {
@@ -19,7 +20,8 @@ class OrganisationDocumentFactory {
             country: LocationDocument? = LocationDocumentFactory.country(),
             state: LocationDocument? = LocationDocumentFactory.state(),
             postcode: String? = null,
-            parentOrganisation: OrganisationDocument? = null
+            parentOrganisation: OrganisationDocument? = null,
+            accessExpiry: ZonedDateTime? = null
         ) = OrganisationDocument(
             id = ObjectId().toHexString(),
             accountType = accountType,
@@ -31,7 +33,8 @@ class OrganisationDocumentFactory {
             country = country,
             state = state,
             postcode = postcode,
-            parentOrganisation = parentOrganisation
+            parentOrganisation = parentOrganisation,
+            accessExpiry = accessExpiry?.toInstant()
         )
     }
 }

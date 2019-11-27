@@ -8,6 +8,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.ZonedDateTime
 
 class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
@@ -38,12 +39,43 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         )
         val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
 
-        assertThat(school.id).isNotNull
-        assertThat(school.type).isEqualTo(OrganisationAccountType.STANDARD)
-        assertThat(school.organisation.postcode).isEqualTo("12345")
-        assertThat(school.organisation.district?.organisation?.name).isEqualTo("good stuff")
-        assertThat(school.organisation.district?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchool?.id).isNotNull
+        assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
         assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
+        assertThat(fetchedSchool?.organisation?.district?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
+    }
+
+    @Test
+    fun `persists a school with an expiry date`() {
+        val accessExpiry = ZonedDateTime.now().plusDays(1)
+        val school = organisationAccountRepository.save(
+            OrganisationFactory.school(postCode = "12345", accessExpiry = accessExpiry)
+        )
+        val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
+
+        assertThat(fetchedSchool?.id).isNotNull
+        assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
+        assertThat(fetchedSchool?.organisation?.accessExpiry).isEqualTo(accessExpiry)
+    }
+
+    @Test
+    fun `persists a school with a district with an expiry date`() {
+        val accessExpiry = ZonedDateTime.now().plusDays(1)
+        val district = organisationAccountRepository.save(
+            OrganisationFactory.district(name = "good stuff", accessExpiry = accessExpiry)
+        )
+        val school = organisationAccountRepository.save(
+            OrganisationFactory.school(district = district, postCode = "12345")
+        )
+        val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
+
+        assertThat(fetchedSchool?.id).isNotNull
+        assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
+        assertThat(fetchedSchool?.organisation?.district?.organisation?.accessExpiry).isEqualTo(accessExpiry)
     }
 
     @Test

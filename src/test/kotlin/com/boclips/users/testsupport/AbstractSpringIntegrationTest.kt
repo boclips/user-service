@@ -13,6 +13,7 @@ import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.service.AccessService
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.MarketingService
@@ -73,6 +74,9 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var accountProvider: AccountProvider
+
+    @Autowired
+    lateinit var accessService: AccessService
 
     @Autowired
     lateinit var repositories: Collection<CrudRepository<*, *>>

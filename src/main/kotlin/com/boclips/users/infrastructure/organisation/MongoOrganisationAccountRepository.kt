@@ -110,7 +110,8 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
                     )
                 }
                 else -> null
-            }
+            },
+            accessExpiry = organisation.accessExpiry?.toInstant()
         )
     }
 

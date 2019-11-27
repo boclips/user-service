@@ -26,7 +26,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
     @BeforeEach
     fun setUp() {
-        userLinkBuilder = UserLinkBuilder(userRepository = userRepository)
+        userLinkBuilder = UserLinkBuilder(userRepository = userRepository, accessService = accessService)
     }
 
     @Test
@@ -229,5 +229,12 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         val renewAccessLink = userLinkBuilder.renewAccessLink()
 
         assertThat(renewAccessLink).isNotNull
+    }
+
+    @Test
+    fun `no renewAccess link when unauthenticated`() {
+        val renewAccessLink = userLinkBuilder.renewAccessLink()
+
+        assertThat(renewAccessLink).isNull()
     }
 }

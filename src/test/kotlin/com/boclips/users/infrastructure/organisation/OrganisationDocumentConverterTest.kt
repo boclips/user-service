@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.ZonedDateTime
 
 class OrganisationDocumentConverterTest {
 
@@ -19,7 +20,8 @@ class OrganisationDocumentConverterTest {
             type = OrganisationType.SCHOOL,
             externalId = "external-id",
             accountType = null,
-            parentOrganisation = null
+            parentOrganisation = null,
+            accessExpiry = null
         )
 
         val organisationAccount = OrganisationDocumentConverter.fromDocument(organisationDocument)
@@ -36,6 +38,8 @@ class OrganisationDocumentConverterTest {
         assertThat(independentSchool.externalId).isEqualTo("external-id")
 
         assertThat(independentSchool.district).isNull()
+
+        assertThat(independentSchool.accessExpiry).isNull()
     }
 
     @Test
@@ -64,12 +68,15 @@ class OrganisationDocumentConverterTest {
 
     @Test
     fun `design partner school`() {
+        val accessExpiry = ZonedDateTime.now().plusMonths(3)
+
         val organisationDocument = OrganisationDocumentFactory.sample(
             type = OrganisationType.SCHOOL,
             accountType = null,
             parentOrganisation = OrganisationDocumentFactory.sample(
                 type = OrganisationType.DISTRICT,
-                accountType = OrganisationAccountType.DESIGN_PARTNER
+                accountType = OrganisationAccountType.DESIGN_PARTNER,
+                accessExpiry = accessExpiry
             )
         )
 
@@ -77,5 +84,6 @@ class OrganisationDocumentConverterTest {
 
         assertThat(school.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
         assertThat((school.organisation as School).district?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
+        assertThat((school.organisation as School).district?.organisation?.accessExpiry).isEqualTo(accessExpiry)
     }
 }

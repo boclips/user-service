@@ -10,6 +10,8 @@ import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 object OrganisationDocumentConverter {
     fun fromDocument(organisationDocument: OrganisationDocument): OrganisationAccount<*> {
@@ -28,7 +30,8 @@ object OrganisationDocumentConverter {
                 state = organisationDocument.state?.let { State.fromCode(it.code) },
                 postcode = organisationDocument.postcode,
                 district = mapSchoolDistrict(organisationDocument),
-                externalId = organisationDocument.externalId
+                externalId = organisationDocument.externalId,
+                accessExpiry = organisationDocument.accessExpiry?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
             )
 
             OrganisationType.DISTRICT -> District(
@@ -36,7 +39,8 @@ object OrganisationDocumentConverter {
                 state = organisationDocument.state?.let { State.fromCode(it.code) }
                     ?: throw IllegalStateException("District ${organisationDocument.id} must have a state"),
                 externalId = organisationDocument.externalId
-                    ?: throw IllegalStateException("District ${organisationDocument.id} must have externalId")
+                    ?: throw IllegalStateException("District ${organisationDocument.id} must have externalId"),
+                accessExpiry = organisationDocument.accessExpiry?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
             )
         }
 

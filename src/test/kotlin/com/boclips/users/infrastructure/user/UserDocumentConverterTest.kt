@@ -40,7 +40,7 @@ class UserDocumentConverterTest {
     }
 
     @Test
-    fun `can convert document to user with an expiryDate`() {
+    fun `can convert document to user with an accessExpiry`() {
         val user = UserFactory.sample(
             accessExpiry = ZonedDateTime.now(ZoneOffset.UTC)
         )

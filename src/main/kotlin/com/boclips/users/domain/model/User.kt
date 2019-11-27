@@ -20,10 +20,6 @@ data class User(
         return profile?.firstName?.isNotEmpty() ?: false
     }
 
-    fun hasAccess(): Boolean {
-        return accessExpiry?.isAfter(ZonedDateTime.now()) ?: true
-    }
-
     fun isOnboarded(): Boolean {
         return organisationAccountId?.value?.isNotEmpty() ?: false
     }

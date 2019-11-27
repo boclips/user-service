@@ -11,6 +11,7 @@ import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import org.bson.types.ObjectId
+import java.time.ZonedDateTime
 
 class OrganisationAccountFactory {
     companion object {
@@ -39,7 +40,8 @@ class OrganisationFactory {
             countryName: String? = null,
             postCode: String? = null,
             state: State = State.fromCode("IL"),
-            district: OrganisationAccount<District>? = null
+            district: OrganisationAccount<District>? = null,
+            accessExpiry: ZonedDateTime? = null
         ): School {
             return School(
                 name = name,
@@ -47,19 +49,22 @@ class OrganisationFactory {
                 country = countryName?.let { Country.fromCode(it) } ?: country,
                 state = state,
                 postcode = postCode,
-                district = district
+                district = district,
+                accessExpiry = accessExpiry
             )
         }
 
         fun district(
             name: String = "Amazing Organisation",
             externalId: String = "externalId",
-            state: State = State.fromCode("IL")
+            state: State = State.fromCode("IL"),
+            accessExpiry: ZonedDateTime? = null
         ): District {
             return District(
                 name = name,
                 externalId = externalId,
-                state = state
+                state = state,
+                accessExpiry = accessExpiry
             )
         }
 
