@@ -19,6 +19,8 @@ import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.factories.ContractFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -98,8 +100,8 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
         )
     }
 
-    override fun insertTestOrganisation(name: String, contracts: List<DomainContract>): OrganisationAccount<*> {
-        return saveOrganisationWithContractDetails(name, contracts.toList())
+    override fun insertTestOrganisation(organisationName: String, contracts: List<DomainContract>): OrganisationAccount<*> {
+        return saveOrganisationWithContractDetails(organisationName, contracts.toList())
     }
 
     override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String): User {
@@ -119,7 +121,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
         client = FakeUserServiceClient()
     }
 
-    override fun insertTestOrganisation(name: String, contracts: List<DomainContract>): OrganisationAccount<*> {
+    override fun insertTestOrganisation(organisationName: String, contracts: List<DomainContract>): OrganisationAccount<*> {
         contracts.forEach { domainContract ->
             domainContract as DomainContract.SelectedContent
             (client as FakeUserServiceClient).addContract(
@@ -129,8 +131,8 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                 }
             )
         }
-        val organisation: Organisation = School(name, Country.usa(), state = null, district = null, externalId = null)
-        return OrganisationAccount(OrganisationAccountId(name), OrganisationAccountType.STANDARD, emptyList(), organisation)
+        val organisation: Organisation = School(organisationName, Country.usa(), state = null, district = null, externalId = null)
+        return OrganisationAccount(OrganisationAccountId(organisationName), OrganisationAccountType.STANDARD, emptyList(), organisation)
     }
 
     override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String): User {
