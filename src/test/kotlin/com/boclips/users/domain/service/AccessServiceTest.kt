@@ -1,8 +1,15 @@
 package com.boclips.users.domain.service
 
+import com.boclips.eventbus.EventBus
+import com.boclips.eventbus.events.user.UserExpired
+import com.boclips.users.domain.service.events.EventConverter
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import com.nhaarman.mockitokotlin2.check
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
@@ -103,5 +110,30 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
         )
 
         assertThat(accessService.userHasAccess(user)).isEqualTo(false)
+    }
+
+    @Test
+    fun `it emits a UserExpired event when the user has expired`() {
+        val mockEventBus: EventBus = mock()
+        val eventConverter = EventConverter(organisationAccountRepository = organisationAccountRepository)
+
+        val accessService = AccessService(
+            organisationAccountRepository = organisationAccountRepository,
+            eventBus = mockEventBus,
+            eventConverter = eventConverter
+        )
+
+        val user = UserFactory.sample(
+            account = AccountFactory.sample(
+                id = "user-id"
+            ),
+            accessExpiry = ZonedDateTime.now().minusDays(1)
+        )
+
+        assertThat(accessService.userHasAccess(user)).isEqualTo(false)
+        verify(mockEventBus).publish(check<UserExpired> {
+            assertThat(it).isInstanceOf(UserExpired::class.java)
+            assertThat((it).user.id).isEqualTo("user-id")
+        })
     }
 }
