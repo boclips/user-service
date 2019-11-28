@@ -22,7 +22,7 @@ class LinksController(
         "", listOfNotNull(
             userLinkBuilder.createUserLink(),
             userLinkBuilder.activateUserLink(),
-            userLinkBuilder.renewAccessLink(),
+            userLinkBuilder.reportAccessExpiredLink(),
             userLinkBuilder.profileLink(),
             userLinkBuilder.userLink(),
             userLinkBuilder.contractsLink(),

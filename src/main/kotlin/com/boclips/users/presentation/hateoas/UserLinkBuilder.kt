@@ -7,6 +7,7 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.AccessService
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.presentation.controllers.EventController
 import com.boclips.users.presentation.controllers.UserController
 import mu.KLogging
 import org.springframework.hateoas.Link
@@ -78,12 +79,15 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
         }
     }
 
-    fun renewAccessLink(): Link? {
+    fun reportAccessExpiredLink(): Link? {
         return getIfAuthenticated { currentUserId ->
             if (userRepository.findById(UserId(value = currentUserId))?.let { accessService.userHasAccess(it) } != false) {
                 null
             } else {
-                Link("https://www.boclips.com/boclips-for-teachers-schedule-a-demo", "renewAccess")
+                ControllerLinkBuilder.linkTo(
+                    ControllerLinkBuilder.methodOn(EventController::class.java).trackUserExpiredEvent()
+                )
+                    .withRel("renewAccess")
             }
         }
     }
