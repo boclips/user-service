@@ -83,7 +83,7 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
             if (userRepository.findById(UserId(value = currentUserId))?.let { accessService.userHasAccess(it) } != false) {
                 null
             } else {
-                Link("https://boclips.com/teachers", "renewAccess")
+                Link("https://www.boclips.com/boclips-for-teachers-schedule-a-demo", "renewAccess")
             }
         }
     }
