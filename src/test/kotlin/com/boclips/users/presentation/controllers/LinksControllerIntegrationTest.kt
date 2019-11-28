@@ -120,7 +120,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.renewAccess").doesNotExist())
+            .andExpect(jsonPath("$._links.reportAccessExpired").doesNotExist())
     }
 
     @Test
@@ -139,7 +139,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.renewAccess").doesNotExist())
+            .andExpect(jsonPath("$._links.reportAccessExpired").doesNotExist())
     }
 
     @Test
@@ -158,7 +158,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         mvc.perform(get("/v1/").asUser("a-user-id"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.renewAccess").exists())
+            .andExpect(jsonPath("$._links.reportAccessExpired").exists())
             .andExpect(jsonPath("$._links.activate").doesNotExist())
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.contracts").doesNotExist())

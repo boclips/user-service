@@ -196,7 +196,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `no renewAccess link when user has access`() {
+    fun `no reportAccessExpired link when user has access`() {
         setSecurityContext("lovely-user")
 
         userRepository.save(
@@ -208,13 +208,13 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val renewAccessLink = userLinkBuilder.reportAccessExpiredLink()
+        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink()
 
-        assertThat(renewAccessLink).isNull()
+        assertThat(reportAccessExpiredLink).isNull()
     }
 
     @Test
-    fun `no renewAccess link when user has expired`() {
+    fun `no reportAccessExpired link when user has expired`() {
         setSecurityContext("lovely-user")
 
         userRepository.save(
@@ -226,16 +226,16 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val renewAccessLink = userLinkBuilder.reportAccessExpiredLink()
+        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink()
 
-        assertThat(renewAccessLink).isNotNull
-        assertThat(renewAccessLink!!.href).endsWith("/events/expired-user-access")
+        assertThat(reportAccessExpiredLink).isNotNull
+        assertThat(reportAccessExpiredLink!!.href).endsWith("/events/expired-user-access")
     }
 
     @Test
-    fun `no renewAccess link when unauthenticated`() {
-        val renewAccessLink = userLinkBuilder.reportAccessExpiredLink()
+    fun `no reportAccessExpired link when unauthenticated`() {
+        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink()
 
-        assertThat(renewAccessLink).isNull()
+        assertThat(reportAccessExpiredLink).isNull()
     }
 }

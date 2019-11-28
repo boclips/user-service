@@ -87,7 +87,7 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
                 ControllerLinkBuilder.linkTo(
                     ControllerLinkBuilder.methodOn(EventController::class.java).trackUserExpiredEvent()
                 )
-                    .withRel("renewAccess")
+                    .withRel("reportAccessExpired")
             }
         }
     }
