@@ -40,9 +40,9 @@ class UserDocumentConverterTest {
     }
 
     @Test
-    fun `can convert document to user with an accessExpiry`() {
+    fun `can convert document to user with an accessExpiresOn`() {
         val user = UserFactory.sample(
-            accessExpiry = ZonedDateTime.now(ZoneOffset.UTC)
+            accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC)
         )
 
         val convertedUser = userDocumentConverter.convertToUser(UserDocument.from(user))
@@ -59,19 +59,19 @@ class UserDocumentConverterTest {
     }
 
     @Test
-    fun `users without accessExpiry have no expiry`() {
+    fun `users without accessExpiresOn have no expiry`() {
         val convertedUser =
-            userDocumentConverter.convertToUser(UserDocumentFactory.sample(accessExpiry = null))
+            userDocumentConverter.convertToUser(UserDocumentFactory.sample(accessExpiresOn = null))
 
-        assertThat(convertedUser.accessExpiry).isNull()
+        assertThat(convertedUser.accessExpiresOn).isNull()
     }
 
     @Test
-    fun `users with accessExpiry have expiry`() {
-        val accessExpiryInstant = Instant.now()
+    fun `users with accessExpiresOn have expiry`() {
+        val accessExpiresOnInstant = Instant.now()
         val convertedUser =
-            userDocumentConverter.convertToUser(UserDocumentFactory.sample(accessExpiry = accessExpiryInstant))
+            userDocumentConverter.convertToUser(UserDocumentFactory.sample(accessExpiresOn = accessExpiresOnInstant))
 
-        assertThat(convertedUser.accessExpiry?.toInstant()).isEqualTo(accessExpiryInstant)
+        assertThat(convertedUser.accessExpiresOn?.toInstant()).isEqualTo(accessExpiresOnInstant)
     }
 }

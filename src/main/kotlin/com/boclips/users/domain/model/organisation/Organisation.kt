@@ -26,7 +26,7 @@ sealed class Organisation(
     open val country: Country? = null,
     open val state: State? = null,
     open val postcode: String? = null,
-    open val accessExpiry: ZonedDateTime? = null
+    open val accessExpiresOn: ZonedDateTime? = null
 ) {
     abstract fun type(): OrganisationType
 }
@@ -36,14 +36,14 @@ data class School(
     override val country: Country,
     override val state: State? = null,
     override val postcode: String? = null,
-    override val accessExpiry: ZonedDateTime? = null,
+    override val accessExpiresOn: ZonedDateTime? = null,
     val district: OrganisationAccount<District>?,
     val externalId: String?
 ) : Organisation(
     name = name,
     country = country,
     state = state,
-    accessExpiry = accessExpiry
+    accessExpiresOn = accessExpiresOn
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.SCHOOL
@@ -53,13 +53,13 @@ data class School(
 data class District(
     override val name: String,
     override val state: State,
-    override val accessExpiry: ZonedDateTime? = null,
+    override val accessExpiresOn: ZonedDateTime? = null,
     val externalId: String
 ) : Organisation(
     name = name,
     country = Country.usa(),
     state = state,
-    accessExpiry = accessExpiry
+    accessExpiresOn = accessExpiresOn
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.DISTRICT

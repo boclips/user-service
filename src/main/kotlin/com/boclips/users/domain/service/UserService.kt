@@ -52,7 +52,7 @@ class UserService(
                     utmTerm = newTeacher.utmTerm
                 ),
                 organisationAccountId = null,
-                accessExpiry = null
+                accessExpiresOn = null
             )
         )
 

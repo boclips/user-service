@@ -21,7 +21,7 @@ class OrganisationDocumentFactory {
             state: LocationDocument? = LocationDocumentFactory.state(),
             postcode: String? = null,
             parentOrganisation: OrganisationDocument? = null,
-            accessExpiry: ZonedDateTime? = null
+            accessExpiresOn: ZonedDateTime? = null
         ) = OrganisationDocument(
             id = ObjectId().toHexString(),
             accountType = accountType,
@@ -34,7 +34,7 @@ class OrganisationDocumentFactory {
             state = state,
             postcode = postcode,
             parentOrganisation = parentOrganisation,
-            accessExpiry = accessExpiry?.toInstant()
+            accessExpiresOn = accessExpiresOn?.toInstant()
         )
     }
 }

@@ -11,7 +11,7 @@ class CrmProfileFactory {
             ageRanges: List<Int> = emptyList(),
             subjects: List<Subject> = emptyList(),
             lastLoggedIn: Instant? = Instant.now(),
-            accessExpiry: Instant? = Instant.now()
+            accessExpiresOn: Instant? = Instant.now()
         ): CrmProfile {
             return CrmProfile(
                 id = UserId(value = "some-id"),
@@ -24,7 +24,7 @@ class CrmProfileFactory {
                 email = "email@internet.com",
                 hasOptedIntoMarketing = true,
                 marketingTracking = MarketingTrackingFactory.sample(),
-                accessExpiry = accessExpiry
+                accessExpiresOn = accessExpiresOn
             )
         }
     }

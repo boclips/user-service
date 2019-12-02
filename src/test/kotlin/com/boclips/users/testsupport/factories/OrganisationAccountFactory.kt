@@ -41,7 +41,7 @@ class OrganisationFactory {
             postCode: String? = null,
             state: State = State.fromCode("IL"),
             district: OrganisationAccount<District>? = null,
-            accessExpiry: ZonedDateTime? = null
+            accessExpiresOn: ZonedDateTime? = null
         ): School {
             return School(
                 name = name,
@@ -50,7 +50,7 @@ class OrganisationFactory {
                 state = state,
                 postcode = postCode,
                 district = district,
-                accessExpiry = accessExpiry
+                accessExpiresOn = accessExpiresOn
             )
         }
 
@@ -58,13 +58,13 @@ class OrganisationFactory {
             name: String = "Amazing Organisation",
             externalId: String = "externalId",
             state: State = State.fromCode("IL"),
-            accessExpiry: ZonedDateTime? = null
+            accessExpiresOn: ZonedDateTime? = null
         ): District {
             return District(
                 name = name,
                 externalId = externalId,
                 state = state,
-                accessExpiry = accessExpiry
+                accessExpiresOn = accessExpiresOn
             )
         }
 

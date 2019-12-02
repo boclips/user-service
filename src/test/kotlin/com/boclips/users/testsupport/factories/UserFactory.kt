@@ -19,7 +19,7 @@ class UserFactory {
             account: Account = AccountFactory.sample(),
             profile: Profile? = ProfileFactory.sample(),
             organisationAccountId: OrganisationAccountId? = null,
-            accessExpiry: ZonedDateTime? = null
+            accessExpiresOn: ZonedDateTime? = null
         ) = User(
             account = account,
             profile = profile,
@@ -27,7 +27,7 @@ class UserFactory {
             referralCode = referralCode,
             marketingTracking = marketing,
             organisationAccountId = organisationAccountId,
-            accessExpiry = accessExpiry
+            accessExpiresOn = accessExpiresOn
         )
 
         fun sample(

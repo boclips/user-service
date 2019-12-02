@@ -49,23 +49,23 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists a school with an expiry date`() {
-        val accessExpiry = ZonedDateTime.now().plusDays(1)
+        val accessExpiresOn = ZonedDateTime.now().plusDays(1)
         val school = organisationAccountRepository.save(
-            OrganisationFactory.school(postCode = "12345", accessExpiry = accessExpiry)
+            OrganisationFactory.school(postCode = "12345", accessExpiresOn = accessExpiresOn)
         )
         val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
 
         assertThat(fetchedSchool?.id).isNotNull
         assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
         assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
-        assertThat(fetchedSchool?.organisation?.accessExpiry).isEqualTo(accessExpiry)
+        assertThat(fetchedSchool?.organisation?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 
     @Test
     fun `persists a school with a district with an expiry date`() {
-        val accessExpiry = ZonedDateTime.now().plusDays(1)
+        val accessExpiresOn = ZonedDateTime.now().plusDays(1)
         val district = organisationAccountRepository.save(
-            OrganisationFactory.district(name = "good stuff", accessExpiry = accessExpiry)
+            OrganisationFactory.district(name = "good stuff", accessExpiresOn = accessExpiresOn)
         )
         val school = organisationAccountRepository.save(
             OrganisationFactory.school(district = district, postCode = "12345")
@@ -75,7 +75,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(fetchedSchool?.id).isNotNull
         assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
         assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
-        assertThat(fetchedSchool?.organisation?.district?.organisation?.accessExpiry).isEqualTo(accessExpiry)
+        assertThat(fetchedSchool?.organisation?.district?.organisation?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 
     @Test

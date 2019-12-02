@@ -18,7 +18,7 @@ class UserDocumentFactory {
             subjects: List<String> = listOf("maths"),
             ageRange: List<Int> = listOf(1, 2),
             hasOptedIntoMarketing: Boolean? = false,
-            accessExpiry: Instant? = null
+            accessExpiresOn: Instant? = null
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
@@ -38,7 +38,7 @@ class UserDocumentFactory {
                 utmContent = null
             ),
             organisationId = "some-org-id",
-            accessExpiry = accessExpiry
+            accessExpiresOn = accessExpiresOn
         )
     }
 }

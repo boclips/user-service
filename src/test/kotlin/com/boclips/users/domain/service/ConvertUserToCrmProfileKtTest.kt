@@ -49,7 +49,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
                 subjects = listOf(Subject(id = SubjectId("subject-id"), name = "Subject Name")),
                 hasOptedIntoMarketing = true
             ),
-            accessExpiry = expiryDate,
+            accessExpiresOn = expiryDate,
             marketing = MarketingTracking(
                 utmSource = "test-source",
                 utmMedium = "test-medium",
@@ -71,7 +71,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
         assertThat(crmProfile.subjects).hasSize(1)
         assertThat(crmProfile.subjects.first().name).isEqualTo("Subject Name")
         assertThat(crmProfile.subjects.first().id).isEqualTo(SubjectId("subject-id"))
-        assertThat(crmProfile.accessExpiry).isEqualTo(expiryDate.toInstant())
+        assertThat(crmProfile.accessExpiresOn).isEqualTo(expiryDate.toInstant())
         assertThat(crmProfile.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(crmProfile.marketingTracking.utmMedium).isEqualTo("test-medium")
         assertThat(crmProfile.marketingTracking.utmCampaign).isEqualTo("test-campaign")

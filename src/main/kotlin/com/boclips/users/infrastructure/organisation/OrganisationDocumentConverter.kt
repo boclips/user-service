@@ -31,7 +31,7 @@ object OrganisationDocumentConverter {
                 postcode = organisationDocument.postcode,
                 district = mapSchoolDistrict(organisationDocument),
                 externalId = organisationDocument.externalId,
-                accessExpiry = organisationDocument.accessExpiry?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
+                accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
             )
 
             OrganisationType.DISTRICT -> District(
@@ -40,7 +40,7 @@ object OrganisationDocumentConverter {
                     ?: throw IllegalStateException("District ${organisationDocument.id} must have a state"),
                 externalId = organisationDocument.externalId
                     ?: throw IllegalStateException("District ${organisationDocument.id} must have externalId"),
-                accessExpiry = organisationDocument.accessExpiry?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
+                accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
             )
         }
 

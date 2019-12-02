@@ -39,7 +39,7 @@ class TrackUserExpiredEventTest : AbstractSpringIntegrationTest() {
             account = AccountFactory.sample(
                 id = "user-id"
             ),
-            accessExpiry = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
+            accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
         ))
 
         setSecurityContext(user.id.value)
@@ -57,7 +57,7 @@ class TrackUserExpiredEventTest : AbstractSpringIntegrationTest() {
             account = AccountFactory.sample(
                 id = "user-id"
             ),
-            accessExpiry = ZonedDateTime.now(ZoneOffset.UTC).plusDays(1)
+            accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).plusDays(1)
         ))
 
         setSecurityContext(user.id.value)

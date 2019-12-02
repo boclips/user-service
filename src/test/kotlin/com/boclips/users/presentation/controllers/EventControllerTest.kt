@@ -84,7 +84,7 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
 
         saveUser(UserFactory.sample(
             account = AccountFactory.sample(id = userId),
-            accessExpiry = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
+            accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
         ))
 
         val path = "/v1/events/expired-user-access"

@@ -49,7 +49,7 @@ class HubSpotContactConverterTest {
     fun `access expiry date is an instant`() {
         val hubSpotContact = HubSpotContactConverter().convert(
             CrmProfileFactory.sample(
-                accessExpiry = Instant.parse("2018-01-01T00:00:00.123Z")
+                accessExpiresOn = Instant.parse("2018-01-01T00:00:00.123Z")
             )
         )
 

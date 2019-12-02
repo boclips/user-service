@@ -114,7 +114,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = organisationAccount.id,
-                accessExpiry = null
+                accessExpiresOn = null
             )
         )
 
@@ -133,7 +133,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = organisationAccount.id,
-                accessExpiry = ZonedDateTime.now().plusDays(1)
+                accessExpiresOn = ZonedDateTime.now().plusDays(1)
             )
         )
 
@@ -152,7 +152,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = organisationAccount.id,
-                accessExpiry = ZonedDateTime.now().minusDays(1)
+                accessExpiresOn = ZonedDateTime.now().minusDays(1)
             )
         )
 

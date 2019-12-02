@@ -204,7 +204,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
                 account = AccountFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = OrganisationAccountId("test"),
-                accessExpiry = null
+                accessExpiresOn = null
             )
         )
 
@@ -222,7 +222,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
                 account = AccountFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = OrganisationAccountId("test"),
-                accessExpiry = ZonedDateTime.now().minusDays(1)
+                accessExpiresOn = ZonedDateTime.now().minusDays(1)
             )
         )
 

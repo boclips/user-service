@@ -21,7 +21,7 @@ class OrganisationDocumentConverterTest {
             externalId = "external-id",
             accountType = null,
             parentOrganisation = null,
-            accessExpiry = null
+            accessExpiresOn = null
         )
 
         val organisationAccount = OrganisationDocumentConverter.fromDocument(organisationDocument)
@@ -39,7 +39,7 @@ class OrganisationDocumentConverterTest {
 
         assertThat(independentSchool.district).isNull()
 
-        assertThat(independentSchool.accessExpiry).isNull()
+        assertThat(independentSchool.accessExpiresOn).isNull()
     }
 
     @Test
@@ -68,7 +68,7 @@ class OrganisationDocumentConverterTest {
 
     @Test
     fun `design partner school`() {
-        val accessExpiry = ZonedDateTime.now().plusMonths(3)
+        val accessExpiresOn = ZonedDateTime.now().plusMonths(3)
 
         val organisationDocument = OrganisationDocumentFactory.sample(
             type = OrganisationType.SCHOOL,
@@ -76,7 +76,7 @@ class OrganisationDocumentConverterTest {
             parentOrganisation = OrganisationDocumentFactory.sample(
                 type = OrganisationType.DISTRICT,
                 accountType = OrganisationAccountType.DESIGN_PARTNER,
-                accessExpiry = accessExpiry
+                accessExpiresOn = accessExpiresOn
             )
         )
 
@@ -84,6 +84,6 @@ class OrganisationDocumentConverterTest {
 
         assertThat(school.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
         assertThat((school.organisation as School).district?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
-        assertThat((school.organisation as School).district?.organisation?.accessExpiry).isEqualTo(accessExpiry)
+        assertThat((school.organisation as School).district?.organisation?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 }

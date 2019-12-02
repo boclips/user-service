@@ -12,7 +12,7 @@ data class User(
     val referralCode: String?,
     val analyticsId: AnalyticsId? = null,
     val organisationAccountId: OrganisationAccountId?,
-    val accessExpiry: ZonedDateTime?
+    val accessExpiresOn: ZonedDateTime?
 ) {
     val id get() = this.account.id
 

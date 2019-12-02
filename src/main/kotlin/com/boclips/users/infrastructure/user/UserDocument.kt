@@ -22,7 +22,7 @@ data class UserDocument(
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
     var organisationId: String?,
-    var accessExpiry: Instant?
+    var accessExpiresOn: Instant?
 ) {
     companion object {
         fun from(user: User): UserDocument {
@@ -45,7 +45,7 @@ data class UserDocument(
                     utmContent = user.marketingTracking.utmContent
                 ),
                 organisationId = user.organisationAccountId?.value,
-                accessExpiry = user.accessExpiry?.toInstant()
+                accessExpiresOn = user.accessExpiresOn?.toInstant()
             )
         }
 
@@ -63,7 +63,7 @@ data class UserDocument(
                 hasOptedIntoMarketing = false,
                 marketing = null,
                 organisationId = organisationAccountId?.value,
-                accessExpiry = null
+                accessExpiresOn = null
             )
         }
     }

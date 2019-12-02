@@ -20,7 +20,7 @@ fun convertUserToCrmProfile(user: User, sessions: UserSessions): CrmProfile? {
             hasOptedIntoMarketing = it.hasOptedIntoMarketing,
             lastLoggedIn = sessions.lastAccess,
             marketingTracking = user.marketingTracking,
-            accessExpiry = user.accessExpiry?.toInstant()
+            accessExpiresOn = user.accessExpiresOn?.toInstant()
         )
     }
 }

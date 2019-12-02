@@ -22,7 +22,7 @@ data class OrganisationDocument(
         val postcode: String?,
         @DBRef
         val parentOrganisation: OrganisationDocument? = null,
-        val accessExpiry: Instant? = null
+        val accessExpiresOn: Instant? = null
 )
 
 data class LocationDocument(
