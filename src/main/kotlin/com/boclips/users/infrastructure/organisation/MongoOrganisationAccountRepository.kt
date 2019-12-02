@@ -141,11 +141,11 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
             }
     }
 
-    override fun findOrganisationAccountsByCountryCode(countryCode: String): List<OrganisationAccount<*>>? {
+    override fun findOrganisationAccountsByCountryCode(countryCode: String): List<OrganisationAccount<Organisation>>? {
         return repository.findByCountryCode(countryCode).toList()
             .map {
                 @Suppress("UNCHECKED_CAST")
-                fromDocument(it) as OrganisationAccount
+                fromDocument(it) as OrganisationAccount<Organisation>
             }
     }
 

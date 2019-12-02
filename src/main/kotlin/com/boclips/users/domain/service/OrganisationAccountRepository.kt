@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
@@ -37,7 +38,7 @@ interface OrganisationAccountRepository {
     fun findOrganisationAccountsByParentId(parentId: OrganisationAccountId): List<OrganisationAccount<*>>
     fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount<*>?
     fun findOrganisationAccountByExternalId(id: String): OrganisationAccount<*>?
-    fun findOrganisationAccountsByCountryCode(countryCode: String): List<OrganisationAccount<*>>?
+    fun findOrganisationAccountsByCountryCode(countryCode: String): List<OrganisationAccount<Organisation>>?
 
     fun findApiIntegrationByRole(role: String): OrganisationAccount<ApiIntegration>?
     fun findApiIntegrationByName(name: String): OrganisationAccount<ApiIntegration>?
