@@ -141,6 +141,14 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
             }
     }
 
+    override fun findOrganisationAccountsByCountryCode(countryCode: String): List<OrganisationAccount<*>>? {
+        return repository.findByCountryCode(countryCode).toList()
+            .map {
+                @Suppress("UNCHECKED_CAST")
+                fromDocument(it) as OrganisationAccount
+            }
+    }
+
     override fun findApiIntegrationByName(name: String): OrganisationAccount<ApiIntegration>? {
         return repository.findByNameAndType(name = name, type = OrganisationType.API)
             ?.let {

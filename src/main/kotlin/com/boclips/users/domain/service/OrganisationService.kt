@@ -3,6 +3,7 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.school.Country
 import org.springframework.stereotype.Service
 
 @Service

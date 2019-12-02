@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.organisation
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -190,5 +191,16 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisationAccountRepository.findSchools()).hasSize(3)
         assertThat(organisationAccountRepository.findOrganisationAccountsByParentId(district.id)).hasSize(1)
+    }
+
+    @Test
+    fun `find organisations by country code`() {
+        val district = organisationAccountRepository.save(OrganisationFactory.district())
+        organisationAccountRepository.save(OrganisationFactory.school(district = district, country = Country.fromCode(Country.USA_ISO)))
+        organisationAccountRepository.save(OrganisationFactory.school(district = null, country = Country.fromCode(Country.USA_ISO)))
+        organisationAccountRepository.save(OrganisationFactory.school(district = null, country = Country.fromCode("GBR")))
+
+        assertThat(organisationAccountRepository.findOrganisationAccountsByCountryCode(Country.USA_ISO)).hasSize(3)
+        assertThat(organisationAccountRepository.findOrganisationAccountsByCountryCode("GBR")).hasSize(1)
     }
 }

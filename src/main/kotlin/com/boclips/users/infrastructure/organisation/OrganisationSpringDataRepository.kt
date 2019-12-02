@@ -11,6 +11,9 @@ interface OrganisationSpringDataRepository : MongoRepository<OrganisationDocumen
         code: String,
         name: String
     ): Iterable<OrganisationDocument>
+    fun findByCountryCode(
+        code: String
+    ): List<OrganisationDocument>
     fun findByType(type: OrganisationType): List<OrganisationDocument>
     fun findByExternalId(id: String): OrganisationDocument?
     fun findByParentOrganisationId(ParentOrganisationId: String): List<OrganisationDocument>
