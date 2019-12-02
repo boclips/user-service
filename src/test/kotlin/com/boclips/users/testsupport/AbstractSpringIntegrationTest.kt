@@ -1,5 +1,6 @@
 package com.boclips.users.testsupport
 
+import com.boclips.eventbus.domain.user.Organisation
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.commands.AddCollectionToContract
@@ -18,8 +19,10 @@ import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationAccountRepository
+import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
@@ -110,6 +113,12 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var addCollectionToContract: AddCollectionToContract
+
+    @Autowired
+    lateinit var userService: UserService
+
+    @Autowired
+    lateinit var organisationService: OrganisationService
 
     @BeforeEach
     fun resetState() {

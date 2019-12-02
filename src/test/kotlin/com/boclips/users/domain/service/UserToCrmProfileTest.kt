@@ -1,5 +1,6 @@
 package com.boclips.users.domain.service
 
+import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSessionsFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -17,7 +18,7 @@ class UserToCrmProfileTest {
         val crmProfile = convertUserToCrmProfile(user, sessions)!!
 
         assertThat(crmProfile.id).isEqualTo(user.id)
-        assertThat(crmProfile.activated).isEqualTo(true)
+        assertThat(crmProfile.activated).isEqualTo(false)
         assertThat(crmProfile.ageRange).isEqualTo(user.profile!!.ages)
         assertThat(crmProfile.subjects).isEqualTo(user.profile!!.subjects)
         assertThat(crmProfile.email).isEqualTo(user.account.email)
@@ -26,6 +27,18 @@ class UserToCrmProfileTest {
         assertThat(crmProfile.hasOptedIntoMarketing).isEqualTo(user.profile!!.hasOptedIntoMarketing)
 
         assertThat(crmProfile.lastLoggedIn).isEqualTo(lastAccess)
+    }
+
+    @Test
+    fun `marks the user as activated when it has an organisation`() {
+        val lastAccess = Instant.now()
+        val sessions = UserSessionsFactory.sample(lastAccess = lastAccess)
+        val user = UserFactory.sample(organisationAccountId = OrganisationAccountId("test-org"))
+
+        val crmProfile = convertUserToCrmProfile(user, sessions)!!
+
+        assertThat(crmProfile.id).isEqualTo(user.id)
+        assertThat(crmProfile.activated).isEqualTo(true)
     }
 
     @Test

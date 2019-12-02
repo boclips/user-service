@@ -10,7 +10,8 @@ class CrmProfileFactory {
         fun sample(
             ageRanges: List<Int> = emptyList(),
             subjects: List<Subject> = emptyList(),
-            pointInTime: Instant? = Instant.now()
+            lastLoggedIn: Instant? = Instant.now(),
+            accessExpiry: Instant? = Instant.now()
         ): CrmProfile {
             return CrmProfile(
                 id = UserId(value = "some-id"),
@@ -19,10 +20,11 @@ class CrmProfileFactory {
                 ageRange = ageRanges,
                 firstName = "",
                 lastName = "",
-                lastLoggedIn = pointInTime,
+                lastLoggedIn = lastLoggedIn,
                 email = "email@internet.com",
                 hasOptedIntoMarketing = true,
-                marketingTracking = MarketingTrackingFactory.sample()
+                marketingTracking = MarketingTrackingFactory.sample(),
+                accessExpiry = accessExpiry
             )
         }
     }

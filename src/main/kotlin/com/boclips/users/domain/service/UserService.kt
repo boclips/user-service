@@ -21,15 +21,15 @@ class UserService(
     fun findAllTeachers(): List<User> {
         val schools = organisationAccountRepository.findSchools()
 
-        val allUsers = userRepository.findAll().filter {
+        val allTeachers = userRepository.findAll().filter {
             it.organisationAccountId == null || schools.map { it.id }.contains(
                 it.organisationAccountId
             )
         }
 
-        logger.info { "Fetched ${allUsers.size} teacher users from database" }
+        logger.info { "Fetched ${allTeachers.size} teacher users from database" }
 
-        return allUsers
+        return allTeachers
     }
 
     fun createTeacher(newTeacher: NewTeacher): User {

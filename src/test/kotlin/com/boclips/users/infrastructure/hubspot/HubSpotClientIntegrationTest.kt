@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestTemplate
 import java.time.Instant
+import java.time.ZonedDateTime
 
 class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
@@ -70,7 +71,8 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                         utmMedium = "utm-medium-1",
                         utmSource = "utm-source-1",
                         utmCampaign = "utm-campaign-1"
-                    )
+                    ),
+                    accessExpiry = ZonedDateTime.parse("2017-08-08T00:00:00Z")
                 ),
                 UserSessionsFactory.sample(lastAccess = Instant.parse("2017-08-08T00:00:00Z"))
             )!!

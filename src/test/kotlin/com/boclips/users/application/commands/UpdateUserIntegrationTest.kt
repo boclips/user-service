@@ -1,14 +1,17 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.application.UserUpdatesCommandFactory
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -17,17 +20,34 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
-    @Autowired
     lateinit var updateUser: UpdateUser
+    lateinit var mockMarketingService: MarketingService
+
+    @BeforeEach
+    fun setup() {
+        mockMarketingService = mock()
+        updateUser = UpdateUser(
+            userService = userService,
+            getOrImportUser = getOrImportUser,
+            marketingService = mockMarketingService,
+            organisationAccountRepository = organisationAccountRepository,
+            organisationService = organisationService,
+            userRepository = userRepository,
+            userUpdatesCommandFactory = UserUpdatesCommandFactory(subjectService = subjectService)
+        )
+    }
 
     @Test
     fun `update user information`() {
@@ -72,6 +92,59 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.marketingTracking.utmCampaign).isEqualTo("test-campaign")
         assertThat(user.marketingTracking.utmTerm).isEqualTo("test-term")
         assertThat(user.marketingTracking.utmContent).isEqualTo("test-content")
+    }
+
+    @Test
+    fun `when a user is updated, their CRM profile is too`() {
+        subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+
+        val userId = UUID.randomUUID().toString()
+        setSecurityContext(userId)
+
+        saveUser(UserFactory.sample(account = AccountFactory.sample(id = userId, username = "josh@fleck.com")))
+        updateUser(
+            userId, UpdateUserRequest(
+                firstName = "josh",
+                lastName = "fleck",
+                hasOptedIntoMarketing = true,
+                subjects = listOf("subject-1"),
+                ages = listOf(4, 5, 6),
+                country = "USA",
+                referralCode = "1234",
+                utm = MarketingTrackingRequest(
+                    source = "test-source",
+                    medium = "test-medium",
+                    campaign = "test-campaign",
+                    term = "test-term",
+                    content = "test-content"
+                )
+            )
+        )
+
+        argumentCaptor<List<CrmProfile>>().apply {
+            verify(mockMarketingService).updateProfile(capture())
+
+            assertThat(allValues).hasSize(1)
+            val updatedProfiles = allValues.get(0)
+
+            assertThat(updatedProfiles).hasSize(1)
+            val updatedProfile = updatedProfiles.get(0)
+
+            assertThat(updatedProfile.email).isEqualTo("josh@fleck.com")
+            assertThat(updatedProfile.firstName).isEqualTo("josh")
+            assertThat(updatedProfile.lastName).isEqualTo("fleck")
+            assertThat(updatedProfile.activated).isFalse()
+            assertThat(updatedProfile.hasOptedIntoMarketing).isTrue()
+            assertThat(updatedProfile.ageRange).containsExactly(4, 5, 6)
+            assertThat(updatedProfile.subjects).hasSize(1)
+            assertThat(updatedProfile.subjects.first().name).isEqualTo("Maths")
+            assertThat(updatedProfile.subjects.first().id).isEqualTo(SubjectId("subject-1"))
+            assertThat(updatedProfile.marketingTracking.utmSource).isEqualTo("test-source")
+            assertThat(updatedProfile.marketingTracking.utmMedium).isEqualTo("test-medium")
+            assertThat(updatedProfile.marketingTracking.utmCampaign).isEqualTo("test-campaign")
+            assertThat(updatedProfile.marketingTracking.utmTerm).isEqualTo("test-term")
+            assertThat(updatedProfile.marketingTracking.utmContent).isEqualTo("test-content")
+        }
     }
 
     @Test
@@ -162,10 +235,10 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val newSchool =
+            val newSchools =
                 organisationAccountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
-            assertThat(newSchool).hasSize(1)
-            assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool.first().id)
+            assertThat(newSchools).hasSize(1)
+            assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchools.first().id)
         }
 
         @Test

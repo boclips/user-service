@@ -35,7 +35,7 @@ class TrackPageRenderedEvent(
 
     private fun canTrackUser(userId: String): Boolean = if (ANONYMOUS_USER_ID != userId) {
         val user = getOrImportUser.invoke(UserId(userId))
-        user.isOnboarded()
+        user.hasOrganisationAssociated()
     } else {
         false
     }

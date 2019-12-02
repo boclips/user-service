@@ -4,12 +4,8 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 
 class OrganisationServiceTest: AbstractSpringIntegrationTest() {
-
-    @Autowired
-    lateinit var organisationService: OrganisationService
 
     @Test
     fun `when school and district already exists delegates on DB`() {

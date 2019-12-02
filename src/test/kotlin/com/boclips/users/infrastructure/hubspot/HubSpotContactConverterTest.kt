@@ -10,10 +10,6 @@ import java.time.Instant
 class HubSpotContactConverterTest {
 
     @Test
-    fun `maps all properties`() {
-    }
-
-    @Test
     fun `subjects are stored as comma separated string`() {
         val hubSpotContact =
             HubSpotContactConverter().convert(
@@ -41,11 +37,23 @@ class HubSpotContactConverterTest {
     fun `last logged in is an instant`() {
         val hubSpotContact = HubSpotContactConverter().convert(
             CrmProfileFactory.sample(
-                pointInTime = Instant.parse("2018-01-01T00:00:00.123Z")
+                lastLoggedIn = Instant.parse("2018-01-01T00:00:00.123Z")
             )
         )
 
         val lastLoggedIn = hubSpotContact.properties.first { it.property == "b2t_last_logged_in" }
+        assertThat(lastLoggedIn.value).isEqualTo("1514764800000")
+    }
+
+    @Test
+    fun `access expiry date is an instant`() {
+        val hubSpotContact = HubSpotContactConverter().convert(
+            CrmProfileFactory.sample(
+                accessExpiry = Instant.parse("2018-01-01T00:00:00.123Z")
+            )
+        )
+
+        val lastLoggedIn = hubSpotContact.properties.first { it.property == "b2t_access_expiry" }
         assertThat(lastLoggedIn.value).isEqualTo("1514764800000")
     }
 }

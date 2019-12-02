@@ -16,7 +16,7 @@
       },
       {
         "property": "b2t_is_activated",
-        "value": "true"
+        "value": "false"
       },
       {
         "property": "subjects_taught",
@@ -39,8 +39,8 @@
         "value": "utm-content-1"
       },
       {
-        "value": "utm-medium-1",
-        "property": "b2t_utm_medium"
+        "property": "b2t_utm_medium",
+        "value": "utm-medium-1"
       },
       {
         "property": "b2t_utm_campaign",
@@ -48,6 +48,10 @@
       },
       {
         "property": "b2t_last_logged_in",
+        "value": "1502150400000"
+      },
+      {
+        "property": "b2t_access_expiry",
         "value": "1502150400000"
       }
     ]

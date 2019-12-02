@@ -8,10 +8,10 @@ import com.boclips.users.domain.model.getSubjects
 import com.boclips.users.domain.model.marketing.CrmProfile
 
 fun convertUserToCrmProfile(user: User, sessions: UserSessions): CrmProfile? {
-    return user.runIfHasContactDetails {
+    return user.getContactDetails()?.let {
         CrmProfile(
             id = UserId(user.id.value),
-            activated = user.hasProfile(),
+            activated = user.hasOrganisationAssociated(),
             subjects = user.profile.getSubjects(),
             ageRange = user.profile.getAges(),
             firstName = it.firstName,
@@ -19,7 +19,8 @@ fun convertUserToCrmProfile(user: User, sessions: UserSessions): CrmProfile? {
             email = it.email,
             hasOptedIntoMarketing = it.hasOptedIntoMarketing,
             lastLoggedIn = sessions.lastAccess,
-            marketingTracking = user.marketingTracking
+            marketingTracking = user.marketingTracking,
+            accessExpiry = user.accessExpiry?.toInstant()
         )
     }
 }

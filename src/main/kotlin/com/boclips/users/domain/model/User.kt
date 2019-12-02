@@ -16,11 +16,7 @@ data class User(
 ) {
     val id get() = this.account.id
 
-    fun hasProfile(): Boolean {
-        return profile?.firstName?.isNotEmpty() ?: false
-    }
-
-    fun isOnboarded(): Boolean {
+    fun hasOrganisationAssociated(): Boolean {
         return organisationAccountId?.value?.isNotEmpty() ?: false
     }
 
@@ -28,16 +24,14 @@ data class User(
         return !referralCode.isNullOrEmpty()
     }
 
-    fun <T> runIfHasContactDetails(block: (contactDetails: ContactDetails) -> T): T? {
+    fun getContactDetails(): ContactDetails? {
         val email = this.account.email ?: return null
         return this.profile?.let {
-            block(
-                ContactDetails(
-                    firstName = this.profile.firstName,
-                    lastName = this.profile.lastName,
-                    hasOptedIntoMarketing = this.profile.hasOptedIntoMarketing,
-                    email = email
-                )
+            ContactDetails(
+                firstName = this.profile.firstName,
+                lastName = this.profile.lastName,
+                hasOptedIntoMarketing = this.profile.hasOptedIntoMarketing,
+                email = email
             )
         }
     }

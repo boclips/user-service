@@ -23,6 +23,7 @@ import mu.KLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
 
+// TODO EV: think about how to refactor dependencies
 @Component
 class UpdateUser(
     private val userService: UserService,
@@ -47,10 +48,10 @@ class UpdateUser(
             userUpdatesCommandFactory.buildCommands(updateUserRequest, school).let { commands ->
                 userRepository.update(user, *commands.toTypedArray())
             }
-            if (!user.hasProfile()) activate(UserId(authenticatedUser.id))
+            updateMarketingService(authenticatedUserId)
         }
 
-        return userService.findUserById(UserId(authenticatedUser.id))
+        return userService.findUserById(authenticatedUserId)
     }
 
     private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): OrganisationAccount<School>? {
@@ -84,13 +85,13 @@ class UpdateUser(
             ?.let { organisationAccountRepository.findSchoolById(OrganisationAccountId(it.id)) }
     }
 
-    private fun activate(id: UserId) {
+    private fun updateMarketingService(id: UserId) {
         val user = userService.findUserById(id)
 
         convertUserToCrmProfile(user, UserSessions(Instant.now()))?.let {
             marketingService.updateProfile(listOf(it))
         }
 
-        logger.info { "User $user has logged in for the first time" }
+        logger.info { "User $user has updated their information" }
     }
 }
