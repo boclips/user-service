@@ -36,9 +36,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it allows a user with expiry date in the past, but district expiry in the future`() {
         val district = organisationAccountRepository.save(
-            OrganisationFactory.district(
-                accessExpiresOn = ZonedDateTime.now().plusMonths(3)
-            )
+            OrganisationFactory.district(), accessExpiresOn = ZonedDateTime.now().plusMonths(3)
         )
         val school = OrganisationFactory.school(district = district)
         val schoolAccount = organisationAccountRepository.save(school)
@@ -54,9 +52,8 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it allows a user with expiry date in the future, but district expiry in the past`() {
         val district = organisationAccountRepository.save(
-            OrganisationFactory.district(
-                accessExpiresOn = ZonedDateTime.now().minusMonths(3)
-            )
+            OrganisationFactory.district(),
+            accessExpiresOn = ZonedDateTime.now().minusMonths(3)
         )
         val school = OrganisationFactory.school(district = district)
         val schoolAccount = organisationAccountRepository.save(school)
@@ -72,9 +69,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it allows a lifetime user, but district expiry in the past`() {
         val district = organisationAccountRepository.save(
-            OrganisationFactory.district(
-                accessExpiresOn = ZonedDateTime.now().minusMonths(3)
-            )
+            OrganisationFactory.district(), accessExpiresOn = ZonedDateTime.now().minusMonths(3)
         )
         val school = OrganisationFactory.school(district = district)
         val schoolAccount = organisationAccountRepository.save(school)
@@ -90,9 +85,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it disallows a user with expiry date in the past, and a district expiry in the past`() {
         val district = organisationAccountRepository.save(
-            OrganisationFactory.district(
-                accessExpiresOn = ZonedDateTime.now().minusMonths(3)
-            )
+            OrganisationFactory.district(), accessExpiresOn = ZonedDateTime.now().minusMonths(3)
         )
         val school = OrganisationFactory.school(district = district)
         val schoolAccount = organisationAccountRepository.save(school)

@@ -45,7 +45,7 @@ class OrganisationController(
                     name = account.organisation.name,
                     type = account.type.toString(),
                     contractIds = account.contractIds.map { it.value },
-                    accessExpiry = account.organisation.accessExpiry,
+                    accessExpiresOn = account.accessExpiresOn,
                     organisation = OrganisationResource(
                         name = account.organisation.name,
                         state = account.organisation.state?.let {

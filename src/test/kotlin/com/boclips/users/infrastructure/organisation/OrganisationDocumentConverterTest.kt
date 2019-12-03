@@ -39,7 +39,7 @@ class OrganisationDocumentConverterTest {
 
         assertThat(independentSchool.district).isNull()
 
-        assertThat(independentSchool.accessExpiresOn).isNull()
+        assertThat(organisationAccount.accessExpiresOn).isNull()
     }
 
     @Test
@@ -84,6 +84,6 @@ class OrganisationDocumentConverterTest {
 
         assertThat(school.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
         assertThat((school.organisation as School).district?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
-        assertThat((school.organisation as School).district?.organisation?.accessExpiresOn).isEqualTo(accessExpiresOn)
+        assertThat((school.organisation as School).district?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 }

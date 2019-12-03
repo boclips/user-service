@@ -10,7 +10,7 @@ class OrganisationConverter {
     fun toResource(organisationAccount: OrganisationAccount<*>) = OrganisationAccountResource(
         name = organisationAccount.organisation.name,
         contractIds = organisationAccount.contractIds.map { it.value },
-        accessExpiry = organisationAccount.organisation.accessExpiry,
+        accessExpiresOn = organisationAccount.accessExpiresOn,
         type = organisationAccount.organisation.type().toString(),
         organisation = OrganisationResource(
             name = organisationAccount.organisation.name,

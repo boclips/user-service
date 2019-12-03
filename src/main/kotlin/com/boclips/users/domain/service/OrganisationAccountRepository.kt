@@ -9,6 +9,7 @@ import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.organisation.School
+import java.time.ZonedDateTime
 import java.util.Collections.emptyList
 
 sealed class OrganisationAccountUpdate(val id: OrganisationAccountId)
@@ -26,11 +27,13 @@ interface OrganisationAccountRepository {
     ): OrganisationAccount<ApiIntegration>
 
     fun save(
-        school: School
+        school: School,
+        accessExpiresOn: ZonedDateTime? = null
     ): OrganisationAccount<School>
 
     fun save(
-        district: District
+        district: District,
+        accessExpiresOn: ZonedDateTime? = null
     ): OrganisationAccount<District>
 
     fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>?

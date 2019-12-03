@@ -14,6 +14,7 @@ import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
 import com.boclips.users.domain.service.OrganisationAccountUpdate
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
 import org.springframework.data.repository.findByIdOrNull
+import java.time.ZonedDateTime
 
 class MongoOrganisationAccountRepository(private val repository: OrganisationSpringDataRepository) :
     OrganisationAccountRepository {
@@ -46,12 +47,12 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         doSave(role, contractIds, apiIntegration) as OrganisationAccount<ApiIntegration>
 
     @Suppress("UNCHECKED_CAST")
-    override fun save(school: School) =
-        doSave(organisation = school) as OrganisationAccount<School>
+    override fun save(school: School, accessExpiresOn: ZonedDateTime?) =
+        doSave(organisation = school, accessExpiresOn = accessExpiresOn) as OrganisationAccount<School>
 
     @Suppress("UNCHECKED_CAST")
-    override fun save(district: District) =
-        doSave(organisation = district) as OrganisationAccount<District>
+    override fun save(district: District, accessExpiresOn: ZonedDateTime?) =
+        doSave(organisation = district, accessExpiresOn = accessExpiresOn) as OrganisationAccount<District>
 
     override fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>? {
         val document = repository.findByIdOrNull(update.id.value) ?: return null
@@ -70,11 +71,12 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
     private fun doSave(
         role: String? = null,
         contractIds: List<ContractId> = emptyList(),
-        organisation: Organisation
+        organisation: Organisation,
+        accessExpiresOn: ZonedDateTime? = null
     ): OrganisationAccount<*> {
         return fromDocument(
             repository.save(
-                organisationDocument(organisation, role, contractIds)
+                organisationDocument(organisation = organisation, role = role, contractIds = contractIds, accessExpiresOn = accessExpiresOn)
             )
         )
     }
@@ -83,7 +85,8 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         organisation: Organisation,
         role: String?,
         contractIds: List<ContractId>,
-        id: String? = null
+        id: String? = null,
+        accessExpiresOn: ZonedDateTime? = null
     ): OrganisationDocument {
         return OrganisationDocument(
             id = id,
@@ -111,7 +114,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
                 }
                 else -> null
             },
-            accessExpiresOn = organisation.accessExpiresOn?.toInstant()
+            accessExpiresOn = accessExpiresOn?.toInstant()
         )
     }
 

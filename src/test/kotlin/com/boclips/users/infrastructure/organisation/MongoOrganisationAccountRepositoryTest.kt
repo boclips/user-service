@@ -52,31 +52,31 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     fun `persists a school with an expiry date`() {
         val accessExpiresOn = ZonedDateTime.now().plusDays(1)
         val school = organisationAccountRepository.save(
-            OrganisationFactory.school(postCode = "12345", accessExpiresOn = accessExpiresOn)
+            school = OrganisationFactory.school(postCode = "12345"), accessExpiresOn = accessExpiresOn
         )
         val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
 
         assertThat(fetchedSchool?.id).isNotNull
         assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
         assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
-        assertThat(fetchedSchool?.organisation?.accessExpiresOn).isEqualTo(accessExpiresOn)
+        assertThat(fetchedSchool?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 
     @Test
-    fun `persists a school with a district with an expiry date`() {
+    fun `persists the expiry date from the parent organisation`() {
         val accessExpiresOn = ZonedDateTime.now().plusDays(1)
         val district = organisationAccountRepository.save(
-            OrganisationFactory.district(name = "good stuff", accessExpiresOn = accessExpiresOn)
+            district = OrganisationFactory.district(name = "good stuff"), accessExpiresOn = accessExpiresOn
         )
         val school = organisationAccountRepository.save(
-            OrganisationFactory.school(district = district, postCode = "12345")
+            school = OrganisationFactory.school(district = district, postCode = "12345")
         )
-        val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
+        val fetchedSchoolAccount = organisationAccountRepository.findSchoolById(school.id)
 
-        assertThat(fetchedSchool?.id).isNotNull
-        assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
-        assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
-        assertThat(fetchedSchool?.organisation?.district?.organisation?.accessExpiresOn).isEqualTo(accessExpiresOn)
+        assertThat(fetchedSchoolAccount?.id).isNotNull
+        assertThat(fetchedSchoolAccount?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchoolAccount?.organisation?.postcode).isEqualTo("12345")
+        assertThat(fetchedSchoolAccount?.organisation?.district?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 
     @Test

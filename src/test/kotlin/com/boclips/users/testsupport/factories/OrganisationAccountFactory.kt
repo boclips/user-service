@@ -19,13 +19,15 @@ class OrganisationAccountFactory {
             id: OrganisationAccountId = OrganisationAccountId(value = ObjectId().toHexString()),
             type: OrganisationAccountType = OrganisationAccountType.STANDARD,
             contractIds: List<ContractId> = emptyList(),
-            organisation: Organisation = OrganisationFactory.school()
+            organisation: Organisation = OrganisationFactory.school(),
+            accessExpiresOn: ZonedDateTime? = null
         ): OrganisationAccount<*> {
             return OrganisationAccount(
                 id = id,
                 type = type,
                 contractIds = contractIds,
-                organisation = organisation
+                organisation = organisation,
+                accessExpiresOn = accessExpiresOn
             )
         }
     }
@@ -40,31 +42,27 @@ class OrganisationFactory {
             countryName: String? = null,
             postCode: String? = null,
             state: State = State.fromCode("IL"),
-            district: OrganisationAccount<District>? = null,
-            accessExpiresOn: ZonedDateTime? = null
-        ): School {
+            district: OrganisationAccount<District>? = null
+            ): School {
             return School(
                 name = name,
                 externalId = externalId,
                 country = countryName?.let { Country.fromCode(it) } ?: country,
                 state = state,
                 postcode = postCode,
-                district = district,
-                accessExpiresOn = accessExpiresOn
+                district = district
             )
         }
 
         fun district(
             name: String = "Amazing Organisation",
             externalId: String = "externalId",
-            state: State = State.fromCode("IL"),
-            accessExpiresOn: ZonedDateTime? = null
+            state: State = State.fromCode("IL")
         ): District {
             return District(
                 name = name,
                 externalId = externalId,
-                state = state,
-                accessExpiresOn = accessExpiresOn
+                state = state
             )
         }
 
