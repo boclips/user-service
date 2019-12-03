@@ -22,10 +22,11 @@ data class UserDocument(
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
     var organisationId: String?,
-    var accessExpiresOn: Instant?
+    var accessExpiresOn: Instant?,
+    val createdAt: Instant?
 ) {
     companion object {
-        fun from(user: User): UserDocument {
+        fun create(user: User, createdAt: Instant?): UserDocument {
             return UserDocument(
                 id = user.id.value,
                 subjectIds = user.profile?.subjects?.map { it.id.value },
@@ -45,11 +46,14 @@ data class UserDocument(
                     utmContent = user.marketingTracking.utmContent
                 ),
                 organisationId = user.organisationAccountId?.value,
-                accessExpiresOn = user.accessExpiresOn?.toInstant()
+                accessExpiresOn = user.accessExpiresOn?.toInstant(),
+                createdAt = createdAt
             )
         }
 
-        fun from(account: Account, organisationAccountId: OrganisationAccountId?): UserDocument {
+
+
+        fun create(account: Account, organisationAccountId: OrganisationAccountId?, createdAt: Instant): UserDocument {
             return UserDocument(
                 id = account.id.value,
                 subjectIds = null,
@@ -63,7 +67,8 @@ data class UserDocument(
                 hasOptedIntoMarketing = false,
                 marketing = null,
                 organisationId = organisationAccountId?.value,
-                accessExpiresOn = null
+                accessExpiresOn = null,
+                createdAt = createdAt
             )
         }
     }

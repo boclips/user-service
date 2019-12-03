@@ -1,6 +1,5 @@
 package com.boclips.users.testsupport
 
-import com.boclips.eventbus.domain.user.Organisation
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.commands.AddCollectionToContract
@@ -137,11 +136,11 @@ abstract class AbstractSpringIntegrationTest {
     }
 
     fun saveUser(user: User): User {
-        userRepository.save(user)
+        val createdUser = userRepository.create(user)
 
-        saveAccount(user)
+        saveAccount(createdUser)
 
-        return user
+        return createdUser
     }
 
     fun saveAccount(user: User): String {

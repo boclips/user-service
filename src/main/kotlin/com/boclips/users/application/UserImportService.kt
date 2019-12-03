@@ -28,7 +28,7 @@ class UserImportService(
         }
 
         return accountProvider.getAccountById(userId)?.let { account ->
-            userRepository.save(account)
+            userRepository.create(account)
         } ?: throw AccountNotFoundException(userId)
     }
 }

@@ -39,7 +39,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user`() {
         setSecurityContext("a-user-id")
 
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = null
@@ -61,7 +61,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with no mapped organisation`() {
         setSecurityContext("a-user-id")
 
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
@@ -85,7 +85,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
@@ -109,7 +109,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
@@ -128,7 +128,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
@@ -147,7 +147,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),

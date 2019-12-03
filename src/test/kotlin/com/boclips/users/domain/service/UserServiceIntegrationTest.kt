@@ -14,6 +14,8 @@ import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
@@ -67,8 +69,12 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             utmMedium = ""
         )
 
+        val timeBeforeCommand = ZonedDateTime.now(ZoneOffset.UTC)
         val persistedUser = userService.createTeacher(newUser)
 
+        assertThat(persistedUser.createdAt).isNotNull()
+        assertThat(persistedUser.createdAt).isAfterOrEqualTo(timeBeforeCommand)
+        assertThat(persistedUser.createdAt).isBeforeOrEqualTo(ZonedDateTime.now(ZoneOffset.UTC))
         assertThat(persistedUser.account.username).isEqualTo("joe@dough.com")
         assertThat(persistedUser.account.email).isEqualTo("joe@dough.com")
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))

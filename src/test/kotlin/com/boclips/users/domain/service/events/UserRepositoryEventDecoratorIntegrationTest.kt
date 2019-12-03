@@ -18,7 +18,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
     @Test
     fun `it publishes an event when user is created`() {
         val organisation = organisationAccountRepository.save(OrganisationFactory.school())
-        val user = userRepository.save(
+        val user = userRepository.create(
             UserFactory.sample(
                 organisationAccountId = organisation.id
             )
@@ -40,7 +40,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
             name = "The Street Wise Academy",
             district = district,
             postCode = "012345"))
-        val user = userRepository.save(UserFactory.sample(
+        val user = userRepository.create(UserFactory.sample(
             account = AccountFactory.sample(username = "dave@davidson.com"),
             profile = ProfileFactory.sample(firstName = "Dave", lastName = "Davidson", subjects = listOf(maths), ages = listOf(7)))
         )

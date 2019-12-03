@@ -33,7 +33,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `activate link when authenticated and not yet activated`() {
         setSecurityContext("lovely-user")
 
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "lovely-user"),
                 profile = null,
@@ -52,7 +52,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `activate link when authenticated, has partial profile information but no organisation mapped`() {
         setSecurityContext("lovely-user")
 
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
@@ -82,7 +82,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `no activate link when authenticated and activated`() {
         setSecurityContext("lovely-user")
 
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
@@ -199,7 +199,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `no reportAccessExpired link when user has access`() {
         setSecurityContext("lovely-user")
 
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
@@ -217,7 +217,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `no reportAccessExpired link when user has expired`() {
         setSecurityContext("lovely-user")
 
-        userRepository.save(
+        userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),

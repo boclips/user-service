@@ -18,7 +18,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `persists account`() {
         val account = AccountFactory.sample(roles = listOf("ROLE_TEACHER"))
-        userRepository.save(account)
+        userRepository.create(account)
 
         val fetchedUser = userRepository.findById(account.id)!!
 
@@ -41,18 +41,22 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             analyticsId = AnalyticsId(value = "analytics-123")
         )
 
-        userRepository.save(user)
+        userRepository.create(user)
 
         val fetchedUser = userRepository.findById(user.id)
 
-        assertThat(fetchedUser).isEqualTo(user)
+        assertThat(fetchedUser).isNotNull()
+
+        assertThat(fetchedUser!!.id).isEqualTo(user.id)
+        assertThat(fetchedUser.referralCode).isEqualTo(user.referralCode)
+
     }
 
     @Test
     fun `can get all accounts`() {
         val savedUsers = listOf(
-            userRepository.save(UserFactory.sample()),
-            userRepository.save(UserFactory.sample())
+            userRepository.create(UserFactory.sample("id-1")),
+            userRepository.create(UserFactory.sample("id-2"))
         )
 
         assertThat(userRepository.findAll(savedUsers.map { it.id })).containsAll(savedUsers)
@@ -60,7 +64,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updating user first name field only replaces first name`() {
-        val user = userRepository.save(
+        val user = userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(
                     id = "user-1"
@@ -79,7 +83,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updating multiple fields`() {
-        val user = userRepository.save(
+        val user = userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(
                     id = "user-1"
@@ -121,7 +125,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             name = "Physics"
         ))
 
-        val user = userRepository.save(
+        val user = userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(
                     id = "user-1"
@@ -139,7 +143,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updating user ages`() {
-        val user = userRepository.save(
+        val user = userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(
                     id = "user-1"
@@ -157,7 +161,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updating marketing tracking fields`() {
-        val user = userRepository.save(
+        val user = userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(
                     id = "user-1"
@@ -188,8 +192,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `find users by organisation id`() {
-        userRepository.save(UserFactory.sample(account = AccountFactory.sample(id = "user-1"), organisationAccountId = OrganisationAccountId("org-id-1")))
-        userRepository.save(UserFactory.sample(account = AccountFactory.sample(id = "user-2"), organisationAccountId = OrganisationAccountId("org-id-2")))
+        userRepository.create(UserFactory.sample(account = AccountFactory.sample(id = "user-1"), organisationAccountId = OrganisationAccountId("org-id-1")))
+        userRepository.create(UserFactory.sample(account = AccountFactory.sample(id = "user-2"), organisationAccountId = OrganisationAccountId("org-id-2")))
 
         val usersInOrg = userRepository.findAllByOrganisationId(OrganisationAccountId("org-id-1"))
 

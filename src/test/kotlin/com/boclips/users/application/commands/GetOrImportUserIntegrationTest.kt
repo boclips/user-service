@@ -28,7 +28,7 @@ class GetOrImportUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `returns an existing entry if it exists`() {
-        val createdUser = userRepository.save(UserFactory.sample())
+        val createdUser = userRepository.create(UserFactory.sample())
 
         val foundUser = userRepository.findById(createdUser.id)
 

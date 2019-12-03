@@ -14,12 +14,12 @@ class UserRepositoryEventDecorator(
     private val eventBus: EventBus
 ) :
     UserRepository by userRepository {
-    override fun save(user: User): User {
-        return userRepository.save(user).also(::publishUserCreated)
+    override fun create(user: User): User {
+        return userRepository.create(user).also(::publishUserCreated)
     }
 
-    override fun save(account: Account): User {
-        return userRepository.save(account).also(::publishUserCreated)
+    override fun create(account: Account): User {
+        return userRepository.create(account).also(::publishUserCreated)
     }
 
     override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {

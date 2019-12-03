@@ -18,7 +18,16 @@ class UserDocumentFactory {
             subjects: List<String> = listOf("maths"),
             ageRange: List<Int> = listOf(1, 2),
             hasOptedIntoMarketing: Boolean? = false,
-            accessExpiresOn: Instant? = null
+            marketing: MarketingTrackingDocument? = MarketingTrackingDocument(
+                utmCampaign = null,
+                utmSource = null,
+                utmMedium = null,
+                utmTerm = null,
+                utmContent = null
+            ),
+            organisationId: String? =  "some-org-id",
+            accessExpiresOn: Instant? = null,
+            createdAt: Instant? = Instant.now()
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
@@ -30,15 +39,10 @@ class UserDocumentFactory {
             email = email,
             username = username,
             hasOptedIntoMarketing = hasOptedIntoMarketing,
-            marketing = MarketingTrackingDocument(
-                utmCampaign = null,
-                utmSource = null,
-                utmMedium = null,
-                utmTerm = null,
-                utmContent = null
-            ),
-            organisationId = "some-org-id",
-            accessExpiresOn = accessExpiresOn
+            marketing = marketing,
+            organisationId = organisationId,
+            accessExpiresOn = accessExpiresOn,
+            createdAt = createdAt
         )
     }
 }
