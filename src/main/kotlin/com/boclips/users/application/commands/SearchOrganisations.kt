@@ -13,6 +13,6 @@ class SearchOrganisations(
             throw RuntimeException("You must provide a country code")
         }
 
-        return organisationAccountRepository.findOrganisationAccountsByCountryCode(countryCode)!!
+        return organisationAccountRepository.findIndependentOrganisationAccounts(countryCode)!!
     }
 }

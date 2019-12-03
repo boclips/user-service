@@ -43,16 +43,25 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `lists all US schools and organisations`() {
+    fun `lists all independent US schools and organisations`() {
         val district = organisationAccountRepository.save(
             District(name = "my district", externalId = "123", state = State(id = "FL", name = "Florida"), accessExpiry = ZonedDateTime.now())
         )
-        val school = organisationAccountRepository.save(
+        organisationAccountRepository.save(
             school = OrganisationFactory.school(
-                name = "my school 1",
+                name = "my district school",
                 countryName = "USA",
                 state = State(id = "FL", name = "Florida"),
                 district = district,
+                accessExpiry = ZonedDateTime.now()
+            )
+        )
+        val school = organisationAccountRepository.save(
+            school = OrganisationFactory.school(
+                name = "my independent school",
+                countryName = "USA",
+                state = State(id = "FL", name = "Florida"),
+                district = null,
                 accessExpiry = ZonedDateTime.now()
             )
         )
@@ -64,6 +73,5 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._embedded.organisationAccountResourceList[1].name", equalTo(school.organisation.name)))
             .andExpect(jsonPath("$._embedded.organisationAccountResourceList[1].type", equalTo(school.type.toString())))
             .andExpect(jsonPath("$._embedded.organisationAccountResourceList[1].accessExpiry", equalTo(school.organisation.accessExpiry.toString())))
-
     }
 }

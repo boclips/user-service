@@ -164,11 +164,18 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisation.type).isEqualTo(OrganisationAccountType.STANDARD)
 
-        val updatedOrganisation = organisationAccountRepository.update(OrganisationAccountTypeUpdate(id = organisation.id, type = OrganisationAccountType.DESIGN_PARTNER))
+        val updatedOrganisation = organisationAccountRepository.update(
+            OrganisationAccountTypeUpdate(
+                id = organisation.id,
+                type = OrganisationAccountType.DESIGN_PARTNER
+            )
+        )
 
         assertThat(updatedOrganisation).isNotNull
         assertThat(updatedOrganisation?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
-        assertThat(organisationAccountRepository.findOrganisationAccountById(organisation.id)?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
+        assertThat(organisationAccountRepository.findOrganisationAccountById(organisation.id)?.type).isEqualTo(
+            OrganisationAccountType.DESIGN_PARTNER
+        )
     }
 
     @Test
@@ -194,13 +201,33 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `find organisations by country code`() {
+    fun `find independent organisations by country code`() {
         val district = organisationAccountRepository.save(OrganisationFactory.district())
-        organisationAccountRepository.save(OrganisationFactory.school(district = district, country = Country.fromCode(Country.USA_ISO)))
-        organisationAccountRepository.save(OrganisationFactory.school(district = null, country = Country.fromCode(Country.USA_ISO)))
-        organisationAccountRepository.save(OrganisationFactory.school(district = null, country = Country.fromCode("GBR")))
+        val school = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
 
-        assertThat(organisationAccountRepository.findOrganisationAccountsByCountryCode(Country.USA_ISO)).hasSize(3)
-        assertThat(organisationAccountRepository.findOrganisationAccountsByCountryCode("GBR")).hasSize(1)
+        organisationAccountRepository.save(
+            OrganisationFactory.school(
+                district = district,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+        organisationAccountRepository.save(
+            OrganisationFactory.school(
+                district = null,
+                country = Country.fromCode("GBR")
+            )
+        )
+        val independentOrganisations =
+            organisationAccountRepository.findIndependentOrganisationAccounts(Country.USA_ISO)
+        assertThat(independentOrganisations!![0]).isEqualTo(district)
+        assertThat(independentOrganisations!![1]).isEqualTo(school)
+        assertThat(independentOrganisations).hasSize(2)
+
+        assertThat(organisationAccountRepository.findIndependentOrganisationAccounts("GBR")).hasSize(1)
     }
 }
