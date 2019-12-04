@@ -24,4 +24,12 @@ class OrganisationLinkBuilder {
             )
         ).withRel("schools")
     }
+
+    fun getSchoolsAndDistrictsLink(countryCode: String): Link {
+        return ControllerLinkBuilder.linkTo(
+            ControllerLinkBuilder.methodOn(OrganisationController::class.java).getAllIndependentOrganisations(
+                countryCode = countryCode
+            )
+        ).withRel("independentOrganisations")
+    }
 }

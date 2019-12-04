@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.hateoas
 
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -18,6 +19,14 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
 
         assertThat(organisationLink.rel).isEqualTo("self")
         assertThat(organisationLink.href).endsWith("/organisations/$organisationId")
+    }
+
+    @Test
+    fun `expose organisations link`() {
+        val organisationLink = organisationLinkBuilder.getSchoolsAndDistrictsLink(Country.USA_ISO)
+
+        assertThat(organisationLink.rel).isEqualTo("independentOrganisations")
+        assertThat(organisationLink.href).endsWith("/independent-organisations?countryCode=USA")
     }
 
     @Test
