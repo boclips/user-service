@@ -1,21 +1,18 @@
 package com.boclips.users.application.commands
-import com.boclips.users.domain.model.LookupEntry
-import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class SearchOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
+class GetIndependentOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var searchOrganisations: SearchOrganisations
+    lateinit var getIndependentOrganisations: GetIndependentOrganisations
 
     @Test
-    fun `searchiong non usa organisations`() {
+    fun `searching non usa organisations`() {
         organisationAccountRepository.save(
             school = OrganisationFactory.school(
                 name = "organisation 1",
@@ -36,7 +33,7 @@ class SearchOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val organisations = searchOrganisations(organisationName = null, countryCode = "GBR", state = null)
+        val organisations = getIndependentOrganisations(countryCode = "GBR")
 
         assertThat(organisations).hasSize(1)
         assertThat(organisations[0].organisation.name).isEqualTo("organisation 1")
@@ -64,7 +61,7 @@ class SearchOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val organisations = searchOrganisations(organisationName = null, countryCode = "USA", state = null)
+        val organisations = getIndependentOrganisations(countryCode = "USA")
 
         assertThat(organisations).hasSize(2)
         assertThat(organisations[0].organisation.name).isEqualTo("floridistrict")

@@ -48,23 +48,13 @@ class OrganisationTestSupportController(
     fun fetchOrganisationById(@PathVariable("id") id: String): Resource<OrganisationAccountResource> {
         val organisation = getOrganisationById(id)
 
-        return Resource(
-            organisationConverter.toResource(organisation),
-            listOfNotNull(
-                organisationLinkBuilder.self(organisation.id)
-            )
-        )
+        return organisationConverter.toResource(organisation)
     }
 
     @GetMapping("/api-integrations")
     fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<OrganisationAccountResource> {
         val apiIntegration = getApiIntegrationByName(name!!)
 
-        return Resource(
-            organisationConverter.toResource(apiIntegration),
-            listOfNotNull(
-                organisationLinkBuilder.self(apiIntegration.id)
-            )
-        )
+        return organisationConverter.toResource(apiIntegration)
     }
 }

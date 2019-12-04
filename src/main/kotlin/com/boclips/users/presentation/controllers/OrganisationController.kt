@@ -1,12 +1,11 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.commands.SearchOrganisations
+import com.boclips.users.application.commands.GetIndependentOrganisations
 import com.boclips.users.application.commands.SearchSchools
 import com.boclips.users.presentation.resources.OrganisationAccountResource
-import com.boclips.users.presentation.resources.OrganisationResource
-import com.boclips.users.presentation.resources.school.CountryResource
+import com.boclips.users.presentation.resources.OrganisationConverter
 import com.boclips.users.presentation.resources.school.SchoolResource
-import com.boclips.users.presentation.resources.school.StateResource
+import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1", "/v1/")
 class OrganisationController(
     private val searchSchools: SearchSchools,
-    private val searchOrganisations: SearchOrganisations
+    private val getIndependentOrganisations: GetIndependentOrganisations,
+    private val organisationConverter: OrganisationConverter
 ) {
     @GetMapping("/schools")
     fun searchSchools(
@@ -31,40 +31,14 @@ class OrganisationController(
             schools.map { SchoolResource(id = it.id, name = it.name) })
     }
 
-    @GetMapping("/organisations")
-    fun searchOrganisations(
-        @RequestParam(required = false) query: String?,
-        @RequestParam(required = false) state: String?,
+    @GetMapping("/independent-organisations")
+    fun getAllIndependentOrganisations(
         @RequestParam(required = true) countryCode: String?
-    ): Resources<OrganisationAccountResource> {
-        val organisations = searchOrganisations(organisationName = query, state = state, countryCode = countryCode);
+    ): Resources<Resource<OrganisationAccountResource>> {
+        val organisationAccounts = getIndependentOrganisations(countryCode = countryCode)
 
         return Resources(
-            organisations.map { account ->
-                OrganisationAccountResource(
-                    name = account.organisation.name,
-                    type = account.type.toString(),
-                    contractIds = account.contractIds.map { it.value },
-                    accessExpiresOn = account.accessExpiresOn,
-                    organisation = OrganisationResource(
-                        name = account.organisation.name,
-                        state = account.organisation.state?.let {
-                            StateResource(
-                                name = it.name,
-                                id = it.id
-                            )
-                        },
-                        country = account.organisation.country?.let {
-                            CountryResource(
-                                name = it.name,
-                                id = it.id,
-                                states = null
-                            )
-                        }
-
-                    )
-                )
-
-            })
+            organisationAccounts.map { account -> organisationConverter.toResource(account)}
+        )
     }
 }

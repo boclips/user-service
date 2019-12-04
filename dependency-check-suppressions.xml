@@ -6,10 +6,11 @@
 
       Affects Spring Framework 5.0.5.RELEASE only.
       ]]></notes>
-        <gav regex="true">^org\.springframework\.security:spring-security-.*:.*$</gav>
+        <cpe>cpe:/a:security-framework_project:security-framework</cpe>
         <cve>CVE-2018-1258</cve>
+        <cve>CVE-2019-11269</cve>
     </suppress>
-    <suppress until="2019-12-01Z">
+    <suppress until="2020-01-01Z">
         <notes><![CDATA[
    file name: grpc-netty-shaded-1.21.0.jar
 
@@ -18,8 +19,10 @@
    ]]></notes>
         <gav regex="true">^io\.grpc:grpc-netty-shaded:.*$</gav>
         <cve>CVE-2015-2156</cve>
+        <cve>CVE-2014-3488</cve>
+        <cve>CVE-2019-16869</cve>
     </suppress>
-    <suppress until="2019-12-01Z">
+    <suppress until="2020-01-01Z">
         <notes><![CDATA[
    file name: event-bus-1.37.0.jar (shaded: io.netty:netty-tcnative-boringssl-static:2.0.22.Final)
 
@@ -54,7 +57,7 @@
         <cve>CVE-2019-17531</cve>
     </suppress>
 
-    <suppress until="2019-12-01Z">
+    <suppress until="2020-01-01Z">
         <notes><![CDATA[
       File name: jackson-mapper-asl-1.9.13.jar
 
@@ -67,5 +70,47 @@
         <cve>CVE-2018-14718</cve>
         <cve>CVE-2018-7489</cve>
         <cve>CVE-2017-7525</cve>
+        <cve>CVE-2018-1000873</cve>
+        <cve>CVE-2019-10172</cve>
+        <cve>CVE-2019-16335</cve>
+        <cve>CVE-2019-14540</cve>
+        <cve>CVE-2019-17267</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: keycloak-spring-security-adapter-7.0.0.jar
+   ]]></notes>
+        <cpe>cpe:/a:keycloak:keycloak</cpe>
+        <cve>CVE-2019-14832</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: keycloak-core-7.0.0.jar
+   ]]></notes>
+        <cpe>cpe:/a:keycloak:keycloak</cpe>
+        <cve>CVE-2019-14832</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: libthrift-0.12.0.jar
+   ]]>
+            This vulnerability is coming from opentracing-spring-jaeger-web-starter.
+        </notes>
+        <gav regex="true">^pkg:maven/org\.apache\.thrift/libthrift@.*$</gav>
+        <cve>CVE-2019-0205</cve>
+        <cve>CVE-2019-0210</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: okhttp-3.9.0.jar
+   ]]>
+            This vulnerability is coming from opentracing-spring-jaeger-web-starter.
+        </notes>
+        <cpe>cpe:/a:squareup:okhttp3</cpe>
+        <cve>CVE-2018-20200</cve>
     </suppress>
 </suppressions>
