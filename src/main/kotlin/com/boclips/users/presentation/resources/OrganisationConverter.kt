@@ -12,6 +12,7 @@ class OrganisationConverter(private val organisationLinkBuilder: OrganisationLin
     fun toResource(organisationAccount: OrganisationAccount<*>): Resource<OrganisationAccountResource> {
         return Resource(
             OrganisationAccountResource(
+                id = organisationAccount.id.value,
                 name = organisationAccount.organisation.name,
                 contractIds = organisationAccount.contractIds.map { it.value },
                 accessExpiresOn = organisationAccount.accessExpiresOn,

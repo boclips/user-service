@@ -1,7 +1,6 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
@@ -11,11 +10,12 @@ import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.springframework.data.mongodb.core.query.Query.query
 import java.time.format.DateTimeFormatter
 
 class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
@@ -47,11 +47,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `lists all independent US schools and organisations`() {
-        val expiryTime = ZonedDateTime.now()
+        val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
         val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
         val district = organisationAccountRepository.save(
-            OrganisationFactory.district(name = "my district", externalId = "123", state = State(id = "FL", name = "Florida")),
+            OrganisationFactory.district(
+                name = "my district",
+                externalId = "123",
+                state = State(id = "FL", name = "Florida")
+            ),
             accessExpiresOn = expiryTime
         )
         organisationAccountRepository.save(
@@ -71,16 +75,131 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             ),
             accessExpiresOn = expiryTime
         )
-        mvc.perform(get("/v1/independent-organisations?countryCode=USA").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS))
+        mvc.perform(
+            get("/v1/independent-organisations?countryCode=USA").asUserWithRoles(
+                "some-boclipper",
+                UserRoles.VIEW_ORGANISATIONS
+            )
+        )
             .andExpect(jsonPath("$._embedded.organisationAccountResourceList", hasSize<Int>(2)))
-            .andExpect(jsonPath("$._embedded.organisationAccountResourceList[0].name", equalTo(district.organisation.name)))
-            .andExpect(jsonPath("$._embedded.organisationAccountResourceList[0].type", equalTo(district.organisation.type().toString())))
-            .andExpect(jsonPath("$._embedded.organisationAccountResourceList[0].accessExpiresOn", equalTo(expiryTimeToString)))
-            .andExpect(jsonPath("$._embedded.organisationAccountResourceList[0]._links.self.href", endsWith("/v1/organisations/${district.id.value}")))
-            .andExpect(jsonPath("$._embedded.organisationAccountResourceList[1].name", equalTo(school.organisation.name)))
-            .andExpect(jsonPath("$._embedded.organisationAccountResourceList[1].type", equalTo(school.organisation.type().toString())))
-            .andExpect(jsonPath("$._embedded.organisationAccountResourceList[1].accessExpiresOn", equalTo(expiryTimeToString)))
-            .andExpect(jsonPath("$._embedded.organisationAccountResourceList[1]._links.self.href", endsWith("/v1/organisations/${school.id.value}")))
+            .andExpect(
+                jsonPath(
+                    "$._embedded.organisationAccountResourceList[0].name",
+                    equalTo(district.organisation.name)
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.organisationAccountResourceList[0].type",
+                    equalTo(district.organisation.type().toString())
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.organisationAccountResourceList[0].accessExpiresOn",
+                    equalTo(expiryTimeToString)
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.organisationAccountResourceList[0]._links.self.href",
+                    endsWith("/v1/organisations/${district.id.value}")
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.organisationAccountResourceList[1].name",
+                    equalTo(school.organisation.name)
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.organisationAccountResourceList[1].type",
+                    equalTo(school.organisation.type().toString())
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.organisationAccountResourceList[1].accessExpiresOn",
+                    equalTo(expiryTimeToString)
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.organisationAccountResourceList[1]._links.self.href",
+                    endsWith("/v1/organisations/${school.id.value}")
+                )
+            )
+    }
 
+    @Test
+    fun `updating an organisation account`() {
+        val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.537Z")
+        val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
+
+        val district = organisationAccountRepository.save(
+            OrganisationFactory.district(
+                name = "my district",
+                externalId = "123",
+                state = State(id = "FL", name = "Florida")
+            )
+        )
+
+        mvc.perform(
+            put("/v1/organisations/${district.id.value}").asUserWithRoles(
+                "some-boclipper",
+                UserRoles.VIEW_ORGANISATIONS
+            )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
+                )
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${district.id.value}")))
+            .andExpect(jsonPath("$.id", equalTo(district.id.value)))
+            .andExpect(jsonPath("$.accessExpiresOn", equalTo(expiryTimeToString)))
+    }
+
+    @Test
+    fun `bad request when date is invalid`() {
+        val district = organisationAccountRepository.save(
+            OrganisationFactory.district(
+                name = "my district",
+                externalId = "123",
+                state = State(id = "FL", name = "Florida")
+            )
+        )
+
+        mvc.perform(
+            put("/v1/organisations/${district.id.value}").asUserWithRoles(
+                "some-boclipper",
+                UserRoles.VIEW_ORGANISATIONS
+            )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """{"accessExpiresOn": "not a time"}""".trimIndent()
+                )
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+    }
+
+    @Test
+    fun `bad request when updating non existent organisation`() {
+        val expiryTime = ZonedDateTime.now()
+        val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
+
+
+        mvc.perform(
+            put("/v1/organisations/not-an-organisation").asUserWithRoles(
+                "some-boclipper",
+                UserRoles.VIEW_ORGANISATIONS
+            )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
+                )
+        )
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 }
