@@ -91,11 +91,7 @@ class UserController(
     }
 
     @PostMapping("/sync-identities")
-    fun syncAccounts(@RequestParam migrateCreatedAt: Boolean = false) {
-        if (migrateCreatedAt) {
-            synchronisationService.migrateCreatedAt()
-        } else {
-            synchronisationService.synchroniseAccounts()
-        }
+    fun syncAccounts() {
+        synchronisationService.synchroniseAccounts()
     }
 }

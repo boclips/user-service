@@ -46,9 +46,6 @@ class MongoUserRepository(
                 is UserUpdateCommand.ReplaceAccessExpiresOn -> userDocument.apply {
                     accessExpiresOn = updateCommand.accessExpiresOn.toInstant()
                 }
-                is UserUpdateCommand.ReplaceAccountCreatedAt -> userDocument.apply {
-                    createdAt = updateCommand.createdAt.toInstant()
-                }
                 is UserUpdateCommand.ReplaceHasLifetimeAccess -> userDocument.apply {
                     hasLifetimeAccess = updateCommand.hasLifetimeAccess
                 }

@@ -48,20 +48,4 @@ class SynchronisationService(
             }
         }
     }
-
-    fun migrateCreatedAt() {
-        accountProvider.getAccounts().forEach { account ->
-            if (account.createdAt == null) {
-                logger.warn { "Account createdAt missing for: ${account.id}" }
-                return@forEach
-            }
-
-            userRepository.findById(account.id)?.let {
-                if (it.account.createdAt != account.createdAt) {
-                    logger.info { "Updating account created at for ${account.id}" }
-                    userRepository.update(it, UserUpdateCommand.ReplaceAccountCreatedAt(account.createdAt), UserUpdateCommand.ReplaceHasLifetimeAccess(true))
-                }
-            } ?: logger.warn { "User cannot be found in userRepository, but exists in keycloak: ${account.id}" }
-        }
-    }
 }

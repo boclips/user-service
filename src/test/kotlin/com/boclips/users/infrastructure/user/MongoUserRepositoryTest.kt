@@ -212,25 +212,6 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `updating user createdAt`() {
-        val user = userRepository.create(
-            UserFactory.sample(
-                account = AccountFactory.sample(
-                    id = "user-1",
-                    createdAt = null
-                )
-            )
-        )
-        val date = ZonedDateTime.now(ZoneOffset.UTC).plusWeeks(123)
-
-        userRepository.update(user, UserUpdateCommand.ReplaceAccountCreatedAt(date))
-
-        val updatedUser = userRepository.findById(user.id)!!
-
-        assertThat(updatedUser.account.createdAt).isEqualTo(date)
-    }
-
-    @Test
     fun `updating user hasLifetimeAccess`() {
         val user = userRepository.create(
             UserFactory.sample(
