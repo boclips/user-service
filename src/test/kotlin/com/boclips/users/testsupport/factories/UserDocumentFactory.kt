@@ -1,5 +1,6 @@
 package com.boclips.users.testsupport.factories
 
+import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import java.time.Instant
@@ -27,7 +28,8 @@ class UserDocumentFactory {
             ),
             organisationId: String? =  "some-org-id",
             accessExpiresOn: Instant? = null,
-            createdAt: Instant? = Instant.now()
+            createdAt: Instant? = Instant.now(),
+            hasLifetimeAccess: Boolean = false
         ): UserDocument = UserDocument(
             id = id,
             firstName = firstName,
@@ -43,7 +45,7 @@ class UserDocumentFactory {
             organisationId = organisationId,
             accessExpiresOn = accessExpiresOn,
             createdAt = createdAt,
-            hasLifetimeAccess = false
+            hasLifetimeAccess = hasLifetimeAccess
         )
     }
 }

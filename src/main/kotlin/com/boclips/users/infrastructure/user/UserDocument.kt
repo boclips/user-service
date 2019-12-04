@@ -24,7 +24,7 @@ data class UserDocument(
     var organisationId: String?,
     var accessExpiresOn: Instant?,
     var createdAt: Instant?,
-    var hasLifetimeAccess: Boolean?
+    var hasLifetimeAccess: Boolean
 ) {
 
     companion object {

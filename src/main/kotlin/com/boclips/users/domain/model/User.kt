@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import java.time.ZonedDateTime
 
 /**
- * TODO(AO/EV): Remove this field once the lifetime flag is set on the user below.
+ * TODO(AO/EV): Remove this field on 2019-12-05 (tomorrow, or maybe today)
  */
 const val PLATFORM_CLOSURE_DATE = "2019-12-05T00:00:00Z"
 
@@ -18,16 +18,12 @@ data class User(
     val analyticsId: AnalyticsId? = null,
     val organisationAccountId: OrganisationAccountId?,
     val accessExpiresOn: ZonedDateTime?,
-    val hasLifetimeAccess: Boolean? = false
+    val hasLifetimeAccess: Boolean = false
 ) {
     val id get() = this.account.id
 
     fun hasOnboarded(): Boolean {
         return organisationAccountId?.value?.isNotEmpty() ?: false
-    }
-
-    fun wasCreatedBeforePlatformClosure(): Boolean {
-        return account.createdAt == null || account.createdAt < ZonedDateTime.parse(PLATFORM_CLOSURE_DATE)
     }
 
     fun isReferral(): Boolean {

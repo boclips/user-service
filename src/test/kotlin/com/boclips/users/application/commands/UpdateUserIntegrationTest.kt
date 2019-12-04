@@ -371,8 +371,8 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             UserDocumentFactory.sample(
                 id = "lifetime-user-id",
                 firstName = "Joe",
-                createdAt = ZonedDateTime.parse("2019-06-06T00:00:00Z").toInstant(),
-                organisationId = null
+                organisationId = null,
+                hasLifetimeAccess = true
             )
 
         userDocumentMongoRepository.save(lifetimeUserDocument)

@@ -20,7 +20,7 @@ class UserFactory {
             profile: Profile? = ProfileFactory.sample(),
             organisationAccountId: OrganisationAccountId? = null,
             accessExpiresOn: ZonedDateTime? = null,
-            hasLifetimeAccess: Boolean? = false
+            hasLifetimeAccess: Boolean = false
         ) = User(
             account = account,
             profile = profile,

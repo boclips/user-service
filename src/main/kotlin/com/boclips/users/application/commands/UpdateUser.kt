@@ -78,7 +78,7 @@ class UpdateUser(
     }
 
     private fun shouldSetAccessExpiresOn(user: User): Boolean {
-        return !user.wasCreatedBeforePlatformClosure() && !user.hasOnboarded()
+        return !user.hasLifetimeAccess && !user.hasOnboarded()
     }
 
     private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): OrganisationAccount<School>? {
