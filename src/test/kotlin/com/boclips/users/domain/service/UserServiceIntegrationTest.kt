@@ -105,27 +105,4 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(persistedUser.organisationAccountId).isNull()
     }
-
-    @Test
-    fun `update profile`() {
-        val maths = Subject(name = "Maths", id = SubjectId(value = "1"))
-        subjectService.addSubject(maths)
-        saveUser(UserFactory.sample(id = "user-id"))
-
-        val profile = Profile(
-            firstName = "Joe",
-            lastName = "Dough",
-            subjects = listOf(maths),
-            ages = listOf(1, 2),
-            hasOptedIntoMarketing = true
-        )
-
-        val persistedUser = userService.updateProfile(userId = UserId("user-id"), profile = profile)
-
-        assertThat(persistedUser.profile!!.firstName).isEqualTo("Joe")
-        assertThat(persistedUser.profile!!.lastName).isEqualTo("Dough")
-        assertThat(persistedUser.profile!!.subjects).hasSize(1)
-        assertThat(persistedUser.profile!!.ages).containsExactly(1, 2)
-        assertThat(persistedUser.profile!!.hasOptedIntoMarketing).isTrue()
-    }
 }

@@ -69,28 +69,4 @@ class UserService(
 
         return retrievedUser ?: throw UserNotFoundException(userId)
     }
-
-    // TODO EV/AO
-    //  fix me + check if this means we have invalid event data used in some dashboard / etc
-
-    fun updateProfile(userId: UserId, profile: Profile): User {
-        val originalUser =
-            userRepository.findById(userId) ?: throw UserNotFoundException(userId)
-
-        val user = userRepository.create(
-            originalUser.copy(
-                profile = Profile(
-                    firstName = profile.firstName,
-                    lastName = profile.lastName,
-                    hasOptedIntoMarketing = profile.hasOptedIntoMarketing,
-                    subjects = profile.subjects,
-                    ages = profile.ages
-                )
-            )
-        )
-
-        logger.info { "Updated user ${user.id.value}" }
-
-        return user
-    }
 }
