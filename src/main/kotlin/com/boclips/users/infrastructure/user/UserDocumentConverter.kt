@@ -17,7 +17,8 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
         return User(
             account = Account(
                 id = UserId(value = userDocument.id),
-                username = userDocument.username ?: userDocument.email.orEmpty()
+                username = userDocument.username ?: userDocument.email.orEmpty(),
+                createdAt = userDocument.createdAt?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
             ),
             profile = Profile(
                 firstName = userDocument.firstName.orEmpty(),
@@ -40,12 +41,7 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
             organisationAccountId = userDocument.organisationId?.let { OrganisationAccountId(it) },
-            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)},
-            createdAt = userDocument.createdAt?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
+            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
         )
-    }
-
-    fun convertToDocument(user: User): UserDocument {
-        return UserDocument.create(user, user.createdAt?.toInstant())
     }
 }

@@ -10,6 +10,9 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.keycloak.representations.idm.UserRepresentation
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.UUID
 
 class KeycloakUserToAccountConverterTest {
@@ -27,6 +30,7 @@ class KeycloakUserToAccountConverterTest {
             this.username = "test@gmail.com"
             this.isEmailVerified = true
             this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
+            this.createdTimestamp = Instant.now().toEpochMilli()
         }
     }
 
@@ -41,6 +45,12 @@ class KeycloakUserToAccountConverterTest {
             "ROLE_TEACHER",
             "ROLE_BACKOFFICE",
             "uma_something"
+        )
+        assertThat(convertedUser.createdAt).isEqualTo(
+            ZonedDateTime.ofInstant(
+                Instant.ofEpochMilli(keycloakUser.createdTimestamp),
+                ZoneOffset.UTC
+            )
         )
     }
 

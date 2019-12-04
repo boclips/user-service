@@ -70,11 +70,12 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         val timeBeforeCommand = ZonedDateTime.now(ZoneOffset.UTC)
+
         val persistedUser = userService.createTeacher(newUser)
 
-        assertThat(persistedUser.createdAt).isNotNull()
-        assertThat(persistedUser.createdAt).isAfterOrEqualTo(timeBeforeCommand)
-        assertThat(persistedUser.createdAt).isBeforeOrEqualTo(ZonedDateTime.now(ZoneOffset.UTC))
+        assertThat(persistedUser.account.createdAt).isNotNull()
+        assertThat(persistedUser.account.createdAt).isAfterOrEqualTo(timeBeforeCommand)
+        assertThat(persistedUser.account.createdAt).isBeforeOrEqualTo(ZonedDateTime.now(ZoneOffset.UTC))
         assertThat(persistedUser.account.username).isEqualTo("joe@dough.com")
         assertThat(persistedUser.account.email).isEqualTo("joe@dough.com")
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))

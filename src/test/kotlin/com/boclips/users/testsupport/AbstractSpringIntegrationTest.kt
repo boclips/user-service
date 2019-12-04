@@ -45,6 +45,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.Instant
+import java.time.ZonedDateTime
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -148,7 +149,8 @@ abstract class AbstractSpringIntegrationTest {
             Account(
                 id = user.id,
                 username = user.account.email!!,
-                roles = listOf("ROLE_TEACHER")
+                roles = listOf("ROLE_TEACHER"),
+                createdAt = user.account.createdAt?: ZonedDateTime.now()
             )
         )
 

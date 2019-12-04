@@ -17,8 +17,7 @@ data class User(
     val referralCode: String?,
     val analyticsId: AnalyticsId? = null,
     val organisationAccountId: OrganisationAccountId?,
-    val accessExpiresOn: ZonedDateTime?,
-    val createdAt: ZonedDateTime? = null
+    val accessExpiresOn: ZonedDateTime?
 ) {
     val id get() = this.account.id
 
@@ -27,7 +26,7 @@ data class User(
     }
 
     fun hasLifetimeAccess(): Boolean {
-        return createdAt == null || createdAt < ZonedDateTime.parse(PLATFORM_CLOSURE_DATE)
+        return account.createdAt == null || account.createdAt < ZonedDateTime.parse(PLATFORM_CLOSURE_DATE)
     }
 
     fun isReferral(): Boolean {

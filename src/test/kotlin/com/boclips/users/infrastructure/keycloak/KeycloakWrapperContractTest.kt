@@ -7,6 +7,7 @@ import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.util.ResourceUtils
 import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
+import java.time.Instant
 import java.util.UUID
 
 class KeycloakWrapperContractTest {
@@ -28,16 +29,21 @@ class KeycloakWrapperContractTest {
     @Test
     fun `can create and delete a user`() {
         val randomEmail = generateRandomEmail()
+
+        val timeBeforeCreation = Instant.now()
         val createdUser = wrapper.createUser(
             KeycloakUser(
                 email = randomEmail,
                 password = "123"
             )
         )
+        val timeAfterCreation = Instant.now()
 
         assertThat(createdUser.id).isNotNull()
         assertThat(createdUser.username).isEqualTo(randomEmail)
         assertThat(createdUser.email).isEqualTo(randomEmail)
+        assertThat(createdUser.createdTimestamp).isGreaterThanOrEqualTo(timeBeforeCreation.toEpochMilli())
+        assertThat(createdUser.createdTimestamp).isLessThanOrEqualTo(timeAfterCreation.toEpochMilli())
 
         wrapper.removeUser(createdUser.id)
     }

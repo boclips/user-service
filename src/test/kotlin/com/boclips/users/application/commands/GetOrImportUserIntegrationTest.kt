@@ -6,6 +6,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.ZonedDateTime
 import java.util.UUID
 
 class GetOrImportUserIntegrationTest : AbstractSpringIntegrationTest() {
@@ -16,7 +17,8 @@ class GetOrImportUserIntegrationTest : AbstractSpringIntegrationTest() {
         keycloakClientFake.createAccount(
             Account(
                 id = userId,
-                username = "service-account@somewhere.com"
+                username = "service-account@somewhere.com",
+                createdAt = ZonedDateTime.now()
             )
         )
 

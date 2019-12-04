@@ -26,7 +26,7 @@ data class UserDocument(
     val createdAt: Instant?
 ) {
     companion object {
-        fun create(user: User, createdAt: Instant?): UserDocument {
+        fun from(user: User): UserDocument {
             return UserDocument(
                 id = user.id.value,
                 subjectIds = user.profile?.subjects?.map { it.id.value },
@@ -47,13 +47,11 @@ data class UserDocument(
                 ),
                 organisationId = user.organisationAccountId?.value,
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
-                createdAt = createdAt
+                createdAt = user.account.createdAt?.toInstant()
             )
         }
 
-
-
-        fun create(account: Account, organisationAccountId: OrganisationAccountId?, createdAt: Instant): UserDocument {
+        fun from(account: Account, organisationAccountId: OrganisationAccountId?): UserDocument {
             return UserDocument(
                 id = account.id.value,
                 subjectIds = null,
@@ -68,7 +66,7 @@ data class UserDocument(
                 marketing = null,
                 organisationId = organisationAccountId?.value,
                 accessExpiresOn = null,
-                createdAt = createdAt
+                createdAt = account.createdAt?.toInstant()
             )
         }
     }

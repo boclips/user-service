@@ -7,7 +7,6 @@ import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
-import java.time.Instant
 
 class MongoUserRepository(
     private val userDocumentMongoRepository: UserDocumentMongoRepository,
@@ -16,7 +15,7 @@ class MongoUserRepository(
 ) : UserRepository {
 
     override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {
-        val userDocument = userDocumentConverter.convertToDocument(user)
+        val userDocument = UserDocument.from(user)
 
         updateCommands.map { updateCommand ->
             return@map when (updateCommand) {
@@ -76,16 +75,15 @@ class MongoUserRepository(
     override fun create(account: Account): User {
         val organisationAccountId = organisationIdResolver.resolve(account.roles)
 
-        val document = UserDocument.create(
+        val document = UserDocument.from(
             account = account,
-            organisationAccountId = organisationAccountId,
-            createdAt = Instant.now()
+            organisationAccountId = organisationAccountId
         )
 
         return saveUserDocument(document)
     }
 
-    override fun create(user: User) = saveUserDocument(UserDocument.create(user, createdAt = Instant.now()))
+    override fun create(user: User) = saveUserDocument(UserDocument.from(user))
 
     private fun saveUserDocument(document: UserDocument) =
         userDocumentConverter.convertToUser(userDocumentMongoRepository.save(document))

@@ -36,6 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.Instant
+import java.time.ZonedDateTime
 
 class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
@@ -348,11 +349,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 analyticsId = AnalyticsId(
                     value = "1234567"
                 ),
-                account = AccountFactory.sample(id = userId),
+                account = AccountFactory.sample(id = userId, createdAt = null),
                 profile = null,
                 organisationAccountId = null,
-                accessExpiresOn = null,
-                createdAt = null
+                accessExpiresOn = null
             )
 
             saveUser(user)
@@ -473,7 +473,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 Account(
                     id = UserId(userId),
                     username = "service-account@somewhere.com",
-                    roles = listOf(organisationMatchingRole)
+                    roles = listOf(organisationMatchingRole),
+                    createdAt = ZonedDateTime.now()
                 )
             )
             val organisation = saveApiIntegration(

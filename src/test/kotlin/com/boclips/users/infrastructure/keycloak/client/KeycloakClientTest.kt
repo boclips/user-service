@@ -5,7 +5,6 @@ import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
-import com.boclips.users.testsupport.factories.AccountFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -45,6 +44,7 @@ internal class KeycloakClientTest {
                 this.lastName = "Portugal"
                 this.isEmailVerified = true
                 this.realmRoles = emptyList()
+                this.createdTimestamp = Instant.now().toEpochMilli()
             })
 
             val id = UserId(value = "x")
@@ -106,12 +106,14 @@ internal class KeycloakClientTest {
             this.id = "1"
             this.username = "test@gmail.com"
             this.realmRoles = emptyList()
+            this.createdTimestamp = Instant.now().toEpochMilli()
 
         }
         val user2 = UserRepresentation().apply {
             this.id = "2"
             this.username = "test2@gmail.com"
             this.realmRoles = emptyList()
+            this.createdTimestamp = Instant.now().toEpochMilli()
         }
 
         whenever(keycloakWrapperMock.countUsers()).thenReturn(2)
@@ -125,15 +127,12 @@ internal class KeycloakClientTest {
         val users = keycloakClient.getAccounts().toList()
 
         assertThat(users).hasSize(2)
-        assertThat(users).containsExactly(
-            AccountFactory.sample(
-                id = user1.id,
-                username = user1.username
-            ),
-            AccountFactory.sample(
-                id = user2.id,
-                username = user2.username
-            )
-        )
+        assertThat(users[0].id.value).isEqualTo(user1.id)
+        assertThat(users[0].username).isEqualTo(user1.username)
+        assertThat(users[0].createdAt).isNotNull()
+
+        assertThat(users[1].id.value).isEqualTo(user2.id)
+        assertThat(users[1].username).isEqualTo(user2.username)
+        assertThat(users[1].createdAt).isNotNull()
     }
 }
