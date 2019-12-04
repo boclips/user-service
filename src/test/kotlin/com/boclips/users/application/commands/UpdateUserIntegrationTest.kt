@@ -12,6 +12,7 @@ import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.MarketingService
+import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -19,6 +20,7 @@ import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
+import com.boclips.users.testsupport.factories.UserDocumentFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
@@ -29,11 +31,18 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.beans.factory.annotation.Autowired
+import java.time.Instant
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var updateUser: UpdateUser
     lateinit var mockMarketingService: MarketingService
+
+    @Autowired
+    lateinit var userDocumentMongoRepository: UserDocumentMongoRepository
 
     @BeforeEach
     fun setup() {
@@ -328,5 +337,48 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.profile!!.subjects).containsExactly(mySubject)
         assertThat(persistedUser.profile!!.ages).isEqualTo(listOf(4, 5, 6))
         assertThat(persistedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
+    }
+
+    @Test
+    fun `it sets accessExpiresOn for a new user during onboarding`() {
+        setSecurityContext("new-user-id")
+
+        val newUserDocument =
+            UserDocumentFactory.sample(
+                id = "new-user-id",
+                firstName = "Joe",
+                createdAt = Instant.parse("2020-10-10T00:00:00Z"),
+                organisationId = null
+            )
+
+        userDocumentMongoRepository.save(newUserDocument)
+
+        val updatedUser = updateUser("new-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
+
+        assertThat(updatedUser.accessExpiresOn).isNotNull()
+
+        val accessExpiresOn = updatedUser.accessExpiresOn
+
+        val expectedExpiryDate = ZonedDateTime.now().plusDays(11).truncatedTo(ChronoUnit.DAYS)
+        assertThat(accessExpiresOn).isEqualTo(expectedExpiryDate)
+    }
+
+    @Test
+    fun `it does not set accessExpiresOn for a lifetime user`() {
+        setSecurityContext("lifetime-user-id")
+
+        val lifetimeUserDocument =
+            UserDocumentFactory.sample(
+                id = "lifetime-user-id",
+                firstName = "Joe",
+                createdAt = ZonedDateTime.parse("2019-06-06T00:00:00Z").toInstant(),
+                organisationId = null
+            )
+
+        userDocumentMongoRepository.save(lifetimeUserDocument)
+
+        val updatedUser = updateUser("lifetime-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
+
+        assertThat(updatedUser.accessExpiresOn).isNull()
     }
 }

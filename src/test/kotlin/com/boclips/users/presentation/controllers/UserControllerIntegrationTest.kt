@@ -5,10 +5,13 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
@@ -24,6 +27,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -31,8 +35,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.Instant
 
 class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
+
+    @Autowired
+    lateinit var userDocumentMongoRepository: UserDocumentMongoRepository
 
     @Test
     fun `can create a new user with valid request`() {
@@ -249,6 +257,117 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isBadRequest)
                 .andExpectApiErrorPayload()
+        }
+
+        @Test
+        fun `successful onboarding sets up the trial access date`() {
+            val user = setupSampleUserBeforeOnboarding("user-id")
+
+            val userBeforeOnboarding = userRepository.findById(user.id)
+            assertThat(userBeforeOnboarding!!.accessExpiresOn).isNull()
+
+            // TODO(AO/EV): Remove this.
+            // We have to set the createAt date to be after tomorrow, until tomorrow.
+            val userDocument = userDocumentMongoRepository.findById("user-id").get()
+            val futureUserDocument = userDocument.copy(createdAt = Instant.parse("2019-12-05T01:00:00Z"))
+            userDocumentMongoRepository.save(futureUserDocument)
+
+            mvc.perform(
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "jane",
+                         "lastName": "doe",
+                         "subjects": ["subject-1"],
+                         "ages": [4,5,6],
+                         "country": "USA",
+                         "state": "CA",
+                         "schoolName": "San Fran Forest School"
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+
+            val userAfterOnboarding = userRepository.findById(user.id)
+            assertThat(userAfterOnboarding!!.accessExpiresOn).isNotNull()
+        }
+
+        @Test
+        fun `updates for an onboarded user does not change the access expiry`() {
+            val user = setupSampleUserBeforeOnboarding("user-id")
+
+            val userBeforeOnboarding = userRepository.findById(user.id)
+            assertThat(userBeforeOnboarding!!.accessExpiresOn).isNull()
+
+            mvc.perform(
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "jane",
+                         "lastName": "doe",
+                         "subjects": ["subject-1"],
+                         "ages": [4,5,6],
+                         "country": "USA",
+                         "state": "CA",
+                         "schoolName": "San Fran Forest School"
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+
+            val userAfterOnboarding = userRepository.findById(user.id)
+
+            val originalAccessExpiresOn = userAfterOnboarding!!.accessExpiresOn
+
+            mvc.perform(
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "Joseph",
+                         "lastName": "Smith"
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+
+            val userAfterUpdate = userRepository.findById(user.id)
+
+            assertThat(userAfterUpdate!!.profile!!.firstName).isEqualTo("Joseph")
+            assertThat(userAfterUpdate.profile!!.lastName).isEqualTo("Smith")
+            assertThat(userAfterUpdate.accessExpiresOn).isEqualTo(originalAccessExpiresOn)
+        }
+
+        private fun setupSampleUserBeforeOnboarding(userId: String): User {
+            val user = UserFactory.sample(
+                analyticsId = AnalyticsId(
+                    value = "1234567"
+                ),
+                account = AccountFactory.sample(id = userId),
+                profile = null,
+                organisationAccountId = null,
+                accessExpiresOn = null,
+                createdAt = null
+            )
+
+            saveUser(user)
+
+            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            saveSchool(
+                school = OrganisationFactory.school(
+                    name = "San Fran Forest School",
+                    state = State.fromCode("CA"),
+                    country = Country.fromCode("USA")
+                )
+            )
+
+            setSecurityContext(userId)
+            return user
         }
     }
 

@@ -12,6 +12,8 @@ import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
@@ -188,6 +190,25 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.marketingTracking.utmMedium).isEqualTo("test-medium")
         assertThat(updatedUser.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(updatedUser.marketingTracking.utmTerm).isEqualTo("test-term")
+    }
+
+    @Test
+    fun `updating user accessExpiresOn`() {
+        val user = userRepository.create(
+            UserFactory.sample(
+                account = AccountFactory.sample(
+                    id = "user-1"
+                ),
+                accessExpiresOn = null
+            )
+        )
+        val date = ZonedDateTime.now(ZoneOffset.UTC).plusWeeks(123)
+
+        userRepository.update(user, UserUpdateCommand.ReplaceAccessExpiresOn(date))
+
+        val updatedUser = userRepository.findById(user.id)!!
+
+        assertThat(updatedUser.accessExpiresOn).isEqualTo(date)
     }
 
     @Test

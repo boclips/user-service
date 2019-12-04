@@ -44,6 +44,9 @@ class MongoUserRepository(
                 is UserUpdateCommand.ReplaceOrganisationId -> userDocument.apply {
                     organisationId = updateCommand.organisationAccountId.value
                 }
+                is UserUpdateCommand.ReplaceAccessExpiresOn -> userDocument.apply {
+                    accessExpiresOn = updateCommand.accessExpiresOn.toInstant()
+                }
             }
         }
 

@@ -2,7 +2,7 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.school.Country
+import java.time.ZonedDateTime
 
 sealed class UserUpdateCommand {
     data class ReplaceFirstName(val firstName: String) : UserUpdateCommand()
@@ -19,4 +19,5 @@ sealed class UserUpdateCommand {
         val utmContent: String?,
         val utmTerm: String?
     ) : UserUpdateCommand()
+    data class ReplaceAccessExpiresOn(val accessExpiresOn: ZonedDateTime) : UserUpdateCommand()
 }

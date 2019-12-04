@@ -20,7 +20,7 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
 
     fun activateUserLink(): Link? {
         return getIfAuthenticated { currentUserId ->
-            if (userRepository.findById(UserId(value = currentUserId))?.hasOrganisationAssociated() == true)
+            if (userRepository.findById(UserId(value = currentUserId))?.hasOnboarded() == true)
                 null
             else {
                 profileLink()?.withRel("activate")

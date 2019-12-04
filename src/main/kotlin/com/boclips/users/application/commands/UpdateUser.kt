@@ -17,11 +17,14 @@ import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
+import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import mu.KLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 // TODO EV: think about how to refactor dependencies
 @Component
@@ -34,7 +37,9 @@ class UpdateUser(
     private val organisationService: OrganisationService,
     private val getOrImportUser: GetOrImportUser
 ) {
-    companion object : KLogging()
+    companion object : KLogging() {
+        const val DEFAULT_TRIAL_DAYS_LENGTH = 10L
+    }
 
     operator fun invoke(userId: String, updateUserRequest: UpdateUserRequest): User {
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
@@ -45,13 +50,35 @@ class UpdateUser(
         val school = findOrCreateSchool(updateUserRequest)
 
         getOrImportUser(authenticatedUserId).let { user ->
-            userUpdatesCommandFactory.buildCommands(updateUserRequest, school).let { commands ->
+            val updateCommands = buildUpdateCommands(updateUserRequest, school, user)
+            updateCommands.let { commands ->
                 userRepository.update(user, *commands.toTypedArray())
             }
             updateMarketingService(authenticatedUserId)
         }
 
         return userService.findUserById(authenticatedUserId)
+    }
+
+    private fun buildUpdateCommands(
+        updateUserRequest: UpdateUserRequest,
+        school: OrganisationAccount<School>?,
+        user: User
+    ): List<UserUpdateCommand> {
+        val updateCommands = userUpdatesCommandFactory.buildCommands(updateUserRequest, school)
+
+        return if (shouldSetAccessExpiresOn(user)) {
+            // To calculate the expiry date we decided to round up the date so users get at least the default trial days
+            val accessExpiry = ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
+
+            updateCommands + UserUpdateCommand.ReplaceAccessExpiresOn(accessExpiresOn = accessExpiry)
+        } else {
+            updateCommands
+        }
+    }
+
+    private fun shouldSetAccessExpiresOn(user: User): Boolean {
+        return !user.hasLifetimeAccess() && !user.hasOnboarded()
     }
 
     private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): OrganisationAccount<School>? {
@@ -81,7 +108,7 @@ class UpdateUser(
         return organisationAccountRepository.lookupSchools(
             schoolName,
             countryCode
-        ).firstOrNull{ it.name == schoolName }
+        ).firstOrNull { it.name == schoolName }
             ?.let { organisationAccountRepository.findSchoolById(OrganisationAccountId(it.id)) }
     }
 
