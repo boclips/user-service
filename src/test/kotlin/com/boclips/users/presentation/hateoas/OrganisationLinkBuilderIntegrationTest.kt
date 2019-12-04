@@ -22,6 +22,15 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
     }
 
     @Test
+    fun `edit link for organisation`() {
+        val organisationId = "test-id"
+        val organisationLink = organisationLinkBuilder.edit(OrganisationAccountId(organisationId))
+
+        assertThat(organisationLink.rel).isEqualTo("edit")
+        assertThat(organisationLink.href).endsWith("/organisations/$organisationId")
+    }
+
+    @Test
     fun `expose organisations link`() {
         val organisationLink = organisationLinkBuilder.getSchoolsAndDistrictsLink(Country.USA_ISO)
 

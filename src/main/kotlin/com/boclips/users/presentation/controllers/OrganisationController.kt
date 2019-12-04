@@ -52,7 +52,7 @@ class OrganisationController(
     }
 
     @PutMapping("organisations/{id}")
-    fun updateAnOrganisation(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest): Resource<OrganisationAccountResource> {
+    fun updateAnOrganisation(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): Resource<OrganisationAccountResource> {
         return organisationConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
     }
 }

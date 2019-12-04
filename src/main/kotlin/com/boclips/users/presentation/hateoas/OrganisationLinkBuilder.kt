@@ -15,6 +15,12 @@ class OrganisationLinkBuilder {
         ).withSelfRel()
     }
 
+    fun edit(id: OrganisationAccountId): Link{
+        return ControllerLinkBuilder.linkTo(
+            ControllerLinkBuilder.methodOn(OrganisationController::class.java).updateAnOrganisation(id.value, null)
+        ).withRel("edit")
+    }
+
     fun getSchoolLink(countryId: String?): Link? {
         return ControllerLinkBuilder.linkTo(
             ControllerLinkBuilder.methodOn(OrganisationController::class.java).searchSchools(

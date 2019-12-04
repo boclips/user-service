@@ -34,7 +34,8 @@ class OrganisationConverter(private val organisationLinkBuilder: OrganisationLin
                     }
                 )),
             listOfNotNull(
-                organisationLinkBuilder.self(organisationAccount.id)
+                organisationLinkBuilder.self(organisationAccount.id),
+                organisationLinkBuilder.edit(organisationAccount.id)
             )
         )
     }

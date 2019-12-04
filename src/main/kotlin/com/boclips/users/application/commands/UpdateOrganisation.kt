@@ -14,8 +14,8 @@ import java.time.format.DateTimeParseException
 
 @Component
 class UpdateOrganisation(private val organisationAccountRepository: OrganisationAccountRepository) {
-    operator fun invoke(id: String, request: UpdateOrganisationRequest): OrganisationAccount<*> {
-        val convertedDate = convertToZonedDateTime(request.accessExpiresOn)
+    operator fun invoke(id: String, request: UpdateOrganisationRequest?): OrganisationAccount<*> {
+        val convertedDate = convertToZonedDateTime(request?.accessExpiresOn)
 
         return organisationAccountRepository.update(
             OrganisationAccountExpiresOnUpdate(
