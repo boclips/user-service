@@ -41,7 +41,8 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
             organisationAccountId = userDocument.organisationId?.let { OrganisationAccountId(it) },
-            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
+            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)},
+            hasLifetimeAccess = userDocument.hasLifetimeAccess
         )
     }
 }

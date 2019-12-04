@@ -16,7 +16,7 @@ class UserTest {
             )
         )
 
-        assertThat(user.hasLifetimeAccess()).isTrue()
+        assertThat(user.wasCreatedBeforePlatformClosure()).isTrue()
     }
 
     @Test
@@ -27,7 +27,7 @@ class UserTest {
             )
         )
 
-        assertThat(user.hasLifetimeAccess()).isTrue()
+        assertThat(user.wasCreatedBeforePlatformClosure()).isTrue()
     }
 
     @Test
@@ -38,7 +38,7 @@ class UserTest {
             )
         )
 
-        assertThat(user.hasLifetimeAccess()).isFalse()
+        assertThat(user.wasCreatedBeforePlatformClosure()).isFalse()
     }
 
     @Test
@@ -49,7 +49,7 @@ class UserTest {
             )
         )
 
-        assertThat(user.hasLifetimeAccess()).isFalse()
+        assertThat(user.wasCreatedBeforePlatformClosure()).isFalse()
     }
 
     @Test

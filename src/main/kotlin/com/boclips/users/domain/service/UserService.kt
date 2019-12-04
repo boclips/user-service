@@ -2,12 +2,14 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.NewTeacher
+import com.boclips.users.domain.model.PLATFORM_CLOSURE_DATE
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import mu.KLogging
 import org.springframework.stereotype.Service
+import java.time.ZonedDateTime
 
 @Service
 class UserService(
@@ -52,7 +54,8 @@ class UserService(
                     utmTerm = newTeacher.utmTerm
                 ),
                 organisationAccountId = null,
-                accessExpiresOn = null
+                accessExpiresOn = null,
+                hasLifetimeAccess = account.createdAt?.isBefore(ZonedDateTime.parse(PLATFORM_CLOSURE_DATE)) ?: false
             )
         )
 

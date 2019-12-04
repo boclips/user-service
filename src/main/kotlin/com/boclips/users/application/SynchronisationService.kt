@@ -5,6 +5,7 @@ import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
+import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -45,6 +46,22 @@ class SynchronisationService(
                 userImportService.importFromAccountProvider(listOf(account.id))
                 logger.info { "Import of user $account completed" }
             }
+        }
+    }
+
+    fun migrateCreatedAt() {
+        accountProvider.getAccounts().forEach { account ->
+            if (account.createdAt == null) {
+                logger.warn { "Account createdAt missing for: ${account.id}" }
+                return@forEach
+            }
+
+            userRepository.findById(account.id)?.let {
+                if (it.account.createdAt != account.createdAt) {
+                    logger.info { "Updating account created at for ${account.id}" }
+                    userRepository.update(it, UserUpdateCommand.ReplaceAccountCreatedAt(account.createdAt), UserUpdateCommand.ReplaceHasLifetimeAccess(true))
+                }
+            } ?: logger.warn { "User cannot be found in userRepository, but exists in keycloak: ${account.id}" }
         }
     }
 }

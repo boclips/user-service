@@ -42,7 +42,8 @@ class UserDocumentFactory {
             marketing = marketing,
             organisationId = organisationId,
             accessExpiresOn = accessExpiresOn,
-            createdAt = createdAt
+            createdAt = createdAt,
+            hasLifetimeAccess = false
         )
     }
 }
