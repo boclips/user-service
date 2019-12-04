@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.service.OrganisationAccountExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -179,6 +180,22 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `account access expiry update`() {
+        val oldExpiry = ZonedDateTime.now()
+        val newExpiry = ZonedDateTime.now().plusWeeks(2)
+        val organisation = organisationAccountRepository.save(OrganisationFactory.school(), accessExpiresOn = oldExpiry)
+
+        val updatedOrganisation = organisationAccountRepository.update(
+            OrganisationAccountExpiresOnUpdate(
+                id = organisation.id,
+                accessExpiresOn = newExpiry
+            )
+        )
+
+        assertThat(updatedOrganisation?.accessExpiresOn).isEqualTo(newExpiry)
+    }
+
+    @Test
     fun `update returns null when organisation not found`() {
         val updatedOrganisation = organisationAccountRepository.update(
             OrganisationAccountTypeUpdate(
@@ -216,12 +233,20 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
+
         organisationAccountRepository.save(
             OrganisationFactory.school(
                 district = null,
                 country = Country.fromCode("GBR")
             )
         )
+
+        organisationAccountRepository.save(
+            OrganisationFactory.apiIntegration(
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
         val independentOrganisations =
             organisationAccountRepository.findIndependentOrganisationAccounts(Country.USA_ISO)
         assertThat(independentOrganisations!![0]).isEqualTo(district)

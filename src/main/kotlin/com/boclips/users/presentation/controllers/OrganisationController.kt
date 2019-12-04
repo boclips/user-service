@@ -2,22 +2,31 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.commands.GetIndependentOrganisations
 import com.boclips.users.application.commands.SearchSchools
+import com.boclips.users.application.commands.UpdateOrganisation
+import com.boclips.users.presentation.requests.UpdateOrganisationRequest
+import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.OrganisationAccountResource
 import com.boclips.users.presentation.resources.OrganisationConverter
+import com.boclips.users.presentation.resources.UserResource
 import com.boclips.users.presentation.resources.school.SchoolResource
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/v1", "/v1/")
 class OrganisationController(
     private val searchSchools: SearchSchools,
     private val getIndependentOrganisations: GetIndependentOrganisations,
-    private val organisationConverter: OrganisationConverter
+    private val organisationConverter: OrganisationConverter,
+    private val updateOrganisation: UpdateOrganisation
 ) {
     @GetMapping("/schools")
     fun searchSchools(
@@ -40,5 +49,11 @@ class OrganisationController(
         return Resources(
             organisationAccounts.map { account -> organisationConverter.toResource(account)}
         )
+    }
+
+    @PutMapping("organisations/{id}")
+    fun updateAnOrganisation(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest): Resource<OrganisationAccountResource> {
+        updateOrganisation(id, updateOrganisationRequest)
+        TODO()
     }
 }

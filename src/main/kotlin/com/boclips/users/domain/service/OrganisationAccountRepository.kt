@@ -12,13 +12,6 @@ import com.boclips.users.domain.model.organisation.School
 import java.time.ZonedDateTime
 import java.util.Collections.emptyList
 
-sealed class OrganisationAccountUpdate(val id: OrganisationAccountId)
-
-class OrganisationAccountTypeUpdate(
-    id: OrganisationAccountId,
-    val type: OrganisationAccountType
-): OrganisationAccountUpdate(id)
-
 interface OrganisationAccountRepository {
     fun save(
         apiIntegration: ApiIntegration,

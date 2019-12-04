@@ -9,6 +9,7 @@ import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.service.OrganisationAccountExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
 import com.boclips.users.domain.service.OrganisationAccountUpdate
@@ -59,6 +60,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
 
         val updatedDocument = when(update) {
             is OrganisationAccountTypeUpdate -> document.copy(accountType = update.type)
+            is OrganisationAccountExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
         }
 
         return fromDocument(repository.save(updatedDocument))
