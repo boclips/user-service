@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.application.converters.UserConverter
+import com.boclips.users.presentation.resources.converters.UserConverter
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId

@@ -1,13 +1,9 @@
-package com.boclips.users.application.converters
+package com.boclips.users.presentation.resources.converters
 
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.presentation.resources.OrganisationResource
 import com.boclips.users.presentation.resources.SubjectResource
 import com.boclips.users.presentation.resources.UserResource
-import com.boclips.users.presentation.resources.converters.OrganisationConverter
-import com.boclips.users.presentation.resources.school.CountryResource
-import com.boclips.users.presentation.resources.school.StateResource
 import org.springframework.stereotype.Component
 
 @Component

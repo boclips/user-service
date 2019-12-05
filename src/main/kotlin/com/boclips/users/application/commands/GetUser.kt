@@ -2,7 +2,7 @@ package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
 import com.boclips.security.utils.UserExtractor.currentUserHasRole
-import com.boclips.users.application.converters.UserConverter
+import com.boclips.users.presentation.resources.converters.UserConverter
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
