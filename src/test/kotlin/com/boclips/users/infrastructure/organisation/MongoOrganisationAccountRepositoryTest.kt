@@ -1,8 +1,10 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.OrganisationAccountExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
@@ -255,4 +257,63 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisationAccountRepository.findIndependentSchoolsAndDistricts("GBR")).hasSize(1)
     }
+
+    @Test
+    fun `ordering independent organisations by expiry date, then name`() {
+        val schoolOne = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolA",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            ),
+            ZonedDateTime.now().plusDays(60)
+        )
+
+        val schoolTwo = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolB",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            ),
+            ZonedDateTime.now().plusDays(5)
+        )
+
+        val schoolThree = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolC",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            ),
+            ZonedDateTime.now().plusDays(10)
+        )
+
+        val schoolSix = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolF",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+        val schoolFour = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolE",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+        val schoolFive = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolD",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+
+        val independentOrganisations: List<OrganisationAccount<*>>? =
+            organisationAccountRepository.findIndependentSchoolsAndDistricts(Country.USA_ISO)
+        assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree, schoolTwo, schoolFive, schoolFour, schoolSix)
+    }
+
 }

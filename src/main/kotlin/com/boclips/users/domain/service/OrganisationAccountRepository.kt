@@ -34,7 +34,7 @@ interface OrganisationAccountRepository {
     fun findOrganisationAccountsByParentId(parentId: OrganisationAccountId): List<OrganisationAccount<*>>
     fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount<*>?
     fun findOrganisationAccountByExternalId(id: String): OrganisationAccount<*>?
-    fun findIndependentSchoolsAndDistricts(countryCode: String): List<OrganisationAccount<Organisation>>?
+    fun findIndependentSchoolsAndDistricts(countryCode: String): List<OrganisationAccount<*>>?
 
     fun findApiIntegrationByRole(role: String): OrganisationAccount<ApiIntegration>?
     fun findApiIntegrationByName(name: String): OrganisationAccount<ApiIntegration>?

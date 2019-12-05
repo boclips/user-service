@@ -58,7 +58,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
     override fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>? {
         val document = repository.findByIdOrNull(update.id.value) ?: return null
 
-        val updatedDocument = when(update) {
+        val updatedDocument = when (update) {
             is OrganisationAccountTypeUpdate -> document.copy(accountType = update.type)
             is OrganisationAccountExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
         }
@@ -78,7 +78,12 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
     ): OrganisationAccount<*> {
         return fromDocument(
             repository.save(
-                organisationDocument(organisation = organisation, role = role, contractIds = contractIds, accessExpiresOn = accessExpiresOn)
+                organisationDocument(
+                    organisation = organisation,
+                    role = role,
+                    contractIds = contractIds,
+                    accessExpiresOn = accessExpiresOn
+                )
             )
         )
     }
@@ -146,8 +151,11 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
             }
     }
 
-    override fun findIndependentSchoolsAndDistricts(countryCode: String): List<OrganisationAccount<Organisation>>? {
-        return repository.findByCountryCodeAndParentOrganisationIsNullAndTypeIsNot(countryCode, OrganisationType.API).toList()
+    override fun findIndependentSchoolsAndDistricts(countryCode: String): List<OrganisationAccount<*>>? {
+        return repository.findByCountryCodeAndParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
+            countryCode,
+            OrganisationType.API
+        ).toList()
             .map {
                 @Suppress("UNCHECKED_CAST")
                 fromDocument(it) as OrganisationAccount<Organisation>
