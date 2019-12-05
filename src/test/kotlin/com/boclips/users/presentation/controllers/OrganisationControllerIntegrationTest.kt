@@ -106,7 +106,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(
             put("/v1/organisations/${district.id.value}").asUserWithRoles(
                 "some-boclipper",
-                UserRoles.VIEW_ORGANISATIONS
+                UserRoles.UPDATE_ORGANISATIONS
             )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -132,7 +132,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(
             put("/v1/organisations/${district.id.value}").asUserWithRoles(
                 "some-boclipper",
-                UserRoles.VIEW_ORGANISATIONS
+                UserRoles.UPDATE_ORGANISATIONS
             )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -151,7 +151,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(
             put("/v1/organisations/not-an-organisation").asUserWithRoles(
                 "some-boclipper",
-                UserRoles.VIEW_ORGANISATIONS
+                UserRoles.UPDATE_ORGANISATIONS
             )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
