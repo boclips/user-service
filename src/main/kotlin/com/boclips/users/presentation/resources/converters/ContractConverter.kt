@@ -1,8 +1,9 @@
-package com.boclips.users.presentation.resources
+package com.boclips.users.presentation.resources.converters
 
 import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.hateoas.SelectedContractLinkBuilder
+import com.boclips.users.presentation.resources.ContractResource
 import org.springframework.stereotype.Service
 
 @Service

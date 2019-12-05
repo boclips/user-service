@@ -5,7 +5,7 @@ import com.boclips.users.application.commands.GetContractById
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.requests.CreateContractRequest
-import com.boclips.users.presentation.resources.ContractConverter
+import com.boclips.users.presentation.resources.converters.ContractConverter
 import com.boclips.users.presentation.resources.ContractResource
 import org.springframework.hateoas.Resource
 import org.springframework.http.HttpHeaders

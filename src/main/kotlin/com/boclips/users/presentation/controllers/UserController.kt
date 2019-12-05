@@ -12,7 +12,7 @@ import com.boclips.users.presentation.hateoas.UserContractsLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
-import com.boclips.users.presentation.resources.ContractConverter
+import com.boclips.users.presentation.resources.converters.ContractConverter
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Resource
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 

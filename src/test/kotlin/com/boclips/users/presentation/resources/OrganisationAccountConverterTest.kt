@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
+import com.boclips.users.presentation.resources.converters.OrganisationAccountConverter
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -22,7 +23,9 @@ internal class OrganisationAccountConverterTest {
             organisation = OrganisationFactory.district(name = "my-district", state = State.fromCode("NY")),
             type = OrganisationAccountType.DESIGN_PARTNER
         )
-        val organisationAccountResource = OrganisationAccountConverter(OrganisationLinkBuilder()).toResource(originalOrganisation)
+        val organisationAccountResource = OrganisationAccountConverter(
+            OrganisationLinkBuilder()
+        ).toResource(originalOrganisation)
 
         assertThat(organisationAccountResource.content.id).isEqualTo(originalOrganisation.id.value)
         assertThat(organisationAccountResource.content.accessExpiresOn).isEqualTo(originalOrganisation.accessExpiresOn)
@@ -30,5 +33,6 @@ internal class OrganisationAccountConverterTest {
         assertThat(organisationAccountResource.content.organisation.country?.name).isEqualTo(originalOrganisation.organisation.country?.name)
         assertThat(organisationAccountResource.content.organisation.state?.name).isEqualTo(originalOrganisation.organisation.state?.name)
         assertThat(organisationAccountResource.content.organisation.type).isEqualTo(originalOrganisation.organisation.type().toString())
-}
+        assertThat(organisationAccountResource.links).hasSize(2)
+    }
 }

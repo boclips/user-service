@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.presentation.resources.OrganisationResource
 import com.boclips.users.presentation.resources.SubjectResource
 import com.boclips.users.presentation.resources.UserResource
+import com.boclips.users.presentation.resources.converters.OrganisationConverter
 import com.boclips.users.presentation.resources.school.CountryResource
 import com.boclips.users.presentation.resources.school.StateResource
 import org.springframework.stereotype.Component
@@ -23,24 +24,7 @@ class UserConverter {
             organisationAccountId = user.organisationAccountId?.value,
             organisation = user.organisationAccountId?.let {
                 organisationAccount?.let { orgAccount ->
-                    OrganisationResource(
-                        name = orgAccount.organisation.name,
-                        type = orgAccount.organisation.type().toString(),
-                        state = orgAccount.organisation.state?.let {
-                            StateResource(
-                                name = it.name,
-                                id = it.id
-                            )
-                        },
-
-                        country = orgAccount.organisation.country?.let {
-                            CountryResource(
-                                name = it.name,
-                                id = it.id,
-                                states = null
-                            )
-                        }
-                    )
+                    OrganisationConverter().toResource(orgAccount.organisation)
                 }
             }
         )

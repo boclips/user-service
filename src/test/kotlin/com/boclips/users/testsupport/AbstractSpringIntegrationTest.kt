@@ -25,7 +25,7 @@ import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
-import com.boclips.users.presentation.resources.ContractConverter
+import com.boclips.users.presentation.resources.converters.ContractConverter
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.service.client.spring.MockVideoServiceClient
 import com.github.tomakehurst.wiremock.WireMockServer
@@ -45,7 +45,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.Instant
-import java.time.ZonedDateTime
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)

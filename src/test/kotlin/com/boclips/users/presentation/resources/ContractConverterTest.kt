@@ -3,6 +3,7 @@ package com.boclips.users.presentation.resources
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.hateoas.SelectedContractLinkBuilder
+import com.boclips.users.presentation.resources.converters.ContractConverter
 import com.boclips.users.testsupport.factories.ContractFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,5 +21,8 @@ class ContractConverterTest {
         assertThat(resource.collectionIds).containsExactlyInAnyOrder("A", "B")
     }
 
-    private val converter = ContractConverter(ContractLinkBuilder(), SelectedContractLinkBuilder())
+    private val converter = ContractConverter(
+        ContractLinkBuilder(),
+        SelectedContractLinkBuilder()
+    )
 }

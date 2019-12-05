@@ -6,7 +6,7 @@ import com.boclips.users.application.commands.GetOrganisationById
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.requests.CreateOrganisationRequest
-import com.boclips.users.presentation.resources.OrganisationAccountConverter
+import com.boclips.users.presentation.resources.converters.OrganisationAccountConverter
 import com.boclips.users.presentation.resources.OrganisationAccountResource
 import org.springframework.hateoas.Resource
 import org.springframework.http.HttpHeaders

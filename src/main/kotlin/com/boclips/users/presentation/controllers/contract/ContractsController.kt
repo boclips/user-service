@@ -5,7 +5,7 @@ import com.boclips.users.application.model.ContractFilter
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.hateoas.ContractResourcesHateoasWrapper
 import com.boclips.users.presentation.hateoas.ContractResourcesWrapper
-import com.boclips.users.presentation.resources.ContractConverter
+import com.boclips.users.presentation.resources.converters.ContractConverter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam

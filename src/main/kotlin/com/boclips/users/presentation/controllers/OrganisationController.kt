@@ -5,7 +5,7 @@ import com.boclips.users.application.commands.SearchSchools
 import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationAccountResource
-import com.boclips.users.presentation.resources.OrganisationAccountConverter
+import com.boclips.users.presentation.resources.converters.OrganisationAccountConverter
 import com.boclips.users.presentation.resources.school.SchoolResource
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources

@@ -1,7 +1,9 @@
-package com.boclips.users.presentation.resources
+package com.boclips.users.presentation.resources.converters
 
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
+import com.boclips.users.presentation.resources.OrganisationAccountResource
+import com.boclips.users.presentation.resources.OrganisationResource
 import com.boclips.users.presentation.resources.school.CountryResource
 import com.boclips.users.presentation.resources.school.StateResource
 import org.springframework.hateoas.Resource
@@ -15,23 +17,7 @@ class OrganisationAccountConverter(private val organisationLinkBuilder: Organisa
                 id = organisationAccount.id.value,
                 contractIds = organisationAccount.contractIds.map { it.value },
                 accessExpiresOn = organisationAccount.accessExpiresOn,
-                organisation = OrganisationResource(
-                    name = organisationAccount.organisation.name,
-                    type = organisationAccount.organisation.type().toString(),
-                    state = organisationAccount.organisation.state?.let {
-                        StateResource(
-                            name = it.name,
-                            id = it.id
-                        )
-                    },
-                    country = organisationAccount.organisation.country?.let {
-                        CountryResource(
-                            name = it.name,
-                            id = it.id,
-                            states = null
-                        )
-                    }
-                )),
+                organisation = OrganisationConverter().toResource(organisationAccount.organisation)),
             listOfNotNull(
                 organisationLinkBuilder.self(organisationAccount.id),
                 organisationLinkBuilder.edit(organisationAccount.id)
