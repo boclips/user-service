@@ -8,17 +8,16 @@ import org.springframework.hateoas.Resource
 import org.springframework.stereotype.Component
 
 @Component
-class OrganisationConverter(private val organisationLinkBuilder: OrganisationLinkBuilder) {
+class OrganisationAccountConverter(private val organisationLinkBuilder: OrganisationLinkBuilder) {
     fun toResource(organisationAccount: OrganisationAccount<*>): Resource<OrganisationAccountResource> {
         return Resource(
             OrganisationAccountResource(
                 id = organisationAccount.id.value,
-                name = organisationAccount.organisation.name,
                 contractIds = organisationAccount.contractIds.map { it.value },
                 accessExpiresOn = organisationAccount.accessExpiresOn,
-                type = organisationAccount.organisation.type().toString(),
                 organisation = OrganisationResource(
                     name = organisationAccount.organisation.name,
+                    type = organisationAccount.organisation.type().toString(),
                     state = organisationAccount.organisation.state?.let {
                         StateResource(
                             name = it.name,

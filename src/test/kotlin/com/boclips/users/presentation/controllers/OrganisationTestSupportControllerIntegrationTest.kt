@@ -135,7 +135,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$.name", equalTo(organisationName)))
+                .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
         }
@@ -194,7 +194,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$.name", equalTo(organisationName)))
+                .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
         }

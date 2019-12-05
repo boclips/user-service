@@ -82,12 +82,12 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
         )
             .andExpect(jsonPath("$._embedded.organisationAccount", hasSize<Int>(2)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].name", equalTo(district.organisation.name)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].type", equalTo(district.organisation.type().toString())))
+            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.name", equalTo(district.organisation.name)))
+            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.type", equalTo(district.organisation.type().toString())))
             .andExpect(jsonPath("$._embedded.organisationAccount[0].accessExpiresOn", equalTo(expiryTimeToString)))
             .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.self.href", endsWith("/v1/organisations/${district.id.value}")))
             .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.edit.href", endsWith("/v1/organisations/${district.id.value}")))
-            .andExpect(jsonPath("$._embedded.organisationAccount[1].name", equalTo(school.organisation.name)))
+            .andExpect(jsonPath("$._embedded.organisationAccount[1].organisation.name", equalTo(school.organisation.name)))
     }
 
     @Test

@@ -25,6 +25,7 @@ class UserConverter {
                 organisationAccount?.let { orgAccount ->
                     OrganisationResource(
                         name = orgAccount.organisation.name,
+                        type = orgAccount.organisation.type().toString(),
                         state = orgAccount.organisation.state?.let {
                             StateResource(
                                 name = it.name,

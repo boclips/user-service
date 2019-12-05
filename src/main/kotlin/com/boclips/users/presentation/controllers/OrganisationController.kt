@@ -4,10 +4,8 @@ import com.boclips.users.application.commands.GetIndependentOrganisations
 import com.boclips.users.application.commands.SearchSchools
 import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
-import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.OrganisationAccountResource
-import com.boclips.users.presentation.resources.OrganisationConverter
-import com.boclips.users.presentation.resources.UserResource
+import com.boclips.users.presentation.resources.OrganisationAccountConverter
 import com.boclips.users.presentation.resources.school.SchoolResource
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
@@ -25,7 +23,7 @@ import javax.validation.Valid
 class OrganisationController(
     private val searchSchools: SearchSchools,
     private val getIndependentOrganisations: GetIndependentOrganisations,
-    private val organisationConverter: OrganisationConverter,
+    private val organisationAccountConverter: OrganisationAccountConverter,
     private val updateOrganisation: UpdateOrganisation
 ) {
     @GetMapping("/schools")
@@ -47,12 +45,12 @@ class OrganisationController(
         val organisationAccounts = getIndependentOrganisations(countryCode = countryCode)
 
         return Resources(
-            organisationAccounts.map { account -> organisationConverter.toResource(account)}
+            organisationAccounts.map { account -> organisationAccountConverter.toResource(account)}
         )
     }
 
     @PutMapping("organisations/{id}")
     fun updateAnOrganisation(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): Resource<OrganisationAccountResource> {
-        return organisationConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
+        return organisationAccountConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
     }
 }
