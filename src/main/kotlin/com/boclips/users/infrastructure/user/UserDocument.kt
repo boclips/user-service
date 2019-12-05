@@ -23,7 +23,7 @@ data class UserDocument(
     var marketing: MarketingTrackingDocument?,
     var organisationId: String?,
     var accessExpiresOn: Instant?,
-    var createdAt: Instant?,
+    var createdAt: Instant,
     var hasLifetimeAccess: Boolean
 ) {
 
@@ -49,7 +49,7 @@ data class UserDocument(
                 ),
                 organisationId = user.organisationAccountId?.value,
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
-                createdAt = user.account.createdAt?.toInstant(),
+                createdAt = user.account.createdAt.toInstant(),
                 hasLifetimeAccess = user.hasLifetimeAccess
             )
         }
@@ -69,7 +69,7 @@ data class UserDocument(
                 marketing = null,
                 organisationId = organisationAccountId?.value,
                 accessExpiresOn = null,
-                createdAt = account.createdAt?.toInstant(),
+                createdAt = account.createdAt.toInstant(),
                 hasLifetimeAccess = false
             )
         }

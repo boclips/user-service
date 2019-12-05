@@ -10,7 +10,7 @@ class AccountFactory {
             id: String = "user-id",
             username: String = "joe@dough.com",
             roles: List<String> = emptyList(),
-            createdAt: ZonedDateTime? = ZonedDateTime.now()
+            createdAt: ZonedDateTime = ZonedDateTime.now()
         ) = Account(
             id = UserId(value = id),
             username = username,

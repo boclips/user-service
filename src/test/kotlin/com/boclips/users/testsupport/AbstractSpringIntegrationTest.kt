@@ -150,7 +150,7 @@ abstract class AbstractSpringIntegrationTest {
                 id = user.id,
                 username = user.account.email!!,
                 roles = listOf("ROLE_TEACHER"),
-                createdAt = user.account.createdAt?: ZonedDateTime.now()
+                createdAt = user.account.createdAt
             )
         )
 

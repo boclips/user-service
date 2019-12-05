@@ -11,7 +11,6 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
@@ -27,7 +26,6 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -35,13 +33,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.time.Instant
 import java.time.ZonedDateTime
 
 class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
-
-    @Autowired
-    lateinit var userDocumentMongoRepository: UserDocumentMongoRepository
 
     @Test
     fun `can create a new user with valid request`() {
@@ -267,12 +261,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val userBeforeOnboarding = userRepository.findById(user.id)
             assertThat(userBeforeOnboarding!!.accessExpiresOn).isNull()
 
-            // TODO(AO/EV): Remove this.
-            // We have to set the createAt date to be after tomorrow, until tomorrow.
-            val userDocument = userDocumentMongoRepository.findById("user-id").get()
-            val futureUserDocument = userDocument.copy(createdAt = Instant.parse("2019-12-05T01:00:00Z"))
-            userDocumentMongoRepository.save(futureUserDocument)
-
             mvc.perform(
                 put("/v1/users/user-id").asUser("user-id")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -349,7 +337,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 analyticsId = AnalyticsId(
                     value = "1234567"
                 ),
-                account = AccountFactory.sample(id = userId, createdAt = null),
+                account = AccountFactory.sample(id = userId),
                 profile = null,
                 organisationAccountId = null,
                 accessExpiresOn = null

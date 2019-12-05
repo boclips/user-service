@@ -5,11 +5,6 @@ import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import java.time.ZonedDateTime
 
-/**
- * TODO(AO/EV): Remove this field on 2019-12-05 (tomorrow, or maybe today)
- */
-const val PLATFORM_CLOSURE_DATE = "2019-12-05T00:00:00Z"
-
 data class User(
     val account: Account,
     val profile: Profile?,

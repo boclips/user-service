@@ -18,7 +18,7 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
             account = Account(
                 id = UserId(value = userDocument.id),
                 username = userDocument.username ?: userDocument.email.orEmpty(),
-                createdAt = userDocument.createdAt?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
+                createdAt = ZonedDateTime.ofInstant(userDocument.createdAt, ZoneOffset.UTC)
             ),
             profile = Profile(
                 firstName = userDocument.firstName.orEmpty(),
