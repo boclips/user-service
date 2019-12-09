@@ -14,6 +14,8 @@ import com.boclips.users.domain.service.OrganisationAccountRepository
 import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
 import com.boclips.users.domain.service.OrganisationAccountUpdate
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import java.time.ZonedDateTime
 
@@ -151,15 +153,15 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
             }
     }
 
-    override fun findIndependentSchoolsAndDistricts(countryCode: String): List<OrganisationAccount<*>>? {
+    override fun findIndependentSchoolsAndDistricts(searchRequest: OrganisationSearchRequest): Page<OrganisationAccount<*>>? {
         return repository.findByCountryCodeAndParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
-            countryCode,
-            OrganisationType.API
-        ).toList()
-            .map {
-                @Suppress("UNCHECKED_CAST")
-                fromDocument(it) as OrganisationAccount<Organisation>
-            }
+            searchRequest.countryCode,
+            OrganisationType.API,
+            PageRequest.of(searchRequest.page ?: 0, searchRequest.size ?: 30)
+        ).map {
+            @Suppress("UNCHECKED_CAST")
+            fromDocument(it) as OrganisationAccount<Organisation>
+        }
     }
 
     override fun findApiIntegrationByName(name: String): OrganisationAccount<ApiIntegration>? {

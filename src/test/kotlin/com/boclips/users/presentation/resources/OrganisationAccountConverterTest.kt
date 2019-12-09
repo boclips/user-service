@@ -8,6 +8,7 @@ import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.resources.converters.OrganisationAccountConverter
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
@@ -24,7 +25,7 @@ internal class OrganisationAccountConverterTest {
             type = OrganisationAccountType.DESIGN_PARTNER
         )
         val organisationAccountResource = OrganisationAccountConverter(
-            OrganisationLinkBuilder()
+            OrganisationLinkBuilder(mock())
         ).toResource(originalOrganisation)
 
         assertThat(organisationAccountResource.content.id).isEqualTo(originalOrganisation.id.value)

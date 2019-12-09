@@ -1,6 +1,7 @@
 package com.boclips.users.application.commands
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.infrastructure.organisation.OrganisationSearchRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -13,7 +14,7 @@ class GetIndependentOrganisationsIntegrationTest : AbstractSpringIntegrationTest
 
     @Test
     fun `searching non usa organisations`() {
-        organisationAccountRepository.save(
+        val ukSchool = organisationAccountRepository.save(
             school = OrganisationFactory.school(
                 name = "organisation 1",
                 country = Country.fromCode("GBR")
@@ -33,10 +34,15 @@ class GetIndependentOrganisationsIntegrationTest : AbstractSpringIntegrationTest
             )
         )
 
-        val organisations = getIndependentOrganisations(countryCode = "GBR")
+        val searchRequest = OrganisationSearchRequest(
+            countryCode = "GBR",
+            page = 0,
+            size = 2
+        )
+        val organisations = getIndependentOrganisations(searchRequest)
 
         assertThat(organisations).hasSize(1)
-        assertThat(organisations[0].organisation.name).isEqualTo("organisation 1")
+        assertThat(organisations).containsExactly(ukSchool)
     }
 
     @Test
@@ -61,13 +67,18 @@ class GetIndependentOrganisationsIntegrationTest : AbstractSpringIntegrationTest
             )
         )
 
-        val organisations = getIndependentOrganisations(countryCode = "USA")
+        val searchRequest = OrganisationSearchRequest(
+            countryCode = Country.USA_ISO,
+            page = 0,
+            size = 2
+        )
+        val organisations = getIndependentOrganisations(searchRequest)
 
         assertThat(organisations).hasSize(2)
-        assertThat(organisations[0].organisation.name).isEqualTo("floridistrict")
-        assertThat(organisations[0].organisation.country).isEqualTo(Country.usa())
-        assertThat(organisations[1].organisation.name).isEqualTo("oregon-isation")
-        assertThat(organisations[1].organisation.country).isEqualTo(Country.usa())
+        assertThat(organisations.content[0].organisation.name).isEqualTo("floridistrict")
+        assertThat(organisations.content[0].organisation.country).isEqualTo(Country.usa())
+        assertThat(organisations.content[1].organisation.name).isEqualTo("oregon-isation")
+        assertThat(organisations.content[1].organisation.country).isEqualTo(Country.usa())
     }
 
 }

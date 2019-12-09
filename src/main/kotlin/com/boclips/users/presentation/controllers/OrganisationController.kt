@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.commands.GetIndependentOrganisations
 import com.boclips.users.application.commands.SearchSchools
 import com.boclips.users.application.commands.UpdateOrganisation
+import com.boclips.users.infrastructure.organisation.OrganisationSearchRequest
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationAccountResource
 import com.boclips.users.presentation.resources.converters.OrganisationAccountConverter
@@ -40,12 +41,15 @@ class OrganisationController(
 
     @GetMapping("/independent-organisations")
     fun getAllIndependentOrganisations(
-        @RequestParam(required = true) countryCode: String?
+        @RequestParam(required = true) countryCode: String?,
+        @RequestParam(required = false) page: Int? = null,
+        @RequestParam(required = false) size: Int? = null
     ): Resources<Resource<OrganisationAccountResource>> {
-        val organisationAccounts = getIndependentOrganisations(countryCode = countryCode)
+        val organisationAccounts =
+            getIndependentOrganisations(OrganisationSearchRequest(countryCode = countryCode!!, page = page, size = size))
 
         return Resources(
-            organisationAccounts.map { account -> organisationAccountConverter.toResource(account)}
+            organisationAccounts.map { account -> organisationAccountConverter.toResource(account) }
         )
     }
 

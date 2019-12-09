@@ -32,10 +32,10 @@ internal class OrganisationLinkBuilderIntegrationTest : AbstractSpringIntegratio
 
     @Test
     fun `expose organisations link`() {
-        val organisationLink = organisationLinkBuilder.getSchoolsAndDistrictsLink(Country.USA_ISO)
+        val organisationLink = organisationLinkBuilder.getIndependentOrganisationsLink(Country.USA_ISO)
 
         assertThat(organisationLink.rel).isEqualTo("independentOrganisations")
-        assertThat(organisationLink.href).endsWith("/independent-organisations?countryCode=USA")
+        assertThat(organisationLink.href).endsWith("/independent-organisations?countryCode=USA&page=0&size=30")
     }
 
     @Test

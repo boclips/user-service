@@ -4,7 +4,6 @@ import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.domain.model.organisation.OrganisationAccountType
-import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.OrganisationAccountExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
@@ -12,6 +11,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.data.domain.Page
 import java.time.ZonedDateTime
 
 class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
@@ -249,13 +249,23 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
+        val searchRequestUSA = OrganisationSearchRequest(
+            countryCode = Country.USA_ISO,
+            page = 0,
+            size = 10
+        )
         val independentOrganisations =
-            organisationAccountRepository.findIndependentSchoolsAndDistricts(Country.USA_ISO)
-        assertThat(independentOrganisations!![0]).isEqualTo(district)
-        assertThat(independentOrganisations!![1]).isEqualTo(school)
+            organisationAccountRepository.findIndependentSchoolsAndDistricts(searchRequestUSA)
+        assertThat(independentOrganisations).containsExactly(district, school)
         assertThat(independentOrganisations).hasSize(2)
 
-        assertThat(organisationAccountRepository.findIndependentSchoolsAndDistricts("GBR")).hasSize(1)
+
+        val searchRequestGBR = OrganisationSearchRequest(
+            countryCode = "GBR",
+            page = 0,
+            size = 10
+        )
+        assertThat(organisationAccountRepository.findIndependentSchoolsAndDistricts(searchRequestGBR)).hasSize(1)
     }
 
     @Test
@@ -309,11 +319,78 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
+        val searchRequest = OrganisationSearchRequest(
+            countryCode = Country.USA_ISO,
+            page = 0,
+            size = 6
+        )
 
-
-        val independentOrganisations: List<OrganisationAccount<*>>? =
-            organisationAccountRepository.findIndependentSchoolsAndDistricts(Country.USA_ISO)
+        val independentOrganisations: Page<OrganisationAccount<*>>? =
+            organisationAccountRepository.findIndependentSchoolsAndDistricts(searchRequest)
         assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree, schoolTwo, schoolFive, schoolFour, schoolSix)
     }
 
+    @Test
+    fun `it paginates and orders independent organisations by expiry date, then name`() {
+        val schoolOne = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolA",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            ),
+            ZonedDateTime.now().plusDays(60)
+        )
+
+        organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolB",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            ),
+            ZonedDateTime.now().plusDays(5)
+        )
+
+        val schoolThree = organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolC",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            ),
+            ZonedDateTime.now().plusDays(10)
+        )
+
+        organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolF",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+        organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolE",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+        organisationAccountRepository.save(
+            OrganisationFactory.school(
+                name = "schoolD",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+        val searchRequest = OrganisationSearchRequest(
+            countryCode = Country.USA_ISO,
+            page = 0,
+            size = 2
+        )
+
+        val independentOrganisations: Page<OrganisationAccount<*>>? = organisationAccountRepository.findIndependentSchoolsAndDistricts(searchRequest)
+        assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree)
+        assertThat(independentOrganisations!!.totalPages).isEqualTo(3)
+        assertThat(independentOrganisations.totalElements).isEqualTo(6)
+    }
 }

@@ -4,11 +4,11 @@ import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.organisation.OrganisationAccountType
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.infrastructure.organisation.OrganisationSearchRequest
+import org.springframework.data.domain.Page
 import java.time.ZonedDateTime
 import java.util.Collections.emptyList
 
@@ -34,7 +34,7 @@ interface OrganisationAccountRepository {
     fun findOrganisationAccountsByParentId(parentId: OrganisationAccountId): List<OrganisationAccount<*>>
     fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount<*>?
     fun findOrganisationAccountByExternalId(id: String): OrganisationAccount<*>?
-    fun findIndependentSchoolsAndDistricts(countryCode: String): List<OrganisationAccount<*>>?
+    fun findIndependentSchoolsAndDistricts(searchRequest: OrganisationSearchRequest): Page<OrganisationAccount<*>>?
 
     fun findApiIntegrationByRole(role: String): OrganisationAccount<ApiIntegration>?
     fun findApiIntegrationByName(name: String): OrganisationAccount<ApiIntegration>?

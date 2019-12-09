@@ -91,6 +91,50 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `it paginates independent US schools and organisations`() {
+        val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
+        val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
+
+        val district = organisationAccountRepository.save(
+            OrganisationFactory.district(
+                name = "my district",
+                externalId = "123",
+                state = State(id = "FL", name = "Florida")
+            ),
+            accessExpiresOn = expiryTime
+        )
+        organisationAccountRepository.save(
+            school = OrganisationFactory.school(
+                name = "my district school",
+                countryName = "USA",
+                state = State(id = "FL", name = "Florida"),
+                district = district
+            )
+        )
+        organisationAccountRepository.save(
+            school = OrganisationFactory.school(
+                name = "my independent school",
+                countryName = "USA",
+                state = State(id = "FL", name = "Florida"),
+                district = null
+            ),
+            accessExpiresOn = expiryTime
+        )
+        mvc.perform(
+            get("/v1/independent-organisations?countryCode=USA&size=1").asUserWithRoles(
+                "some-boclipper",
+                UserRoles.VIEW_ORGANISATIONS
+            )
+        )
+            .andExpect(jsonPath("$._embedded.organisationAccount", hasSize<Int>(1)))
+            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.name", equalTo(district.organisation.name)))
+            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.type", equalTo(district.organisation.type().toString())))
+            .andExpect(jsonPath("$._embedded.organisationAccount[0].accessExpiresOn", equalTo(expiryTimeToString)))
+            .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.self.href", endsWith("/v1/organisations/${district.id.value}")))
+            .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.edit.href", endsWith("/v1/organisations/${district.id.value}")))
+    }
+
+    @Test
     fun `updating an organisation account`() {
         val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.537Z")
         val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
