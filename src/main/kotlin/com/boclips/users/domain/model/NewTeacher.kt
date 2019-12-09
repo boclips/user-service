@@ -7,6 +7,7 @@ data class NewTeacher(
     val password: String,
     val analyticsId: AnalyticsId,
     val referralCode: String,
+    val shareCode: String,
     val utmSource: String,
     val utmContent: String,
     val utmTerm: String,

@@ -12,7 +12,9 @@ import com.boclips.users.domain.service.SubjectService
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
-data class UserDocumentConverter(private val subjectService: SubjectService) {
+data class UserDocumentConverter(
+    private val subjectService: SubjectService
+) {
     fun convertToUser(userDocument: UserDocument): User {
         return User(
             account = Account(
@@ -33,6 +35,7 @@ data class UserDocumentConverter(private val subjectService: SubjectService) {
             ),
             analyticsId = userDocument.analyticsId?.let { AnalyticsId(value = it) },
             referralCode = userDocument.referralCode?.let { it },
+            shareCode = userDocument.shareCode?.let { it },
             marketingTracking = MarketingTracking(
                 utmSource = userDocument.marketing?.utmSource ?: "",
                 utmContent = userDocument.marketing?.utmContent ?: "",

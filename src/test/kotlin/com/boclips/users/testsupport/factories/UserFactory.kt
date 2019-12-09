@@ -15,6 +15,7 @@ class UserFactory {
                 value = "1234567"
             ),
             referralCode: String? = null,
+            shareCode: String = "ABC",
             marketing: MarketingTracking = MarketingTrackingFactory.sample(),
             account: Account = AccountFactory.sample(),
             profile: Profile? = ProfileFactory.sample(),
@@ -26,6 +27,7 @@ class UserFactory {
             profile = profile,
             analyticsId = analyticsId,
             referralCode = referralCode,
+            shareCode = shareCode,
             marketingTracking = marketing,
             organisationAccountId = organisationAccountId,
             accessExpiresOn = accessExpiresOn,

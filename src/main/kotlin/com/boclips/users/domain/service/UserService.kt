@@ -43,6 +43,7 @@ class UserService(
                 profile = null,
                 analyticsId = newTeacher.analyticsId,
                 referralCode = newTeacher.referralCode,
+                shareCode = newTeacher.shareCode,
                 marketingTracking = MarketingTracking(
                     utmCampaign = newTeacher.utmCampaign,
                     utmSource = newTeacher.utmSource,

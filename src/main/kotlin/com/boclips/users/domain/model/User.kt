@@ -10,6 +10,7 @@ data class User(
     val profile: Profile?,
     val marketingTracking: MarketingTracking,
     val referralCode: String?,
+    val shareCode: String?,
     val analyticsId: AnalyticsId? = null,
     val organisationAccountId: OrganisationAccountId?,
     val accessExpiresOn: ZonedDateTime?,

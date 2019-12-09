@@ -11,6 +11,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import junit.framework.Assert.assertTrue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -62,6 +63,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             password = "thisisapassword",
             analyticsId = AnalyticsId(value = "analytics"),
             referralCode = "abc-a123",
+            shareCode = "test",
             utmCampaign = "",
             utmSource = "",
             utmContent = "",
@@ -80,6 +82,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.account.email).isEqualTo("joe@dough.com")
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
+        assertThat(persistedUser.shareCode).isEqualTo("test")
         assertThat(persistedUser.marketingTracking.utmSource).isBlank()
         assertThat(persistedUser.marketingTracking.utmCampaign).isBlank()
         assertThat(persistedUser.marketingTracking.utmContent).isBlank()
@@ -94,6 +97,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             password = "thisisapassword",
             analyticsId = AnalyticsId(value = "analytics"),
             referralCode = "abc-a123",
+            shareCode = "test",
             utmCampaign = "",
             utmSource = "",
             utmContent = "",

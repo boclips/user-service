@@ -32,6 +32,7 @@ class UserDocumentConverterTest {
             email = "bob@gog.com",
             analyticsId = "1233",
             referralCode = "code",
+            shareCode = "EFG",
             subjects = listOf("1"),
             ageRange = listOf(1, 2),
             hasOptedIntoMarketing = true,
