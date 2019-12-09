@@ -176,6 +176,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._embedded.organisationAccount[0].accessExpiresOn", equalTo(expiryTimeToString)))
             .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.self.href", endsWith("/v1/organisations/${district.id.value}")))
             .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.edit.href", endsWith("/v1/organisations/${district.id.value}")))
+            .andExpect(jsonPath("$.page.size", equalTo(1)))
+            .andExpect(jsonPath("$.page.totalElements", equalTo(2)))
+            .andExpect(jsonPath("$.page.totalPages", equalTo(2)))
             .andExpect(jsonPath("$._links.next.href", endsWith("/v1/independent-organisations?countryCode=USA&size=1&page=1")))
     }
 

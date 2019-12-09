@@ -9,6 +9,7 @@ import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationAccountResource
 import com.boclips.users.presentation.resources.converters.OrganisationAccountConverter
 import com.boclips.users.presentation.resources.school.SchoolResource
+import org.springframework.hateoas.PagedResources
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.web.bind.annotation.GetMapping
@@ -46,15 +47,16 @@ class OrganisationController(
         @RequestParam(required = true) countryCode: String?,
         @RequestParam(required = false) page: Int? = null,
         @RequestParam(required = false) size: Int? = null
-    ): Resources<Resource<OrganisationAccountResource>> {
+    ): PagedResources<Resource<OrganisationAccountResource>> {
         val organisationAccounts =
             getIndependentOrganisations(OrganisationSearchRequest(countryCode = countryCode!!, page = page, size = size))
 
-        return Resources(
-            organisationAccounts.map { account -> organisationAccountConverter.toResource(account) },
-            listOfNotNull(
-                organisationLinkBuilder.getNextPageLink(page ?: 0, organisationAccounts.totalPages)
-            )
+        val organisationAccountResources = organisationAccounts.map { account -> organisationAccountConverter.toResource(account) }
+
+        return PagedResources(
+            organisationAccountResources.content,
+            PagedResources.PageMetadata(size?.toLong() ?: 30, page?.toLong() ?: 0, organisationAccounts.totalElements),
+            listOfNotNull(organisationLinkBuilder.getNextPageLink(page ?: 0, organisationAccounts.totalPages))
         )
     }
 
