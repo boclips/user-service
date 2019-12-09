@@ -9,10 +9,8 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import junit.framework.Assert
-import junit.framework.Assert.assertTrue
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,9 +36,8 @@ class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user!!.isReferral()).isFalse()
         assertThat(user.referralCode).isEmpty()
         assertTrue(
-            "Expected ${user.shareCode} to be 4 characters long", user.shareCode!!.matches(
-                shareCodePattern
-            )
+            user.teacherPlatformAttributes!!.shareCode!!.matches(shareCodePattern),
+            "Expected ${user.teacherPlatformAttributes!!.shareCode!!} to be 4 characters long"
         )
         assertThat(user.analyticsId).isEqualTo(AnalyticsId(value = ""))
 

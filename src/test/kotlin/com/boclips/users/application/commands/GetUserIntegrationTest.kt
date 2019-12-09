@@ -6,13 +6,11 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.bson.types.ObjectId
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

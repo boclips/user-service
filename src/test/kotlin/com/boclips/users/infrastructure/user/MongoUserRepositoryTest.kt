@@ -9,6 +9,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
+import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -215,14 +216,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `updating user hasLifetimeAccess`() {
         val user = userRepository.create(
             UserFactory.sample(
-                hasLifetimeAccess = false
+                teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(hasLifetimeAccess = false)
             )
         )
         userRepository.update(user, UserUpdateCommand.ReplaceHasLifetimeAccess(true))
 
         val updatedUser = userRepository.findById(user.id)!!
 
-        assertThat(updatedUser.hasLifetimeAccess).isEqualTo(true)
+        assertThat(updatedUser.teacherPlatformAttributes!!.hasLifetimeAccess).isEqualTo(true)
     }
 
     @Test

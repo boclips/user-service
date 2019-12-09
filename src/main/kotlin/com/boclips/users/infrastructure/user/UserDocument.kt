@@ -36,7 +36,7 @@ data class UserDocument(
                 ageRange = user.profile?.ages,
                 analyticsId = user.analyticsId?.value,
                 referralCode = user.referralCode,
-                shareCode = user.shareCode,
+                shareCode = user.teacherPlatformAttributes?.shareCode,
                 firstName = user.profile?.firstName,
                 lastName = user.profile?.lastName,
                 email = user.account.email,
@@ -52,7 +52,7 @@ data class UserDocument(
                 organisationId = user.organisationAccountId?.value,
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
                 createdAt = user.account.createdAt.toInstant(),
-                hasLifetimeAccess = user.hasLifetimeAccess
+                hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false
             )
         }
 

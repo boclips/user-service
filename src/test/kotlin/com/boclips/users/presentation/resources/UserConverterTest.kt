@@ -11,6 +11,7 @@ import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
+import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -56,6 +57,27 @@ class UserConverterTest {
         assertThat(userResource.organisation!!.state!!.id).isEqualTo("NY")
         assertThat(userResource.organisation!!.country!!.name).isEqualTo("United States")
         assertThat(userResource.organisation!!.country!!.id).isEqualTo("USA")
+    }
+
+    @Test
+    fun `converts teachers platform specific fields`() {
+        val user = UserFactory.sample(
+            teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "TRWN"),
+            organisationAccountId = OrganisationAccountId("1234"))
+
+        val organisationAccount = OrganisationAccountFactory.sample(
+            id = OrganisationAccountId("1234"),
+            organisation = OrganisationFactory.school(
+                name = "My school",
+                state = State.fromCode("NY"),
+                country = Country.fromCode("USA")
+            )
+        )
+
+        val userResource = UserConverter().toUserResource(user, organisationAccount)
+
+        assertThat(userResource.teacherPlatformAttributes).isNotNull
+        assertThat(userResource.teacherPlatformAttributes!!.shareCode).isEqualTo("TRWN")
     }
 
     @Test

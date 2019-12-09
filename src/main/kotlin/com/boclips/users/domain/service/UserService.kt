@@ -2,6 +2,7 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.NewTeacher
+import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.MarketingTracking
@@ -41,9 +42,12 @@ class UserService(
             User(
                 account = account,
                 profile = null,
+                teacherPlatformAttributes = TeacherPlatformAttributes(
+                    shareCode = newTeacher.shareCode,
+                    hasLifetimeAccess = false
+                ),
                 analyticsId = newTeacher.analyticsId,
                 referralCode = newTeacher.referralCode,
-                shareCode = newTeacher.shareCode,
                 marketingTracking = MarketingTracking(
                     utmCampaign = newTeacher.utmCampaign,
                     utmSource = newTeacher.utmSource,
@@ -52,8 +56,7 @@ class UserService(
                     utmTerm = newTeacher.utmTerm
                 ),
                 organisationAccountId = null,
-                accessExpiresOn = null,
-                hasLifetimeAccess = false
+                accessExpiresOn = null
             )
         )
 

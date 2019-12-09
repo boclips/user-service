@@ -2,7 +2,6 @@ package com.boclips.users.config
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.application.commands.GenerateShareCode
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
@@ -11,7 +10,6 @@ import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
-import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.testsupport.FakeSubjectService
 import com.boclips.users.testsupport.KeycloakClientFake

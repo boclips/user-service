@@ -8,13 +8,12 @@ import java.time.ZonedDateTime
 data class User(
     val account: Account,
     val profile: Profile?,
+    val teacherPlatformAttributes: TeacherPlatformAttributes?,
     val marketingTracking: MarketingTracking,
     val referralCode: String?,
-    val shareCode: String?,
     val analyticsId: AnalyticsId? = null,
     val organisationAccountId: OrganisationAccountId?,
-    val accessExpiresOn: ZonedDateTime?,
-    val hasLifetimeAccess: Boolean = false
+    val accessExpiresOn: ZonedDateTime?
 ) {
     val id get() = this.account.id
 

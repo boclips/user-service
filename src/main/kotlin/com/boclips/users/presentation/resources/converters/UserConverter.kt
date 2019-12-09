@@ -3,6 +3,7 @@ package com.boclips.users.presentation.resources.converters
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.presentation.resources.SubjectResource
+import com.boclips.users.presentation.resources.TeacherPlatformAttributesResource
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.stereotype.Component
 
@@ -22,6 +23,11 @@ class UserConverter {
                 organisationAccount?.let { orgAccount ->
                     OrganisationConverter().toResource(orgAccount.organisation)
                 }
+            },
+            teacherPlatformAttributes = user.teacherPlatformAttributes?.let {
+                TeacherPlatformAttributesResource(
+                    shareCode = user.teacherPlatformAttributes.shareCode
+                )
             }
         )
     }

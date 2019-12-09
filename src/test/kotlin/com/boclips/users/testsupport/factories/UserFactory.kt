@@ -2,6 +2,7 @@ package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.Profile
+import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
@@ -15,24 +16,21 @@ class UserFactory {
                 value = "1234567"
             ),
             referralCode: String? = null,
-            shareCode: String = "ABC",
             marketing: MarketingTracking = MarketingTrackingFactory.sample(),
             account: Account = AccountFactory.sample(),
             profile: Profile? = ProfileFactory.sample(),
+            teacherPlatformAttributes: TeacherPlatformAttributes? = TeacherPlatformAttributesFactory.sample(),
             organisationAccountId: OrganisationAccountId? = null,
-            accessExpiresOn: ZonedDateTime? = null,
-            hasLifetimeAccess: Boolean = false
+            accessExpiresOn: ZonedDateTime? = null
         ) = User(
             account = account,
             profile = profile,
             analyticsId = analyticsId,
             referralCode = referralCode,
-            shareCode = shareCode,
+            teacherPlatformAttributes = teacherPlatformAttributes,
             marketingTracking = marketing,
             organisationAccountId = organisationAccountId,
-            accessExpiresOn = accessExpiresOn,
-            hasLifetimeAccess = hasLifetimeAccess
-        )
+            accessExpiresOn = accessExpiresOn)
 
         fun sample(
             id: String

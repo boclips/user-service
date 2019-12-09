@@ -9,5 +9,6 @@ open class UserResource(
     val email: String?,
     val analyticsId: String?,
     val organisationAccountId: String?,
-    val organisation: OrganisationResource?
+    val organisation: OrganisationResource?,
+    val teacherPlatformAttributes: TeacherPlatformAttributesResource?
 )

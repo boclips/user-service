@@ -22,7 +22,7 @@ class CreateTeacherAccount(
     private val marketingService: MarketingService,
     private val captchaProvider: CaptchaProvider,
     private val analyticsClient: AnalyticsClient,
-    private val generateShareCode: GenerateShareCode
+    private val generateTeacherShareCode: GenerateTeacherShareCode
 ) {
     companion object : KLogging()
 
@@ -36,7 +36,7 @@ class CreateTeacherAccount(
             password = createTeacherRequest.password!!,
             analyticsId = AnalyticsId(value = createTeacherRequest.analyticsId.orEmpty()),
             referralCode = createTeacherRequest.referralCode.orEmpty(),
-            shareCode = generateShareCode(),
+            shareCode = generateTeacherShareCode(),
             utmSource = createTeacherRequest.utmSource ?: "",
             utmContent = createTeacherRequest.utmContent ?: "",
             utmTerm = createTeacherRequest.utmTerm ?: "",

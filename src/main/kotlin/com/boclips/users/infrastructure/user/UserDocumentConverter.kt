@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -33,9 +34,9 @@ data class UserDocumentConverter(
                 } ?: emptyList(),
                 ages = userDocument.ageRange.orEmpty()
             ),
+            teacherPlatformAttributes = convertTeacherPlatformAttributes(userDocument),
             analyticsId = userDocument.analyticsId?.let { AnalyticsId(value = it) },
             referralCode = userDocument.referralCode?.let { it },
-            shareCode = userDocument.shareCode?.let { it },
             marketingTracking = MarketingTracking(
                 utmSource = userDocument.marketing?.utmSource ?: "",
                 utmContent = userDocument.marketing?.utmContent ?: "",
@@ -44,7 +45,13 @@ data class UserDocumentConverter(
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
             organisationAccountId = userDocument.organisationId?.let { OrganisationAccountId(it) },
-            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)},
+            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
+        )
+    }
+
+    private fun convertTeacherPlatformAttributes(userDocument: UserDocument): TeacherPlatformAttributes {
+        return TeacherPlatformAttributes(
+            shareCode = userDocument.shareCode,
             hasLifetimeAccess = userDocument.hasLifetimeAccess
         )
     }
