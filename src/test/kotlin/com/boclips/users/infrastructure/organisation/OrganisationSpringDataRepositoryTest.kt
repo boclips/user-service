@@ -11,12 +11,14 @@ class OrganisationSpringDataRepositoryTest : AbstractSpringIntegrationTest() {
     lateinit var repository: OrganisationSpringDataRepository
 
     @Test
-    fun `dbref links organisations`() {
-        var parent = OrganisationDocumentFactory.sample(name = "parent")
-        parent = repository.save(parent)
-        val organisationDocument = repository.save(OrganisationDocumentFactory.sample(name = "child", parentOrganisation = parent))
+    fun `parent organisations can be linked to children via a dbref`() {
+        val persistedParent = repository.save(OrganisationDocumentFactory.sample(name = "parent"))
 
-        assertThat(organisationDocument.parentOrganisation).isEqualTo(parent)
-        assertThat(repository.findById(organisationDocument.id!!).get().parentOrganisation).isEqualTo(parent)
+        val persistedChild = repository.save(OrganisationDocumentFactory.sample(name = "child", parentOrganisation = persistedParent))
+
+        assertThat(persistedChild.parentOrganisation).isEqualTo(persistedParent)
+
+        val retrievedChild: OrganisationDocument = repository.findById(persistedChild.id!!).get()
+        assertThat(retrievedChild.parentOrganisation).isEqualTo(persistedParent)
     }
 }
