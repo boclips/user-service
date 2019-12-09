@@ -43,4 +43,18 @@ class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriCompon
             "independentOrganisations"
         )
     }
+
+    fun getNextPageLink(currentPage: Int, totalPages: Int): Link? {
+        return if (currentPage +1 < totalPages) {
+            Link(
+                uriComponentsBuilderFactory
+                    .getInstance()
+                    .replaceQueryParam("page", currentPage + 1)
+                    .toUriString(),
+                "next"
+            )
+        } else {
+            null
+        }
+    }
 }

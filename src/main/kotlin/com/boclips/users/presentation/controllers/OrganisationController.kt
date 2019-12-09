@@ -4,6 +4,7 @@ import com.boclips.users.application.commands.GetIndependentOrganisations
 import com.boclips.users.application.commands.SearchSchools
 import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.infrastructure.organisation.OrganisationSearchRequest
+import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationAccountResource
 import com.boclips.users.presentation.resources.converters.OrganisationAccountConverter
@@ -25,7 +26,8 @@ class OrganisationController(
     private val searchSchools: SearchSchools,
     private val getIndependentOrganisations: GetIndependentOrganisations,
     private val organisationAccountConverter: OrganisationAccountConverter,
-    private val updateOrganisation: UpdateOrganisation
+    private val updateOrganisation: UpdateOrganisation,
+    private val organisationLinkBuilder: OrganisationLinkBuilder
 ) {
     @GetMapping("/schools")
     fun searchSchools(
@@ -49,7 +51,10 @@ class OrganisationController(
             getIndependentOrganisations(OrganisationSearchRequest(countryCode = countryCode!!, page = page, size = size))
 
         return Resources(
-            organisationAccounts.map { account -> organisationAccountConverter.toResource(account) }
+            organisationAccounts.map { account -> organisationAccountConverter.toResource(account) },
+            listOfNotNull(
+                organisationLinkBuilder.getNextPageLink(page ?: 0, organisationAccounts.totalPages)
+            )
         )
     }
 
