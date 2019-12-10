@@ -91,7 +91,7 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
         @Test
         fun `returns a 409 response when a contract with given name already exists`() {
             val contractName = "Super contract"
-            selectedContentContractRepository.saveSelectedContentContract(
+            selectedContentContractRepository.saveSelectedCollectionsContract(
                 contractName,
                 listOf(CollectionId("A"))
             )
@@ -127,7 +127,7 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
         @Test
         fun `returns requested contract`() {
             val contractName = "Super contract"
-            val contract = selectedContentContractRepository.saveSelectedContentContract(
+            val contract = selectedContentContractRepository.saveSelectedCollectionsContract(
                 contractName,
                 listOf(CollectionId("A"))
             )

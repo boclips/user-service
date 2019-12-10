@@ -19,7 +19,7 @@ class CreateContract(
         }
 
         return when (request) {
-            is CreateContractRequest.SelectedContent -> selectedContentContractRepository.saveSelectedContentContract(
+            is CreateContractRequest.SelectedCollections -> selectedContentContractRepository.saveSelectedCollectionsContract(
                 request.name!!,
                 request.collectionIds!!.map { CollectionId(it) }
             )

@@ -12,7 +12,7 @@ class RemoveCollectionFromContract(private val contractRepository: ContractRepos
     operator fun invoke(contractId: ContractId, collectionId: CollectionId) {
         contractRepository.findById(contractId)?.let { contract ->
             when (contract) {
-                is Contract.SelectedContent -> contract.collectionIds.filter { it != collectionId }.let {
+                is Contract.SelectedCollections -> contract.collectionIds.filter { it != collectionId }.let {
                     val updatedContract = contract.copy(collectionIds = it)
                     contractRepository.save(updatedContract)
                 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class ContractDocumentConverter {
     fun fromDocument(document: ContractDocument): Contract {
         return when (document) {
-            is ContractDocument.SelectedCollections ->  Contract.SelectedContent(
+            is ContractDocument.SelectedCollections ->  Contract.SelectedCollections(
                 id = ContractId(document.id.toHexString()),
                 name = document.name,
                 collectionIds = document.collectionIds.map { CollectionId(it) }
@@ -20,7 +20,7 @@ class ContractDocumentConverter {
 
     fun toDocument(contract: Contract): ContractDocument {
         return when (contract) {
-            is Contract.SelectedContent -> ContractDocument.SelectedCollections().apply {
+            is Contract.SelectedCollections -> ContractDocument.SelectedCollections().apply {
                 id = ObjectId(contract.id.value)
                 name = contract.name
                 collectionIds = contract.collectionIds.map { it.value }

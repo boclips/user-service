@@ -29,7 +29,7 @@ class SelectedContentContractControllerIntegrationTest : AbstractSpringIntegrati
 
         @Test
         fun `adds the collection to the contract`() {
-            val contractId = selectedContentContractRepository.saveSelectedContentContract(
+            val contractId = selectedContentContractRepository.saveSelectedCollectionsContract(
                 "Some test contract",
                 emptyList()
             ).id
@@ -44,7 +44,7 @@ class SelectedContentContractControllerIntegrationTest : AbstractSpringIntegrati
             )
                 .andExpect(status().isNoContent)
 
-            val updatedContract = contractRepository.findById(contractId) as Contract.SelectedContent
+            val updatedContract = contractRepository.findById(contractId) as Contract.SelectedCollections
 
             assertThat(updatedContract.collectionIds).contains(CollectionId(collectionId))
         }
@@ -78,7 +78,7 @@ class SelectedContentContractControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `removes provided collection from a contract`() {
             val collectionId = "test-collection-id"
-            val contractId = selectedContentContractRepository.saveSelectedContentContract(
+            val contractId = selectedContentContractRepository.saveSelectedCollectionsContract(
                 "Some test contract",
                 listOf(CollectionId(collectionId))
             ).id
@@ -92,7 +92,7 @@ class SelectedContentContractControllerIntegrationTest : AbstractSpringIntegrati
             )
                 .andExpect(status().isNoContent)
 
-            val updatedContract = contractRepository.findById(contractId) as Contract.SelectedContent
+            val updatedContract = contractRepository.findById(contractId) as Contract.SelectedCollections
 
             assertThat(updatedContract.collectionIds).isEmpty()
         }

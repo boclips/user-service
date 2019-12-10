@@ -30,7 +30,7 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns given contract on the list when the name matches`() {
             val contractName = "Super contract"
-            val contract = selectedContentContractRepository.saveSelectedContentContract(
+            val contract = selectedContentContractRepository.saveSelectedCollectionsContract(
                 contractName,
                 listOf(CollectionId("A"))
             )
@@ -76,7 +76,7 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns an empty list when contract is not found by name`() {
-            selectedContentContractRepository.saveSelectedContentContract(
+            selectedContentContractRepository.saveSelectedCollectionsContract(
                 "Super contract",
                 listOf(CollectionId("A"))
             )
@@ -97,7 +97,7 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns an empty list when lookup is done with a blank parameter`() {
-            selectedContentContractRepository.saveSelectedContentContract(
+            selectedContentContractRepository.saveSelectedCollectionsContract(
                 "Super contract",
                 listOf(CollectionId("A"))
             )
@@ -119,7 +119,7 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns all contracts in the system when name query parameter is not provided`() {
             val firstContractName = "first"
-            val firstContract = selectedContentContractRepository.saveSelectedContentContract(
+            val firstContract = selectedContentContractRepository.saveSelectedCollectionsContract(
                 firstContractName,
                 listOf(CollectionId("A"))
             )

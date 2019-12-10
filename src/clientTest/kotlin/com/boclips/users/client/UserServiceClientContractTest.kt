@@ -64,11 +64,11 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
             val organisation = insertTestOrganisation(
                 "test-organisation-id",
                 listOf(
-                    ContractFactory.sampleSelectedContentContract(
+                    ContractFactory.sampleSelectedCollectionsContract(
                         name = "First",
                         collectionIds = listOf(CollectionId("A"), CollectionId("B"))
                     ),
-                    ContractFactory.sampleSelectedContentContract(
+                    ContractFactory.sampleSelectedCollectionsContract(
                         name = "Second",
                         collectionIds = listOf(CollectionId("C"), CollectionId("D"))
                     )
@@ -145,7 +145,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
         contracts: List<DomainContract>
     ): OrganisationAccount<*> {
         contracts.forEach { domainContract ->
-            domainContract as DomainContract.SelectedContent
+            domainContract as DomainContract.SelectedCollections
             (client as FakeUserServiceClient).addContract(
                 SelectedContentContract().apply {
                     name = domainContract.name

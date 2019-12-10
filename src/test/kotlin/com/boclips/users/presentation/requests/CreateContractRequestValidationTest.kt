@@ -14,7 +14,7 @@ class CreateContractRequestValidationTest {
 
     @Test
     fun `validation fails for empty name`() {
-        val request = CreateContractRequest.SelectedContent().apply {
+        val request = CreateContractRequest.SelectedCollections().apply {
             name = ""
             collectionIds = listOf("A", "B", "C")
         }
@@ -27,7 +27,7 @@ class CreateContractRequestValidationTest {
 
     @Test
     fun `validation fails for null name`() {
-        val request = CreateContractRequest.SelectedContent().apply {
+        val request = CreateContractRequest.SelectedCollections().apply {
             name = null
             collectionIds = listOf("A", "B", "C")
         }
@@ -40,7 +40,7 @@ class CreateContractRequestValidationTest {
 
     @Test
     fun `validation fails for empty list of collectionIds`() {
-        val request = CreateContractRequest.SelectedContent().apply {
+        val request = CreateContractRequest.SelectedCollections().apply {
             name = "The best contract ever"
             collectionIds = emptyList()
         }
@@ -53,7 +53,7 @@ class CreateContractRequestValidationTest {
 
     @Test
     fun `validation fails for null list of collectionIds`() {
-        val request = CreateContractRequest.SelectedContent().apply {
+        val request = CreateContractRequest.SelectedCollections().apply {
             name = "The best contract ever"
             collectionIds = null
         }

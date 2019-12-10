@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 class ContractConverterTest {
     @Test
     fun `converts selected content contract`() {
-        val contract = ContractFactory.sampleSelectedContentContract(
+        val contract = ContractFactory.sampleSelectedCollectionsContract(
             collectionIds = listOf(CollectionId("A"), CollectionId("B"))
         )
 

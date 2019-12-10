@@ -165,9 +165,9 @@ abstract class AbstractSpringIntegrationTest {
         val organisationContracts = mutableListOf<Contract>()
         contractIds.forEach {
             when (it) {
-                is Contract.SelectedContent -> {
+                is Contract.SelectedCollections -> {
                     organisationContracts.add(
-                        selectedContentContractRepository.saveSelectedContentContract(
+                        selectedContentContractRepository.saveSelectedCollectionsContract(
                             it.name,
                             it.collectionIds
                         )
@@ -207,8 +207,8 @@ abstract class AbstractSpringIntegrationTest {
         return organisationAccountRepository.save(school = school)
     }
 
-    fun saveSelectedContentContract(name: String, collectionIds: List<CollectionId>): Contract.SelectedContent {
-        return selectedContentContractRepository.saveSelectedContentContract(name, collectionIds)
+    fun saveSelectedCollectionsContract(name: String, collectionIds: List<CollectionId>): Contract.SelectedCollections {
+        return selectedContentContractRepository.saveSelectedCollectionsContract(name, collectionIds)
     }
 
     fun ResultActions.andExpectApiErrorPayload(): ResultActions {

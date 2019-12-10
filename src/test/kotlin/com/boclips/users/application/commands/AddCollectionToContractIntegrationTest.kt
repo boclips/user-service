@@ -13,7 +13,7 @@ class AddCollectionToContractIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `adds collection to contract and is idempotent`() {
         val existingId = CollectionId("some-existing-id")
-        val contract = selectedContentContractRepository.saveSelectedContentContract(
+        val contract = selectedContentContractRepository.saveSelectedCollectionsContract(
             "whatever",
             listOf(existingId)
         )
@@ -22,7 +22,7 @@ class AddCollectionToContractIntegrationTest : AbstractSpringIntegrationTest() {
         addCollectionToContract(contractId = contract.id, collectionId = newId)
         addCollectionToContract(contractId = contract.id, collectionId = newId)
 
-        val updatedContract = contractRepository.findById(contract.id) as Contract.SelectedContent
+        val updatedContract = contractRepository.findById(contract.id) as Contract.SelectedCollections
 
         assertThat(updatedContract.collectionIds).containsOnly(existingId, newId)
     }

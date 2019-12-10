@@ -9,7 +9,7 @@ class MongoSelectedContentContractRepositoryTest : AbstractSpringIntegrationTest
     @Test
     fun `saves a selected content contract`() {
         val contractName = "Test selected content contract"
-        val persistedContract = selectedContentContractRepository.saveSelectedContentContract(
+        val persistedContract = selectedContentContractRepository.saveSelectedCollectionsContract(
             name = contractName,
             collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
         )

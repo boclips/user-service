@@ -17,14 +17,14 @@ class RemoveCollectionFromContractIntegrationTest : AbstractSpringIntegrationTes
     @Test
     fun `can remove a collection from a contract`() {
         val existingId = CollectionId("some-existing-id")
-        val contract = selectedContentContractRepository.saveSelectedContentContract(
+        val contract = selectedContentContractRepository.saveSelectedCollectionsContract(
             "whatever",
             listOf(existingId)
         )
 
         removeCollectionFromContract(contractId = contract.id, collectionId = existingId)
 
-        val updatedContract = contractRepository.findById(contract.id) as Contract.SelectedContent
+        val updatedContract = contractRepository.findById(contract.id) as Contract.SelectedCollections
 
         assertThat(updatedContract.collectionIds).isEmpty()
     }
@@ -41,14 +41,14 @@ class RemoveCollectionFromContractIntegrationTest : AbstractSpringIntegrationTes
 
     @Test
     fun `does not fail when collection to remove is missing (is idempotent)`() {
-        val contract = selectedContentContractRepository.saveSelectedContentContract(
+        val contract = selectedContentContractRepository.saveSelectedCollectionsContract(
             "whatever",
             emptyList()
         )
 
         removeCollectionFromContract(contractId = contract.id, collectionId = CollectionId("some-id"))
 
-        val updatedContract = contractRepository.findById(contract.id) as Contract.SelectedContent
+        val updatedContract = contractRepository.findById(contract.id) as Contract.SelectedCollections
 
         assertThat(updatedContract.collectionIds).isEmpty()
     }

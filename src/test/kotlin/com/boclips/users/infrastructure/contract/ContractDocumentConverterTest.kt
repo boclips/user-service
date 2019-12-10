@@ -14,7 +14,7 @@ class ContractDocumentConverterTest {
             collectionIds = listOf("A", "B", "C")
         )
 
-        val contract = converter.fromDocument(document) as Contract.SelectedContent
+        val contract = converter.fromDocument(document) as Contract.SelectedCollections
 
         assertThat(contract.id.value).isEqualTo(document.id.toHexString())
         assertThat(contract.name).isEqualTo(document.name)
@@ -27,7 +27,7 @@ class ContractDocumentConverterTest {
 
     @Test
     fun `converts selected content contract to document`() {
-        val contract = ContractFactory.sampleSelectedContentContract()
+        val contract = ContractFactory.sampleSelectedCollectionsContract()
 
         val document = converter.toDocument(contract) as ContractDocument.SelectedCollections
 

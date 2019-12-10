@@ -419,7 +419,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `lists contracts user has access to`() {
             val contractName = "Test contract"
             val collectionId = "test-collection-id"
-            val testContract = saveSelectedContentContract(
+            val testContract = saveSelectedCollectionsContract(
                 name = contractName,
                 collectionIds = listOf(CollectionId(collectionId))
             )

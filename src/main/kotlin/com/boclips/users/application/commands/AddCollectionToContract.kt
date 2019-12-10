@@ -16,7 +16,7 @@ class AddCollectionToContract(
             .findById(contractId)
             ?.let {
                 when (it) {
-                    is Contract.SelectedContent -> {
+                    is Contract.SelectedCollections -> {
                         val updatedContract = it.copy(
                             collectionIds = it.collectionIds.toMutableSet().apply { add(collectionId) }.toList()
                         )

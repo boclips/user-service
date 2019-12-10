@@ -8,36 +8,21 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MongoSelectedContentContractRepository(
-    private val selectedCollectionContractDocumentMongoRepository: SelectedCollectionContractDocumentMongoRepository,
+    private val selectedCollectionsContractDocumentMongoRepository: SelectedCollectionsContractDocumentMongoRepository,
     private val contractDocumentConverter: ContractDocumentConverter
 ) : SelectedContentContractRepository {
-    override fun saveSelectedContentContract(
-        name: String,
-        collectionIds: List<CollectionId>
-    ): Contract.SelectedContent {
-        return contractDocumentConverter.fromDocument(
-            selectedCollectionContractDocumentMongoRepository.save(
-                ContractDocument.SelectedCollections().apply {
-                    this.id = ObjectId()
-                    this.name = name
-                    this.collectionIds = collectionIds.map { it.value }
-                }
-            )
-        ) as Contract.SelectedContent
-    }
-
     override fun saveSelectedCollectionsContract(
         name: String,
         collectionIds: List<CollectionId>
-    ): Contract.SelectedContent {
+    ): Contract.SelectedCollections {
         return contractDocumentConverter.fromDocument(
-            selectedCollectionContractDocumentMongoRepository.save(
+            selectedCollectionsContractDocumentMongoRepository.save(
                 ContractDocument.SelectedCollections().apply {
                     this.id = ObjectId()
                     this.name = name
                     this.collectionIds = collectionIds.map { it.value }
                 }
             )
-        ) as Contract.SelectedContent
+        ) as Contract.SelectedCollections
     }
 }
