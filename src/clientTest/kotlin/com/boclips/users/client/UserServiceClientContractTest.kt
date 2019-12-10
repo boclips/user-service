@@ -3,6 +3,7 @@ package com.boclips.users.client
 import com.boclips.users.client.implementation.ApiUserServiceClient
 import com.boclips.users.client.implementation.FakeUserServiceClient
 import com.boclips.users.client.model.Subject
+import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
 import com.boclips.users.client.model.contract.SelectedContentContract
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
@@ -18,6 +19,7 @@ import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.factories.ContractFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
+import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -37,12 +39,13 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
         @Test
         fun `returns user corresponding to provided id`() {
             val organisation = insertTestOrganisation("test-organisation-id")
-            val user = insertTestUser(organisation, subjectId = "subject-1")
+            val user = insertTestUser(organisation, subjectId = "subject-1", shareCode = "abcd")
 
             val retrievedUser = client.findUser(user.id)
             assertThat(retrievedUser.id).isEqualTo(user.id)
             assertThat(retrievedUser.organisationAccountId).isEqualTo(user.organisationAccountId)
             assertThat(retrievedUser.subjects).containsExactly(Subject("subject-1"))
+            assertThat(retrievedUser.teacherPlatformAttributes.shareCode).isEqualTo(user.teacherPlatformAttributes.shareCode)
         }
     }
 
@@ -84,7 +87,7 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
         contracts: List<DomainContract> = emptyList()
     ): OrganisationAccount<*>
 
-    abstract fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String = "1"): User
+    abstract fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String = "1", shareCode: String = "test"): User
 
     lateinit var client: UserServiceClient
 }
@@ -108,7 +111,7 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
         return saveOrganisationWithContractDetails(organisationName, contracts.toList())
     }
 
-    override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String): User {
+    override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String, shareCode: String): User {
         subjectService.addSubject(com.boclips.users.domain.model.Subject(id = SubjectId(subjectId), name = subjectId))
 
         val user = UserFactory.sample(
@@ -121,12 +124,13 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
                         ), name = ""
                     )
                 )
-            )
+            ),
+            teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = shareCode)
         )
 
         saveUser(user)
 
-        return User(user.id.value, user.organisationAccountId!!.value, listOf(Subject(subjectId)))
+        return User(user.id.value, user.organisationAccountId!!.value, listOf(Subject(subjectId)), TeacherPlatformAttributes(shareCode))
     }
 }
 
@@ -160,7 +164,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
         )
     }
 
-    override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String): User {
-        return (client as FakeUserServiceClient).addUser(User("idontcare", "scam", listOf(Subject(subjectId))))
+    override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String, shareCode: String): User {
+        return (client as FakeUserServiceClient).addUser(User("idontcare", "scam", listOf(Subject(subjectId)), TeacherPlatformAttributes(shareCode)))
     }
 }

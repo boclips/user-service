@@ -13,4 +13,5 @@ public class User {
     private String id;
     private String organisationAccountId;
     private List<Subject> subjects;
+    private TeacherPlatformAttributes teacherPlatformAttributes;
 }
