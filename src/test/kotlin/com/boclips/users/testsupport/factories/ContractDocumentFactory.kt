@@ -5,10 +5,10 @@ import org.bson.types.ObjectId
 
 class ContractDocumentFactory {
     companion object {
-        fun sampleSelectedContentContractDocument(
+        fun sampleSelectedCollectionsContractDocument(
             name: String = "Test selected content contract",
             collectionIds: List<String> = emptyList()
-        ) = ContractDocument.SelectedContent().apply {
+        ) = ContractDocument.SelectedCollections().apply {
             this.id = ObjectId()
             this.name = name
             this.collectionIds = collectionIds

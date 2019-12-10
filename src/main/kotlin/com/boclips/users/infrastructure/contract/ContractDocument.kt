@@ -6,11 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "contracts")
 sealed class ContractDocument {
-    @TypeAlias("SelectedContent")
-    class SelectedContent : ContractDocument() {
-        lateinit var collectionIds: List<String>
-    }
-
     @TypeAlias("SelectedCollections")
     class SelectedCollections : ContractDocument() {
         lateinit var collectionIds: List<String>

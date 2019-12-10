@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MongoSelectedContentContractRepository(
-    private val selectedContentContractDocumentMongoRepository: SelectedContentContractDocumentMongoRepository,
-    private val SelectedCollectionContractDocumentMongoRepository: SelectedCollectionContractDocumentMongoRepository,
+    private val selectedCollectionContractDocumentMongoRepository: SelectedCollectionContractDocumentMongoRepository,
     private val contractDocumentConverter: ContractDocumentConverter
 ) : SelectedContentContractRepository {
     override fun saveSelectedContentContract(
@@ -17,8 +16,8 @@ class MongoSelectedContentContractRepository(
         collectionIds: List<CollectionId>
     ): Contract.SelectedContent {
         return contractDocumentConverter.fromDocument(
-            selectedContentContractDocumentMongoRepository.save(
-                ContractDocument.SelectedContent().apply {
+            selectedCollectionContractDocumentMongoRepository.save(
+                ContractDocument.SelectedCollections().apply {
                     this.id = ObjectId()
                     this.name = name
                     this.collectionIds = collectionIds.map { it.value }
@@ -32,7 +31,7 @@ class MongoSelectedContentContractRepository(
         collectionIds: List<CollectionId>
     ): Contract.SelectedContent {
         return contractDocumentConverter.fromDocument(
-            SelectedCollectionContractDocumentMongoRepository.save(
+            selectedCollectionContractDocumentMongoRepository.save(
                 ContractDocument.SelectedCollections().apply {
                     this.id = ObjectId()
                     this.name = name

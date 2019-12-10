@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 class ContractDocumentConverterTest {
     @Test
     fun `converts selected content contract document to contract`() {
-        val document = ContractDocumentFactory.sampleSelectedContentContractDocument(
+        val document = ContractDocumentFactory.sampleSelectedCollectionsContractDocument(
             collectionIds = listOf("A", "B", "C")
         )
 
@@ -29,7 +29,7 @@ class ContractDocumentConverterTest {
     fun `converts selected content contract to document`() {
         val contract = ContractFactory.sampleSelectedContentContract()
 
-        val document = converter.toDocument(contract) as ContractDocument.SelectedContent
+        val document = converter.toDocument(contract) as ContractDocument.SelectedCollections
 
         assertThat(document.id.toHexString()).isEqualTo(contract.id.value)
         assertThat(document.name).isEqualTo(contract.name)
