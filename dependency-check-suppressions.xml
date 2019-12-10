@@ -93,13 +93,13 @@
         <cve>CVE-2019-14832</cve>
     </suppress>
 
-    <suppress>
+    <suppress until="2020-02-02Z">
         <notes><![CDATA[
    file name: libthrift-0.12.0.jar
    ]]>
             This vulnerability is coming from opentracing-spring-jaeger-web-starter.
         </notes>
-        <gav regex="true">^pkg:maven/org\.apache\.thrift/libthrift@.*$</gav>
+        <cpe>cpe:2.3:a:org.apache.thrift:libthrift:0.12.0:*:*:*:*:*:*:*</cpe>
         <cve>CVE-2019-0205</cve>
         <cve>CVE-2019-0210</cve>
     </suppress>
