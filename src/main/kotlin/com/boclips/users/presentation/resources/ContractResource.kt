@@ -6,10 +6,10 @@ import org.springframework.hateoas.ResourceSupport
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
-    JsonSubTypes.Type(value = ContractResource.SelectedContent::class, name = "SelectedContent")
+    JsonSubTypes.Type(value = ContractResource.SelectedCollections::class, name = "SelectedCollections")
 )
 sealed class ContractResource : ResourceSupport() {
-    data class SelectedContent(
+    data class SelectedCollections(
         override val name: String,
         val collectionIds: List<String>
     ) : ContractResource()

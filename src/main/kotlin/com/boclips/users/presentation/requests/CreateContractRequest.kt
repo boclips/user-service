@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
-    JsonSubTypes.Type(value = CreateContractRequest.SelectedCollections::class, name = "SelectedContent")
+    JsonSubTypes.Type(value = CreateContractRequest.SelectedCollections::class, name = "SelectedCollections")
 )
 sealed class CreateContractRequest {
     class SelectedCollections : CreateContractRequest() {

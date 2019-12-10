@@ -13,7 +13,7 @@ class ContractConverter(
 ) {
     fun toResource(contract: Contract): ContractResource {
         return when (contract) {
-            is Contract.SelectedCollections -> ContractResource.SelectedContent(
+            is Contract.SelectedCollections -> ContractResource.SelectedCollections(
                 contract.name,
                 contract.collectionIds.map { it.value }
             ).apply {

@@ -33,14 +33,14 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
         }
 
         @Test
-        fun `creates a SelectedContent contract and returns it's location`() {
+        fun `creates a SelectedCollections contract and returns it's location`() {
             mvc.perform(
                 post("/v1/contracts")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
                         {
-                            "type": "SelectedContent",
+                            "type": "SelectedCollections",
                             "name": "Creation test",
                             "collectionIds": ["A", "B", "C"]
                         }
@@ -53,14 +53,14 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
         }
 
         @Test
-        fun `returns a 400 response when SelectedContent payload is invalid`() {
+        fun `returns a 400 response when SelectedCollections payload is invalid`() {
             mvc.perform(
                 post("/v1/contracts")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
                         {
-                            "type": "SelectedContent"
+                            "type": "SelectedCollections"
                         }
                     """.trimIndent()
                     )
@@ -102,7 +102,7 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
                     .content(
                         """
                         {
-                            "type": "SelectedContent",
+                            "type": "SelectedCollections",
                             "name": "$contractName",
                             "collectionIds": ["A"]
                         }
@@ -137,7 +137,7 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
                     .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTRACTS)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$.type", equalTo("SelectedContent")))
+                .andExpect(jsonPath("$.type", equalTo("SelectedCollections")))
                 .andExpect(jsonPath("$.name", equalTo(contractName)))
                 .andExpect(jsonPath("$.collectionIds", hasSize<Int>(1)))
                 .andExpect(jsonPath("$.collectionIds[0]", equalTo("A")))

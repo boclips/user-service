@@ -5,7 +5,7 @@ import com.boclips.users.client.implementation.FakeUserServiceClient
 import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
-import com.boclips.users.client.model.contract.SelectedContentContract
+import com.boclips.users.client.model.contract.SelectedCollectionsContract
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testUser
@@ -147,7 +147,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
         contracts.forEach { domainContract ->
             domainContract as DomainContract.SelectedCollections
             (client as FakeUserServiceClient).addContract(
-                SelectedContentContract().apply {
+                SelectedCollectionsContract().apply {
                     name = domainContract.name
                     collectionIds = domainContract.collectionIds.map { it.value }
                 }

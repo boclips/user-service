@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class SelectedContentContract extends Contract {
+public class SelectedCollectionsContract extends Contract {
     private List<String> collectionIds;
 }

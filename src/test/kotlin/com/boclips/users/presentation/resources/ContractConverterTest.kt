@@ -15,7 +15,7 @@ class ContractConverterTest {
             collectionIds = listOf(CollectionId("A"), CollectionId("B"))
         )
 
-        val resource = converter.toResource(contract) as ContractResource.SelectedContent
+        val resource = converter.toResource(contract) as ContractResource.SelectedCollections
 
         assertThat(resource.name).isEqualTo(contract.name)
         assertThat(resource.collectionIds).containsExactlyInAnyOrder("A", "B")
