@@ -123,8 +123,9 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 firstContractName,
                 listOf(CollectionId("A"))
             )
-            val secondContractName = "first"
-            val secondContract = selectedContentContractRepository.saveSelectedContentContract(
+
+            val secondContractName = "second"
+            val secondContract = selectedContentContractRepository.saveSelectedCollectionsContract(
                 secondContractName,
                 listOf(CollectionId("B"))
             )
@@ -136,7 +137,6 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.contracts", hasSize<Any>(2)))
                 .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
-                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedContent")))
                 .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(firstContractName)))
                 .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo("A")))
@@ -146,7 +146,6 @@ class ContractsControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         endsWith("/v1/contracts/${firstContract.id.value}")
                     )
                 )
-                .andExpect(jsonPath("$._embedded.contracts[1].type", equalTo("SelectedContent")))
                 .andExpect(jsonPath("$._embedded.contracts[1].type", equalTo("SelectedContent")))
                 .andExpect(jsonPath("$._embedded.contracts[1].name", equalTo(secondContractName)))
                 .andExpect(jsonPath("$._embedded.contracts[1].collectionIds", hasSize<Int>(1)))

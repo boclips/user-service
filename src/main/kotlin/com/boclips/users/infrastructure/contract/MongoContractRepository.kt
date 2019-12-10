@@ -13,9 +13,7 @@ class MongoContractRepository(
 ) : ContractRepository {
     override fun findById(id: ContractId): Contract? {
         return asNullable(contractDocumentMongoRepository.findById(id.value))?.let {
-            return when (it) {
-                is ContractDocument.SelectedContent -> contractDocumentConverter.fromDocument(it)
-            }
+            return contractDocumentConverter.fromDocument(it)
         }
     }
 

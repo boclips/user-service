@@ -26,6 +26,18 @@ class MongoContractRepositoryTest : AbstractSpringIntegrationTest() {
         fun `returns null if contract is not found by id`() {
             assertThat(contractRepository.findById(ContractId("this does not exist"))).isNull()
         }
+
+        @Test
+        fun `fetches selectedCollections contract and deserializes it to a selectedContent contract`() {
+            val persistedContract = selectedContentContractRepository.saveSelectedCollectionsContract(
+                name = "Test selected content contract",
+                collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
+            )
+
+            val fetchedContract = contractRepository.findById(persistedContract.id)
+
+            assertThat(fetchedContract).isEqualTo(persistedContract)
+        }
     }
 
     @Nested
@@ -54,7 +66,7 @@ class MongoContractRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns all contracts`() {
             selectedContentContractRepository.saveSelectedContentContract(name = "Hey", collectionIds = emptyList())
-            selectedContentContractRepository.saveSelectedContentContract(name = "Ho", collectionIds = emptyList())
+            selectedContentContractRepository.saveSelectedCollectionsContract(name = "Ho", collectionIds = emptyList())
 
             val allContracts = contractRepository.findAll()
 

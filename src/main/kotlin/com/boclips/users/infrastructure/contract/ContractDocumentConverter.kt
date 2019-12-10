@@ -15,6 +15,11 @@ class ContractDocumentConverter {
                 name = document.name,
                 collectionIds = document.collectionIds.map { CollectionId(it) }
             )
+            is ContractDocument.SelectedCollections ->  Contract.SelectedContent(
+                id = ContractId(document.id.toHexString()),
+                name = document.name,
+                collectionIds = document.collectionIds.map { CollectionId(it) }
+            )
         }
     }
 
