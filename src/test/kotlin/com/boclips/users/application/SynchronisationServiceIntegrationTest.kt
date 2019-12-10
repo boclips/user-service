@@ -39,25 +39,4 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(userRepository.findAll()).hasSize(2)
         assertThat(userRepository.findAll().map { it.id }).containsExactly(UserId("cat"), UserId("dog"))
     }
-
-    // TODO remove this after succesful shareCode migration
-    @Test
-    fun `existing users get a random shareCode`() {
-        for(i in 1..10) {
-            saveUser(UserFactory.sample(
-                account = AccountFactory.sample(id = "user-$i"),
-                teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null)
-            ))
-        }
-
-        synchronisationService.synchroniseAccounts()
-
-        val users = userRepository.findAll()
-        assertThat(users).hasSize(10)
-        assertThat(users).allSatisfy {
-            assertThat(it!!.teacherPlatformAttributes!!.shareCode).isNotNull()
-            assertThat(it!!.teacherPlatformAttributes!!.shareCode).hasSize(4)
-        }
-    }
-
 }

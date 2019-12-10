@@ -51,10 +51,5 @@ class SynchronisationService(
                 logger.info { "Import of user $account completed" }
             }
         }
-
-        //TODO remove after shareCode migration
-        users.forEach { user ->
-            userRepository.update(user, UserUpdateCommand.ReplaceShareCode(generateTeacherShareCode()))
-        }
     }
 }
