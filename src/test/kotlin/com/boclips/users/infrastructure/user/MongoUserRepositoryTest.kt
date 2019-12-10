@@ -213,6 +213,21 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `updating shareCode`() {
+        val user = userRepository.create(
+            UserFactory.sample(
+                teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null)
+            )
+        )
+
+        userRepository.update(user, UserUpdateCommand.ReplaceShareCode("1234"))
+
+        val updatedUser = userRepository.findById(user.id)!!
+
+        assertThat(updatedUser.teacherPlatformAttributes!!.shareCode).isEqualTo("1234")
+    }
+
+    @Test
     fun `updating user hasLifetimeAccess`() {
         val user = userRepository.create(
             UserFactory.sample(

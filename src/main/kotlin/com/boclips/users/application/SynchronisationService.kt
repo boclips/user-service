@@ -1,5 +1,6 @@
 package com.boclips.users.application
 
+import com.boclips.users.application.commands.GenerateTeacherShareCode
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
@@ -17,7 +18,8 @@ class SynchronisationService(
     val sessionProvider: SessionProvider,
     val userImportService: UserImportService,
     val accountProvider: AccountProvider,
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    val generateTeacherShareCode: GenerateTeacherShareCode
 ) {
     companion object : KLogging()
 
@@ -38,7 +40,9 @@ class SynchronisationService(
     }
 
     fun synchroniseAccounts() {
-        val allUserIds = userRepository.findAll().map { it.id }.toSet()
+        val users = userRepository.findAll()
+
+        val allUserIds = users.map { it.id }.toSet()
         logger.info { "Found ${allUserIds.size} users" }
 
         accountProvider.getAccounts().forEach { account ->
@@ -46,6 +50,11 @@ class SynchronisationService(
                 userImportService.importFromAccountProvider(listOf(account.id))
                 logger.info { "Import of user $account completed" }
             }
+        }
+
+        //TODO remove after shareCode migration
+        users.forEach { user ->
+            userRepository.update(user, UserUpdateCommand.ReplaceShareCode(generateTeacherShareCode()))
         }
     }
 }

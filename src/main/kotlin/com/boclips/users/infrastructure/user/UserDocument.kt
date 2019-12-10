@@ -19,7 +19,7 @@ data class UserDocument(
     var ageRange: List<Int>?,
     val analyticsId: String?,
     var referralCode: String?,
-    val shareCode: String?,
+    var shareCode: String?,
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
     var organisationId: String?,

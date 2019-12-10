@@ -49,6 +49,9 @@ class MongoUserRepository(
                 is UserUpdateCommand.ReplaceHasLifetimeAccess -> userDocument.apply {
                     hasLifetimeAccess = updateCommand.hasLifetimeAccess
                 }
+                is UserUpdateCommand.ReplaceShareCode -> userDocument.apply {
+                    shareCode = updateCommand.shareCode
+                }
             }
         }
 
