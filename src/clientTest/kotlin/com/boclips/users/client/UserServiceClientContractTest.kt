@@ -105,10 +105,10 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
     }
 
     override fun insertTestOrganisation(
-        organisationName: String,
+        name: String,
         contracts: List<DomainContract>
     ): OrganisationAccount<*> {
-        return saveOrganisationWithContractDetails(organisationName, contracts.toList())
+        return saveOrganisationWithContractDetails(name, contracts.toList())
     }
 
     override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String, shareCode: String): User {
@@ -141,22 +141,22 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
     }
 
     override fun insertTestOrganisation(
-        organisationName: String,
+        name: String,
         contracts: List<DomainContract>
     ): OrganisationAccount<*> {
         contracts.forEach { domainContract ->
             domainContract as DomainContract.SelectedCollections
             (client as FakeUserServiceClient).addContract(
                 SelectedCollectionsContract().apply {
-                    name = domainContract.name
-                    collectionIds = domainContract.collectionIds.map { it.value }
+                    this.name = domainContract.name
+                    this.collectionIds = domainContract.collectionIds.map { it.value }
                 }
             )
         }
         val organisation: Organisation =
-            School(organisationName, Country.usa(), state = null, district = null, externalId = null)
+            School(name, Country.usa(), state = null, district = null, externalId = null)
         return OrganisationAccount(
-            id = OrganisationAccountId(organisationName),
+            id = OrganisationAccountId(name),
             type = OrganisationAccountType.STANDARD,
             contractIds = emptyList(),
             organisation = organisation,

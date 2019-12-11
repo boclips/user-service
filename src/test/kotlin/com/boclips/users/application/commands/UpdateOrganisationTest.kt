@@ -39,7 +39,7 @@ class UpdateOrganisationTest : AbstractSpringIntegrationTest() {
         val request = UpdateOrganisationRequest(accessExpiresOn = updatedExpiryTimeToString)
         val updatedOrganisation = updateOrganisation(district.id.value, request)
 
-        assertThat(updatedOrganisation?.accessExpiresOn).isEqualTo(updatedExpiryTime)
+        assertThat(updatedOrganisation.accessExpiresOn).isEqualTo(updatedExpiryTime)
     }
 
     @Test
