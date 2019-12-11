@@ -164,13 +164,21 @@ abstract class AbstractSpringIntegrationTest {
         contractIds: List<Contract> = emptyList()
     ): OrganisationAccount<*> {
         val organisationContracts = mutableListOf<Contract>()
-        contractIds.forEach {
+        contractIds.map {
             when (it) {
                 is Contract.SelectedCollections -> {
                     organisationContracts.add(
                         selectedContentContractRepository.saveSelectedCollectionsContract(
                             it.name,
                             it.collectionIds
+                        )
+                    )
+                }
+                is Contract.SelectedVideos -> {
+                    organisationContracts.add(
+                        selectedContentContractRepository.saveSelectedVideosContract(
+                            it.name,
+                            it.videoIds
                         )
                     )
                 }

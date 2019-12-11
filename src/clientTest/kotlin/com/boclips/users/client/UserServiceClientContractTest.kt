@@ -6,11 +6,13 @@ import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
 import com.boclips.users.client.model.contract.SelectedCollectionsContract
+import com.boclips.users.client.model.contract.SelectedVideosContract
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testUser
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.contract.CollectionId
+import com.boclips.users.domain.model.contract.VideoId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationAccount
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
@@ -68,17 +70,29 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
                         name = "First",
                         collectionIds = listOf(CollectionId("A"), CollectionId("B"))
                     ),
-                    ContractFactory.sampleSelectedCollectionsContract(
+                    ContractFactory.sampleSelectedVideosContract(
                         name = "Second",
-                        collectionIds = listOf(CollectionId("C"), CollectionId("D"))
+                        videoIds = listOf(VideoId("C"), VideoId("D"))
                     )
                 )
             )
             val user = insertTestUser(organisation)
 
-            assertThat(client.getContracts(user.id))
+            val contracts = client.getContracts(user.id)
+
+            assertThat(contracts)
+                .extracting("name")
+                .containsExactlyInAnyOrder("First", "Second")
+
+            val selectedCollectionsContracts = contracts.filterIsInstance<SelectedCollectionsContract>()
+            assertThat(selectedCollectionsContracts)
                 .flatExtracting("collectionIds")
-                .containsExactlyInAnyOrder("A", "B", "C", "D")
+                .containsExactlyInAnyOrder("A", "B")
+
+            val selectedVideosContracts = contracts.filterIsInstance<SelectedVideosContract>()
+            assertThat(selectedVideosContracts)
+                .flatExtracting("videoIds")
+                .containsExactlyInAnyOrder("C", "D")
         }
     }
 
@@ -87,7 +101,11 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
         contracts: List<DomainContract> = emptyList()
     ): OrganisationAccount<*>
 
-    abstract fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String = "1", shareCode: String = "test"): User
+    abstract fun insertTestUser(
+        organisation: OrganisationAccount<*>,
+        subjectId: String = "1",
+        shareCode: String = "test"
+    ): User
 
     lateinit var client: UserServiceClient
 }
@@ -130,7 +148,12 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
 
         saveUser(user)
 
-        return User(user.id.value, user.organisationAccountId!!.value, listOf(Subject(subjectId)), TeacherPlatformAttributes(shareCode))
+        return User(
+            user.id.value,
+            user.organisationAccountId!!.value,
+            listOf(Subject(subjectId)),
+            TeacherPlatformAttributes(shareCode)
+        )
     }
 }
 
@@ -144,15 +167,21 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
         name: String,
         contracts: List<DomainContract>
     ): OrganisationAccount<*> {
-        contracts.forEach { domainContract ->
-            domainContract as DomainContract.SelectedCollections
-            (client as FakeUserServiceClient).addContract(
-                SelectedCollectionsContract().apply {
+        contracts.map { domainContract ->
+            when (domainContract) {
+                is DomainContract.SelectedCollections -> SelectedCollectionsContract().apply {
                     this.name = domainContract.name
                     this.collectionIds = domainContract.collectionIds.map { it.value }
                 }
-            )
+                is DomainContract.SelectedVideos -> SelectedVideosContract().apply {
+                    this.name = domainContract.name
+                    this.videoIds = domainContract.videoIds.map { it.value }
+                }
+            }
+        }.forEach { convertedContract ->
+            (client as FakeUserServiceClient).addContract(convertedContract)
         }
+
         val organisation: Organisation =
             School(name, Country.usa(), state = null, district = null, externalId = null)
         return OrganisationAccount(
@@ -165,6 +194,13 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
     }
 
     override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String, shareCode: String): User {
-        return (client as FakeUserServiceClient).addUser(User("idontcare", "scam", listOf(Subject(subjectId)), TeacherPlatformAttributes(shareCode)))
+        return (client as FakeUserServiceClient).addUser(
+            User(
+                "idontcare",
+                "scam",
+                listOf(Subject(subjectId)),
+                TeacherPlatformAttributes(shareCode)
+            )
+        )
     }
 }

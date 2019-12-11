@@ -6,7 +6,8 @@ import lombok.Data;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = SelectedCollectionsContract.class, name = "SelectedCollections")
+        @JsonSubTypes.Type(value = SelectedCollectionsContract.class, name = "SelectedCollections"),
+        @JsonSubTypes.Type(value = SelectedVideosContract.class, name = "SelectedVideos")
 })
 @Data
 public abstract class Contract {
