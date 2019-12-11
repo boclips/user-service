@@ -1,7 +1,8 @@
 package com.boclips.users.presentation.hateoas
 
+import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.school.Country
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
@@ -41,10 +42,11 @@ internal class OrganisationLinkBuilderTest {
 
     @Test
     fun `expose organisations link`() {
-        val organisationLink = organisationLinkBuilder.getIndependentOrganisationsLink(Country.USA_ISO)
+        setSecurityContext("org-viewer", UserRoles.VIEW_ORGANISATIONS)
+        val organisationLink = organisationLinkBuilder.getIndependentOrganisationsLink()
 
-        assertThat(organisationLink.rel).isEqualTo("independentOrganisations")
-        assertThat(organisationLink.href).endsWith("/independent-organisations?countryCode=USA&page=0&size=30")
+        assertThat(organisationLink!!.rel).isEqualTo("independentOrganisations")
+        assertThat(organisationLink.href).endsWith("/independent-organisations{?countryCode,page,size}")
     }
 
     @Test

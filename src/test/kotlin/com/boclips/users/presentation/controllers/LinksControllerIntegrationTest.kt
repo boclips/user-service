@@ -33,6 +33,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.countries").doesNotExist())
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
+            .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
     }
 
     @Test
@@ -55,6 +56,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
+            .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
     }
 
     @Test
@@ -78,6 +80,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.contracts").doesNotExist())
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
+            .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
     }
 
     @Test
@@ -102,6 +105,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.countries").exists())
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
+            .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
     }
 
     @Test
@@ -184,6 +188,15 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.contracts.templated", equalTo(true)))
             .andExpect(jsonPath("$._links.searchContracts.href", endsWith("/contracts{?name}")))
             .andExpect(jsonPath("$._links.searchContracts.templated", equalTo(true)))
+    }
+
+    @Test
+    fun `user with VIEW_ORGANISATIONS role`() {
+        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ORGANISATIONS))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.independentOrganisations").exists())
+            .andExpect(jsonPath("$._links.independentOrganisations.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.independentOrganisations.href",endsWith("/independent-organisations{?countryCode,page,size}")))
     }
 
     @Test

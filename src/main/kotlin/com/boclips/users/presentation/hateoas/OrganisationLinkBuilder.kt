@@ -1,5 +1,7 @@
 package com.boclips.users.presentation.hateoas
 
+import com.boclips.security.utils.UserExtractor
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.OrganisationAccountId
 import com.boclips.users.presentation.controllers.OrganisationController
 import com.boclips.users.presentation.controllers.OrganisationTestSupportController
@@ -31,21 +33,22 @@ class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriCompon
         ).withRel("schools")
     }
 
-    fun getIndependentOrganisationsLink(countryCode: String, page: Int = 0, size: Int = 30): Link {
-        return Link(
-            uriComponentsBuilderFactory.getInstance()
-                .replacePath("/v1/independent-organisations")
-                .replaceQueryParams(null)
-                .queryParam("countryCode", countryCode)
-                .queryParam("page", page)
-                .queryParam("size", size)
-                .toUriString(),
-            "independentOrganisations"
-        )
+    fun getIndependentOrganisationsLink(): Link? {
+        return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
+            Link(
+                uriComponentsBuilderFactory.getInstance()
+                    .replacePath("/v1/independent-organisations")
+                    .replaceQueryParams(null)
+                    .toUriString() + "{?countryCode,page,size}",
+                "independentOrganisations"
+            )
+        } else {
+            null
+        }
     }
 
     fun getNextPageLink(currentPage: Int, totalPages: Int): Link? {
-        return if (currentPage +1 < totalPages) {
+        return if (currentPage + 1 < totalPages) {
             Link(
                 uriComponentsBuilderFactory
                     .getInstance()
