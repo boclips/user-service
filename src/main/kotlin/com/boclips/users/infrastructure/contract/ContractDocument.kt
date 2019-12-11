@@ -11,6 +11,11 @@ sealed class ContractDocument {
         lateinit var collectionIds: List<String>
     }
 
+    @TypeAlias("SelectedVideos")
+    class SelectedVideos : ContractDocument() {
+        lateinit var videoIds: List<String>
+    }
+
     lateinit var id: ObjectId
     lateinit var name: String
 }

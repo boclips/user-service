@@ -7,6 +7,12 @@ sealed class Contract {
         val collectionIds: List<CollectionId>
     ) : Contract()
 
+    data class SelectedVideos(
+        override val id: ContractId,
+        override val name: String,
+        val videoIds: List<VideoId>
+    ) : Contract()
+
     abstract val id: ContractId
     abstract val name: String
 }

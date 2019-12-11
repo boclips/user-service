@@ -9,6 +9,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.contract.CollectionId
+import com.boclips.users.domain.model.contract.VideoId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -21,6 +22,8 @@ import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -417,16 +420,23 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `lists contracts user has access to`() {
-            val contractName = "Test contract"
+            val collectionsContractName = "Test collections contract"
             val collectionId = "test-collection-id"
-            val testContract = saveSelectedCollectionsContract(
-                name = contractName,
+            val collectionsContract = saveSelectedCollectionsContract(
+                name = collectionsContractName,
                 collectionIds = listOf(CollectionId(collectionId))
+            )
+            val videosContractName = "Test videos contract"
+            val videoId = "test-video-id"
+            val videosContract = saveSelectedVideosContract(
+                name = videosContractName,
+                videoIds = listOf(VideoId(videoId))
             )
 
             val organisation = saveApiIntegration(
                 contractIds = listOf(
-                    testContract.id
+                    collectionsContract.id,
+                    videosContract.id
                 )
             )
 
@@ -438,15 +448,16 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(1)))
-                .andExpect(jsonPath("$._embedded.contracts[0].type", equalTo("SelectedCollections")))
-                .andExpect(jsonPath("$._embedded.contracts[0].name", equalTo(contractName)))
-                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds", hasSize<Int>(1)))
-                .andExpect(jsonPath("$._embedded.contracts[0].collectionIds[0]", equalTo(collectionId)))
+                .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(2)))
+                .andExpect(jsonPath("$._embedded.contracts[*].type", containsInAnyOrder("SelectedCollections", "SelectedVideos")))
+                .andExpect(jsonPath("$._embedded.contracts[*].name", containsInAnyOrder(collectionsContractName, videosContractName)))
                 .andExpect(
                     jsonPath(
-                        "$._embedded.contracts[0]._links.self.href",
-                        endsWith("/v1/contracts/${testContract.id.value}")
+                        "$._embedded.contracts[*]._links.self.href",
+                        contains(
+                            endsWith("/v1/contracts/${collectionsContract.id.value}"),
+                            endsWith("/v1/contracts/${videosContract.id.value}")
+                        )
                     )
                 )
                 .andExpect(jsonPath("$._links.self.href", endsWith("/v1/users/${user.id.value}/contracts")))

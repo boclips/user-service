@@ -19,12 +19,21 @@ class ContractConverter(
             ).apply {
                 add(
                     listOfNotNull(
-                        contractLinkBuilder.self(contract.id),
                         selectedContractLinkBuilder.addCollection(contractId = contract.id.value),
                         selectedContractLinkBuilder.removeCollection(contractId = contract.id.value)
                     )
                 )
             }
+            is Contract.SelectedVideos -> ContractResource.SelectedVideos(
+                contract.name,
+                contract.videoIds.map { it.value }
+            )
+        }.apply {
+            add(
+                listOfNotNull(
+                    contractLinkBuilder.self(contract.id)
+                )
+            )
         }
     }
 }

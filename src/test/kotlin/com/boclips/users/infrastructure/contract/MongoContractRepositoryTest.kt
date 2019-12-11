@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.contract
 
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.contract.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -11,10 +12,22 @@ class MongoContractRepositoryTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class FindById {
         @Test
-        fun `fetches a contract by id and deserializes it to a correct class`() {
+        fun `fetches a collection contract by id and deserializes it to a correct class`() {
             val persistedContract = selectedContentContractRepository.saveSelectedCollectionsContract(
                 name = "Test selected content contract",
                 collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
+            )
+
+            val fetchedContract = contractRepository.findById(persistedContract.id)
+
+            assertThat(fetchedContract).isEqualTo(persistedContract)
+        }
+
+        @Test
+        fun `fetches a video contract by id and deserializes it to the correct class`() {
+            val persistedContract = selectedContentContractRepository.saveSelectedVideosContract(
+                name = "Test selected content contract",
+                videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
             )
 
             val fetchedContract = contractRepository.findById(persistedContract.id)
@@ -53,12 +66,25 @@ class MongoContractRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindAll {
         @Test
         fun `returns all contracts`() {
-            selectedContentContractRepository.saveSelectedCollectionsContract(name = "Hey", collectionIds = emptyList())
-            selectedContentContractRepository.saveSelectedCollectionsContract(name = "Ho", collectionIds = emptyList())
+            val firstCollectionContract = selectedContentContractRepository.saveSelectedCollectionsContract(
+                name = "Hey",
+                collectionIds = emptyList()
+            )
+            val secondCollectionContract = selectedContentContractRepository.saveSelectedCollectionsContract(
+                name = "Ho",
+                collectionIds = emptyList()
+            )
+            val firstVideoContract =
+                selectedContentContractRepository.saveSelectedVideosContract(name = "Yo", videoIds = emptyList())
 
             val allContracts = contractRepository.findAll()
 
-            assertThat(allContracts).hasSize(2).extracting("name").containsExactlyInAnyOrder("Hey", "Ho")
+            assertThat(allContracts).hasSize(3)
+            assertThat(allContracts).containsExactlyInAnyOrder(
+                firstCollectionContract,
+                secondCollectionContract,
+                firstVideoContract
+            )
         }
 
         @Test

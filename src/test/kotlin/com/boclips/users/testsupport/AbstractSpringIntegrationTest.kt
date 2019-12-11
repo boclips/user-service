@@ -9,6 +9,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.contract.VideoId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationAccount
@@ -209,6 +210,10 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveSelectedCollectionsContract(name: String, collectionIds: List<CollectionId>): Contract.SelectedCollections {
         return selectedContentContractRepository.saveSelectedCollectionsContract(name, collectionIds)
+    }
+
+    fun saveSelectedVideosContract(name: String, videoIds: List<VideoId>): Contract.SelectedVideos {
+        return selectedContentContractRepository.saveSelectedVideosContract(name, videoIds)
     }
 
     fun ResultActions.andExpectApiErrorPayload(): ResultActions {
