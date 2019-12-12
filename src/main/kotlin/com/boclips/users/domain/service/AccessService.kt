@@ -1,22 +1,21 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.School
 import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 
 @Service
-class AccessService(val organisationAccountRepository: OrganisationAccountRepository) {
+class AccessService(val accountRepository: AccountRepository) {
     fun userHasAccess(user: User): Boolean {
         val userAccessExpiry = user.accessExpiresOn ?: return true
 
-        val schoolOrganisationAccount: OrganisationAccount<School>? =
-            user.organisationAccountId?.let { organisationAccountRepository.findSchoolById(it) }
+        val schoolAccount: Account<School>? =
+            user.organisationAccountId?.let { accountRepository.findSchoolById(it) }
 
         val organisationAccessExpiry =
-            schoolOrganisationAccount?.let {
+            schoolAccount?.let {
                 it.organisation.district?.accessExpiresOn ?: it.accessExpiresOn
             }
 

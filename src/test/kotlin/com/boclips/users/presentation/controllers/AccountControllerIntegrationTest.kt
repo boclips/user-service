@@ -18,22 +18,22 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
+class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `lists schools when given only query and country - outside USA schools`() {
-        val school = organisationAccountRepository.save(
+        val school = accountRepository.save(
             school = OrganisationFactory.school(
                 name = "my school 1",
                 countryName = "GBR"
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "my school 2",
                 countryName = "POL"
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "something else",
                 countryName = "GBR"
@@ -50,7 +50,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
         val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
-        val district = organisationAccountRepository.save(
+        val district = accountRepository.save(
             OrganisationFactory.district(
                 name = "my district",
                 externalId = "123",
@@ -58,7 +58,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             ),
             accessExpiresOn = expiryTime
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "my district school",
                 countryName = "USA",
@@ -66,7 +66,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 district = district
             )
         )
-        val school = organisationAccountRepository.save(
+        val school = accountRepository.save(
             school = OrganisationFactory.school(
                 name = "my independent school",
                 countryName = "USA",
@@ -76,18 +76,17 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             accessExpiresOn = expiryTime
         )
         mvc.perform(
-            get("/v1/independent-organisations?countryCode=USA").asUserWithRoles(
+            get("/v1/independent-accounts?countryCode=USA").asUserWithRoles(
                 "some-boclipper",
                 UserRoles.VIEW_ORGANISATIONS
             )
         )
-            .andExpect(jsonPath("$._embedded.organisationAccount", hasSize<Int>(2)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.name", equalTo(district.organisation.name)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.type", equalTo(district.organisation.type().toString())))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].accessExpiresOn", equalTo(expiryTimeToString)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.self.href", endsWith("/v1/organisations/${district.id.value}")))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.edit.href", endsWith("/v1/organisations/${district.id.value}")))
-            .andExpect(jsonPath("$._embedded.organisationAccount[1].organisation.name", equalTo(school.organisation.name)))
+            .andExpect(jsonPath("$._embedded.account", hasSize<Int>(2)))
+            .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
+            .andExpect(jsonPath("$._embedded.account[0].organisation.type", equalTo(district.organisation.type().toString())))
+            .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
+            .andExpect(jsonPath("$._embedded.account[0]._links.edit.href", endsWith("/v1/accounts/${district.id.value}")))
+            .andExpect(jsonPath("$._embedded.account[1].organisation.name", equalTo(school.organisation.name)))
     }
 
     @Test
@@ -95,7 +94,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
         val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
-        val district = organisationAccountRepository.save(
+        val district = accountRepository.save(
             OrganisationFactory.district(
                 name = "my district",
                 externalId = "123",
@@ -103,7 +102,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             ),
             accessExpiresOn = expiryTime
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "my district school",
                 countryName = "USA",
@@ -111,7 +110,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 district = district
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "my independent school",
                 countryName = "USA",
@@ -121,17 +120,16 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             accessExpiresOn = expiryTime
         )
         mvc.perform(
-            get("/v1/independent-organisations?countryCode=USA&size=1").asUserWithRoles(
+            get("/v1/independent-accounts?countryCode=USA&size=1").asUserWithRoles(
                 "some-boclipper",
                 UserRoles.VIEW_ORGANISATIONS
             )
         )
-            .andExpect(jsonPath("$._embedded.organisationAccount", hasSize<Int>(1)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.name", equalTo(district.organisation.name)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.type", equalTo(district.organisation.type().toString())))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].accessExpiresOn", equalTo(expiryTimeToString)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.self.href", endsWith("/v1/organisations/${district.id.value}")))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.edit.href", endsWith("/v1/organisations/${district.id.value}")))
+            .andExpect(jsonPath("$._embedded.account", hasSize<Int>(1)))
+            .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
+            .andExpect(jsonPath("$._embedded.account[0].organisation.type", equalTo(district.organisation.type().toString())))
+            .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
+            .andExpect(jsonPath("$._embedded.account[0]._links.edit.href", endsWith("/v1/accounts/${district.id.value}")))
     }
 
     @Test
@@ -139,7 +137,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
         val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
-        val district = organisationAccountRepository.save(
+        val district = accountRepository.save(
             OrganisationFactory.district(
                 name = "my district",
                 externalId = "123",
@@ -147,7 +145,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             ),
             accessExpiresOn = expiryTime
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "my district school",
                 countryName = "USA",
@@ -155,7 +153,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 district = district
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "my independent school",
                 countryName = "USA",
@@ -165,21 +163,20 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             accessExpiresOn = expiryTime
         )
         mvc.perform(
-            get("/v1/independent-organisations?countryCode=USA&size=1").asUserWithRoles(
+            get("/v1/independent-accounts?countryCode=USA&size=1").asUserWithRoles(
                 "some-boclipper",
                 UserRoles.VIEW_ORGANISATIONS
             )
         )
-            .andExpect(jsonPath("$._embedded.organisationAccount", hasSize<Int>(1)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.name", equalTo(district.organisation.name)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].organisation.type", equalTo(district.organisation.type().toString())))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0].accessExpiresOn", equalTo(expiryTimeToString)))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.self.href", endsWith("/v1/organisations/${district.id.value}")))
-            .andExpect(jsonPath("$._embedded.organisationAccount[0]._links.edit.href", endsWith("/v1/organisations/${district.id.value}")))
+            .andExpect(jsonPath("$._embedded.account", hasSize<Int>(1)))
+            .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
+            .andExpect(jsonPath("$._embedded.account[0].organisation.type", equalTo(district.organisation.type().toString())))
+            .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
+            .andExpect(jsonPath("$._embedded.account[0]._links.edit.href", endsWith("/v1/accounts/${district.id.value}")))
             .andExpect(jsonPath("$.page.size", equalTo(1)))
             .andExpect(jsonPath("$.page.totalElements", equalTo(2)))
             .andExpect(jsonPath("$.page.totalPages", equalTo(2)))
-            .andExpect(jsonPath("$._links.next.href", endsWith("/v1/independent-organisations?countryCode=USA&size=1&page=1")))
+            .andExpect(jsonPath("$._links.next.href", endsWith("/v1/independent-accounts?countryCode=USA&size=1&page=1")))
     }
 
 
@@ -189,7 +186,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.537Z")
         val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
-        val district = organisationAccountRepository.save(
+        val district = accountRepository.save(
             OrganisationFactory.district(
                 name = "my district",
                 externalId = "123",
@@ -198,7 +195,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         mvc.perform(
-            put("/v1/organisations/${district.id.value}").asUserWithRoles(
+            put("/v1/accounts/${district.id.value}").asUserWithRoles(
                 "some-boclipper",
                 UserRoles.UPDATE_ORGANISATIONS
             )
@@ -208,14 +205,14 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${district.id.value}")))
+            .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${district.id.value}")))
             .andExpect(jsonPath("$.id", equalTo(district.id.value)))
             .andExpect(jsonPath("$.accessExpiresOn", equalTo(expiryTimeToString)))
     }
 
     @Test
     fun `bad request when date is invalid`() {
-        val district = organisationAccountRepository.save(
+        val district = accountRepository.save(
             OrganisationFactory.district(
                 name = "my district",
                 externalId = "123",
@@ -224,7 +221,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         mvc.perform(
-            put("/v1/organisations/${district.id.value}").asUserWithRoles(
+            put("/v1/accounts/${district.id.value}").asUserWithRoles(
                 "some-boclipper",
                 UserRoles.UPDATE_ORGANISATIONS
             )
@@ -243,7 +240,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
 
         mvc.perform(
-            put("/v1/organisations/not-an-organisation").asUserWithRoles(
+            put("/v1/accounts/not-an-organisation").asUserWithRoles(
                 "some-boclipper",
                 UserRoles.UPDATE_ORGANISATIONS
             )

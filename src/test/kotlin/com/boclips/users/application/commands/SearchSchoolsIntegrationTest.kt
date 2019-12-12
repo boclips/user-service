@@ -14,19 +14,19 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `when school is not from USA`() {
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "school 1",
                 country = Country.fromCode("GBR")
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "school 2",
                 country = Country.fromCode("HUN")
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "another one",
                 country = Country.fromCode("GBR")
@@ -41,7 +41,7 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `when school is from the USA fetches them from external API only`() {
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "school 1",
                 country = Country.fromCode("USA")

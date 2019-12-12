@@ -3,12 +3,12 @@ package com.boclips.users.application.commands
 import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.AmericanSchoolsProvider
-import com.boclips.users.domain.service.OrganisationAccountRepository
+import com.boclips.users.domain.service.AccountRepository
 import org.springframework.stereotype.Component
 
 @Component
 class SearchSchools(
-    private val organisationAccountRepository: OrganisationAccountRepository,
+    private val accountRepository: AccountRepository,
     private val americanSchoolsProvider: AmericanSchoolsProvider) {
     operator fun invoke(schoolName: String?, countryCode: String?, state: String?): List<LookupEntry> {
         if (schoolName.isNullOrBlank() || countryCode.isNullOrBlank()) {
@@ -23,7 +23,7 @@ class SearchSchools(
                 americanSchoolsProvider.lookupSchools(stateId = state, schoolName = schoolName)
             }
 
-            else -> organisationAccountRepository.lookupSchools(
+            else -> accountRepository.lookupSchools(
                 schoolName = schoolName,
                 countryCode = countryCode
             )

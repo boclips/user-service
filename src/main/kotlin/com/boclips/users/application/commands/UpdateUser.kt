@@ -7,14 +7,14 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.OrganisationAccountRepository
-import com.boclips.users.domain.service.OrganisationService
+import com.boclips.users.domain.service.AccountRepository
+import com.boclips.users.domain.service.AccountService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.UserUpdateCommand
@@ -33,8 +33,8 @@ class UpdateUser(
     private val userRepository: UserRepository,
     private val marketingService: MarketingService,
     private val userUpdatesCommandFactory: UserUpdatesCommandFactory,
-    private val organisationAccountRepository: OrganisationAccountRepository,
-    private val organisationService: OrganisationService,
+    private val accountRepository: AccountRepository,
+    private val accountService: AccountService,
     private val getOrImportUser: GetOrImportUser
 ) {
     companion object : KLogging() {
@@ -62,7 +62,7 @@ class UpdateUser(
 
     private fun buildUpdateCommands(
         updateUserRequest: UpdateUserRequest,
-        school: OrganisationAccount<School>?,
+        school: Account<School>?,
         user: User
     ): List<UserUpdateCommand> {
         val updateCommands = userUpdatesCommandFactory.buildCommands(updateUserRequest, school)
@@ -81,15 +81,15 @@ class UpdateUser(
         return (user.teacherPlatformAttributes == null || !user.teacherPlatformAttributes.hasLifetimeAccess) && !user.hasOnboarded()
     }
 
-    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): OrganisationAccount<School>? {
+    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): Account<School>? {
         val schoolById = updateUserRequest.schoolId?.let {
-            organisationService.findOrCreateSchooldiggerSchool(it)
+            accountService.findOrCreateSchooldiggerSchool(it)
         }
 
         return schoolById
             ?: updateUserRequest.schoolName?.let { schoolName ->
                 findSchoolByName(schoolName, updateUserRequest.country!!)
-                    ?: organisationAccountRepository.save(
+                    ?: accountRepository.save(
                         School(
                             name = schoolName,
                             country = Country.fromCode(updateUserRequest.country!!),
@@ -104,12 +104,12 @@ class UpdateUser(
     private fun findSchoolByName(
         schoolName: String,
         countryCode: String
-    ): OrganisationAccount<School>? {
-        return organisationAccountRepository.lookupSchools(
+    ): Account<School>? {
+        return accountRepository.lookupSchools(
             schoolName,
             countryCode
         ).firstOrNull { it.name == schoolName }
-            ?.let { organisationAccountRepository.findSchoolById(OrganisationAccountId(it.id)) }
+            ?.let { accountRepository.findSchoolById(OrganisationAccountId(it.id)) }
     }
 
     private fun updateMarketingService(id: UserId) {

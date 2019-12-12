@@ -3,8 +3,7 @@ package com.boclips.users.application
 import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.presentation.requests.UpdateUserRequest
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component
 class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
     fun buildCommands(
         updateUserRequest: UpdateUserRequest,
-        organisation: OrganisationAccount<*>? = null
+        organisation: Account<*>? = null
     ): List<UserUpdateCommand> {
         return listOfNotNull(
             updateUserRequest.firstName?.let { UserUpdateCommand.ReplaceFirstName(firstName = it) },

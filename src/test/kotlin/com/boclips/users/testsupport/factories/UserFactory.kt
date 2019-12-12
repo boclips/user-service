@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.account.OrganisationAccountId
 import java.time.ZonedDateTime
 
 class UserFactory {

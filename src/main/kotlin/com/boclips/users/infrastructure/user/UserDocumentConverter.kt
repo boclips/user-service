@@ -8,7 +8,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.account.OrganisationAccountId
 import com.boclips.users.domain.service.SubjectService
 import java.time.ZoneOffset
 import java.time.ZonedDateTime

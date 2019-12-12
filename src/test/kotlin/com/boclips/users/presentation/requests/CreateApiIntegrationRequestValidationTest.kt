@@ -1,7 +1,6 @@
 package com.boclips.users.presentation.requests
 
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import javax.validation.Validation
@@ -11,7 +10,7 @@ class CreateApiIntegrationRequestValidationTest {
     @BeforeEach
     fun setupValidator() {
         validator = Validation.buildDefaultValidatorFactory().validator
-        request = CreateOrganisationRequest().apply {
+        request = CreateAccountRequest().apply {
             name = "Test Name"
             role = "ROLE_TEST_NAME"
         }
@@ -63,5 +62,5 @@ class CreateApiIntegrationRequestValidationTest {
     }
 
     lateinit var validator: Validator
-    lateinit var request: CreateOrganisationRequest
+    lateinit var request: CreateAccountRequest
 }

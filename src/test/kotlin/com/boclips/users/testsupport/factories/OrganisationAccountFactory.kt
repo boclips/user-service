@@ -1,13 +1,13 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.organisation.OrganisationAccountType
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.account.ApiIntegration
+import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.account.Organisation
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import org.bson.types.ObjectId
@@ -17,12 +17,12 @@ class OrganisationAccountFactory {
     companion object {
         fun sample(
             id: OrganisationAccountId = OrganisationAccountId(value = ObjectId().toHexString()),
-            type: OrganisationAccountType = OrganisationAccountType.STANDARD,
+            type: AccountType = AccountType.STANDARD,
             contractIds: List<ContractId> = emptyList(),
             organisation: Organisation = OrganisationFactory.school(),
             accessExpiresOn: ZonedDateTime? = null
-        ): OrganisationAccount<*> {
-            return OrganisationAccount(
+        ): Account<*> {
+            return Account(
                 id = id,
                 type = type,
                 contractIds = contractIds,
@@ -42,7 +42,7 @@ class OrganisationFactory {
             countryName: String? = null,
             postCode: String? = null,
             state: State = State.fromCode("IL"),
-            district: OrganisationAccount<District>? = null
+            district: Account<District>? = null
             ): School {
             return School(
                 name = name,

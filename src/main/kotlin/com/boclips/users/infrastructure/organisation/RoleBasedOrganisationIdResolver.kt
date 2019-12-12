@@ -1,10 +1,10 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.service.OrganisationAccountRepository
+import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 
-class RoleBasedOrganisationIdResolver(private val organisationAccountRepository: OrganisationAccountRepository) :
+class RoleBasedOrganisationIdResolver(private val accountRepository: AccountRepository) :
     OrganisationIdResolver {
     override fun resolve(roles: List<String>): OrganisationAccountId? {
         if (roles.isEmpty()) {
@@ -12,7 +12,7 @@ class RoleBasedOrganisationIdResolver(private val organisationAccountRepository:
         }
 
         for (role in roles) {
-            val organisation = organisationAccountRepository.findApiIntegrationByRole(role)
+            val organisation = accountRepository.findApiIntegrationByRole(role)
             if (organisation != null) {
                 return organisation.id
             } else if (role == KeycloakWrapper.TEACHER_ROLE) {

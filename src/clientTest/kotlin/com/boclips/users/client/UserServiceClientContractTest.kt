@@ -13,11 +13,11 @@ import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Co
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.VideoId
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.organisation.OrganisationAccountType
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.account.Organisation
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.factories.ContractFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -99,10 +99,10 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     abstract fun insertTestOrganisation(
         name: String,
         contracts: List<DomainContract> = emptyList()
-    ): OrganisationAccount<*>
+    ): Account<*>
 
     abstract fun insertTestUser(
-        organisation: OrganisationAccount<*>,
+        organisation: Account<*>,
         subjectId: String = "1",
         shareCode: String = "test"
     ): User
@@ -125,11 +125,11 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
     override fun insertTestOrganisation(
         name: String,
         contracts: List<DomainContract>
-    ): OrganisationAccount<*> {
+    ): Account<*> {
         return saveOrganisationWithContractDetails(name, contracts.toList())
     }
 
-    override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String, shareCode: String): User {
+    override fun insertTestUser(organisation: Account<*>, subjectId: String, shareCode: String): User {
         subjectService.addSubject(com.boclips.users.domain.model.Subject(id = SubjectId(subjectId), name = subjectId))
 
         val user = UserFactory.sample(
@@ -166,7 +166,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
     override fun insertTestOrganisation(
         name: String,
         contracts: List<DomainContract>
-    ): OrganisationAccount<*> {
+    ): Account<*> {
         contracts.map { domainContract ->
             when (domainContract) {
                 is DomainContract.SelectedCollections -> SelectedCollectionsContract().apply {
@@ -184,16 +184,16 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
 
         val organisation: Organisation =
             School(name, Country.usa(), state = null, district = null, externalId = null)
-        return OrganisationAccount(
+        return Account(
             id = OrganisationAccountId(name),
-            type = OrganisationAccountType.STANDARD,
+            type = AccountType.STANDARD,
             contractIds = emptyList(),
             organisation = organisation,
             accessExpiresOn = null
         )
     }
 
-    override fun insertTestUser(organisation: OrganisationAccount<*>, subjectId: String, shareCode: String): User {
+    override fun insertTestUser(organisation: Account<*>, subjectId: String, shareCode: String): User {
         return (client as FakeUserServiceClient).addUser(
             User(
                 "idontcare",

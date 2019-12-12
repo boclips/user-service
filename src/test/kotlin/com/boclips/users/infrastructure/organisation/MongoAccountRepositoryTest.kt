@@ -1,12 +1,12 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.organisation.OrganisationAccountType
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.service.OrganisationAccountExpiresOnUpdate
-import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
+import com.boclips.users.domain.service.AccountExpiresOnUpdate
+import com.boclips.users.domain.service.AccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.domain.Page
 import java.time.ZonedDateTime
 
-class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
+class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists an organisation`() {
@@ -22,45 +22,45 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
         val contractIds = listOf(ContractId("Contract A"), ContractId("Contract B"))
 
-        val organisationAccount = organisationAccountRepository.save(
+        val organisationAccount = accountRepository.save(
             apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
             contractIds = contractIds
         )
 
         assertThat(organisationAccount.id).isNotNull
-        assertThat(organisationAccount.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(organisationAccount.type).isEqualTo(AccountType.STANDARD)
         assertThat(organisationAccount.organisation.name).isEqualTo(organisationName)
         assertThat(organisationAccount.contractIds).isEqualTo(contractIds)
     }
 
     @Test
     fun `persists a school with an existing district`() {
-        val district = organisationAccountRepository.save(
+        val district = accountRepository.save(
             OrganisationFactory.district(name = "good stuff")
         )
-        val school = organisationAccountRepository.save(
+        val school = accountRepository.save(
             OrganisationFactory.school(district = district, postCode = "12345")
         )
-        val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
+        val fetchedSchool = accountRepository.findSchoolById(school.id)
 
         assertThat(fetchedSchool?.id).isNotNull
-        assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchool?.type).isEqualTo(AccountType.STANDARD)
         assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
         assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
-        assertThat(fetchedSchool?.organisation?.district?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchool?.organisation?.district?.type).isEqualTo(AccountType.STANDARD)
         assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
     }
 
     @Test
     fun `persists a school with an expiry date`() {
         val accessExpiresOn = ZonedDateTime.now().plusDays(1)
-        val school = organisationAccountRepository.save(
+        val school = accountRepository.save(
             school = OrganisationFactory.school(postCode = "12345"), accessExpiresOn = accessExpiresOn
         )
-        val fetchedSchool = organisationAccountRepository.findSchoolById(school.id)
+        val fetchedSchool = accountRepository.findSchoolById(school.id)
 
         assertThat(fetchedSchool?.id).isNotNull
-        assertThat(fetchedSchool?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchool?.type).isEqualTo(AccountType.STANDARD)
         assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
         assertThat(fetchedSchool?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
@@ -68,16 +68,16 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `persists the expiry date from the parent organisation`() {
         val accessExpiresOn = ZonedDateTime.now().plusDays(1)
-        val district = organisationAccountRepository.save(
+        val district = accountRepository.save(
             district = OrganisationFactory.district(name = "good stuff"), accessExpiresOn = accessExpiresOn
         )
-        val school = organisationAccountRepository.save(
+        val school = accountRepository.save(
             school = OrganisationFactory.school(district = district, postCode = "12345")
         )
-        val fetchedSchoolAccount = organisationAccountRepository.findSchoolById(school.id)
+        val fetchedSchoolAccount = accountRepository.findSchoolById(school.id)
 
         assertThat(fetchedSchoolAccount?.id).isNotNull
-        assertThat(fetchedSchoolAccount?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(fetchedSchoolAccount?.type).isEqualTo(AccountType.STANDARD)
         assertThat(fetchedSchoolAccount?.organisation?.postcode).isEqualTo("12345")
         assertThat(fetchedSchoolAccount?.organisation?.district?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
@@ -85,41 +85,41 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `looks up an organisation by associated role`() {
         val role = "ROLE_VIEWSONIC"
-        val organisation = organisationAccountRepository.save(
+        val organisation = accountRepository.save(
             apiIntegration = OrganisationFactory.apiIntegration(),
             role = role
         )
 
-        val foundOrganisation = organisationAccountRepository.findApiIntegrationByRole(role)
+        val foundOrganisation = accountRepository.findApiIntegrationByRole(role)
         assertThat(organisation).isEqualTo(foundOrganisation)
     }
 
     @Test
     fun `looks up an organisation by id`() {
         val organisation =
-            organisationAccountRepository.save(apiIntegration = OrganisationFactory.apiIntegration())
+            accountRepository.save(apiIntegration = OrganisationFactory.apiIntegration())
 
-        val foundOrganisation = organisationAccountRepository.findOrganisationAccountById(organisation.id)
+        val foundOrganisation = accountRepository.findOrganisationAccountById(organisation.id)
 
         assertThat(organisation).isEqualTo(foundOrganisation)
     }
 
     @Test
     fun `looks up schools by name and country`() {
-        val correctSchool = organisationAccountRepository.save(
+        val correctSchool = accountRepository.save(
             OrganisationFactory.school(name = "Some School", countryName = "GBR")
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             apiIntegration = OrganisationFactory.apiIntegration(name = "Some School")
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.school(name = "Some School", countryName = "POL")
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.school(name = "Another one", countryName = "GBR")
         )
 
-        val schools = organisationAccountRepository.lookupSchools(
+        val schools = accountRepository.lookupSchools(
             schoolName = "school",
             countryCode = "GBR"
         )
@@ -130,54 +130,54 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `looks up an api integration by name`() {
-        val organisation = organisationAccountRepository.save(
+        val organisation = accountRepository.save(
             apiIntegration = OrganisationFactory.apiIntegration(name = "api-name")
         )
 
-        val retrievedOrganisation = organisationAccountRepository.findApiIntegrationByName(name = "api-name")
+        val retrievedOrganisation = accountRepository.findApiIntegrationByName(name = "api-name")
 
         assertThat(organisation).isEqualTo(retrievedOrganisation)
     }
 
     @Test
     fun `find school by external id`() {
-        val school = organisationAccountRepository.save(
+        val school = accountRepository.save(
             school = OrganisationFactory.school(externalId = "external-id")
         )
 
-        val retrievedOrganisation = organisationAccountRepository.findOrganisationAccountByExternalId("external-id")
+        val retrievedOrganisation = accountRepository.findOrganisationAccountByExternalId("external-id")
 
         assertThat(school).isEqualTo(retrievedOrganisation)
     }
 
     @Test
     fun `find schools`() {
-        val school = organisationAccountRepository.save(OrganisationFactory.school())
-        organisationAccountRepository.save(OrganisationFactory.district())
-        organisationAccountRepository.save(OrganisationFactory.apiIntegration())
+        val school = accountRepository.save(OrganisationFactory.school())
+        accountRepository.save(OrganisationFactory.district())
+        accountRepository.save(OrganisationFactory.apiIntegration())
 
-        val allSchools = organisationAccountRepository.findSchools()
+        val allSchools = accountRepository.findSchools()
 
         assertThat(allSchools).containsExactlyInAnyOrder(school)
     }
 
     @Test
     fun `account type update`() {
-        val organisation = organisationAccountRepository.save(OrganisationFactory.district())
+        val organisation = accountRepository.save(OrganisationFactory.district())
 
-        assertThat(organisation.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(organisation.type).isEqualTo(AccountType.STANDARD)
 
-        val updatedOrganisation = organisationAccountRepository.update(
-            OrganisationAccountTypeUpdate(
+        val updatedOrganisation = accountRepository.update(
+            AccountTypeUpdate(
                 id = organisation.id,
-                type = OrganisationAccountType.DESIGN_PARTNER
+                type = AccountType.DESIGN_PARTNER
             )
         )
 
         assertThat(updatedOrganisation).isNotNull
-        assertThat(updatedOrganisation?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
-        assertThat(organisationAccountRepository.findOrganisationAccountById(organisation.id)?.type).isEqualTo(
-            OrganisationAccountType.DESIGN_PARTNER
+        assertThat(updatedOrganisation?.type).isEqualTo(AccountType.DESIGN_PARTNER)
+        assertThat(accountRepository.findOrganisationAccountById(organisation.id)?.type).isEqualTo(
+            AccountType.DESIGN_PARTNER
         )
     }
 
@@ -185,10 +185,10 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
     fun `account access expiry update`() {
         val oldExpiry = ZonedDateTime.now()
         val newExpiry = ZonedDateTime.now().plusWeeks(2)
-        val organisation = organisationAccountRepository.save(OrganisationFactory.school(), accessExpiresOn = oldExpiry)
+        val organisation = accountRepository.save(OrganisationFactory.school(), accessExpiresOn = oldExpiry)
 
-        val updatedOrganisation = organisationAccountRepository.update(
-            OrganisationAccountExpiresOnUpdate(
+        val updatedOrganisation = accountRepository.update(
+            AccountExpiresOnUpdate(
                 id = organisation.id,
                 accessExpiresOn = newExpiry
             )
@@ -199,10 +199,10 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `update returns null when organisation not found`() {
-        val updatedOrganisation = organisationAccountRepository.update(
-            OrganisationAccountTypeUpdate(
+        val updatedOrganisation = accountRepository.update(
+            AccountTypeUpdate(
                 id = OrganisationAccountId("doesnotexist"),
-                type = OrganisationAccountType.DESIGN_PARTNER
+                type = AccountType.DESIGN_PARTNER
             )
         )
         assertThat(updatedOrganisation).isNull()
@@ -210,67 +210,67 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `find organisations by parent id`() {
-        val district = organisationAccountRepository.save(OrganisationFactory.district())
-        organisationAccountRepository.save(OrganisationFactory.school(district = district))
-        organisationAccountRepository.save(OrganisationFactory.school(district = null))
-        organisationAccountRepository.save(OrganisationFactory.school(district = null))
+        val district = accountRepository.save(OrganisationFactory.district())
+        accountRepository.save(OrganisationFactory.school(district = district))
+        accountRepository.save(OrganisationFactory.school(district = null))
+        accountRepository.save(OrganisationFactory.school(district = null))
 
-        assertThat(organisationAccountRepository.findSchools()).hasSize(3)
-        assertThat(organisationAccountRepository.findOrganisationAccountsByParentId(district.id)).hasSize(1)
+        assertThat(accountRepository.findSchools()).hasSize(3)
+        assertThat(accountRepository.findOrganisationAccountsByParentId(district.id)).hasSize(1)
     }
 
     @Test
     fun `find independent schools and districts by country code`() {
-        val district = organisationAccountRepository.save(OrganisationFactory.district())
-        val school = organisationAccountRepository.save(
+        val district = accountRepository.save(OrganisationFactory.district())
+        val school = accountRepository.save(
             OrganisationFactory.school(
                 district = null,
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
 
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.school(
                 district = district,
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
 
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.school(
                 district = null,
                 country = Country.fromCode("GBR")
             )
         )
 
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.apiIntegration(
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
 
-        val searchRequestUSA = OrganisationSearchRequest(
+        val searchRequestUSA = AccountSearchRequest(
             countryCode = Country.USA_ISO,
             page = 0,
             size = 10
         )
         val independentOrganisations =
-            organisationAccountRepository.findIndependentSchoolsAndDistricts(searchRequestUSA)
+            accountRepository.findIndependentSchoolsAndDistricts(searchRequestUSA)
         assertThat(independentOrganisations).containsExactly(district, school)
         assertThat(independentOrganisations).hasSize(2)
 
 
-        val searchRequestGBR = OrganisationSearchRequest(
+        val searchRequestGBR = AccountSearchRequest(
             countryCode = "GBR",
             page = 0,
             size = 10
         )
-        assertThat(organisationAccountRepository.findIndependentSchoolsAndDistricts(searchRequestGBR)).hasSize(1)
+        assertThat(accountRepository.findIndependentSchoolsAndDistricts(searchRequestGBR)).hasSize(1)
     }
 
     @Test
     fun `ordering independent organisations by expiry date, then name`() {
-        val schoolOne = organisationAccountRepository.save(
+        val schoolOne = accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolA",
                 district = null,
@@ -279,7 +279,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             ZonedDateTime.now().plusDays(60)
         )
 
-        val schoolTwo = organisationAccountRepository.save(
+        val schoolTwo = accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolB",
                 district = null,
@@ -288,7 +288,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             ZonedDateTime.now().plusDays(5)
         )
 
-        val schoolThree = organisationAccountRepository.save(
+        val schoolThree = accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolC",
                 district = null,
@@ -297,14 +297,14 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             ZonedDateTime.now().plusDays(10)
         )
 
-        val schoolSix = organisationAccountRepository.save(
+        val schoolSix = accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolF",
                 district = null,
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
-        val schoolFour = organisationAccountRepository.save(
+        val schoolFour = accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolE",
                 district = null,
@@ -312,27 +312,27 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val schoolFive = organisationAccountRepository.save(
+        val schoolFive = accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolD",
                 district = null,
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
-        val searchRequest = OrganisationSearchRequest(
+        val searchRequest = AccountSearchRequest(
             countryCode = Country.USA_ISO,
             page = 0,
             size = 6
         )
 
-        val independentOrganisations: Page<OrganisationAccount<*>>? =
-            organisationAccountRepository.findIndependentSchoolsAndDistricts(searchRequest)
+        val independentOrganisations: Page<Account<*>>? =
+            accountRepository.findIndependentSchoolsAndDistricts(searchRequest)
         assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree, schoolTwo, schoolFive, schoolFour, schoolSix)
     }
 
     @Test
     fun `it paginates and orders independent organisations by expiry date, then name`() {
-        val schoolOne = organisationAccountRepository.save(
+        val schoolOne = accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolA",
                 district = null,
@@ -341,7 +341,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             ZonedDateTime.now().plusDays(60)
         )
 
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolB",
                 district = null,
@@ -350,7 +350,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             ZonedDateTime.now().plusDays(5)
         )
 
-        val schoolThree = organisationAccountRepository.save(
+        val schoolThree = accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolC",
                 district = null,
@@ -359,14 +359,14 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             ZonedDateTime.now().plusDays(10)
         )
 
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolF",
                 district = null,
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolE",
                 district = null,
@@ -374,7 +374,7 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        organisationAccountRepository.save(
+        accountRepository.save(
             OrganisationFactory.school(
                 name = "schoolD",
                 district = null,
@@ -382,13 +382,13 @@ class MongoOrganisationAccountRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val searchRequest = OrganisationSearchRequest(
+        val searchRequest = AccountSearchRequest(
             countryCode = Country.USA_ISO,
             page = 0,
             size = 2
         )
 
-        val independentOrganisations: Page<OrganisationAccount<*>>? = organisationAccountRepository.findIndependentSchoolsAndDistricts(searchRequest)
+        val independentOrganisations: Page<Account<*>>? = accountRepository.findIndependentSchoolsAndDistricts(searchRequest)
         assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree)
         assertThat(independentOrganisations!!.totalPages).isEqualTo(3)
         assertThat(independentOrganisations.totalElements).isEqualTo(6)

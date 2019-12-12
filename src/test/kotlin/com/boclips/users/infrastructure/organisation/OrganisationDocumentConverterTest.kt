@@ -1,10 +1,10 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.OrganisationAccountType
-import com.boclips.users.domain.model.organisation.OrganisationType
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.OrganisationType
+import com.boclips.users.domain.model.account.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -27,7 +27,7 @@ class OrganisationDocumentConverterTest {
         val organisationAccount = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
         assertThat(organisationAccount.id.value).isEqualTo(organisationDocument.id!!)
-        assertThat(organisationAccount.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(organisationAccount.type).isEqualTo(AccountType.STANDARD)
         assertThat(organisationAccount.contractIds).containsExactly(ContractId("A"), ContractId("B"))
         assertThat(organisationAccount.organisation).isInstanceOf(School::class.java)
 
@@ -60,9 +60,9 @@ class OrganisationDocumentConverterTest {
 
         val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
-        assertThat(school.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat(school.type).isEqualTo(AccountType.STANDARD)
         assertThat(school.organisation).isInstanceOf(School::class.java)
-        assertThat((school.organisation as School).district?.type).isEqualTo(OrganisationAccountType.STANDARD)
+        assertThat((school.organisation as School).district?.type).isEqualTo(AccountType.STANDARD)
         assertThat((school.organisation as School).district?.organisation).isInstanceOf(District::class.java)
     }
 
@@ -75,15 +75,15 @@ class OrganisationDocumentConverterTest {
             accountType = null,
             parentOrganisation = OrganisationDocumentFactory.sample(
                 type = OrganisationType.DISTRICT,
-                accountType = OrganisationAccountType.DESIGN_PARTNER,
+                accountType = AccountType.DESIGN_PARTNER,
                 accessExpiresOn = accessExpiresOn
             )
         )
 
         val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
-        assertThat(school.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
-        assertThat((school.organisation as School).district?.type).isEqualTo(OrganisationAccountType.DESIGN_PARTNER)
+        assertThat(school.type).isEqualTo(AccountType.DESIGN_PARTNER)
+        assertThat((school.organisation as School).district?.type).isEqualTo(AccountType.DESIGN_PARTNER)
         assertThat((school.organisation as School).district?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 }

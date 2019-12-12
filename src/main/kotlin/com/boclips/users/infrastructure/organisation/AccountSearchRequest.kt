@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
-data class OrganisationSearchRequest(
+data class AccountSearchRequest(
     val countryCode: String,
     val page: Int?,
     val size: Int?

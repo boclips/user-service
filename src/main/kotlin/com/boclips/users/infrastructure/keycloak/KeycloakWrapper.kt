@@ -23,7 +23,7 @@ open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize:
             if (currentPage > maxPages) return@generateSequence null
 
             logger.info { "Fetching users page [$currentPage]" }
-            val sequenceOfUsers = keycloak
+            val sequenceOfUsers: MutableList<UserRepresentation> = keycloak
                 .realm(REALM)
                 .users()
                 .list(currentPage * pageSize, pageSize)

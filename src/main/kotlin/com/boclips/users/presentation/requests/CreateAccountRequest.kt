@@ -2,7 +2,7 @@ package com.boclips.users.presentation.requests
 
 import javax.validation.constraints.NotEmpty
 
-class CreateOrganisationRequest {
+class CreateAccountRequest {
     @field:NotEmpty
     var name: String? = null
     @field:NotEmpty

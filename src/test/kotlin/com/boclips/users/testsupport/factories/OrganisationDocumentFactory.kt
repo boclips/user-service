@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.organisation.OrganisationAccountType
-import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import org.bson.types.ObjectId
@@ -15,7 +15,7 @@ class OrganisationDocumentFactory {
             role: String? = null,
             contractIds: List<String> = emptyList(),
             type: OrganisationType = OrganisationType.SCHOOL,
-            accountType: OrganisationAccountType? = null,
+            accountType: AccountType? = null,
             externalId: String? = "external-id",
             country: LocationDocument? = LocationDocumentFactory.country(),
             state: LocationDocument? = LocationDocumentFactory.state(),

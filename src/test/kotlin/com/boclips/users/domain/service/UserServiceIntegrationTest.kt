@@ -19,7 +19,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can find all teachers`() {
         val organisation =
-            organisationAccountRepository.save(OrganisationFactory.school())
+            accountRepository.save(OrganisationFactory.school())
         val apiOrganisation =
             saveApiIntegration(organisation = OrganisationFactory.apiIntegration())
 

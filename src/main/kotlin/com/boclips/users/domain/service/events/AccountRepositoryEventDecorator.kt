@@ -2,19 +2,19 @@ package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.service.OrganisationAccountRepository
-import com.boclips.users.domain.service.OrganisationAccountUpdate
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.service.AccountRepository
+import com.boclips.users.domain.service.AccountUpdate
 import com.boclips.users.domain.service.UserRepository
 
-class OrganisationAccountRepositoryEventDecorator(
-    private val repository: OrganisationAccountRepository,
+class AccountRepositoryEventDecorator(
+    private val repository: AccountRepository,
     private val userRepository: UserRepository,
     private val eventConverter: EventConverter,
     private val eventBus: EventBus
-) : OrganisationAccountRepository by repository {
+) : AccountRepository by repository {
 
-    override fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>? {
+    override fun update(update: AccountUpdate): Account<*>? {
         val updatedOrganisation = repository.update(update) ?: return null
 
         val childOrganisations = repository.findOrganisationAccountsByParentId(update.id) + updatedOrganisation

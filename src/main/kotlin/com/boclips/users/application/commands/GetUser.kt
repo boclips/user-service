@@ -7,14 +7,14 @@ import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.service.OrganisationAccountRepository
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.stereotype.Component
 
 @Component
 class GetUser(
-    private val organisationAccountRepository: OrganisationAccountRepository,
+    private val accountRepository: AccountRepository,
     private val userConverter: UserConverter,
     private val getOrImportUser: GetOrImportUser
 ) {
@@ -28,9 +28,9 @@ class GetUser(
         val userId = UserId(value = requestedUserId)
 
         val user = getOrImportUser(userId)
-        val organisationAccount: OrganisationAccount<*>? =
-            user.organisationAccountId?.let { organisationAccountRepository.findOrganisationAccountById(it) }
+        val account: Account<*>? =
+            user.organisationAccountId?.let { accountRepository.findOrganisationAccountById(it) }
 
-        return userConverter.toUserResource(user, organisationAccount)
+        return userConverter.toUserResource(user, account)
     }
 }

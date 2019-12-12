@@ -4,12 +4,12 @@ import com.boclips.eventbus.domain.Subject
 import com.boclips.eventbus.domain.SubjectId
 import com.boclips.eventbus.domain.user.Organisation
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.service.OrganisationAccountRepository
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.School
+import com.boclips.users.domain.service.AccountRepository
 
 class EventConverter(
-    private val organisationAccountRepository: OrganisationAccountRepository
+    private val accountRepository: AccountRepository
 ) {
 
     fun toEventUser(user: User): com.boclips.eventbus.domain.user.User {
@@ -27,11 +27,11 @@ class EventConverter(
 
     private fun toEventOrganisation(user: User): Organisation? {
         val organisationId = user.organisationAccountId ?: return null
-        val account = organisationAccountRepository.findOrganisationAccountById(organisationId) ?: return null
+        val account = accountRepository.findOrganisationAccountById(organisationId) ?: return null
         return toEventOrganisation(account)
     }
 
-    private fun toEventOrganisation(account: OrganisationAccount<*>): Organisation {
+    private fun toEventOrganisation(account: Account<*>): Organisation {
         val parent = parentOrganisation(account.organisation)
         return Organisation.builder()
             .id(account.id.value)
@@ -43,7 +43,7 @@ class EventConverter(
             .build()
     }
 
-    private fun parentOrganisation(organisation: com.boclips.users.domain.model.organisation.Organisation): Organisation? {
+    private fun parentOrganisation(organisation: com.boclips.users.domain.model.account.Organisation): Organisation? {
         return when (organisation) {
             is School -> organisation.district?.let(this::toEventOrganisation)
             else -> null

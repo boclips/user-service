@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.account.OrganisationAccountId
 import java.time.ZonedDateTime
 
 sealed class UserUpdateCommand {

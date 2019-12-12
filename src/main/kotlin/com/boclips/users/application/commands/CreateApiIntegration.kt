@@ -1,21 +1,21 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.application.exceptions.OrganisationAlreadyExistsException
+import com.boclips.users.application.exceptions.AccountAlreadyExistsException
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.service.OrganisationAccountRepository
-import com.boclips.users.presentation.requests.CreateOrganisationRequest
+import com.boclips.users.domain.model.account.ApiIntegration
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.service.AccountRepository
+import com.boclips.users.presentation.requests.CreateAccountRequest
 import org.springframework.stereotype.Service
 
 @Service
 class CreateApiIntegration(
-    private val organisationRepository: OrganisationAccountRepository
+    private val repository: AccountRepository
 ) {
-    operator fun invoke(request: CreateOrganisationRequest): OrganisationAccount<ApiIntegration> {
+    operator fun invoke(request: CreateAccountRequest): Account<ApiIntegration> {
         assertNewApiIntegrationDoesNotCollide(request)
 
-        return organisationRepository.save(
+        return repository.save(
             apiIntegration = ApiIntegration(
                 name = request.name!!
             ),
@@ -24,12 +24,12 @@ class CreateApiIntegration(
         )
     }
 
-    private fun assertNewApiIntegrationDoesNotCollide(request: CreateOrganisationRequest) {
-        organisationRepository.findApiIntegrationByName(request.name!!)?.let {
-            throw OrganisationAlreadyExistsException(request.name!!)
+    private fun assertNewApiIntegrationDoesNotCollide(request: CreateAccountRequest) {
+        repository.findApiIntegrationByName(request.name!!)?.let {
+            throw AccountAlreadyExistsException(request.name!!)
         }
-        organisationRepository.findApiIntegrationByRole(request.role!!)?.let {
-            throw OrganisationAlreadyExistsException(request.role!!)
+        repository.findApiIntegrationByRole(request.role!!)?.let {
+            throw AccountAlreadyExistsException(request.role!!)
         }
     }
 }

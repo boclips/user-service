@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Account
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.account.OrganisationAccountId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant

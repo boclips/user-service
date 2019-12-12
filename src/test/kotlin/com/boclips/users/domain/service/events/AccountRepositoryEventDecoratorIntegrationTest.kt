@@ -1,8 +1,8 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.organisation.OrganisationAccountType
-import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
+import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.service.AccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.assertj.core.api.Assertions.assertThat
 
-class OrganisationAccountRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTest() {
+class AccountRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
-    lateinit var repository: OrganisationAccountRepositoryEventDecorator
+    lateinit var repository: AccountRepositoryEventDecorator
 
     @Test
     fun `user updated events are dispatched when district is updated`() {
@@ -25,9 +25,9 @@ class OrganisationAccountRepositoryEventDecoratorIntegrationTest : AbstractSprin
         saveUser(UserFactory.sample(organisationAccountId = null, account = AccountFactory.sample("u3")))
 
         repository.update(
-            OrganisationAccountTypeUpdate(
+            AccountTypeUpdate(
                 district.id,
-                OrganisationAccountType.DESIGN_PARTNER
+                AccountType.DESIGN_PARTNER
             )
         )
 
@@ -43,9 +43,9 @@ class OrganisationAccountRepositoryEventDecoratorIntegrationTest : AbstractSprin
         saveUser(UserFactory.sample(organisationAccountId = null, account = AccountFactory.sample("u3")))
 
         repository.update(
-            OrganisationAccountTypeUpdate(
+            AccountTypeUpdate(
                 school.id,
-                OrganisationAccountType.DESIGN_PARTNER
+                AccountType.DESIGN_PARTNER
             )
         )
 

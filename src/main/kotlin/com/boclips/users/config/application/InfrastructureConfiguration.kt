@@ -14,7 +14,7 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
-import com.boclips.users.infrastructure.organisation.MongoOrganisationAccountRepository
+import com.boclips.users.infrastructure.organisation.MongoAccountRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.organisation.OrganisationSpringDataRepository
 import com.boclips.users.infrastructure.organisation.RoleBasedOrganisationIdResolver
@@ -142,8 +142,8 @@ class InfrastructureConfiguration(
     @Bean
     fun mongoOrganisationAccountRepository(
 
-    ): MongoOrganisationAccountRepository {
-        return MongoOrganisationAccountRepository(
+    ): MongoAccountRepository {
+        return MongoAccountRepository(
             repository = organisationSpringDataRepository
         )
     }

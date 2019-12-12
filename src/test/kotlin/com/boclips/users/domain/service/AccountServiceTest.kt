@@ -5,15 +5,15 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class OrganisationServiceTest: AbstractSpringIntegrationTest() {
+class AccountServiceTest: AbstractSpringIntegrationTest() {
 
     @Test
     fun `when school and district already exists delegates on DB`() {
-        val district = organisationAccountRepository.save(OrganisationFactory.district())
+        val district = accountRepository.save(OrganisationFactory.district())
         val originalSchool = OrganisationFactory.school(externalId = "external-school-id", district = district)
-        organisationAccountRepository.save(originalSchool)
+        accountRepository.save(originalSchool)
 
-        val school = organisationService.findOrCreateSchooldiggerSchool("external-school-id")
+        val school = accountService.findOrCreateSchooldiggerSchool("external-school-id")
 
         assertThat(school?.organisation).isEqualTo(originalSchool)
         assertThat(fakeAmericanSchoolsProvider.callCount()).isEqualTo(0)
@@ -22,16 +22,16 @@ class OrganisationServiceTest: AbstractSpringIntegrationTest() {
     @Test
     fun `existing district new school searches them first time only and links both`() {
         val district = OrganisationFactory.district(externalId = "external-district-id")
-        val districtAccount = organisationAccountRepository.save(district)
+        val districtAccount = accountRepository.save(district)
         val expectedSchool = OrganisationFactory.school(
                 externalId = "external-school-id",
                 district = districtAccount
         )
         fakeAmericanSchoolsProvider.createSchoolAndDistrict(expectedSchool.copy(district = null) to district)
 
-        val schoolAccount = organisationService.findOrCreateSchooldiggerSchool("external-school-id")!!
+        val schoolAccount = accountService.findOrCreateSchooldiggerSchool("external-school-id")!!
 
-        assertThat(schoolAccount).isEqualTo(organisationService.findOrCreateSchooldiggerSchool("external-school-id"))
+        assertThat(schoolAccount).isEqualTo(accountService.findOrCreateSchooldiggerSchool("external-school-id"))
         assertThat(schoolAccount.organisation).isEqualTo(expectedSchool)
         assertThat(schoolAccount.organisation.district).isEqualTo(districtAccount)
         assertThat(fakeAmericanSchoolsProvider.callCount()).isEqualTo(1)
@@ -43,9 +43,9 @@ class OrganisationServiceTest: AbstractSpringIntegrationTest() {
         val school = OrganisationFactory.school(externalId = "external-school-id")
         fakeAmericanSchoolsProvider.createSchoolAndDistrict(school to district)
 
-        val schoolAccount = organisationService.findOrCreateSchooldiggerSchool("external-school-id")!!
+        val schoolAccount = accountService.findOrCreateSchooldiggerSchool("external-school-id")!!
 
-        assertThat(schoolAccount).isEqualTo(organisationService.findOrCreateSchooldiggerSchool("external-school-id"))
+        assertThat(schoolAccount).isEqualTo(accountService.findOrCreateSchooldiggerSchool("external-school-id"))
         assertThat(schoolAccount.organisation.externalId).isEqualTo("external-school-id")
         assertThat(schoolAccount.organisation.district?.organisation).isEqualTo(district)
         assertThat(fakeAmericanSchoolsProvider.callCount()).isEqualTo(1)
@@ -55,7 +55,7 @@ class OrganisationServiceTest: AbstractSpringIntegrationTest() {
     fun `when american school provider cannot find school returns null`() {
         fakeAmericanSchoolsProvider.createSchoolAndDistrict(null)
 
-        val schoolAccount = organisationService.findOrCreateSchooldiggerSchool("external-school-id")
+        val schoolAccount = accountService.findOrCreateSchooldiggerSchool("external-school-id")
 
         assertThat(schoolAccount).isNull()
     }

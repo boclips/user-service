@@ -2,30 +2,30 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.presentation.controllers.OrganisationController
-import com.boclips.users.presentation.controllers.OrganisationTestSupportController
+import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.presentation.controllers.AccountController
+import com.boclips.users.presentation.controllers.AccountTestSupportController
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
 import org.springframework.stereotype.Component
 
 @Component
-class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsBuilderFactory) {
+class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsBuilderFactory) {
     fun self(id: OrganisationAccountId): Link {
         return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(OrganisationTestSupportController::class.java).fetchOrganisationById(id.value)
+            ControllerLinkBuilder.methodOn(AccountTestSupportController::class.java).fetchOrganisationById(id.value)
         ).withSelfRel()
     }
 
     fun edit(id: OrganisationAccountId): Link {
         return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(OrganisationController::class.java).updateAnOrganisation(id.value, null)
+            ControllerLinkBuilder.methodOn(AccountController::class.java).updateAnAccount(id.value, null)
         ).withRel("edit")
     }
 
     fun getSchoolLink(countryId: String?): Link? {
         return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(OrganisationController::class.java).searchSchools(
+            ControllerLinkBuilder.methodOn(AccountController::class.java).searchSchools(
                 countryCode = countryId,
                 query = null,
                 state = null
@@ -37,10 +37,10 @@ class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriCompon
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
             Link(
                 uriComponentsBuilderFactory.getInstance()
-                    .replacePath("/v1/independent-organisations")
+                    .replacePath("/v1/independent-accounts")
                     .replaceQueryParams(null)
                     .toUriString() + "{?countryCode,page,size}",
-                "independentOrganisations"
+                "independentAccounts"
             )
         } else {
             null

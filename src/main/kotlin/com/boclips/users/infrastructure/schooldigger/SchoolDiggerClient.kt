@@ -1,8 +1,8 @@
 package com.boclips.users.infrastructure.schooldigger
 
 import com.boclips.users.domain.model.LookupEntry
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.AmericanSchoolsProvider

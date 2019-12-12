@@ -10,16 +10,15 @@ import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.contract.VideoId
-import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.account.ApiIntegration
+import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.service.AccessService
 import com.boclips.users.domain.service.AccountProvider
 import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.OrganisationAccountRepository
-import com.boclips.users.domain.service.OrganisationService
+import com.boclips.users.domain.service.AccountRepository
+import com.boclips.users.domain.service.AccountService
 import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
@@ -70,7 +69,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var getOrImportUser: GetOrImportUser
 
     @Autowired
-    lateinit var organisationAccountRepository: OrganisationAccountRepository
+    lateinit var accountRepository: AccountRepository
 
     @Autowired
     lateinit var keycloakClientFake: KeycloakClientFake
@@ -118,7 +117,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var userService: UserService
 
     @Autowired
-    lateinit var organisationService: OrganisationService
+    lateinit var accountService: AccountService
 
     @BeforeEach
     fun resetState() {
@@ -162,7 +161,7 @@ abstract class AbstractSpringIntegrationTest {
     fun saveOrganisationWithContractDetails(
         organisationName: String = "Boclips for Teachers",
         contractIds: List<Contract> = emptyList()
-    ): OrganisationAccount<*> {
+    ): com.boclips.users.domain.model.account.Account<*> {
         val organisationContracts = mutableListOf<Contract>()
         contractIds.map {
             when (it) {
@@ -194,8 +193,8 @@ abstract class AbstractSpringIntegrationTest {
         contractIds: List<ContractId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
         organisation: ApiIntegration = OrganisationFactory.apiIntegration()
-    ): OrganisationAccount<ApiIntegration> {
-        return organisationAccountRepository.save(
+    ): com.boclips.users.domain.model.account.Account<ApiIntegration> {
+        return accountRepository.save(
             apiIntegration = organisation,
             contractIds = contractIds,
             role = role
@@ -204,16 +203,16 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveDistrict(
         district: District = OrganisationFactory.district()
-    ): OrganisationAccount<District> {
-        return organisationAccountRepository.save(
+    ): com.boclips.users.domain.model.account.Account<District> {
+        return accountRepository.save(
             district = district
         )
     }
 
     fun saveSchool(
         school: School = OrganisationFactory.school()
-    ): OrganisationAccount<School> {
-        return organisationAccountRepository.save(school = school)
+    ): com.boclips.users.domain.model.account.Account<School> {
+        return accountRepository.save(school = school)
     }
 
     fun saveSelectedCollectionsContract(name: String, collectionIds: List<CollectionId>): Contract.SelectedCollections {

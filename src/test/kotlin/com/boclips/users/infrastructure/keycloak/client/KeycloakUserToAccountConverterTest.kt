@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.account.OrganisationAccountId
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock

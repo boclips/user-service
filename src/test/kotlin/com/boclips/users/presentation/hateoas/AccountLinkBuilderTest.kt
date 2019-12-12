@@ -2,7 +2,7 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.account.OrganisationAccountId
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
@@ -10,43 +10,34 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.util.UriComponentsBuilder
 
-internal class OrganisationLinkBuilderTest {
+internal class AccountLinkBuilderTest {
 
-    lateinit var organisationLinkBuilder: OrganisationLinkBuilder
+    lateinit var accountLinkBuilder: AccountLinkBuilder
     lateinit var uriComponentsBuilderFactory :UriComponentsBuilderFactory
 
     @BeforeEach
     fun setUp() {
         uriComponentsBuilderFactory = mock()
         whenever(uriComponentsBuilderFactory.getInstance()).thenReturn(UriComponentsBuilder.newInstance())
-        organisationLinkBuilder = OrganisationLinkBuilder(uriComponentsBuilderFactory = uriComponentsBuilderFactory)
-    }
-
-    @Test
-    fun `self link for organisation`() {
-        val organisationId = "test-id"
-        val organisationLink = organisationLinkBuilder.self(OrganisationAccountId(organisationId))
-
-        assertThat(organisationLink.rel).isEqualTo("self")
-        assertThat(organisationLink.href).endsWith("/organisations/$organisationId")
+        accountLinkBuilder = AccountLinkBuilder(uriComponentsBuilderFactory = uriComponentsBuilderFactory)
     }
 
     @Test
     fun `edit link for organisation`() {
         val organisationId = "test-id"
-        val organisationLink = organisationLinkBuilder.edit(OrganisationAccountId(organisationId))
+        val organisationLink = accountLinkBuilder.edit(OrganisationAccountId(organisationId))
 
         assertThat(organisationLink.rel).isEqualTo("edit")
-        assertThat(organisationLink.href).endsWith("/organisations/$organisationId")
+        assertThat(organisationLink.href).endsWith("/accounts/$organisationId")
     }
 
     @Test
     fun `expose organisations link`() {
         setSecurityContext("org-viewer", UserRoles.VIEW_ORGANISATIONS)
-        val organisationLink = organisationLinkBuilder.getIndependentOrganisationsLink()
+        val organisationLink = accountLinkBuilder.getIndependentOrganisationsLink()
 
-        assertThat(organisationLink!!.rel).isEqualTo("independentOrganisations")
-        assertThat(organisationLink.href).endsWith("/independent-organisations{?countryCode,page,size}")
+        assertThat(organisationLink!!.rel).isEqualTo("independentAccounts")
+        assertThat(organisationLink.href).endsWith("/independent-accounts{?countryCode,page,size}")
     }
 
     @Test
@@ -55,7 +46,7 @@ internal class OrganisationLinkBuilderTest {
         val totalPages = 4
 
         whenever(uriComponentsBuilderFactory.getInstance()).thenReturn(UriComponentsBuilder.fromHttpUrl("https://localhost/v1?page=${currentPage}"))
-        val nextLink = organisationLinkBuilder.getNextPageLink(currentPage, totalPages)
+        val nextLink = accountLinkBuilder.getNextPageLink(currentPage, totalPages)
 
         assertThat(nextLink).isNotNull
         assertThat(nextLink!!.href).contains("page=1")
@@ -67,12 +58,12 @@ internal class OrganisationLinkBuilderTest {
         val currentPage = 2
         val totalPages = 3
 
-        assertThat(organisationLinkBuilder.getNextPageLink(currentPage, totalPages)).isNull()
+        assertThat(accountLinkBuilder.getNextPageLink(currentPage, totalPages)).isNull()
     }
 
     @Test
     fun `expose school link`() {
-        val schoolLink = organisationLinkBuilder.getSchoolLink("USA")
+        val schoolLink = accountLinkBuilder.getSchoolLink("USA")
 
         assertThat(schoolLink).isNotNull
         assertThat(schoolLink!!.href).endsWith("/schools?countryCode=USA{&query,state}")

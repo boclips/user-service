@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
-class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrationTest() {
+class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class CreatingOrganisations {
         @Test
@@ -57,7 +57,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns a 409 response when organisation name collides`() {
             val organisationName = "Test Org"
-            organisationAccountRepository.save(
+            accountRepository.save(
                 apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
                 contractIds = emptyList(),
                 role = "ROLE_TEST_ORG"
@@ -83,7 +83,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns a 409 response when organisation role collides`() {
             val role = "ROLE_TEST_ORG"
-            organisationAccountRepository.save(
+            accountRepository.save(
                 apiIntegration = OrganisationFactory.apiIntegration(name = "Some name"),
                 contractIds = emptyList(),
                 role = role
@@ -124,7 +124,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `retrieves an organisation account by id`() {
             val organisationName = "Test Org"
-            val organisation = organisationAccountRepository.save(
+            val organisation = accountRepository.save(
                 apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
                 role = "ROLE_TEST_ORG"
@@ -137,7 +137,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
-                .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
+                .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${organisation.id.value}")))
         }
 
         @Test
@@ -178,7 +178,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns given organisation when it's found by name`() {
             val organisationName = "Test Org"
-            val organisation = organisationAccountRepository.save(
+            val organisation = accountRepository.save(
                 apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
                 role = "ROLE_TEST_ORG"
@@ -196,7 +196,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
-                .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
+                .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${organisation.id.value}")))
         }
 
         @Test

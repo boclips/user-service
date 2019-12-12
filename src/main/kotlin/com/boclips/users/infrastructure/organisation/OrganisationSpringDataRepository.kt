@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.account.OrganisationType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.repository.MongoRepository

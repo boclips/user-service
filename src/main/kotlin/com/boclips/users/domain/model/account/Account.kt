@@ -1,19 +1,19 @@
-package com.boclips.users.domain.model.organisation
+package com.boclips.users.domain.model.account
 
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import java.time.ZonedDateTime
 
-data class OrganisationAccount<T: Organisation>(
+data class Account<T: Organisation>(
     val id: OrganisationAccountId,
-    val type: OrganisationAccountType,
+    val type: AccountType,
     val contractIds: List<ContractId>,
     val accessExpiresOn: ZonedDateTime?,
     val organisation: T
 )
 
-enum class OrganisationAccountType {
+enum class AccountType {
     DESIGN_PARTNER,
     STANDARD
 }
@@ -36,7 +36,7 @@ data class School(
     override val country: Country,
     override val state: State? = null,
     override val postcode: String? = null,
-    val district: OrganisationAccount<District>?,
+    val district: Account<District>?,
     val externalId: String?
 ) : Organisation(
     name = name,

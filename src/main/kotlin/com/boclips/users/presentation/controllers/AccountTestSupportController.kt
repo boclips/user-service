@@ -2,12 +2,12 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.commands.CreateApiIntegration
 import com.boclips.users.application.commands.GetApiIntegrationByName
-import com.boclips.users.application.commands.GetOrganisationById
+import com.boclips.users.application.commands.GetAccountById
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
-import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
-import com.boclips.users.presentation.requests.CreateOrganisationRequest
-import com.boclips.users.presentation.resources.converters.OrganisationAccountConverter
-import com.boclips.users.presentation.resources.OrganisationAccountResource
+import com.boclips.users.presentation.hateoas.AccountLinkBuilder
+import com.boclips.users.presentation.requests.CreateAccountRequest
+import com.boclips.users.presentation.resources.converters.AccountConverter
+import com.boclips.users.presentation.resources.AccountResource
 import org.springframework.hateoas.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -27,34 +27,34 @@ import javax.validation.constraints.NotBlank
 @Validated
 @RestController
 @RequestMapping("/v1", "/v1/")
-class OrganisationTestSupportController(
-    private val organisationLinkBuilder: OrganisationLinkBuilder,
+class AccountTestSupportController(
+    private val accountLinkBuilder: AccountLinkBuilder,
     private val createApiIntegration: CreateApiIntegration,
-    private val getOrganisationById: GetOrganisationById,
+    private val getAccountById: GetAccountById,
     private val getApiIntegrationByName: GetApiIntegrationByName,
-    private val organisationAccountConverter: OrganisationAccountConverter
+    private val accountConverter: AccountConverter
 ) {
     @PostMapping("/api-integrations")
-    fun insertApiIntegration(@Valid @RequestBody request: CreateOrganisationRequest): ResponseEntity<Resource<*>> {
+    fun insertApiIntegration(@Valid @RequestBody request: CreateAccountRequest): ResponseEntity<Resource<*>> {
         val createdOrganisation = createApiIntegration(request)
 
         val headers = HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, organisationLinkBuilder.self(createdOrganisation.id).href)
+        headers.set(HttpHeaders.LOCATION, accountLinkBuilder.self(createdOrganisation.id).href)
 
         return ResponseEntity(headers, HttpStatus.CREATED)
     }
 
     @GetMapping("/organisations/{id}")
-    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<OrganisationAccountResource> {
-        val organisation = getOrganisationById(id)
+    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<AccountResource> {
+        val organisation = getAccountById(id)
 
-        return organisationAccountConverter.toResource(organisation)
+        return accountConverter.toResource(organisation)
     }
 
     @GetMapping("/api-integrations")
-    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<OrganisationAccountResource> {
+    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<AccountResource> {
         val apiIntegration = getApiIntegrationByName(name!!)
 
-        return organisationAccountConverter.toResource(apiIntegration)
+        return accountConverter.toResource(apiIntegration)
     }
 }

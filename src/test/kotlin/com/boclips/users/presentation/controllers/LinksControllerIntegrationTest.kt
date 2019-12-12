@@ -87,7 +87,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with profile and organization is set up`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
+        val organisationAccount = accountRepository.save(OrganisationFactory.school())
         userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
@@ -112,7 +112,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered lifetime user`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
+        val organisationAccount = accountRepository.save(OrganisationFactory.school())
         userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
@@ -131,7 +131,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with an unexpired access period`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
+        val organisationAccount = accountRepository.save(OrganisationFactory.school())
         userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
@@ -150,7 +150,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with an expired access period`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = organisationAccountRepository.save(OrganisationFactory.school())
+        val organisationAccount = accountRepository.save(OrganisationFactory.school())
         userRepository.create(
             UserFactory.sample(
                 account = AccountFactory.sample(id = "a-user-id"),
@@ -194,9 +194,9 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `user with VIEW_ORGANISATIONS role`() {
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ORGANISATIONS))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.independentOrganisations").exists())
-            .andExpect(jsonPath("$._links.independentOrganisations.templated", equalTo(true)))
-            .andExpect(jsonPath("$._links.independentOrganisations.href",endsWith("/independent-organisations{?countryCode,page,size}")))
+            .andExpect(jsonPath("$._links.independentAccounts").exists())
+            .andExpect(jsonPath("$._links.independentAccounts.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.independentAccounts.href",endsWith("/independent-accounts{?countryCode,page,size}")))
     }
 
     @Test

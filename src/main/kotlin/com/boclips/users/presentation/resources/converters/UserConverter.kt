@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.resources.converters
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.OrganisationAccount
+import com.boclips.users.domain.model.account.Account
 import com.boclips.users.presentation.resources.SubjectResource
 import com.boclips.users.presentation.resources.TeacherPlatformAttributesResource
 import com.boclips.users.presentation.resources.UserResource
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserConverter {
-    fun toUserResource(user: User, organisationAccount: OrganisationAccount<*>?): UserResource {
+    fun toUserResource(user: User, organisationAccount: Account<*>?): UserResource {
         return UserResource(
             id = user.id.value,
             firstName = user.profile?.firstName,

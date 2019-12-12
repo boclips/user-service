@@ -2,25 +2,25 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.OrganisationAccount
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
-import com.boclips.users.domain.model.organisation.OrganisationType
-import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.service.OrganisationAccountExpiresOnUpdate
-import com.boclips.users.domain.service.OrganisationAccountRepository
-import com.boclips.users.domain.service.OrganisationAccountTypeUpdate
-import com.boclips.users.domain.service.OrganisationAccountUpdate
+import com.boclips.users.domain.model.account.ApiIntegration
+import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.account.Organisation
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.OrganisationType
+import com.boclips.users.domain.model.account.School
+import com.boclips.users.domain.service.AccountExpiresOnUpdate
+import com.boclips.users.domain.service.AccountRepository
+import com.boclips.users.domain.service.AccountTypeUpdate
+import com.boclips.users.domain.service.AccountUpdate
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import java.time.ZonedDateTime
 
-class MongoOrganisationAccountRepository(private val repository: OrganisationSpringDataRepository) :
-    OrganisationAccountRepository {
+class MongoAccountRepository(private val repository: OrganisationSpringDataRepository) :
+    AccountRepository {
 
     override fun lookupSchools(
         schoolName: String,
@@ -33,11 +33,11 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         ).toList().map { LookupEntry("${it.id}", it.name) }
     }
 
-    override fun findApiIntegrationByRole(role: String): OrganisationAccount<ApiIntegration>? {
+    override fun findApiIntegrationByRole(role: String): Account<ApiIntegration>? {
         return repository.findByRoleAndType(role = role, type = OrganisationType.API)
             ?.let {
                 @Suppress("UNCHECKED_CAST")
-                fromDocument(it) as OrganisationAccount<ApiIntegration>
+                fromDocument(it) as Account<ApiIntegration>
             }
     }
 
@@ -47,28 +47,28 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         contractIds: List<ContractId>,
         role: String?
     ) =
-        doSave(role, contractIds, apiIntegration) as OrganisationAccount<ApiIntegration>
+        doSave(role, contractIds, apiIntegration) as Account<ApiIntegration>
 
     @Suppress("UNCHECKED_CAST")
     override fun save(school: School, accessExpiresOn: ZonedDateTime?) =
-        doSave(organisation = school, accessExpiresOn = accessExpiresOn) as OrganisationAccount<School>
+        doSave(organisation = school, accessExpiresOn = accessExpiresOn) as Account<School>
 
     @Suppress("UNCHECKED_CAST")
     override fun save(district: District, accessExpiresOn: ZonedDateTime?) =
-        doSave(organisation = district, accessExpiresOn = accessExpiresOn) as OrganisationAccount<District>
+        doSave(organisation = district, accessExpiresOn = accessExpiresOn) as Account<District>
 
-    override fun update(update: OrganisationAccountUpdate): OrganisationAccount<*>? {
+    override fun update(update: AccountUpdate): Account<*>? {
         val document = repository.findByIdOrNull(update.id.value) ?: return null
 
         val updatedDocument = when (update) {
-            is OrganisationAccountTypeUpdate -> document.copy(accountType = update.type)
-            is OrganisationAccountExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
+            is AccountTypeUpdate -> document.copy(accountType = update.type)
+            is AccountExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
         }
 
         return fromDocument(repository.save(updatedDocument))
     }
 
-    override fun findOrganisationAccountsByParentId(parentId: OrganisationAccountId): List<OrganisationAccount<*>> {
+    override fun findOrganisationAccountsByParentId(parentId: OrganisationAccountId): List<Account<*>> {
         return repository.findByParentOrganisationId(parentId.value).map { fromDocument(it) }
     }
 
@@ -77,7 +77,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         contractIds: List<ContractId> = emptyList(),
         organisation: Organisation,
         accessExpiresOn: ZonedDateTime? = null
-    ): OrganisationAccount<*> {
+    ): Account<*> {
         return fromDocument(
             repository.save(
                 organisationDocument(
@@ -127,7 +127,7 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         )
     }
 
-    override fun findOrganisationAccountById(id: OrganisationAccountId): OrganisationAccount<*>? {
+    override fun findOrganisationAccountById(id: OrganisationAccountId): Account<*>? {
         val potentialOrganisationDocument = repository.findById(id.value)
         return if (potentialOrganisationDocument.isPresent) {
             fromDocument(potentialOrganisationDocument.get())
@@ -136,43 +136,43 @@ class MongoOrganisationAccountRepository(private val repository: OrganisationSpr
         }
     }
 
-    override fun findSchoolById(id: OrganisationAccountId): OrganisationAccount<School>? {
+    override fun findSchoolById(id: OrganisationAccountId): Account<School>? {
         return findOrganisationAccountById(id)
             ?.takeIf { it.organisation is School }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
-                it as OrganisationAccount<School>
+                it as Account<School>
             }
     }
 
-    override fun findSchools(): List<OrganisationAccount<School>> {
+    override fun findSchools(): List<Account<School>> {
         return repository.findByType(OrganisationType.SCHOOL).toList()
             .map {
                 @Suppress("UNCHECKED_CAST")
-                fromDocument(it) as OrganisationAccount<School>
+                fromDocument(it) as Account<School>
             }
     }
 
-    override fun findIndependentSchoolsAndDistricts(searchRequest: OrganisationSearchRequest): Page<OrganisationAccount<*>>? {
+    override fun findIndependentSchoolsAndDistricts(searchRequest: AccountSearchRequest): Page<Account<*>>? {
         return repository.findByCountryCodeAndParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
             searchRequest.countryCode,
             OrganisationType.API,
             PageRequest.of(searchRequest.page ?: 0, searchRequest.size ?: 30)
         ).map {
             @Suppress("UNCHECKED_CAST")
-            fromDocument(it) as OrganisationAccount<Organisation>
+            fromDocument(it) as Account<Organisation>
         }
     }
 
-    override fun findApiIntegrationByName(name: String): OrganisationAccount<ApiIntegration>? {
+    override fun findApiIntegrationByName(name: String): Account<ApiIntegration>? {
         return repository.findByNameAndType(name = name, type = OrganisationType.API)
             ?.let {
                 @Suppress("UNCHECKED_CAST")
-                fromDocument(it) as OrganisationAccount<ApiIntegration>
+                fromDocument(it) as Account<ApiIntegration>
             }
     }
 
-    override fun findOrganisationAccountByExternalId(id: String): OrganisationAccount<*>? {
+    override fun findOrganisationAccountByExternalId(id: String): Account<*>? {
         return repository.findByExternalId(id)?.let { fromDocument(it) }
     }
 }

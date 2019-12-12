@@ -1,6 +1,6 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.organisation.OrganisationAccountId
+import com.boclips.users.domain.model.account.OrganisationAccountId
 import java.util.UUID
 
 class OrganisationIdFactory {

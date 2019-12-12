@@ -1,45 +1,45 @@
 package com.boclips.users.application.commands
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.infrastructure.organisation.OrganisationSearchRequest
+import com.boclips.users.infrastructure.organisation.AccountSearchRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class GetIndependentOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
+class GetIndependentAccountsIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var getIndependentOrganisations: GetIndependentOrganisations
+    lateinit var getIndependentAccounts: GetIndependentAccounts
 
     @Test
     fun `searching non usa organisations`() {
-        val ukSchool = organisationAccountRepository.save(
+        val ukSchool = accountRepository.save(
             school = OrganisationFactory.school(
                 name = "organisation 1",
                 country = Country.fromCode("GBR")
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "organisation 2",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("NY")
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             district = OrganisationFactory.district(
                 name = "another one",
                 state = State.fromCode("FL")
             )
         )
 
-        val searchRequest = OrganisationSearchRequest(
+        val searchRequest = AccountSearchRequest(
             countryCode = "GBR",
             page = 0,
             size = 2
         )
-        val organisations = getIndependentOrganisations(searchRequest)
+        val organisations = getIndependentAccounts(searchRequest)
 
         assertThat(organisations).hasSize(1)
         assertThat(organisations).containsExactly(ukSchool)
@@ -47,32 +47,32 @@ class GetIndependentOrganisationsIntegrationTest : AbstractSpringIntegrationTest
 
     @Test
     fun `searching USA organisations`() {
-        organisationAccountRepository.save(
+        accountRepository.save(
             district = OrganisationFactory.district(
                 name = "floridistrict",
                 state = State.fromCode("FL")
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "oregon-isation",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("OR")
             )
         )
-        organisationAccountRepository.save(
+        accountRepository.save(
             school = OrganisationFactory.school(
                 name = "gb skool",
                 country = Country.fromCode("GBR")
             )
         )
 
-        val searchRequest = OrganisationSearchRequest(
+        val searchRequest = AccountSearchRequest(
             countryCode = Country.USA_ISO,
             page = 0,
             size = 2
         )
-        val organisations = getIndependentOrganisations(searchRequest)
+        val organisations = getIndependentAccounts(searchRequest)
 
         assertThat(organisations).hasSize(2)
         assertThat(organisations.content[0].organisation.name).isEqualTo("floridistrict")
