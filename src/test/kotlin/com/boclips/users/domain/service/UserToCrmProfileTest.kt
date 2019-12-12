@@ -1,6 +1,6 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSessionsFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -33,7 +33,7 @@ class UserToCrmProfileTest {
     fun `marks the user as activated when it has an organisation`() {
         val lastAccess = Instant.now()
         val sessions = UserSessionsFactory.sample(lastAccess = lastAccess)
-        val user = UserFactory.sample(organisationAccountId = OrganisationAccountId("test-org"))
+        val user = UserFactory.sample(organisationAccountId = AccountId("test-org"))
 
         val crmProfile = convertUserToCrmProfile(user, sessions)!!
 

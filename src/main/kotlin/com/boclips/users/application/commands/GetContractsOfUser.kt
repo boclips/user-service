@@ -21,7 +21,7 @@ class GetContractsOfUser(
 
     private fun findOrganisation(userId: UserId): Account<*>? {
         return getOrImportUser(userId).organisationAccountId?.let {
-            accountRepository.findOrganisationAccountById((it))
+            accountRepository.findAccountById((it))
         }
     }
 }

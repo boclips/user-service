@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
@@ -57,7 +57,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
                 utmTerm = "test-term",
                 utmContent = "test-content"
             ),
-            organisationAccountId = OrganisationAccountId("org-id")
+            organisationAccountId = AccountId("org-id")
         )
 
         val crmProfile: CrmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))!!

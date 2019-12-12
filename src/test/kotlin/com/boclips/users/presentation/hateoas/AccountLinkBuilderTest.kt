@@ -2,7 +2,7 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
@@ -25,7 +25,7 @@ internal class AccountLinkBuilderTest {
     @Test
     fun `edit link for organisation`() {
         val organisationId = "test-id"
-        val organisationLink = accountLinkBuilder.edit(OrganisationAccountId(organisationId))
+        val organisationLink = accountLinkBuilder.edit(AccountId(organisationId))
 
         assertThat(organisationLink.rel).isEqualTo("edit")
         assertThat(organisationLink.href).endsWith("/accounts/$organisationId")

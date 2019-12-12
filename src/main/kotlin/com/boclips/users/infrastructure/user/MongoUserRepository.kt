@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
@@ -66,8 +66,8 @@ class MongoUserRepository(
         return userDocumentMongoRepository.findAll().map { document -> userDocumentConverter.convertToUser(document) }
     }
 
-    override fun findAllByOrganisationId(organisationId: OrganisationAccountId): List<User> {
-        return userDocumentMongoRepository.findByOrganisationId(organisationId.value)
+    override fun findAllByOrganisationId(id: AccountId): List<User> {
+        return userDocumentMongoRepository.findByOrganisationId(id.value)
             .map { document -> userDocumentConverter.convertToUser(document) }
     }
 

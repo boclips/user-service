@@ -2,7 +2,7 @@ package com.boclips.users.domain.model
 
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import java.time.ZonedDateTime
 
 data class User(
@@ -12,7 +12,7 @@ data class User(
     val marketingTracking: MarketingTracking,
     val referralCode: String?,
     val analyticsId: AnalyticsId? = null,
-    val organisationAccountId: OrganisationAccountId?,
+    val organisationAccountId: AccountId?,
     val accessExpiresOn: ZonedDateTime?
 ) {
     val id get() = this.identity.id

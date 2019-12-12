@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -106,7 +106,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             UserUpdateCommand.ReplaceLastName("Earhart"),
             UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
             UserUpdateCommand.ReplaceReferralCode("1234"),
-            UserUpdateCommand.ReplaceOrganisationId(OrganisationAccountId("my-id"))
+            UserUpdateCommand.ReplaceOrganisationId(AccountId("my-id"))
         )
 
         val updatedUser = userRepository.findById(user.id)!!
@@ -114,7 +114,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.lastName).isEqualTo("Earhart")
         assertThat(updatedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
         assertThat(updatedUser.referralCode).isEqualTo("1234")
-        assertThat(updatedUser.organisationAccountId).isEqualTo(OrganisationAccountId("my-id"))
+        assertThat(updatedUser.organisationAccountId).isEqualTo(AccountId("my-id"))
     }
 
     @Test
@@ -243,10 +243,10 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `find users by organisation id`() {
-        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-1"), organisationAccountId = OrganisationAccountId("org-id-1")))
-        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-2"), organisationAccountId = OrganisationAccountId("org-id-2")))
+        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-1"), organisationAccountId = AccountId("org-id-1")))
+        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-2"), organisationAccountId = AccountId("org-id-2")))
 
-        val usersInOrg = userRepository.findAllByOrganisationId(OrganisationAccountId("org-id-1"))
+        val usersInOrg = userRepository.findAllByOrganisationId(AccountId("org-id-1"))
 
         assertThat(usersInOrg).hasSize(1)
     }

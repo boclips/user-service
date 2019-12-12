@@ -11,7 +11,7 @@ class AccountService(
     val accountRepository: AccountRepository
 ) {
     fun findOrCreateSchooldiggerSchool(externalSchoolId: String): Account<School>? {
-        var schoolAccount = accountRepository.findOrganisationAccountByExternalId(externalSchoolId)
+        var schoolAccount = accountRepository.findAccountByExternalId(externalSchoolId)
             ?.takeIf { it.organisation is School }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
@@ -29,7 +29,7 @@ class AccountService(
     }
 
     private fun getOrCreateDistrict(district: District): Account<District>? {
-        return accountRepository.findOrganisationAccountByExternalId(district.externalId)
+        return accountRepository.findAccountByExternalId(district.externalId)
             ?.takeIf { it.organisation is District }
             ?.let {
                 @Suppress("UNCHECKED_CAST")

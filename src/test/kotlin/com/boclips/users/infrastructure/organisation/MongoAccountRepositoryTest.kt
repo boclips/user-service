@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
@@ -99,7 +99,7 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
         val organisation =
             accountRepository.save(apiIntegration = OrganisationFactory.apiIntegration())
 
-        val foundOrganisation = accountRepository.findOrganisationAccountById(organisation.id)
+        val foundOrganisation = accountRepository.findAccountById(organisation.id)
 
         assertThat(organisation).isEqualTo(foundOrganisation)
     }
@@ -145,7 +145,7 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
             school = OrganisationFactory.school(externalId = "external-id")
         )
 
-        val retrievedOrganisation = accountRepository.findOrganisationAccountByExternalId("external-id")
+        val retrievedOrganisation = accountRepository.findAccountByExternalId("external-id")
 
         assertThat(school).isEqualTo(retrievedOrganisation)
     }
@@ -176,7 +176,7 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(updatedOrganisation).isNotNull
         assertThat(updatedOrganisation?.type).isEqualTo(AccountType.DESIGN_PARTNER)
-        assertThat(accountRepository.findOrganisationAccountById(organisation.id)?.type).isEqualTo(
+        assertThat(accountRepository.findAccountById(organisation.id)?.type).isEqualTo(
             AccountType.DESIGN_PARTNER
         )
     }
@@ -201,7 +201,7 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
     fun `update returns null when organisation not found`() {
         val updatedOrganisation = accountRepository.update(
             AccountTypeUpdate(
-                id = OrganisationAccountId("doesnotexist"),
+                id = AccountId("doesnotexist"),
                 type = AccountType.DESIGN_PARTNER
             )
         )
@@ -216,7 +216,7 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
         accountRepository.save(OrganisationFactory.school(district = null))
 
         assertThat(accountRepository.findSchools()).hasSize(3)
-        assertThat(accountRepository.findOrganisationAccountsByParentId(district.id)).hasSize(1)
+        assertThat(accountRepository.findAccountsByParentId(district.id)).hasSize(1)
     }
 
     @Test

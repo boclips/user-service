@@ -17,7 +17,7 @@ class AccountRepositoryEventDecorator(
     override fun update(update: AccountUpdate): Account<*>? {
         val updatedOrganisation = repository.update(update) ?: return null
 
-        val childOrganisations = repository.findOrganisationAccountsByParentId(update.id) + updatedOrganisation
+        val childOrganisations = repository.findAccountsByParentId(update.id) + updatedOrganisation
 
         childOrganisations.forEach { childOrganisation ->
             userRepository.findAllByOrganisationId(childOrganisation.id).forEach { user ->

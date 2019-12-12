@@ -1,9 +1,9 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.InvalidDateException
-import com.boclips.users.application.exceptions.OrganisationNotFoundException
+import com.boclips.users.application.exceptions.AccountNotFoundException
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.presentation.requests.UpdateAccountRequest
@@ -19,10 +19,10 @@ class UpdateAccount(private val accountRepository: AccountRepository) {
 
         return accountRepository.update(
             AccountExpiresOnUpdate(
-                OrganisationAccountId(id),
+                AccountId(id),
                 convertedDate
             )
-        ) ?: throw OrganisationNotFoundException(id)
+        ) ?: throw AccountNotFoundException(id)
     }
 
     private fun convertToZonedDateTime(date: String?): ZonedDateTime {

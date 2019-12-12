@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
@@ -68,7 +68,7 @@ class MongoAccountRepository(private val repository: OrganisationSpringDataRepos
         return fromDocument(repository.save(updatedDocument))
     }
 
-    override fun findOrganisationAccountsByParentId(parentId: OrganisationAccountId): List<Account<*>> {
+    override fun findAccountsByParentId(parentId: AccountId): List<Account<*>> {
         return repository.findByParentOrganisationId(parentId.value).map { fromDocument(it) }
     }
 
@@ -127,7 +127,7 @@ class MongoAccountRepository(private val repository: OrganisationSpringDataRepos
         )
     }
 
-    override fun findOrganisationAccountById(id: OrganisationAccountId): Account<*>? {
+    override fun findAccountById(id: AccountId): Account<*>? {
         val potentialOrganisationDocument = repository.findById(id.value)
         return if (potentialOrganisationDocument.isPresent) {
             fromDocument(potentialOrganisationDocument.get())
@@ -136,8 +136,8 @@ class MongoAccountRepository(private val repository: OrganisationSpringDataRepos
         }
     }
 
-    override fun findSchoolById(id: OrganisationAccountId): Account<School>? {
-        return findOrganisationAccountById(id)
+    override fun findSchoolById(id: AccountId): Account<School>? {
+        return findAccountById(id)
             ?.takeIf { it.organisation is School }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
@@ -172,7 +172,7 @@ class MongoAccountRepository(private val repository: OrganisationSpringDataRepos
             }
     }
 
-    override fun findOrganisationAccountByExternalId(id: String): Account<*>? {
+    override fun findAccountByExternalId(id: String): Account<*>? {
         return repository.findByExternalId(id)?.let { fromDocument(it) }
     }
 }

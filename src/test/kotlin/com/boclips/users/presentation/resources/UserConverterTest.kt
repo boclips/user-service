@@ -4,7 +4,7 @@ import com.boclips.users.presentation.resources.converters.UserConverter
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -32,10 +32,10 @@ class UserConverterTest {
                         subjects = listOf(Subject(SubjectId("subject-id"), name = "Math"))
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id"),
-                    organisationAccountId = OrganisationAccountId("1234")
+                    organisationAccountId = AccountId("1234")
                 ),
                 organisationAccount = OrganisationAccountFactory.sample(
-                    id = OrganisationAccountId("1234"),
+                    id = AccountId("1234"),
                     organisation = OrganisationFactory.school(
                         name = "My school",
                         state = State.fromCode("NY"),
@@ -63,10 +63,10 @@ class UserConverterTest {
     fun `converts teachers platform specific fields`() {
         val user = UserFactory.sample(
             teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "TRWN"),
-            organisationAccountId = OrganisationAccountId("1234"))
+            organisationAccountId = AccountId("1234"))
 
         val organisationAccount = OrganisationAccountFactory.sample(
-            id = OrganisationAccountId("1234"),
+            id = AccountId("1234"),
             organisation = OrganisationFactory.school(
                 name = "My school",
                 state = State.fromCode("NY"),

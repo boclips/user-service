@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
@@ -56,7 +56,7 @@ data class UserDocument(
             )
         }
 
-        fun from(identity: Identity, organisationAccountId: OrganisationAccountId?): UserDocument {
+        fun from(identity: Identity, organisationAccountId: AccountId?): UserDocument {
             return UserDocument(
                 id = identity.id.value,
                 subjectIds = null,

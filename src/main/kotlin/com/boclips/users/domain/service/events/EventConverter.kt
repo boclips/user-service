@@ -27,7 +27,7 @@ class EventConverter(
 
     private fun toEventOrganisation(user: User): Organisation? {
         val organisationId = user.organisationAccountId ?: return null
-        val account = accountRepository.findOrganisationAccountById(organisationId) ?: return null
+        val account = accountRepository.findAccountById(organisationId) ?: return null
         return toEventOrganisation(account)
     }
 

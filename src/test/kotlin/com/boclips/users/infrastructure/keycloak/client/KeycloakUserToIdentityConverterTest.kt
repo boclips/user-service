@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -22,7 +22,7 @@ class KeycloakUserToIdentityConverterTest {
     @BeforeEach
     fun setup() {
         val organisationMatcherMock = mock<OrganisationIdResolver>()
-        whenever(organisationMatcherMock.resolve(any())).thenReturn(OrganisationAccountId("my-id"))
+        whenever(organisationMatcherMock.resolve(any())).thenReturn(AccountId("my-id"))
 
         userConverter = KeycloakUserToAccountConverter()
         keycloakUser = UserRepresentation().apply {

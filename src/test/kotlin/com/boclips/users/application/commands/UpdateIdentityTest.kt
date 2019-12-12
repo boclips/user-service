@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.InvalidDateException
-import com.boclips.users.application.exceptions.OrganisationNotFoundException
+import com.boclips.users.application.exceptions.AccountNotFoundException
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.requests.UpdateAccountRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -44,7 +44,7 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `Throws an error when organisation to update cannot be found`() {
-        assertThrows<OrganisationNotFoundException>{
+        assertThrows<AccountNotFoundException>{
             updateAccount("non-existent-org", UpdateAccountRequest(accessExpiresOn = "2019-06-06T00:00:00Z"))
         }
     }

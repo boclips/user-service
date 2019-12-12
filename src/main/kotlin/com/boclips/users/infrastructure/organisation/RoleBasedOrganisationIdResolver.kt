@@ -1,12 +1,12 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 
 class RoleBasedOrganisationIdResolver(private val accountRepository: AccountRepository) :
     OrganisationIdResolver {
-    override fun resolve(roles: List<String>): OrganisationAccountId? {
+    override fun resolve(roles: List<String>): AccountId? {
         if (roles.isEmpty()) {
             return null
         }

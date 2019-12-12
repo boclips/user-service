@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 class OrganisationAccountFactory {
     companion object {
         fun sample(
-            id: OrganisationAccountId = OrganisationAccountId(value = ObjectId().toHexString()),
+            id: AccountId = AccountId(value = ObjectId().toHexString()),
             type: AccountType = AccountType.STANDARD,
             contractIds: List<ContractId> = emptyList(),
             organisation: Organisation = OrganisationFactory.school(),

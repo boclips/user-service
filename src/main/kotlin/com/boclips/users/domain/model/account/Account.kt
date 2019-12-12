@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.school.State
 import java.time.ZonedDateTime
 
 data class Account<T: Organisation>(
-    val id: OrganisationAccountId,
+    val id: AccountId,
     val type: AccountType,
     val contractIds: List<ContractId>,
     val accessExpiresOn: ZonedDateTime?,

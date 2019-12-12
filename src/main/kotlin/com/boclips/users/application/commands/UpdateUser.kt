@@ -8,7 +8,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
@@ -109,7 +109,7 @@ class UpdateUser(
             schoolName,
             countryCode
         ).firstOrNull { it.name == schoolName }
-            ?.let { accountRepository.findSchoolById(OrganisationAccountId(it.id)) }
+            ?.let { accountRepository.findSchoolById(AccountId(it.id)) }
     }
 
     private fun updateMarketingService(id: UserId) {

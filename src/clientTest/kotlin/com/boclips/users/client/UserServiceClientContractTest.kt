@@ -15,7 +15,7 @@ import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.VideoId
 import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
@@ -185,7 +185,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
         val organisation: Organisation =
             School(name, Country.usa(), state = null, district = null, externalId = null)
         return Account(
-            id = OrganisationAccountId(name),
+            id = AccountId(name),
             type = AccountType.STANDARD,
             contractIds = emptyList(),
             organisation = organisation,

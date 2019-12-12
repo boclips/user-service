@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.OrganisationAccountId
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.account.School
@@ -44,7 +44,7 @@ object OrganisationDocumentConverter {
         }
 
         return Account(
-            id = OrganisationAccountId(organisationDocument.id!!),
+            id = AccountId(organisationDocument.id!!),
             type = organisationDocument.accountType ?: organisationDocument.parentOrganisation?.accountType ?: AccountType.STANDARD,
             contractIds = organisationDocument.contractIds.map { ContractId(it) },
             organisation = organisation,
