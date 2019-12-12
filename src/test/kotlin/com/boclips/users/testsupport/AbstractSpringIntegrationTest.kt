@@ -4,7 +4,7 @@ import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.commands.AddCollectionToContract
 import com.boclips.users.application.commands.GetOrImportUser
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.Contract
@@ -14,7 +14,7 @@ import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.service.AccessService
-import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.ContractRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.AccountRepository
@@ -75,7 +75,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var keycloakClientFake: KeycloakClientFake
 
     @Autowired
-    lateinit var accountProvider: AccountProvider
+    lateinit var identityProvider: IdentityProvider
 
     @Autowired
     lateinit var accessService: AccessService
@@ -145,11 +145,11 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveAccount(user: User): String {
         keycloakClientFake.createAccount(
-            Account(
+            Identity(
                 id = user.id,
-                username = user.account.email!!,
+                username = user.identity.email!!,
                 roles = listOf("ROLE_TEACHER"),
-                createdAt = user.account.createdAt
+                createdAt = user.identity.createdAt
             )
         )
 

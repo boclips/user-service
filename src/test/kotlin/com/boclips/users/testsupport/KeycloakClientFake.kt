@@ -1,26 +1,26 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.UUID
 
-class KeycloakClientFake : AccountProvider, SessionProvider {
-    private val fakeUsers = hashMapOf<String, Account>()
+class KeycloakClientFake : IdentityProvider, SessionProvider {
+    private val fakeUsers = hashMapOf<String, Identity>()
     private var session: UserSessions = UserSessions(lastAccess = null)
 
-    override fun createAccount(email: String, password: String): Account {
+    override fun createIdentity(email: String, password: String): Identity {
         if (fakeUsers.values.filter { it.email == email }.isNotEmpty()) {
             throw UserAlreadyExistsException()
         }
 
         val id = UUID.randomUUID().toString()
-        fakeUsers[id] = Account(
+        fakeUsers[id] = Identity(
             id = UserId(value = id),
             username = email,
             roles = listOf("TEACHERS"),
@@ -29,11 +29,11 @@ class KeycloakClientFake : AccountProvider, SessionProvider {
         return fakeUsers[id]!!
     }
 
-    override fun getAccountById(id: UserId): Account? {
+    override fun getIdentitiesById(id: UserId): Identity? {
         return fakeUsers[id.value]
     }
 
-    override fun getAccounts(): Sequence<Account> {
+    override fun getIdentity(): Sequence<Identity> {
         return fakeUsers.values.asSequence()
     }
 
@@ -50,9 +50,9 @@ class KeycloakClientFake : AccountProvider, SessionProvider {
         fakeUsers.clear()
     }
 
-    fun createAccount(account: Account): Account {
-        fakeUsers[account.id.value] = account
-        return account
+    fun createAccount(identity: Identity): Identity {
+        fakeUsers[identity.id.value] = identity
+        return identity
     }
 
     fun addUserSession(time: Instant) {

@@ -15,7 +15,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.UUID
 
-class KeycloakUserToAccountConverterTest {
+class KeycloakUserToIdentityConverterTest {
     lateinit var keycloakUser: UserRepresentation
     lateinit var userConverter: KeycloakUserToAccountConverter
 

@@ -1,17 +1,17 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.UserId
 import java.time.ZonedDateTime
 
-class AccountFactory {
+class IdentityFactory {
     companion object {
         fun sample(
             id: String = "user-id",
             username: String = "joe@dough.com",
             roles: List<String> = emptyList(),
             createdAt: ZonedDateTime = ZonedDateTime.now()
-        ) = Account(
+        ) = Identity(
             id = UserId(value = id),
             username = username,
             roles = roles,

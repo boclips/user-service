@@ -2,7 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
@@ -16,7 +16,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
@@ -196,7 +196,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns a 403 response if caller tries to update a different user`() {
-            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "user-id")))
+            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "user-id")))
 
             mvc.perform(
                 put("/v1/users/user-id")
@@ -340,7 +340,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 analyticsId = AnalyticsId(
                     value = "1234567"
                 ),
-                account = AccountFactory.sample(id = userId),
+                identity = IdentityFactory.sample(id = userId),
                 profile = null,
                 organisationAccountId = null,
                 accessExpiresOn = null
@@ -469,7 +469,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val authority = "TEST_ORGANISATION"
             val organisationMatchingRole = "ROLE_$authority"
             keycloakClientFake.createAccount(
-                Account(
+                Identity(
                     id = UserId(userId),
                     username = "service-account@somewhere.com",
                     roles = listOf(organisationMatchingRole),

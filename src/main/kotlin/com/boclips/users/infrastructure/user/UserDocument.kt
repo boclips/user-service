@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.account.OrganisationAccountId
 import org.springframework.data.annotation.Id
@@ -39,8 +39,8 @@ data class UserDocument(
                 shareCode = user.teacherPlatformAttributes?.shareCode,
                 firstName = user.profile?.firstName,
                 lastName = user.profile?.lastName,
-                email = user.account.email,
-                username = user.account.username,
+                email = user.identity.email,
+                username = user.identity.username,
                 hasOptedIntoMarketing = user.profile?.hasOptedIntoMarketing ?: false,
                 marketing = MarketingTrackingDocument(
                     utmCampaign = user.marketingTracking.utmCampaign,
@@ -51,14 +51,14 @@ data class UserDocument(
                 ),
                 organisationId = user.organisationAccountId?.value,
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
-                createdAt = user.account.createdAt.toInstant(),
+                createdAt = user.identity.createdAt.toInstant(),
                 hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false
             )
         }
 
-        fun from(account: Account, organisationAccountId: OrganisationAccountId?): UserDocument {
+        fun from(identity: Identity, organisationAccountId: OrganisationAccountId?): UserDocument {
             return UserDocument(
-                id = account.id.value,
+                id = identity.id.value,
                 subjectIds = null,
                 ageRange = null,
                 analyticsId = null,
@@ -66,13 +66,13 @@ data class UserDocument(
                 shareCode = null,
                 firstName = null,
                 lastName = null,
-                email = account.email,
-                username = account.username,
+                email = identity.email,
+                username = identity.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
                 organisationId = organisationAccountId?.value,
                 accessExpiresOn = null,
-                createdAt = account.createdAt.toInstant(),
+                createdAt = identity.createdAt.toInstant(),
                 hasLifetimeAccess = false
             )
         }

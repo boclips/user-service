@@ -41,7 +41,7 @@ class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
         )
         assertThat(user.analyticsId).isEqualTo(AnalyticsId(value = ""))
 
-        val account = accountProvider.getAccountById(createdAccount.id)
+        val account = identityProvider.getIdentitiesById(createdAccount.id)
         assertThat(account).isNotNull
         assertThat(account!!.email).isEqualTo("hans@muster.com")
     }
@@ -62,7 +62,7 @@ class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedAccount = userRepository.findById(user.id)!!
 
-        assertThat(persistedAccount.account.createdAt).isNotNull()
+        assertThat(persistedAccount.identity.createdAt).isNotNull()
         assertThat(persistedAccount.isReferral()).isTrue()
         assertThat(persistedAccount.referralCode).isEqualTo("referral-code-123")
         assertThat(persistedAccount.analyticsId!!.value).isEqualTo("123")

@@ -5,7 +5,7 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -42,7 +42,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "a-user-id"),
+                identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = null
             )
         )
@@ -65,7 +65,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "a-user-id"),
+                identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = null
             )
@@ -90,7 +90,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val organisationAccount = accountRepository.save(OrganisationFactory.school())
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "a-user-id"),
+                identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = organisationAccount.id
             )
@@ -115,7 +115,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val organisationAccount = accountRepository.save(OrganisationFactory.school())
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "a-user-id"),
+                identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = organisationAccount.id,
                 accessExpiresOn = null
@@ -134,7 +134,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val organisationAccount = accountRepository.save(OrganisationFactory.school())
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "a-user-id"),
+                identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = organisationAccount.id,
                 accessExpiresOn = ZonedDateTime.now().plusDays(1)
@@ -153,7 +153,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         val organisationAccount = accountRepository.save(OrganisationFactory.school())
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "a-user-id"),
+                identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = organisationAccount.id,
                 accessExpiresOn = ZonedDateTime.now().minusDays(1)

@@ -1,12 +1,10 @@
 package com.boclips.users.application
 
-import com.boclips.users.application.commands.GenerateTeacherShareCode
-import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -17,9 +15,8 @@ class SynchronisationService(
     val marketingService: MarketingService,
     val sessionProvider: SessionProvider,
     val userImportService: UserImportService,
-    val accountProvider: AccountProvider,
-    val userRepository: UserRepository,
-    val generateTeacherShareCode: GenerateTeacherShareCode
+    val identityProvider: IdentityProvider,
+    val userRepository: UserRepository
 ) {
     companion object : KLogging()
 
@@ -45,9 +42,9 @@ class SynchronisationService(
         val allUserIds = users.map { it.id }.toSet()
         logger.info { "Found ${allUserIds.size} users" }
 
-        accountProvider.getAccounts().forEach { account ->
+        identityProvider.getIdentity().forEach { account ->
             if (!allUserIds.contains(account.id)) {
-                userImportService.importFromAccountProvider(listOf(account.id))
+                userImportService.importFromIdentityProvider(listOf(account.id))
                 logger.info { "Import of user $account completed" }
             }
         }

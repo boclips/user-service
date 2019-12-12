@@ -1,6 +1,6 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
@@ -17,13 +17,13 @@ class UserFactory {
             ),
             referralCode: String? = null,
             marketing: MarketingTracking = MarketingTrackingFactory.sample(),
-            account: Account = AccountFactory.sample(),
+            identity: Identity = IdentityFactory.sample(),
             profile: Profile? = ProfileFactory.sample(),
             teacherPlatformAttributes: TeacherPlatformAttributes? = TeacherPlatformAttributesFactory.sample(),
             organisationAccountId: OrganisationAccountId? = null,
             accessExpiresOn: ZonedDateTime? = null
         ) = User(
-            account = account,
+            identity = identity,
             profile = profile,
             analyticsId = analyticsId,
             referralCode = referralCode,
@@ -35,7 +35,7 @@ class UserFactory {
         fun sample(
             id: String
         ) = sample(
-            account = AccountFactory.sample(id = id)
+            identity = IdentityFactory.sample(id = id)
         )
     }
 }

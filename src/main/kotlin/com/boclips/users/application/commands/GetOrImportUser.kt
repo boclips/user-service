@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.UserImportService
-import com.boclips.users.application.exceptions.AccountNotFoundException
+import com.boclips.users.application.exceptions.IdentityNotFoundException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
@@ -19,8 +19,8 @@ class GetOrImportUser(
 
     private fun importUser(userId: UserId): User {
         return try {
-            userImportService.importFromAccountProvider(userId = userId)
-        } catch (ex: AccountNotFoundException) {
+            userImportService.importFromIdentityProvider(userId = userId)
+        } catch (ex: IdentityNotFoundException) {
             throw UserNotFoundException(userId)
         }
     }

@@ -48,7 +48,7 @@ internal class KeycloakClientTest {
             })
 
             val id = UserId(value = "x")
-            val account = keycloakClient.getAccountById(id)!!
+            val account = keycloakClient.getIdentitiesById(id)!!
 
             assertThat(account.id).isEqualTo(id)
         }
@@ -56,7 +56,7 @@ internal class KeycloakClientTest {
         @Test
         fun `returns null when cannot find a given user`() {
             val id = UserId(value = "x")
-            val account = keycloakClient.getAccountById(id)
+            val account = keycloakClient.getIdentitiesById(id)
 
             assertThat(account).isNull()
         }
@@ -68,7 +68,7 @@ internal class KeycloakClientTest {
             })
 
             val id = UserId(value = "x")
-            val account = keycloakClient.getAccountById(id)
+            val account = keycloakClient.getIdentitiesById(id)
 
             assertThat(account).isNull()
         }
@@ -124,7 +124,7 @@ internal class KeycloakClientTest {
             ).asSequence()
         )
 
-        val users = keycloakClient.getAccounts().toList()
+        val users = keycloakClient.getIdentity().toList()
 
         assertThat(users).hasSize(2)
         assertThat(users[0].id.value).isEqualTo(user1.id)

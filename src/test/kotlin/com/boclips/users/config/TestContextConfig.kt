@@ -2,7 +2,7 @@ package com.boclips.users.config
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.SubjectService
@@ -30,7 +30,7 @@ class TestContextConfig {
     fun keycloakClientFake(): KeycloakClientFake = KeycloakClientFake()
 
     @Bean
-    fun accountProvider(keycloakClientFake: KeycloakClientFake): AccountProvider = keycloakClientFake
+    fun identityProvider(keycloakClientFake: KeycloakClientFake): IdentityProvider = keycloakClientFake
 
     @Bean
     fun sessionProvider(keycloakClientFake: KeycloakClientFake): SessionProvider = keycloakClientFake

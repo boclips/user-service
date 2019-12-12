@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.TeacherPlatformAttributes
@@ -18,7 +18,7 @@ data class UserDocumentConverter(
 ) {
     fun convertToUser(userDocument: UserDocument): User {
         return User(
-            account = Account(
+            identity = Identity(
                 id = UserId(value = userDocument.id),
                 username = userDocument.username ?: userDocument.email.orEmpty(),
                 createdAt = ZonedDateTime.ofInstant(userDocument.createdAt, ZoneOffset.UTC)

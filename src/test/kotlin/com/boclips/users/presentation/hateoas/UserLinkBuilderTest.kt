@@ -5,7 +5,7 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.OrganisationAccountId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -35,7 +35,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "lovely-user"),
+                identity = IdentityFactory.sample(id = "lovely-user"),
                 profile = null,
                 organisationAccountId = null
             )
@@ -54,7 +54,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "lovely-user"),
+                identity = IdentityFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = null
             )
@@ -84,7 +84,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "lovely-user"),
+                identity = IdentityFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = OrganisationAccountId("test")
             )
@@ -201,7 +201,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "lovely-user"),
+                identity = IdentityFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = OrganisationAccountId("test"),
                 accessExpiresOn = null
@@ -219,7 +219,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(id = "lovely-user"),
+                identity = IdentityFactory.sample(id = "lovely-user"),
                 profile = ProfileFactory.sample(),
                 organisationAccountId = OrganisationAccountId("test"),
                 accessExpiresOn = ZonedDateTime.now().minusDays(1)

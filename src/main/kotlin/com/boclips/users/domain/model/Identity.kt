@@ -3,7 +3,7 @@ package com.boclips.users.domain.model
 import org.apache.commons.validator.routines.EmailValidator
 import java.time.ZonedDateTime
 
-data class Account(
+data class Identity(
     val id: UserId,
     val username: String,
     val roles: List<String> = emptyList(),

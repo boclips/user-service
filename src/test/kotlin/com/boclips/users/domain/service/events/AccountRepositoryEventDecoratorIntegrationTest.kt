@@ -4,7 +4,7 @@ import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.service.AccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.junit.jupiter.api.Test
@@ -20,9 +20,9 @@ class AccountRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegration
     fun `user updated events are dispatched when district is updated`() {
         val district = saveDistrict()
         val school = saveSchool(OrganisationFactory.school(district = district))
-        saveUser(UserFactory.sample(organisationAccountId = school.id, account = AccountFactory.sample("u1")))
-        saveUser(UserFactory.sample(organisationAccountId = school.id, account = AccountFactory.sample("u2")))
-        saveUser(UserFactory.sample(organisationAccountId = null, account = AccountFactory.sample("u3")))
+        saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u1")))
+        saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u2")))
+        saveUser(UserFactory.sample(organisationAccountId = null, identity = IdentityFactory.sample("u3")))
 
         repository.update(
             AccountTypeUpdate(
@@ -38,9 +38,9 @@ class AccountRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegration
     @Test
     fun `user updated events are dispatched when school is updated`() {
         val school = saveSchool(OrganisationFactory.school(district = null))
-        saveUser(UserFactory.sample(organisationAccountId = school.id, account = AccountFactory.sample("u1")))
-        saveUser(UserFactory.sample(organisationAccountId = school.id, account = AccountFactory.sample("u2")))
-        saveUser(UserFactory.sample(organisationAccountId = null, account = AccountFactory.sample("u3")))
+        saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u1")))
+        saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u2")))
+        saveUser(UserFactory.sample(organisationAccountId = null, identity = IdentityFactory.sample("u3")))
 
         repository.update(
             AccountTypeUpdate(

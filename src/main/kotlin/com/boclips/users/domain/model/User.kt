@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.account.OrganisationAccountId
 import java.time.ZonedDateTime
 
 data class User(
-    val account: Account,
+    val identity: Identity,
     val profile: Profile?,
     val teacherPlatformAttributes: TeacherPlatformAttributes?,
     val marketingTracking: MarketingTracking,
@@ -15,7 +15,7 @@ data class User(
     val organisationAccountId: OrganisationAccountId?,
     val accessExpiresOn: ZonedDateTime?
 ) {
-    val id get() = this.account.id
+    val id get() = this.identity.id
 
     fun hasOnboarded(): Boolean {
         return organisationAccountId?.value?.isNotEmpty() ?: false
@@ -26,7 +26,7 @@ data class User(
     }
 
     fun getContactDetails(): ContactDetails? {
-        val email = this.account.email ?: return null
+        val email = this.identity.email ?: return null
         return this.profile?.let {
             ContactDetails(
                 firstName = this.profile.firstName,

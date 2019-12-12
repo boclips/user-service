@@ -7,7 +7,7 @@ import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.account.OrganisationAccountId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -41,7 +41,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
     fun `it maps a User to a CRM Profile`() {
         val expiryDate = ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1)
         val user = UserFactory.sample(
-            account = AccountFactory.sample(id = "lovely-user-id",username = "lovely-user@boclips.com"),
+            identity = IdentityFactory.sample(id = "lovely-user-id",username = "lovely-user@boclips.com"),
             profile = ProfileFactory.sample(
                 firstName = "First",
                 lastName = "Last",

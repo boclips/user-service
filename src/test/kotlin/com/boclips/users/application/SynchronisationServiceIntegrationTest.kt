@@ -2,8 +2,7 @@ package com.boclips.users.application
 
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
-import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
@@ -26,11 +25,11 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updates new accounts from account provider`() {
-        val existingAccount = AccountFactory.sample(id = "cat", roles = listOf("ROLE_TEACHER"))
-        keycloakClientFake.createAccount(existingAccount)
-        saveUser(UserFactory.sample(id = existingAccount.id.value))
+        val existingIdentity = IdentityFactory.sample(id = "cat", roles = listOf("ROLE_TEACHER"))
+        keycloakClientFake.createAccount(existingIdentity)
+        saveUser(UserFactory.sample(id = existingIdentity.id.value))
 
-        keycloakClientFake.createAccount(AccountFactory.sample(id = "dog", roles = listOf("ROLE_TEACHER")))
+        keycloakClientFake.createAccount(IdentityFactory.sample(id = "dog", roles = listOf("ROLE_TEACHER")))
 
         assertThat(userRepository.findAll()).hasSize(1)
 

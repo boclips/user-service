@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -26,14 +26,14 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         listOf(
             saveUser(
                 UserFactory.sample(
-                    account = AccountFactory.sample(id = "1"),
+                    identity = IdentityFactory.sample(id = "1"),
                     organisationAccountId = organisation.id
                 )
             ),
-            saveUser(UserFactory.sample(account = AccountFactory.sample(id = "4"), organisationAccountId = null)),
+            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "4"), organisationAccountId = null)),
             saveUser(
                 UserFactory.sample(
-                    account = AccountFactory.sample(id = "5"),
+                    identity = IdentityFactory.sample(id = "5"),
                     organisationAccountId = apiOrganisation.id
                 )
             )
@@ -71,11 +71,11 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = userService.createTeacher(newUser)
 
-        assertThat(persistedUser.account.createdAt).isNotNull()
-        assertThat(persistedUser.account.createdAt).isAfterOrEqualTo(timeBeforeCommand)
-        assertThat(persistedUser.account.createdAt).isBeforeOrEqualTo(ZonedDateTime.now(ZoneOffset.UTC))
-        assertThat(persistedUser.account.username).isEqualTo("joe@dough.com")
-        assertThat(persistedUser.account.email).isEqualTo("joe@dough.com")
+        assertThat(persistedUser.identity.createdAt).isNotNull()
+        assertThat(persistedUser.identity.createdAt).isAfterOrEqualTo(timeBeforeCommand)
+        assertThat(persistedUser.identity.createdAt).isBeforeOrEqualTo(ZonedDateTime.now(ZoneOffset.UTC))
+        assertThat(persistedUser.identity.username).isEqualTo("joe@dough.com")
+        assertThat(persistedUser.identity.email).isEqualTo("joe@dough.com")
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
         assertThat(persistedUser.teacherPlatformAttributes!!.shareCode).isEqualTo("test")

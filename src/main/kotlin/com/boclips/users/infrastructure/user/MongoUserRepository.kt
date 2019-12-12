@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.OrganisationAccountId
@@ -78,11 +78,11 @@ class MongoUserRepository(
             ?.let { userDocumentConverter.convertToUser(it) }
     }
 
-    override fun create(account: Account): User {
-        val organisationAccountId = organisationIdResolver.resolve(account.roles)
+    override fun create(identity: Identity): User {
+        val organisationAccountId = organisationIdResolver.resolve(identity.roles)
 
         val document = UserDocument.from(
-            account = account,
+            identity = identity,
             organisationAccountId = organisationAccountId
         )
 

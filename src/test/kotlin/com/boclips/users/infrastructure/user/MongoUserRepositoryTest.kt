@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.account.OrganisationAccountId
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
@@ -20,14 +20,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `persists account`() {
-        val account = AccountFactory.sample(roles = listOf("ROLE_TEACHER"))
-        userRepository.create(account)
+        val identity = IdentityFactory.sample(roles = listOf("ROLE_TEACHER"))
+        userRepository.create(identity)
 
-        val fetchedUser = userRepository.findById(account.id)!!
+        val fetchedUser = userRepository.findById(identity.id)!!
 
         assertThat(fetchedUser.id).isNotNull()
-        assertThat(fetchedUser.account.email).isEqualTo(account.email)
-        assertThat(fetchedUser.account.id).isEqualTo(account.id)
+        assertThat(fetchedUser.identity.email).isEqualTo(identity.email)
+        assertThat(fetchedUser.identity.id).isEqualTo(identity.id)
     }
 
     @Test
@@ -69,7 +69,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `updating user first name field only replaces first name`() {
         val user = userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(
+                identity = IdentityFactory.sample(
                     id = "user-1"
                 ),
                 profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace")
@@ -88,7 +88,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `updating multiple fields`() {
         val user = userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(
+                identity = IdentityFactory.sample(
                     id = "user-1"
                 ),
                 profile = ProfileFactory.sample(
@@ -130,7 +130,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val user = userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(
+                identity = IdentityFactory.sample(
                     id = "user-1"
                 ),
                 profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace", subjects = listOf(maths))
@@ -148,7 +148,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `updating user ages`() {
         val user = userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(
+                identity = IdentityFactory.sample(
                     id = "user-1"
                 ),
                 profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace", ages = listOf(9, 10, 11))
@@ -166,7 +166,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `updating marketing tracking fields`() {
         val user = userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(
+                identity = IdentityFactory.sample(
                     id = "user-1"
                 ),
                 profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace")
@@ -197,7 +197,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `updating user accessExpiresOn`() {
         val user = userRepository.create(
             UserFactory.sample(
-                account = AccountFactory.sample(
+                identity = IdentityFactory.sample(
                     id = "user-1"
                 ),
                 accessExpiresOn = null
@@ -243,8 +243,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `find users by organisation id`() {
-        userRepository.create(UserFactory.sample(account = AccountFactory.sample(id = "user-1"), organisationAccountId = OrganisationAccountId("org-id-1")))
-        userRepository.create(UserFactory.sample(account = AccountFactory.sample(id = "user-2"), organisationAccountId = OrganisationAccountId("org-id-2")))
+        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-1"), organisationAccountId = OrganisationAccountId("org-id-1")))
+        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-2"), organisationAccountId = OrganisationAccountId("org-id-2")))
 
         val usersInOrg = userRepository.findAllByOrganisationId(OrganisationAccountId("org-id-1"))
 

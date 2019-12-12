@@ -16,7 +16,7 @@ class UserConverter {
             lastName = user.profile?.lastName,
             ages = user.profile?.ages,
             subjects = user.profile?.subjects?.map { SubjectResource(it.id.value) },
-            email = user.account.email,
+            email = user.identity.email,
             analyticsId = user.analyticsId?.value,
             organisationAccountId = user.organisationAccountId?.value,
             organisation = user.organisationAccountId?.let {

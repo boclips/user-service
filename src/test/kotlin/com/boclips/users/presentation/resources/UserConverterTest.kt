@@ -7,7 +7,7 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.account.OrganisationAccountId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -22,7 +22,7 @@ class UserConverterTest {
         val userResource =
             UserConverter().toUserResource(
                 user = UserFactory.sample(
-                    account = AccountFactory.sample(
+                    identity = IdentityFactory.sample(
                         username = "thierry@henry.fr"
                     ),
                     profile = ProfileFactory.sample(

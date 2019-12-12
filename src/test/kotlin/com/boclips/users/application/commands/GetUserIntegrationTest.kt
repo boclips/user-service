@@ -7,7 +7,7 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -30,7 +30,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         val school = saveSchool()
         saveUser(
             UserFactory.sample(
-                account = AccountFactory.sample(
+                identity = IdentityFactory.sample(
                     username = "jane@doe.com",
                     id = userId
                 ),
@@ -62,7 +62,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun `get any user`() {
         val existingUser = saveUser(
             UserFactory.sample(
-                account = AccountFactory.sample(
+                identity = IdentityFactory.sample(
                     username = "jane@doe.com"
                 ),
                 analyticsId = AnalyticsId(value = "123"),

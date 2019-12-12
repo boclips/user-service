@@ -1,6 +1,6 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
@@ -15,7 +15,7 @@ class GetOrImportUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UserId(UUID.randomUUID().toString())
 
         keycloakClientFake.createAccount(
-            Account(
+            Identity(
                 id = userId,
                 username = "service-account@somewhere.com",
                 createdAt = ZonedDateTime.now()

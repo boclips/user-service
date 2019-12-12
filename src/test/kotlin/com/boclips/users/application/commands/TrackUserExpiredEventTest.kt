@@ -4,7 +4,7 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.events.EventService
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.check
@@ -36,7 +36,7 @@ class TrackUserExpiredEventTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it emits a UserExpired event if the user has expired`() {
         val user = saveUser(UserFactory.sample(
-            account = AccountFactory.sample(
+            identity = IdentityFactory.sample(
                 id = "user-id"
             ),
             accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
@@ -54,7 +54,7 @@ class TrackUserExpiredEventTest : AbstractSpringIntegrationTest() {
     @Test
     fun `it does not emit a UserExpired event if the user has not expired`() {
         val user = saveUser(UserFactory.sample(
-            account = AccountFactory.sample(
+            identity = IdentityFactory.sample(
                 id = "user-id"
             ),
             accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).plusDays(1)

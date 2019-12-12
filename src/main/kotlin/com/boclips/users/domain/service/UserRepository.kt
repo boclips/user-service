@@ -1,12 +1,12 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.OrganisationAccountId
 
 interface UserRepository {
-    fun create(account: Account): User
+    fun create(identity: Identity): User
     fun create(user: User): User
     fun findById(id: UserId): User?
     fun findAll(ids: List<UserId>): List<User>

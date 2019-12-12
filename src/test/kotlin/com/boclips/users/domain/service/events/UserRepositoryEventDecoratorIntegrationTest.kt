@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -41,7 +41,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
             district = district,
             postCode = "012345"))
         val user = userRepository.create(UserFactory.sample(
-            account = AccountFactory.sample(username = "dave@davidson.com"),
+            identity = IdentityFactory.sample(username = "dave@davidson.com"),
             profile = ProfileFactory.sample(firstName = "Dave", lastName = "Davidson", subjects = listOf(maths), ages = listOf(7)))
         )
         userRepository.update(user,

@@ -15,12 +15,12 @@ class EventConverter(
     fun toEventUser(user: User): com.boclips.eventbus.domain.user.User {
         return com.boclips.eventbus.domain.user.User.builder()
             .id(user.id.value)
-            .email(user.account.email)
+            .email(user.identity.email)
             .firstName(user.profile?.firstName)
             .lastName(user.profile?.lastName)
             .subjects(user.profile?.subjects?.map { subject -> Subject.builder().id(SubjectId(subject.id.value)).name(subject.name).build() }.orEmpty())
             .ages(user.profile?.ages?.toMutableList().orEmpty())
-            .isBoclipsEmployee(user.account.isBoclipsEmployee())
+            .isBoclipsEmployee(user.identity.isBoclipsEmployee())
             .organisation(toEventOrganisation(user))
             .build()
     }

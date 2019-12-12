@@ -16,7 +16,7 @@ import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
@@ -110,7 +110,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
-        saveUser(UserFactory.sample(account = AccountFactory.sample(id = userId, username = "josh@fleck.com")))
+        saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = userId, username = "josh@fleck.com")))
         updateUser(
             userId, UpdateUserRequest(
                 firstName = "josh",
@@ -177,7 +177,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId)
             saveUser(
                 UserFactory.sample(
-                    account = AccountFactory.sample(id = userId),
+                    identity = IdentityFactory.sample(id = userId),
                     profile = ProfileFactory.sample()
                 )
             )
@@ -198,7 +198,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId)
             saveUser(
                 UserFactory.sample(
-                    account = AccountFactory.sample(id = userId),
+                    identity = IdentityFactory.sample(id = userId),
                     profile = ProfileFactory.sample()
                 )
             )
@@ -229,7 +229,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId)
             saveUser(
                 UserFactory.sample(
-                    account = AccountFactory.sample(id = userId),
+                    identity = IdentityFactory.sample(id = userId),
                     profile = ProfileFactory.sample()
                 )
             )
@@ -265,7 +265,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveUser(
                 UserFactory.sample(
-                    account = AccountFactory.sample(id = userId),
+                    identity = IdentityFactory.sample(id = userId),
                     organisationAccountId = school.id
                 )
             )
@@ -317,7 +317,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         // this mimics a user not being in our local database,
         // but is instead provided by some SSO source
         val userId = UserId("some-user-id")
-        keycloakClientFake.createAccount(AccountFactory.sample(id = userId.value))
+        keycloakClientFake.createAccount(IdentityFactory.sample(id = userId.value))
         setSecurityContext(userId.value)
 
         val mySubject = subjectService.addSubject(Subject(name = "Maths", id = SubjectId("subject-1")))

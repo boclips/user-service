@@ -1,7 +1,7 @@
 package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.application.exceptions.AccountNotFoundException
+import com.boclips.users.application.exceptions.IdentityNotFoundException
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -25,7 +25,7 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         saveAccount(UserFactory.sample(id = userId.value))
 
-        userImportService.importFromAccountProvider(userId = userId)
+        userImportService.importFromIdentityProvider(userId = userId)
 
         val user = userRepository.findById(userId)
 
@@ -40,7 +40,7 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         saveAccount(UserFactory.sample(id = "some-id"))
 
-        assertThrows<UserAlreadyExistsException> { userImportService.importFromAccountProvider(userId = savedUser.id) }
+        assertThrows<UserAlreadyExistsException> { userImportService.importFromIdentityProvider(userId = savedUser.id) }
     }
 
     @Test
@@ -54,7 +54,7 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
         saveAccount(UserFactory.sample(id = userId1))
         saveAccount(UserFactory.sample(id = userId2))
 
-        userImportService.importFromAccountProvider(listOf(UserId(userId1), UserId(userId2)))
+        userImportService.importFromIdentityProvider(listOf(UserId(userId1), UserId(userId2)))
 
         val users = userRepository.findAll()
 
@@ -65,6 +65,6 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
     fun `throws if account does not exist`() {
         setSecurityContext("test-user")
 
-        assertThrows<AccountNotFoundException> { userImportService.importFromAccountProvider(UserId(value = "test")) }
+        assertThrows<IdentityNotFoundException> { userImportService.importFromIdentityProvider(UserId(value = "test")) }
     }
 }

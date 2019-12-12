@@ -50,10 +50,10 @@ class UserDocumentConverterTest {
 
         val convertedUser = userDocumentConverter.convertToUser(document)
 
-        assertThat(convertedUser.account.id).isEqualTo(UserId("test-id"))
-        assertThat(convertedUser.account.username).isEqualTo("bob@gog.com")
-        assertThat(convertedUser.account.email).isEqualTo("bob@gog.com")
-        assertThat(convertedUser.account.createdAt).isNotNull()
+        assertThat(convertedUser.identity.id).isEqualTo(UserId("test-id"))
+        assertThat(convertedUser.identity.username).isEqualTo("bob@gog.com")
+        assertThat(convertedUser.identity.email).isEqualTo("bob@gog.com")
+        assertThat(convertedUser.identity.createdAt).isNotNull()
         assertThat(convertedUser.profile!!.firstName).isEqualTo("Bob")
         assertThat(convertedUser.profile!!.lastName).isEqualTo("Gog")
         assertThat(convertedUser.profile!!.ages).containsExactly(1,2)

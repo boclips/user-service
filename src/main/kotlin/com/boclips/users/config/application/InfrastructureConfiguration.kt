@@ -1,7 +1,7 @@
 package com.boclips.users.config.application
 
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.AmericanSchoolsProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
@@ -60,7 +60,7 @@ class InfrastructureConfiguration(
 
     @Profile("!test")
     @Bean
-    fun accountProvider(keycloakClient: KeycloakClient): AccountProvider = keycloakClient
+    fun identityProvider(keycloakClient: KeycloakClient): IdentityProvider = keycloakClient
 
     @Profile("!test")
     @Bean

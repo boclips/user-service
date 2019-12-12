@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -61,7 +61,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                         lastName = "Doe",
                         hasOptedIntoMarketing = true
                     ),
-                    account = AccountFactory.sample(
+                    identity = IdentityFactory.sample(
                         username = "jane@doe.com"
 
                     ),
@@ -97,7 +97,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         hubSpotClient.updateSubscription(convertUserToCrmProfile(user, UserSessionsFactory.sample())!!)
 
         wireMockServer.verify(
-            putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.account.email}.*"))
+            putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.identity.email}.*"))
                 .withQueryParam("hapikey", matching("some-api-key"))
                 .withRequestBody(
                     equalToJson(
@@ -124,7 +124,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         hubSpotClient.updateSubscription(convertUserToCrmProfile(user, UserSessionsFactory.sample())!!)
 
         wireMockServer.verify(
-            putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.account.email}.*"))
+            putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.identity.email}.*"))
                 .withQueryParam("hapikey", matching("some-api-key"))
                 .withRequestBody(
                     equalToJson(

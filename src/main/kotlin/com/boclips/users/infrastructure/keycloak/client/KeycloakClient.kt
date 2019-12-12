@@ -1,9 +1,9 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.service.AccountProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakUser
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
@@ -18,11 +18,11 @@ import java.time.Instant
 open class KeycloakClient(
     private val keycloak: KeycloakWrapper,
     private val userConverter: KeycloakUserToAccountConverter
-) : AccountProvider, SessionProvider {
+) : IdentityProvider, SessionProvider {
     companion object : KLogging()
 
     @Retryable(value = [UserNotCreatedException::class], maxAttempts = 2)
-    override fun createAccount(email: String, password: String): Account {
+    override fun createIdentity(email: String, password: String): Identity {
         val createdUser = keycloak.createUser(
             KeycloakUser(
                 email = email,
@@ -34,7 +34,7 @@ open class KeycloakClient(
         return userConverter.convert(createdUser)
     }
 
-    override fun getAccountById(id: UserId): Account? {
+    override fun getIdentitiesById(id: UserId): Identity? {
         val user: UserRepresentation?
         return try {
             user = keycloak.getUserById(id.value)!!
@@ -51,7 +51,7 @@ open class KeycloakClient(
         }
     }
 
-    override fun getAccounts(): Sequence<Account> {
+    override fun getIdentity(): Sequence<Identity> {
         return keycloak.users().mapNotNull { userRepresentation ->
             try {
                 userConverter.convert(userRepresentation)

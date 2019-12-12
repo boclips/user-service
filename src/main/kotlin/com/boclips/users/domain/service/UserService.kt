@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 class UserService(
     val userRepository: UserRepository,
     val accountRepository: AccountRepository,
-    val accountProvider: AccountProvider
+    val identityProvider: IdentityProvider
 ) {
     companion object : KLogging()
 
@@ -33,14 +33,14 @@ class UserService(
     }
 
     fun createTeacher(newTeacher: NewTeacher): User {
-        val account = accountProvider.createAccount(
+        val identity = identityProvider.createIdentity(
             email = newTeacher.email,
             password = newTeacher.password
         )
 
         val user = userRepository.create(
             User(
-                account = account,
+                identity = identity,
                 profile = null,
                 teacherPlatformAttributes = TeacherPlatformAttributes(
                     shareCode = newTeacher.shareCode,

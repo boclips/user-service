@@ -13,7 +13,7 @@ import org.junit.jupiter.api.assertThrows
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class UpdateAccountTest : AbstractSpringIntegrationTest() {
+class UpdateIdentityTest : AbstractSpringIntegrationTest() {
     lateinit var updateAccount: UpdateAccount
     @BeforeEach
     fun setup() {

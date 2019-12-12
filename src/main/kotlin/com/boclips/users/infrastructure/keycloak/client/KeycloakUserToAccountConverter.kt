@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.Account
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.UserId
 import org.keycloak.representations.idm.UserRepresentation
 import java.time.Instant
@@ -8,12 +8,12 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 class KeycloakUserToAccountConverter {
-    fun convert(userRepresentation: UserRepresentation): Account {
+    fun convert(userRepresentation: UserRepresentation): Identity {
         val userId = userRepresentation.id
 
         check(userId.isNotEmpty())
 
-        return Account(
+        return Identity(
             id = UserId(value = userId),
             username = userRepresentation.username,
             roles = userRepresentation.realmRoles,

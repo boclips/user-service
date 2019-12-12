@@ -5,7 +5,7 @@ import com.boclips.eventbus.events.user.UserExpired
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
-import com.boclips.users.testsupport.factories.AccountFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -29,7 +29,7 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
         setSecurityContext(userId)
 
         val organisationAccount = saveSchool()
-        saveUser(UserFactory.sample(account = AccountFactory.sample(id = userId), organisationAccountId = organisationAccount.id))
+        saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = userId), organisationAccountId = organisationAccount.id))
 
         val path = "/v1/events/page-render"
         val content = """{
@@ -55,7 +55,7 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
         setSecurityContext(userId)
 
         saveUser(UserFactory.sample(
-            account = AccountFactory.sample(id = userId),
+            identity = IdentityFactory.sample(id = userId),
             profile = null
         ))
 
@@ -83,7 +83,7 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
         setSecurityContext(userId)
 
         saveUser(UserFactory.sample(
-            account = AccountFactory.sample(id = userId),
+            identity = IdentityFactory.sample(id = userId),
             accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
         ))
 
