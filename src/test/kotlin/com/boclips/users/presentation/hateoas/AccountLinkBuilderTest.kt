@@ -60,12 +60,4 @@ internal class AccountLinkBuilderTest {
 
         assertThat(accountLinkBuilder.getNextPageLink(currentPage, totalPages)).isNull()
     }
-
-    @Test
-    fun `expose school link`() {
-        val schoolLink = accountLinkBuilder.getSchoolLink("USA")
-
-        assertThat(schoolLink).isNotNull
-        assertThat(schoolLink!!.href).endsWith("/schools?countryCode=USA{&query,state}")
-    }
 }

@@ -20,32 +20,6 @@ import java.time.format.DateTimeFormatter
 
 class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
-    fun `lists schools when given only query and country - outside USA schools`() {
-        val school = accountRepository.save(
-            school = OrganisationFactory.school(
-                name = "my school 1",
-                countryName = "GBR"
-            )
-        )
-        accountRepository.save(
-            school = OrganisationFactory.school(
-                name = "my school 2",
-                countryName = "POL"
-            )
-        )
-        accountRepository.save(
-            school = OrganisationFactory.school(
-                name = "something else",
-                countryName = "GBR"
-            )
-        )
-
-        mvc.perform(get("/v1/schools?countryCode=GBR&query=school").asUser("some-teacher"))
-            .andExpect(jsonPath("$._embedded.schools", hasSize<Int>(1)))
-            .andExpect(jsonPath("$._embedded.schools[0].id", equalTo(school.id.value)))
-    }
-
-    @Test
     fun `lists all independent US schools and organisations`() {
         val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
         val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)

@@ -2,13 +2,13 @@ package com.boclips.users.presentation.resources.school
 
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
-import com.boclips.users.presentation.hateoas.AccountLinkBuilder
+import com.boclips.users.presentation.hateoas.SchoolLinkBuilder
 import org.springframework.hateoas.Resource
 import org.springframework.stereotype.Component
 
 @Component
 class CountryConverter(
-    private val accountLinkBuilder: AccountLinkBuilder,
+    private val schoolLinkBuilder: SchoolLinkBuilder,
     private val countryLinkBuilder: CountryLinkBuilder,
     private val stateConverter: StateConverter
 ) {
@@ -18,7 +18,7 @@ class CountryConverter(
                 CountryResource(id = it.id, name = it.name, states = stateConverter.toStatesResource(it.states)),
                 listOfNotNull(
                     countryLinkBuilder.getStatesLink(it),
-                    accountLinkBuilder.getSchoolLink(it.id)
+                    schoolLinkBuilder.getSchoolLink(it.id)
                 )
             )
         }

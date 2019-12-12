@@ -23,16 +23,6 @@ class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsB
         ).withRel("edit")
     }
 
-    fun getSchoolLink(countryId: String?): Link? {
-        return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(AccountController::class.java).searchSchools(
-                countryCode = countryId,
-                query = null,
-                state = null
-            )
-        ).withRel("schools")
-    }
-
     fun getIndependentOrganisationsLink(): Link? {
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
             Link(
