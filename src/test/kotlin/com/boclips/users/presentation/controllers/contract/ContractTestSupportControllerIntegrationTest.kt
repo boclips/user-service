@@ -41,8 +41,28 @@ class ContractTestSupportControllerIntegrationTest : AbstractSpringIntegrationTe
                         """
                         {
                             "type": "SelectedCollections",
-                            "name": "Creation test",
+                            "name": "Collections contract creation test",
                             "collectionIds": ["A", "B", "C"]
+                        }
+                    """.trimIndent()
+                    )
+                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_CONTRACTS)
+            )
+                .andExpect(status().isCreated)
+                .andExpect(header().string("Location", containsString("/v1/contracts/")))
+        }
+
+        @Test
+        fun `creates a SelectedVideos contract and returns it's location`() {
+            mvc.perform(
+                post("/v1/contracts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                            "type": "SelectedVideos",
+                            "name": "Videos contract creation test",
+                            "videoIds": ["A", "B", "C"]
                         }
                     """.trimIndent()
                     )
