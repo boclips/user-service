@@ -16,6 +16,7 @@ class AccountConverter(private val accountLinkBuilder: AccountLinkBuilder) {
                 accessExpiresOn = account.accessExpiresOn,
                 organisation = OrganisationConverter().toResource(account.organisation)),
             listOfNotNull(
+                accountLinkBuilder.self(account.id),
                 accountLinkBuilder.edit(account.id)
             )
         )

@@ -44,13 +44,6 @@ class AccountTestSupportController(
         return ResponseEntity(headers, HttpStatus.CREATED)
     }
 
-    @GetMapping("/organisations/{id}")
-    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<AccountResource> {
-        val organisation = getAccountById(id)
-
-        return accountConverter.toResource(organisation)
-    }
-
     @GetMapping("/api-integrations")
     fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): Resource<AccountResource> {
         val apiIntegration = getApiIntegrationByName(name!!)

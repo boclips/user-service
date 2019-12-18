@@ -51,7 +51,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
             )
                 .andExpect(status().isCreated)
-                .andExpect(header().string("Location", containsString("/organisations/")))
+                .andExpect(header().string("Location", containsString("/accounts/")))
         }
 
         @Test
@@ -120,46 +120,6 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
     }
 
     @Nested
-    inner class FetchingOrganisationsById {
-        @Test
-        fun `retrieves an organisation account by id`() {
-            val organisationName = "Test Org"
-            val organisation = accountRepository.save(
-                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
-                contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
-                role = "ROLE_TEST_ORG"
-            )
-
-            mvc.perform(
-                get("/v1/organisations/${organisation.id.value}")
-                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
-            )
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
-                .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
-                .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${organisation.id.value}")))
-        }
-
-        @Test
-        fun `returns a 403 response when caller does not have view organisations role`() {
-            mvc.perform(
-                get("/v1/organisations/some-org")
-                    .asUser("has-role@test.com")
-            )
-                .andExpect(status().isForbidden)
-        }
-
-        @Test
-        fun `returns a 404 response when organisation account is not found by id`() {
-            mvc.perform(
-                get("/v1/organisations/this-does-not-exist")
-                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
-            )
-                .andExpect(status().isNotFound)
-        }
-    }
-
-    @Nested
     inner class FetchingOrganisationsByName {
         @Test
         fun `returns a 403 response when caller does not have a VIEW_ORGANISATIONS role`() {
@@ -196,6 +156,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/accounts/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${organisation.id.value}")))
         }
 

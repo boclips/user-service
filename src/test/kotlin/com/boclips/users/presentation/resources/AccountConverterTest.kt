@@ -13,8 +13,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
-internal class AccountConverterTest {
-
+class AccountConverterTest {
     @Test
     fun toResource() {
         val originalAccount = OrganisationAccountFactory.sample(
@@ -34,6 +33,8 @@ internal class AccountConverterTest {
         assertThat(accountResource.content.organisation.country?.name).isEqualTo(originalAccount.organisation.country?.name)
         assertThat(accountResource.content.organisation.state?.name).isEqualTo(originalAccount.organisation.state?.name)
         assertThat(accountResource.content.organisation.type).isEqualTo(originalAccount.organisation.type().toString())
-        assertThat(accountResource.links).hasSize(1)
+        assertThat(accountResource.links)
+            .extracting("rel")
+            .containsExactlyInAnyOrder("self", "edit")
     }
 }

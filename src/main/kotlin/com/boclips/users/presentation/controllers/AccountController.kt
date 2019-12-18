@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.controllers
 
+import com.boclips.users.application.commands.GetAccountById
 import com.boclips.users.application.commands.GetIndependentAccounts
 import com.boclips.users.application.commands.UpdateAccount
 import com.boclips.users.infrastructure.organisation.AccountSearchRequest
@@ -22,6 +23,7 @@ import javax.validation.Valid
 @RequestMapping("/v1", "/v1/")
 class AccountController(
     private val getIndependentAccounts: GetIndependentAccounts,
+    private val getAccountById: GetAccountById,
     private val accountConverter: AccountConverter,
     private val updateAccount: UpdateAccount,
     private val accountLinkBuilder: AccountLinkBuilder
@@ -42,6 +44,13 @@ class AccountController(
             PagedResources.PageMetadata(size?.toLong() ?: 30, page?.toLong() ?: 0, accounts.totalElements),
             listOfNotNull(accountLinkBuilder.getNextPageLink(page ?: 0, accounts.totalPages))
         )
+    }
+
+    @GetMapping("/accounts/{id}")
+    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<AccountResource> {
+        val organisation = getAccountById(id)
+
+        return accountConverter.toResource(organisation)
     }
 
     @PutMapping("/accounts/{id}")

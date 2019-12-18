@@ -4,7 +4,6 @@ import com.boclips.security.utils.UserExtractor
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.presentation.controllers.AccountController
-import com.boclips.users.presentation.controllers.AccountTestSupportController
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
 import org.springframework.stereotype.Component
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component
 class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsBuilderFactory) {
     fun self(id: AccountId): Link {
         return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(AccountTestSupportController::class.java).fetchOrganisationById(id.value)
+            ControllerLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(id.value)
         ).withSelfRel()
     }
 
