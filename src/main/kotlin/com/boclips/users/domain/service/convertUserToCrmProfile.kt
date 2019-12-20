@@ -11,7 +11,7 @@ fun convertUserToCrmProfile(user: User, sessions: UserSessions): CrmProfile? {
     return user.getContactDetails()?.let {
         CrmProfile(
             id = UserId(user.id.value),
-            activated = user.hasOnboarded(),
+            activated = user.isActivated(),
             subjects = user.profile.getSubjects(),
             ageRange = user.profile.getAges(),
             firstName = it.firstName,

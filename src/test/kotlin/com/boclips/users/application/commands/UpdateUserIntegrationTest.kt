@@ -142,7 +142,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             assertThat(updatedProfile.email).isEqualTo("josh@fleck.com")
             assertThat(updatedProfile.firstName).isEqualTo("josh")
             assertThat(updatedProfile.lastName).isEqualTo("fleck")
-            assertThat(updatedProfile.activated).isFalse()
+            assertThat(updatedProfile.activated).isTrue()
             assertThat(updatedProfile.hasOptedIntoMarketing).isTrue()
             assertThat(updatedProfile.ageRange).containsExactly(4, 5, 6)
             assertThat(updatedProfile.subjects).hasSize(1)

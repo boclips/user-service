@@ -18,7 +18,7 @@ class UserToCrmProfileTest {
         val crmProfile = convertUserToCrmProfile(user, sessions)!!
 
         assertThat(crmProfile.id).isEqualTo(user.id)
-        assertThat(crmProfile.activated).isEqualTo(false)
+        assertThat(crmProfile.activated).isEqualTo(true)
         assertThat(crmProfile.ageRange).isEqualTo(user.profile!!.ages)
         assertThat(crmProfile.subjects).isEqualTo(user.profile!!.subjects)
         assertThat(crmProfile.email).isEqualTo(user.identity.email)

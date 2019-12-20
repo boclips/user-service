@@ -63,7 +63,6 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                     ),
                     identity = IdentityFactory.sample(
                         username = "jane@doe.com"
-
                     ),
                     marketing = MarketingTrackingFactory.sample(
                         utmContent = "utm-content-1",

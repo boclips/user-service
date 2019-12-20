@@ -20,8 +20,8 @@ import java.time.ZonedDateTime
 class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
 
     @Test
-    fun `user is activated (onboarded) if it has an organisation`() {
-        val user = UserFactory.sample(organisationAccountId = OrganisationAccountFactory.sample().id)
+    fun `user is activated if it has set profile information`() {
+        val user = UserFactory.sample(profile = ProfileFactory.sample())
 
         val crmProfile: CrmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))!!
 
@@ -29,8 +29,8 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `user is not activated (onboarded) if it does not have an organisation`() {
-        val user = UserFactory.sample()
+    fun `user is not activated if it has set profile information`() {
+        val user = UserFactory.sample(profile = ProfileFactory.sample(firstName = ""))
 
         val crmProfile: CrmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))!!
 

@@ -21,6 +21,10 @@ data class User(
         return organisationAccountId?.value?.isNotEmpty() ?: false
     }
 
+    fun isActivated() : Boolean {
+        return profile?.firstName?.isNotEmpty() ?: false
+    }
+
     fun isReferral(): Boolean {
         return !referralCode.isNullOrEmpty()
     }
