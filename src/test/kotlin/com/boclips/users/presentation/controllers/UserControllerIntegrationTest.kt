@@ -13,7 +13,9 @@ import com.boclips.users.domain.model.contract.VideoId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.asApiUser
 import com.boclips.users.testsupport.asBackofficeUser
+import com.boclips.users.testsupport.asTeacher
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -152,7 +154,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `updates a user`() {
             subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
-            saveUser(UserFactory.sample())
+            val user = saveUser(UserFactory.sample())
             val school = saveSchool(
                 school = OrganisationFactory.school(
                     name = "San Fran Forest School",
@@ -161,10 +163,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            setSecurityContext("user-id")
-
             mvc.perform(
-                put("/v1/users/user-id").asUser("user-id")
+                put("/v1/users/user-id").asTeacher(user.id.value)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -365,12 +365,12 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class GetUser {
         @Test
-        fun `get own profile`() {
+        fun `get own profile as teacher`() {
             val organisation = saveSchool()
             val user = saveUser(UserFactory.sample(organisationAccountId = organisation.id))
 
             mvc.perform(
-                get("/v1/users/${user.id.value}").asUser(user.id.value)
+                get("/v1/users/${user.id.value}").asTeacher(user.id.value)
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id").exists())
@@ -382,6 +382,41 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.organisation.country").exists())
                 .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
                 .andExpect(jsonPath("$._links.contracts").doesNotExist())
+        }
+
+        @Test
+        fun `get own profile as api user`() {
+            val user = saveUser(UserFactory.sample())
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}").asApiUser(user.id.value)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.analyticsId").doesNotExist())
+                .andExpect(jsonPath("$.organisation").doesNotExist())
+                .andExpect(jsonPath("$.organisationAccountId").doesNotExist())
+                .andExpect(jsonPath("$.teacherPlatformAttributes").doesNotExist())
+        }
+
+        @Test
+        fun `get own profile as teacher and api user`() {
+            val organisation = saveSchool()
+            val user = saveUser(UserFactory.sample(organisationAccountId = organisation.id))
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}").asUserWithRoles(
+                    user.id.value,
+                    UserRoles.ROLE_TEACHER,
+                    UserRoles.ROLE_API
+                )
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.analyticsId").exists())
+                .andExpect(jsonPath("$.organisation").exists())
+                .andExpect(jsonPath("$.organisationAccountId").exists())
+                .andExpect(jsonPath("$.teacherPlatformAttributes").exists())
         }
 
         @Test
@@ -449,8 +484,18 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(2)))
-                .andExpect(jsonPath("$._embedded.contracts[*].type", containsInAnyOrder("SelectedCollections", "SelectedVideos")))
-                .andExpect(jsonPath("$._embedded.contracts[*].name", containsInAnyOrder(collectionsContractName, videosContractName)))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.contracts[*].type",
+                        containsInAnyOrder("SelectedCollections", "SelectedVideos")
+                    )
+                )
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.contracts[*].name",
+                        containsInAnyOrder(collectionsContractName, videosContractName)
+                    )
+                )
                 .andExpect(
                     jsonPath(
                         "$._embedded.contracts[*]._links.self.href",

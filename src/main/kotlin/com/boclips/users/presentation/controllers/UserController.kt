@@ -10,15 +10,17 @@ import com.boclips.users.presentation.hateoas.ContractResourcesHateoasWrapper
 import com.boclips.users.presentation.hateoas.ContractResourcesWrapper
 import com.boclips.users.presentation.hateoas.UserContractsLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
+import com.boclips.users.presentation.projections.WithProjection
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
-import com.boclips.users.presentation.resources.converters.ContractConverter
 import com.boclips.users.presentation.resources.UserResource
+import com.boclips.users.presentation.resources.converters.ContractConverter
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.json.MappingJacksonValue
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -39,7 +41,8 @@ class UserController(
     private val userContractsLinkBuilder: UserContractsLinkBuilder,
     private val synchronisationService: SynchronisationService,
     private val contractConverter: ContractConverter,
-    private val getContractsOfUser: GetContractsOfUser
+    private val getContractsOfUser: GetContractsOfUser,
+    private val withProjection: WithProjection
 ) {
 
     @PostMapping
@@ -53,21 +56,31 @@ class UserController(
     }
 
     @PutMapping("/{id}")
-    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest): Resource<UserResource> {
+    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest): ResponseEntity<MappingJacksonValue> {
         updateUser(id, updateUserRequest)
         return getAUser(id)
     }
 
     @GetMapping("/{id}")
-    fun getAUser(@PathVariable id: String?): Resource<UserResource> {
+    fun getAUser(@PathVariable id: String?): ResponseEntity<MappingJacksonValue> {
+
         val userResource = getUser(id!!)
-        return Resource(
-            userResource,
-            listOfNotNull(
-                userLinkBuilder.profileSelfLink(),
-                userLinkBuilder.profileLink(),
-                userLinkBuilder.contractsLink(UserId(userResource.id))
-            )
+
+        val headers = HttpHeaders()
+
+        return ResponseEntity(
+            withProjection(
+                Resource(
+                    userResource,
+                    listOfNotNull(
+                        userLinkBuilder.profileSelfLink(),
+                        userLinkBuilder.profileLink(),
+                        userLinkBuilder.contractsLink(UserId(userResource.id))
+                    )
+                )
+            ),
+            headers,
+            HttpStatus.OK
         )
     }
 

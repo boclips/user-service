@@ -20,3 +20,17 @@ fun MockHttpServletRequestBuilder.asBackofficeUser() =
             .user("user-service")
             .roles(UserRoles.SYNCHRONIZE_USERS_HUBSPOT, UserRoles.SYNCHRONIZE_USERS_KEYCLOAK)
     )
+
+fun MockHttpServletRequestBuilder.asTeacher(userId: String = "teacher@example.com") =
+    this.with(
+        SecurityMockMvcRequestPostProcessors
+            .user(userId)
+            .roles(UserRoles.ROLE_TEACHER)
+    )
+
+fun MockHttpServletRequestBuilder.asApiUser(userId: String = "api@example.com") =
+    this.with(
+        SecurityMockMvcRequestPostProcessors
+            .user(userId)
+            .roles(UserRoles.ROLE_API)
+    )
