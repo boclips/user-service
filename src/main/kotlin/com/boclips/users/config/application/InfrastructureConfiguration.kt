@@ -98,7 +98,7 @@ class InfrastructureConfiguration(
     @Profile("!test")
     @Bean
     fun videoServiceClient(videoServiceProperties: VideoServiceProperties) =
-        SubjectsClient.create(videoServiceProperties.baseUrl)
+        SubjectsClient.create(apiUrl = videoServiceProperties.baseUrl)
 
     @Profile("!test")
     @Bean
