@@ -47,6 +47,8 @@ class UpdateUser(
 
         val authenticatedUserId = UserId(authenticatedUser.id)
 
+        logger.info { "User $userId has schoolId ${updateUserRequest.schoolId} and schoolName ${updateUserRequest.schoolName}" }
+
         val school = findOrCreateSchool(updateUserRequest)
 
         getOrImportUser(authenticatedUserId).let { user ->
