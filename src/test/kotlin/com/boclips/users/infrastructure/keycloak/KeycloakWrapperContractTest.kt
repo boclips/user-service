@@ -14,6 +14,7 @@ import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
 import java.util.UUID
 
+@Disabled("These tests require Keycloak to be configured by CI")
 class KeycloakWrapperContractTest {
     lateinit var wrapper: KeycloakWrapper
 
