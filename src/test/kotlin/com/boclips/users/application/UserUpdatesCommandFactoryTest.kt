@@ -6,22 +6,24 @@ import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
-import com.boclips.videos.service.client.Subject
-import com.boclips.videos.service.client.internal.FakeClient
+import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
+import com.boclips.videos.api.request.subject.CreateSubjectRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.stream.Collectors
 
 class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
-    private val fakeClient = FakeClient()
 
-    private var userUpdatesConverter =
-        UserUpdatesCommandFactory(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))
+    lateinit var userUpdatesConverter: UserUpdatesCommandFactory
 
     @BeforeEach
     fun setUp() {
-        fakeClient.clear()
-        fakeClient.addSubject(Subject.builder().id("123").name("Maths").build())
+        val fakeClient = SubjectsClientFake()
+        fakeClient.create(CreateSubjectRequest("some-subject"))
+
+        userUpdatesConverter =
+            UserUpdatesCommandFactory(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))
     }
 
     @Test
@@ -40,7 +42,15 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `converts subjects change to a command`() {
-        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(subjects = listOf("123")))
+        val fakeClient = SubjectsClientFake()
+        fakeClient.create(CreateSubjectRequest("some-subject"))
+        val subjectId = fakeClient.getSubjects().content.stream().collect(Collectors.toList()).first().id
+
+        userUpdatesConverter =
+            UserUpdatesCommandFactory(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))
+
+
+        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(subjects = listOf(subjectId)))
 
         assertThat(commands).hasSize(1)
     }

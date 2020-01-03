@@ -13,7 +13,8 @@ import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.testsupport.FakeSubjectService
 import com.boclips.users.testsupport.KeycloakClientFake
-import com.boclips.videos.service.client.VideoServiceClient
+import com.boclips.videos.api.httpclient.SubjectsClient
+import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import org.mockito.Mockito
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -50,7 +51,10 @@ class TestContextConfig {
     fun userDocumentConverter(subjectService: SubjectService) = UserDocumentConverter(subjectService)
 
     @Bean
-    fun cacheableSubjectsClient(videoServiceClient: VideoServiceClient) = CacheableSubjectsClient(videoServiceClient)
+    fun subjectsClient() = SubjectsClientFake()
+
+    @Bean
+    fun cacheableSubjectsClient(subjectsClient: SubjectsClient) = CacheableSubjectsClient(subjectsClient)
 
     @Bean
     fun eventBus(): SynchronousFakeEventBus {

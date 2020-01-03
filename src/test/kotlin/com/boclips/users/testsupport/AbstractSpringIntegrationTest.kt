@@ -6,19 +6,19 @@ import com.boclips.users.application.commands.AddCollectionToContract
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.account.ApiIntegration
+import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.contract.CollectionId
 import com.boclips.users.domain.model.contract.Contract
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.contract.VideoId
-import com.boclips.users.domain.model.account.ApiIntegration
-import com.boclips.users.domain.model.account.District
-import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.service.AccessService
-import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.ContractRepository
-import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.domain.service.AccountService
+import com.boclips.users.domain.service.ContractRepository
+import com.boclips.users.domain.service.IdentityProvider
+import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SelectedContentContractRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
@@ -27,7 +27,7 @@ import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.resources.converters.ContractConverter
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import com.boclips.videos.service.client.spring.MockVideoServiceClient
+import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -51,13 +51,15 @@ import java.time.Instant
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 9999)
-@MockVideoServiceClient
 abstract class AbstractSpringIntegrationTest {
     @Autowired
     protected lateinit var wireMockServer: WireMockServer
 
     @Autowired
     lateinit var eventBus: SynchronousFakeEventBus
+
+    @Autowired
+    lateinit var subjectsClient: SubjectsClientFake
 
     @Autowired
     protected lateinit var mvc: MockMvc
@@ -125,6 +127,7 @@ abstract class AbstractSpringIntegrationTest {
         keycloakClientFake.clear()
         wireMockServer.resetAll()
         subjectService.reset()
+        subjectsClient.clear()
 
         Mockito.reset(captchaProvider)
         Mockito.reset(marketingService)

@@ -4,22 +4,22 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.testsupport.factories.UserDocumentFactory
-import com.boclips.videos.service.client.Subject
-import com.boclips.videos.service.client.internal.FakeClient
+import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
+import com.boclips.videos.api.response.subject.SubjectResource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
 class UserDocumentConverterTest {
-    private val fakeClient = FakeClient()
+    private val subjectsClient = SubjectsClientFake()
     private var userDocumentConverter =
-        UserDocumentConverter(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))
+        UserDocumentConverter(VideoServiceSubjectsClient(CacheableSubjectsClient(subjectsClient)))
 
     @BeforeEach
     internal fun setUp() {
-        fakeClient.clear()
-        fakeClient.addSubject(Subject.builder().id("1").name("maths").build())
+        subjectsClient.clear()
+        subjectsClient.add(SubjectResource(id = "1", name = "maths"))
     }
 
     @Test

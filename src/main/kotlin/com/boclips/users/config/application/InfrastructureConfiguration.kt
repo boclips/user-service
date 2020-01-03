@@ -1,8 +1,8 @@
 package com.boclips.users.config.application
 
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.AmericanSchoolsProvider
+import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.SubjectService
@@ -28,7 +28,7 @@ import com.boclips.users.infrastructure.user.MongoUserRepository
 import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
-import com.boclips.videos.service.client.VideoServiceClient
+import com.boclips.videos.api.httpclient.SubjectsClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.keycloak.admin.client.Keycloak
 import org.springframework.context.annotation.Bean
@@ -98,11 +98,11 @@ class InfrastructureConfiguration(
     @Profile("!test")
     @Bean
     fun videoServiceClient(videoServiceProperties: VideoServiceProperties) =
-        VideoServiceClient.getUnauthorisedApiClient(videoServiceProperties.baseUrl)
+        SubjectsClient.create(videoServiceProperties.baseUrl)
 
     @Profile("!test")
     @Bean
-    fun cacheableSubjectsClient(videoServiceClient: VideoServiceClient) = CacheableSubjectsClient(videoServiceClient)
+    fun cacheableSubjectsClient(subjectsClient: SubjectsClient) = CacheableSubjectsClient(subjectsClient)
 
     @Profile("!test")
     @Bean
@@ -119,8 +119,6 @@ class InfrastructureConfiguration(
     @Bean
     fun americanSchoolsProvider(schoolDiggerProperties: SchoolDiggerProperties): AmericanSchoolsProvider =
         SchoolDiggerClient(properties = schoolDiggerProperties, restTemplate = RestTemplate())
-
-
 
     @Bean
     fun roleBasedOrganisationIdResolver(): RoleBasedOrganisationIdResolver {

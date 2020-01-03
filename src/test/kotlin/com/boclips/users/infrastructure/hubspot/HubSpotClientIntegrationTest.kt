@@ -10,8 +10,7 @@ import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSessionsFactory
 import com.boclips.users.testsupport.loadWireMockStub
-import com.boclips.videos.service.client.Subject
-import com.boclips.videos.service.client.internal.FakeClient
+import com.boclips.videos.api.response.subject.SubjectResource
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
@@ -30,8 +29,6 @@ import java.time.ZonedDateTime
 
 class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
-    val fakeVideoServiceClient = FakeClient()
-
     var hubSpotClient: HubSpotClient = HubSpotClient(
         ObjectMapper(), HubSpotProperties().apply {
             host = "http://localhost:9999"
@@ -45,8 +42,9 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `updates contacts in hubspot`() {
         setUpHubSpotStub()
-        fakeVideoServiceClient.addSubject(Subject.builder().id("1").name("Maths").build())
-        fakeVideoServiceClient.addSubject(Subject.builder().id("2").name("Science").build())
+
+        subjectsClient.add(SubjectResource(id = "1", name = "Maths"))
+        subjectsClient.add(SubjectResource(id = "2", name = "Science"))
 
         val crmProfiles = listOf(
             convertUserToCrmProfile(

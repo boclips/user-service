@@ -17,7 +17,7 @@ data class VideoServiceSubjectsClient(val cacheableSubjectsClient: CacheableSubj
             subjects.find { it.id == subjectId.value }?.let {
                 Subject(
                     id = SubjectId(value = it.id),
-                    name = it.name
+                    name = it.name ?: ""
                 )
             }
         }
