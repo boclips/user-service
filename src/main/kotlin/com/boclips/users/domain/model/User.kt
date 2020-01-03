@@ -18,7 +18,7 @@ data class User(
     val id get() = this.identity.id
 
     fun hasOnboarded(): Boolean {
-        return organisationAccountId?.value?.isNotEmpty() ?: false
+        return isActivated()
     }
 
     fun isActivated() : Boolean {

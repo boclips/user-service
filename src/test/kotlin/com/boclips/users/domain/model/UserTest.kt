@@ -8,18 +8,18 @@ import org.junit.jupiter.api.Test
 
 class UserTest {
     @Test
-    fun `the user has onboarded when it is associated with an organisation`() {
+    fun `the user has onboarded when they have a firstname`() {
         val user = UserFactory.sample(
-            organisationAccountId = AccountId("org-id-123")
+            profile = ProfileFactory.sample(firstName = "Rebecca")
         )
 
         assertThat(user.hasOnboarded()).isTrue()
     }
 
     @Test
-    fun `the user has not onboarded when it is not associated with an organisation`() {
+    fun `the user has not onboarded when they do not have a first name`() {
         val user = UserFactory.sample(
-            organisationAccountId = null
+            profile = ProfileFactory.sample(firstName = "")
         )
 
         assertThat(user.hasOnboarded()).isFalse()

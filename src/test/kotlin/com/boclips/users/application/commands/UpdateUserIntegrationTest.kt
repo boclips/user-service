@@ -346,7 +346,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         val newUserDocument =
             UserDocumentFactory.sample(
                 id = "new-user-id",
-                firstName = "Joe",
+                firstName = null,
                 createdAt = Instant.parse("2020-10-10T00:00:00Z"),
                 organisationId = null
             )

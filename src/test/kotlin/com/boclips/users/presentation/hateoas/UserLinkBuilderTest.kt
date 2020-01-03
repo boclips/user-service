@@ -49,13 +49,13 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `activate link when authenticated, has partial profile information but no organisation mapped`() {
+    fun `activate link when authenticated, has partial profile information but has not onboarded`() {
         setSecurityContext("lovely-user")
 
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "lovely-user"),
-                profile = ProfileFactory.sample(),
+                profile = ProfileFactory.sample(firstName = ""),
                 organisationAccountId = null
             )
         )

@@ -60,13 +60,13 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `registered user with no mapped organisation`() {
+    fun `registered user with no firstName (has not onboarded)`() {
         setSecurityContext("a-user-id")
 
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
-                profile = ProfileFactory.sample(),
+                profile = ProfileFactory.sample(firstName = ""),
                 organisationAccountId = null
             )
         )
