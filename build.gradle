@@ -9,12 +9,14 @@ buildscript {
         springSecurityOAuth2 = 'org.springframework.security.oauth:spring-security-oauth2:2.1.4.RELEASE'
     }
     repositories {
+        jcenter()
         mavenCentral()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+        classpath("com.github.ben-manes:gradle-versions-plugin:0.27.0")
     }
 }
 
@@ -28,6 +30,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.owasp.dependencycheck'
 apply plugin: 'idea'
+apply plugin: 'com.github.ben-manes.versions'
 
 group 'com.boclips.users'
 version '1.0-SNAPSHOT'
