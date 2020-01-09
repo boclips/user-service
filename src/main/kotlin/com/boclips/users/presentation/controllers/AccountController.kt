@@ -30,12 +30,12 @@ class AccountController(
 ) {
     @GetMapping("/independent-accounts")
     fun getAllIndependentAccounts(
-        @RequestParam(required = true) countryCode: String?,
+        @RequestParam(required = false) countryCode: String?,
         @RequestParam(required = false) page: Int? = null,
         @RequestParam(required = false) size: Int? = null
     ): PagedResources<Resource<AccountResource>> {
         val accounts =
-            getIndependentAccounts(AccountSearchRequest(countryCode = countryCode!!, page = page, size = size))
+            getIndependentAccounts(AccountSearchRequest(countryCode = countryCode, page = page, size = size))
 
         val accountResources = accounts.map { account -> accountConverter.toResource(account) }
 

@@ -11,10 +11,6 @@ class GetIndependentAccounts(
     private val accountRepository: AccountRepository
 ) {
     operator fun invoke(request : AccountSearchRequest): Page<Account<*>> {
-        if (request.countryCode.isNullOrBlank()) {
-            throw RuntimeException("You must provide a country code")
-        }
-
         return accountRepository.findIndependentSchoolsAndDistricts(request)!!
     }
 }

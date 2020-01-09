@@ -18,6 +18,10 @@ interface OrganisationSpringDataRepository : MongoRepository<OrganisationDocumen
         type: OrganisationType,
         page: Pageable
     ): Page<OrganisationDocument>
+    fun findByParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
+        type: OrganisationType,
+        page: Pageable
+    ): Page<OrganisationDocument>
     fun findByType(type: OrganisationType): List<OrganisationDocument>
     fun findByExternalId(id: String): OrganisationDocument?
     fun findByParentOrganisationId(ParentOrganisationId: String): List<OrganisationDocument>

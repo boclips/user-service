@@ -2,6 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
@@ -165,6 +166,25 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.page.totalElements", equalTo(2)))
                 .andExpect(jsonPath("$.page.totalPages", equalTo(2)))
                 .andExpect(jsonPath("$._links.next.href", endsWith("/v1/independent-accounts?countryCode=USA&size=1&page=1")))
+        }
+
+        @Test
+        fun `fetches all independent accounts when no countryCode is provided`() {
+            val district = accountRepository.save(
+                OrganisationFactory.district(
+                    name = "my district",
+                    externalId = "123",
+                    state = State(id = "FL", name = "Florida")
+                )
+            )
+            val school = accountRepository.save(OrganisationFactory.school(name = "my school", country = Country.fromCode("GBR")))
+
+            mvc.perform(
+                get("/v1/independent-accounts").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
+            )
+                .andExpect(jsonPath("$._embedded.account", hasSize<Int>(2)))
+                .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
+                .andExpect(jsonPath("$._embedded.account[1].organisation.name", equalTo(school.organisation.name)))
         }
     }
 

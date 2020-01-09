@@ -154,11 +154,17 @@ class MongoAccountRepository(private val repository: OrganisationSpringDataRepos
     }
 
     override fun findIndependentSchoolsAndDistricts(searchRequest: AccountSearchRequest): Page<Account<*>>? {
-        return repository.findByCountryCodeAndParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
-            searchRequest.countryCode,
+        val results = searchRequest.countryCode?.let {
+            repository.findByCountryCodeAndParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
+                searchRequest.countryCode,
+                OrganisationType.API,
+                PageRequest.of(searchRequest.page ?: 0, searchRequest.size ?: 30)
+            )
+        } ?: repository.findByParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
             OrganisationType.API,
             PageRequest.of(searchRequest.page ?: 0, searchRequest.size ?: 30)
-        ).map {
+        )
+        return results.map {
             @Suppress("UNCHECKED_CAST")
             fromDocument(it) as Account<Organisation>
         }
