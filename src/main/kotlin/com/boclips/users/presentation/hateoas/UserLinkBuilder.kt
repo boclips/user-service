@@ -91,4 +91,14 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
             }
         }
     }
+
+    fun validateShareCodeLink(): Link? {
+        return if (getCurrentUserIfNotAnonymous() == null) {
+            ControllerLinkBuilder.linkTo(
+                ControllerLinkBuilder.methodOn(UserController::class.java).checkUserShareCode(null, null)
+            ).withRel("validateShareCode")
+        } else {
+            null
+        }
+    }
 }

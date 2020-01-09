@@ -20,6 +20,7 @@ import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -555,6 +556,48 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 get("/v1/users/${user.id.value}/contracts").asUser(user.id.value)
             )
                 .andExpect(status().isForbidden)
+        }
+    }
+
+    @Nested
+    inner class ShareCode {
+        @Test
+        fun `returns 200 if the provided shareCode matches the user's shareCode`() {
+            val validShareCode = "TEST"
+            val user = saveUser(
+                UserFactory.sample(
+                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = validShareCode)
+                )
+            )
+
+            mvc.perform(get("/v1/users/${user.id.value}/shareCode/${validShareCode}")).andExpect(status().isOk)
+        }
+
+        @Test
+        fun `returns 403 if the provided shareCode does not match the user's shareCode`() {
+            val invalidShareCode = "TEST"
+            val user = saveUser(
+                UserFactory.sample(
+                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "ABCD")
+                )
+            )
+
+            mvc.perform(get("/v1/users/${user.id.value}/shareCode/${invalidShareCode}")).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `returns a 404 if user not found`() {
+            mvc.perform(get("/v1/users/9999/shareCode/ABCD")).andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `returns a 404 if user does not have shareCode set up`() {
+            val user = saveUser(
+                UserFactory.sample(
+                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null)
+                )
+            )
+            mvc.perform(get("/v1/users/${user.id.value}/shareCode/ABCD")).andExpect(status().isNotFound)
         }
     }
 }

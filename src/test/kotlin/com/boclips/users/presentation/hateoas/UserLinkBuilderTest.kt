@@ -238,4 +238,29 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         assertThat(reportAccessExpiredLink).isNull()
     }
+
+    @Test
+    fun `validateShareCode link when unauthenticated`() {
+        val validateShareCodeLink = userLinkBuilder.validateShareCodeLink()
+
+        assertThat(validateShareCodeLink).isNotNull
+        assertThat(validateShareCodeLink!!.href).endsWith("/users/{id}/shareCode/{shareCode}")
+    }
+
+    @Test
+    fun `no validateShareCode link when authenticated`() {
+        setSecurityContext("lovely-user")
+
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "lovely-user"),
+                profile = ProfileFactory.sample(),
+                organisationAccountId = AccountId("test"),
+                accessExpiresOn = ZonedDateTime.now().minusDays(1)
+            )
+        )
+        val validateShareCodeLink = userLinkBuilder.validateShareCodeLink()
+
+        assertThat(validateShareCodeLink).isNull()
+    }
 }

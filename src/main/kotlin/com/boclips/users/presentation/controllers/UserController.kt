@@ -5,6 +5,7 @@ import com.boclips.users.application.commands.CreateTeacherAccount
 import com.boclips.users.application.commands.GetContractsOfUser
 import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.commands.UpdateUser
+import com.boclips.users.application.commands.ValidateShareCode
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.presentation.hateoas.ContractResourcesHateoasWrapper
 import com.boclips.users.presentation.hateoas.ContractResourcesWrapper
@@ -42,7 +43,8 @@ class UserController(
     private val synchronisationService: SynchronisationService,
     private val contractConverter: ContractConverter,
     private val getContractsOfUser: GetContractsOfUser,
-    private val withProjection: WithProjection
+    private val withProjection: WithProjection,
+    private val validateShareCode: ValidateShareCode
 ) {
 
     @PostMapping
@@ -106,4 +108,12 @@ class UserController(
     fun syncAccounts() {
         synchronisationService.synchroniseAccounts()
     }
+
+    @GetMapping("/{id}/shareCode/{shareCode}")
+    fun checkUserShareCode(@PathVariable id: String?, @PathVariable shareCode: String?): ResponseEntity<Any> =
+        if (validateShareCode(id!!, shareCode!!)) {
+            ResponseEntity.status(HttpStatus.OK).build()
+        } else {
+            ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+        }
 }

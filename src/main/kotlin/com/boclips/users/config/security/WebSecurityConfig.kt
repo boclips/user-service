@@ -33,6 +33,7 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.POST, "/v1/users/sync").hasRole(UserRoles.SYNCHRONIZE_USERS_HUBSPOT)
             .antMatchers(HttpMethod.POST, "/v1/users/sync-identities").hasRole(UserRoles.SYNCHRONIZE_USERS_KEYCLOAK)
             .antMatchers(HttpMethod.GET, "/v1/users/*/contracts").hasRole(UserRoles.VIEW_CONTRACTS)
+            .antMatchers(HttpMethod.GET, "/v1/users/*/shareCode/*").permitAll()
 
             .antMatchers(HttpMethod.POST, "/v1/contracts").hasRole(UserRoles.INSERT_CONTRACTS)
             .antMatchers(HttpMethod.GET, "/v1/contracts").hasRole(UserRoles.VIEW_CONTRACTS)

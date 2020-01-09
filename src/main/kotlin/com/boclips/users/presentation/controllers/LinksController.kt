@@ -1,9 +1,9 @@
 package com.boclips.users.presentation.controllers
 
+import com.boclips.users.presentation.hateoas.AccountLinkBuilder
 import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.boclips.users.presentation.hateoas.EventLinkBuilder
-import com.boclips.users.presentation.hateoas.AccountLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import org.springframework.hateoas.Resource
 import org.springframework.web.bind.annotation.GetMapping
@@ -31,7 +31,8 @@ class LinksController(
             countryLinkBuilder.getCountriesLink(),
             contractLinkBuilder.searchContracts(),
             eventLinkBuilder.logPageRenderedEventLink(),
-            accountLinkBuilder.getIndependentOrganisationsLink()
+            accountLinkBuilder.getIndependentOrganisationsLink(),
+            userLinkBuilder.validateShareCodeLink()
         )
     )
 }
