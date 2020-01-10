@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.school.Country
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.web.client.RestTemplate
+import java.util.regex.Pattern
 
 class SchoolDiggerClientTest {
     // This are testing credentials that will return non production data
@@ -14,12 +15,13 @@ class SchoolDiggerClientTest {
     }, RestTemplate())
 
     @Test
-    fun lookup() {
+    fun `lookup results contain school id, name and city`() {
         val lookupSchools = client.lookupSchools("AK", "sc")
 
         assertThat(lookupSchools).isNotEmpty
         assertThat(lookupSchools.first().id).isNotBlank()
         assertThat(lookupSchools.first().name).isNotBlank()
+        assertThat(lookupSchools.first().name).matches(Pattern.compile("^[\\w ]+, [\\w ]+$"))
     }
     @Test
     fun `lookup when failure returns empty array`() {

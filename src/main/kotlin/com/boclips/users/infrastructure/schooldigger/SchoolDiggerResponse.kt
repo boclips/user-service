@@ -4,7 +4,8 @@ data class SchoolDiggerMatchesResponse(val schoolMatches: List<SchoolDiggerSchoo
 
 data class SchoolDiggerSchool(
     val schoolid: String,
-    val schoolName: String
+    val schoolName: String,
+    val city: String
 )
 
 data class SchoolDiggerSchoolDetail(

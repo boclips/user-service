@@ -69,7 +69,7 @@ class SchoolDiggerClient(
         }
 
         return response.body?.schoolMatches
-            ?.map { LookupEntry(it.schoolid, it.schoolName) }
+            ?.map { LookupEntry(it.schoolid, "${it.schoolName}, ${it.city}") }
             ?: emptyList()
     }
 

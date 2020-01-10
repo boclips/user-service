@@ -54,8 +54,8 @@ class AmericanSchoolsProviderContractTest {
                     FakeAmericanSchoolsProvider().apply {
                         createLookupEntries(
                             "NY",
-                            LookupEntry("id-1", "Abraham Lincoln High School"),
-                            LookupEntry("id-2", "Stella K Abraham High School For Girls")
+                            LookupEntry("id-1", "Abraham Lincoln High School, Brooklyn"),
+                            LookupEntry("id-2", "Stella K Abraham High School For Girls, Hewlett")
                         )
                     },
                     {})
@@ -71,8 +71,8 @@ class AmericanSchoolsProviderContractTest {
         val schools = client.lookupSchools(stateId = "NY", schoolName = "Abraham")
 
         assertThat(schools).containsExactly(
-            LookupEntry("id-1", "Abraham Lincoln High School"),
-            LookupEntry("id-2", "Stella K Abraham High School For Girls")
+            LookupEntry("id-1", "Abraham Lincoln High School, Brooklyn"),
+            LookupEntry("id-2", "Stella K Abraham High School For Girls, Hewlett")
         )
     }
 }
