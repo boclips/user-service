@@ -11,6 +11,7 @@ import com.boclips.users.presentation.resources.converters.AccountConverter
 import org.springframework.hateoas.PagedResources
 import org.springframework.hateoas.Resource
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -53,7 +54,7 @@ class AccountController(
         return accountConverter.toResource(organisation)
     }
 
-    @PutMapping("/accounts/{id}")
+    @PatchMapping("/accounts/{id}")
     fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateAccountRequest: UpdateAccountRequest?): Resource<AccountResource> {
         return accountConverter.toResource(updateAccount(id, updateAccountRequest))
     }

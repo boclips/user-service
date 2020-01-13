@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import java.time.ZonedDateTime
@@ -204,7 +204,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                put("/v1/accounts/${district.id.value}").asUserWithRoles(
+                patch("/v1/accounts/${district.id.value}").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.UPDATE_ORGANISATIONS
                 )
@@ -230,7 +230,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                put("/v1/accounts/${district.id.value}").asUserWithRoles(
+                patch("/v1/accounts/${district.id.value}").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.UPDATE_ORGANISATIONS
                 )
@@ -248,7 +248,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
             mvc.perform(
-                put("/v1/accounts/not-an-organisation").asUserWithRoles(
+                patch("/v1/accounts/not-an-organisation").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.UPDATE_ORGANISATIONS
                 )
@@ -261,15 +261,17 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `returns a forbidden response when caller is not allowed to udpated organisations`() {
+        fun `returns not found when caller is not allowed to update organisations`() {
+            val expiryTime = ZonedDateTime.now()
+            val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
             mvc.perform(
-                put("/v1/accounts/not-an-organisation").asUser("some-boclipper")
+                patch("/v1/accounts/not-an-organisation").asUser("some-boclipper")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
-                        """{"accessExpiresOn": "this doesn't matter"}""".trimIndent()
+                        """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
                     )
             )
-                .andExpect(MockMvcResultMatchers.status().isForbidden)
+                .andExpect(MockMvcResultMatchers.status().isNotFound)
         }
     }
 
