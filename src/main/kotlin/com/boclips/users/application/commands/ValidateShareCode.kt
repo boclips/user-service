@@ -14,7 +14,7 @@ class ValidateShareCode(
         val user = userRepository.findById(UserId(userId))
         user?.let {
             if (user.teacherPlatformAttributes?.shareCode != null) {
-                return user.teacherPlatformAttributes.shareCode == shareCode
+                return user.teacherPlatformAttributes.shareCode.equals(shareCode, true)
             } else {
                 throw ShareCodeNotFoundException(user.id)
             }

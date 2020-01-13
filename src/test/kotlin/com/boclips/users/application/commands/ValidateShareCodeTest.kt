@@ -25,6 +25,11 @@ class ValidateShareCodeTest : AbstractSpringIntegrationTest() {
         val user = saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CODE")))
         assertTrue(validateShareCode(user.id.value, "CODE"))
     }
+    @Test
+    fun `valid share code - case insensitive`() {
+        val user = saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CASE")))
+        assertTrue(validateShareCode(user.id.value, "cAsE"))
+    }
 
     @Test
     fun `invalid share code`() {
