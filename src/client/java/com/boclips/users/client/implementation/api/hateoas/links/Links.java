@@ -6,4 +6,5 @@ import lombok.Data;
 public class Links {
     private Link user;
     private Link contracts;
+    private Link account;
 }

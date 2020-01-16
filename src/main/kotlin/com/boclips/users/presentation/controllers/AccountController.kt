@@ -13,7 +13,6 @@ import org.springframework.hateoas.Resource
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -48,8 +47,8 @@ class AccountController(
     }
 
     @GetMapping("/accounts/{id}")
-    fun fetchOrganisationById(@PathVariable("id") id: String): Resource<AccountResource> {
-        val organisation = getAccountById(id)
+    fun fetchOrganisationById(@PathVariable("id") id: String?): Resource<AccountResource> {
+        val organisation = getAccountById(id!!)
 
         return accountConverter.toResource(organisation)
     }

@@ -34,6 +34,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
+            .andExpect(jsonPath("$._links.account").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }
 
@@ -58,6 +59,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
+            .andExpect(jsonPath("$._links.account").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").doesNotExist())
     }
 
@@ -83,6 +85,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
+            .andExpect(jsonPath("$._links.account").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").doesNotExist())
     }
 
@@ -109,6 +112,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.searchContracts").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
+            .andExpect(jsonPath("$._links.account").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").doesNotExist())
     }
 
@@ -202,6 +206,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.independentAccounts").exists())
             .andExpect(jsonPath("$._links.independentAccounts.templated", equalTo(true)))
             .andExpect(jsonPath("$._links.independentAccounts.href",endsWith("/independent-accounts{?countryCode,page,size}")))
+            .andExpect(jsonPath("$._links.account.href", endsWith("/accounts/{id}")))
     }
 
     @Test

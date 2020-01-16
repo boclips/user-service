@@ -32,6 +32,7 @@ class LinksController(
             contractLinkBuilder.searchContracts(),
             eventLinkBuilder.logPageRenderedEventLink(),
             accountLinkBuilder.getIndependentOrganisationsLink(),
+            accountLinkBuilder.getAccountLink(),
             userLinkBuilder.validateShareCodeLink()
         )
     )

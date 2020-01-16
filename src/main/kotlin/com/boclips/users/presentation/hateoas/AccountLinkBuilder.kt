@@ -16,6 +16,16 @@ class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsB
         ).withSelfRel()
     }
 
+    fun getAccountLink(): Link? {
+        return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
+            ControllerLinkBuilder.linkTo(
+                ControllerLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(null)
+            ).withRel("account")
+        } else {
+            null
+        }
+    }
+
     fun edit(id: AccountId): Link {
         return ControllerLinkBuilder.linkTo(
             ControllerLinkBuilder.methodOn(AccountController::class.java).updateAnAccount(id.value, null)

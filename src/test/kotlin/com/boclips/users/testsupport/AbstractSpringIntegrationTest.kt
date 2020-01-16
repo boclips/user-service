@@ -163,7 +163,8 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveOrganisationWithContractDetails(
         organisationName: String = "Boclips for Teachers",
-        contractIds: List<Contract> = emptyList()
+        contractIds: List<Contract> = emptyList(),
+        allowsOverridingUserIds: Boolean = false
     ): com.boclips.users.domain.model.account.Account<*> {
         val organisationContracts = mutableListOf<Contract>()
         contractIds.map {
@@ -188,7 +189,10 @@ abstract class AbstractSpringIntegrationTest {
         }
 
         return saveApiIntegration(
-            organisation = OrganisationFactory.apiIntegration(name = organisationName, allowsOverridingUserIds = false),
+            organisation = OrganisationFactory.apiIntegration(
+                name = organisationName,
+                allowsOverridingUserIds = allowsOverridingUserIds
+            ),
             contractIds = organisationContracts.map { it.id })
     }
 
