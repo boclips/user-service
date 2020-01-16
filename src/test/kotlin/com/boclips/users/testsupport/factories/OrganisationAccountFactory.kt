@@ -69,12 +69,14 @@ class OrganisationFactory {
         fun apiIntegration(
             name: String = "Amazing Organisation",
             country: Country = Country.fromCode(Country.USA_ISO),
-            state: State = State.fromCode("IL")
+            state: State = State.fromCode("IL"),
+            allowsOverridingUserIds: Boolean = false
         ): ApiIntegration {
             return ApiIntegration(
                 name = name,
                 country = country,
-                state = state
+                state = state,
+                allowsOverridingUserIds = allowsOverridingUserIds
             )
         }
     }

@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.resources.converters
 
+import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.presentation.resources.OrganisationResource
 import com.boclips.users.presentation.resources.school.CountryResource
@@ -24,6 +25,10 @@ class OrganisationConverter {
                     id = it.id,
                     states = null
                 )
+            },
+            allowsOverridingUserIds = when (organisation) {
+                is ApiIntegration -> organisation.allowsOverridingUserIds
+                else -> null
             }
         )
     }

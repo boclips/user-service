@@ -7,5 +7,6 @@ data class OrganisationResource(
     val name: String,
     val type: String?,
     val state: StateResource?,
-    val country: CountryResource?
+    val country: CountryResource?,
+    val allowsOverridingUserIds: Boolean?
 )

@@ -20,7 +20,8 @@ object OrganisationDocumentConverter {
             OrganisationType.API -> ApiIntegration(
                 name = organisationDocument.name,
                 country = organisationDocument.country?.let { Country.fromCode(it.code) },
-                state = organisationDocument.state?.let { State.fromCode(it.code) }
+                state = organisationDocument.state?.let { State.fromCode(it.code) },
+                allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false
             )
 
             OrganisationType.SCHOOL -> School(

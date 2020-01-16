@@ -188,14 +188,14 @@ abstract class AbstractSpringIntegrationTest {
         }
 
         return saveApiIntegration(
-            organisation = OrganisationFactory.apiIntegration(name = organisationName),
+            organisation = OrganisationFactory.apiIntegration(name = organisationName, allowsOverridingUserIds = false),
             contractIds = organisationContracts.map { it.id })
     }
 
     fun saveApiIntegration(
         contractIds: List<ContractId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
-        organisation: ApiIntegration = OrganisationFactory.apiIntegration()
+        organisation: ApiIntegration = OrganisationFactory.apiIntegration(allowsOverridingUserIds = false)
     ): com.boclips.users.domain.model.account.Account<ApiIntegration> {
         return accountRepository.save(
             apiIntegration = organisation,

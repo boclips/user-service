@@ -8,7 +8,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -72,9 +72,19 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(jsonPath("$._embedded.account", hasSize<Int>(2)))
                 .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.type", equalTo(district.organisation.type().toString())))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.account[0].organisation.type",
+                        equalTo(district.organisation.type().toString())
+                    )
+                )
                 .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
-                .andExpect(jsonPath("$._embedded.account[0]._links.edit.href", endsWith("/v1/accounts/${district.id.value}")))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.account[0]._links.edit.href",
+                        endsWith("/v1/accounts/${district.id.value}")
+                    )
+                )
                 .andExpect(jsonPath("$._embedded.account[1].organisation.name", equalTo(school.organisation.name)))
         }
 
@@ -116,9 +126,19 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(jsonPath("$._embedded.account", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.type", equalTo(district.organisation.type().toString())))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.account[0].organisation.type",
+                        equalTo(district.organisation.type().toString())
+                    )
+                )
                 .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
-                .andExpect(jsonPath("$._embedded.account[0]._links.edit.href", endsWith("/v1/accounts/${district.id.value}")))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.account[0]._links.edit.href",
+                        endsWith("/v1/accounts/${district.id.value}")
+                    )
+                )
         }
 
         @Test
@@ -159,13 +179,28 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(jsonPath("$._embedded.account", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.type", equalTo(district.organisation.type().toString())))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.account[0].organisation.type",
+                        equalTo(district.organisation.type().toString())
+                    )
+                )
                 .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
-                .andExpect(jsonPath("$._embedded.account[0]._links.edit.href", endsWith("/v1/accounts/${district.id.value}")))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.account[0]._links.edit.href",
+                        endsWith("/v1/accounts/${district.id.value}")
+                    )
+                )
                 .andExpect(jsonPath("$.page.size", equalTo(1)))
                 .andExpect(jsonPath("$.page.totalElements", equalTo(2)))
                 .andExpect(jsonPath("$.page.totalPages", equalTo(2)))
-                .andExpect(jsonPath("$._links.next.href", endsWith("/v1/independent-accounts?countryCode=USA&size=1&page=1")))
+                .andExpect(
+                    jsonPath(
+                        "$._links.next.href",
+                        endsWith("/v1/independent-accounts?countryCode=USA&size=1&page=1")
+                    )
+                )
         }
 
         @Test
@@ -177,7 +212,12 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     state = State(id = "FL", name = "Florida")
                 )
             )
-            val school = accountRepository.save(OrganisationFactory.school(name = "my school", country = Country.fromCode("GBR")))
+            val school = accountRepository.save(
+                OrganisationFactory.school(
+                    name = "my school",
+                    country = Country.fromCode("GBR")
+                )
+            )
 
             mvc.perform(
                 get("/v1/independent-accounts").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
@@ -278,10 +318,13 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class FetchingOrganisationsAccountById {
         @Test
-        fun `retrieves an organisation account by id`() {
+        fun `retrieves an api integration organisation account by id`() {
             val organisationName = "Test Org"
             val organisation = accountRepository.save(
-                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
+                apiIntegration = OrganisationFactory.apiIntegration(
+                    name = organisationName,
+                    allowsOverridingUserIds = true
+                ),
                 contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
                 role = "ROLE_TEST_ORG"
             )
@@ -291,8 +334,9 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
-                .andExpect(jsonPath("$.contractIds", Matchers.containsInAnyOrder("A", "B", "C")))
+                .andExpect(jsonPath("$.organisation.allowsOverridingUserIds", equalTo(true)))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/accounts/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${organisation.id.value}")))
         }

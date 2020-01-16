@@ -65,7 +65,8 @@ data class District(
 data class ApiIntegration(
     override val name: String,
     override val country: Country? = null,
-    override val state: State? = null
+    override val state: State? = null,
+    val allowsOverridingUserIds: Boolean = false
 ) : Organisation(
     name = name,
     country = country,

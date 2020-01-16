@@ -20,6 +20,7 @@ class OrganisationDocumentFactory {
             country: LocationDocument? = LocationDocumentFactory.country(),
             state: LocationDocument? = LocationDocumentFactory.state(),
             postcode: String? = null,
+            allowsOverridingUserIds: Boolean? = null,
             parentOrganisation: OrganisationDocument? = null,
             accessExpiresOn: ZonedDateTime? = null
         ) = OrganisationDocument(
@@ -33,6 +34,7 @@ class OrganisationDocumentFactory {
             country = country,
             state = state,
             postcode = postcode,
+            allowsOverridingUserIds = allowsOverridingUserIds,
             parentOrganisation = parentOrganisation,
             accessExpiresOn = accessExpiresOn?.toInstant()
         )

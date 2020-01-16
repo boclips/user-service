@@ -1,9 +1,9 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
 import com.boclips.users.domain.service.AccountTypeUpdate
@@ -23,7 +23,10 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
         val contractIds = listOf(ContractId("Contract A"), ContractId("Contract B"))
 
         val organisationAccount = accountRepository.save(
-            apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
+            apiIntegration = OrganisationFactory.apiIntegration(
+                name = organisationName,
+                allowsOverridingUserIds = true
+            ),
             contractIds = contractIds
         )
 
@@ -31,6 +34,7 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(organisationAccount.type).isEqualTo(AccountType.STANDARD)
         assertThat(organisationAccount.organisation.name).isEqualTo(organisationName)
         assertThat(organisationAccount.contractIds).isEqualTo(contractIds)
+        assertThat((organisationAccount).organisation.allowsOverridingUserIds).isTrue()
     }
 
     @Test
@@ -259,7 +263,6 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(independentOrganisations).containsExactly(district, school)
         assertThat(independentOrganisations).hasSize(2)
 
-
         val searchRequestGBR = AccountSearchRequest(
             countryCode = "GBR",
             page = 0,
@@ -327,7 +330,14 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
 
         val independentOrganisations: Page<Account<*>>? =
             accountRepository.findIndependentSchoolsAndDistricts(searchRequest)
-        assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree, schoolTwo, schoolFive, schoolFour, schoolSix)
+        assertThat(independentOrganisations).containsExactly(
+            schoolOne,
+            schoolThree,
+            schoolTwo,
+            schoolFive,
+            schoolFour,
+            schoolSix
+        )
     }
 
     @Test
@@ -388,7 +398,8 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
             size = 2
         )
 
-        val independentOrganisations: Page<Account<*>>? = accountRepository.findIndependentSchoolsAndDistricts(searchRequest)
+        val independentOrganisations: Page<Account<*>>? =
+            accountRepository.findIndependentSchoolsAndDistricts(searchRequest)
         assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree)
         assertThat(independentOrganisations!!.totalPages).isEqualTo(3)
         assertThat(independentOrganisations.totalElements).isEqualTo(6)

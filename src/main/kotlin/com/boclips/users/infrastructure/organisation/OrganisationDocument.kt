@@ -20,6 +20,7 @@ data class OrganisationDocument(
         val country: LocationDocument?,
         val state: LocationDocument?,
         val postcode: String?,
+        val allowsOverridingUserIds: Boolean?,
         @DBRef
         val parentOrganisation: OrganisationDocument? = null,
         val accessExpiresOn: Instant? = null

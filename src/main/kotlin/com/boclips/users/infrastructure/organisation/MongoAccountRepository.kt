@@ -1,14 +1,14 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.LookupEntry
-import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.account.School
+import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.domain.service.AccountTypeUpdate
@@ -112,6 +112,10 @@ class MongoAccountRepository(private val repository: OrganisationSpringDataRepos
             country = organisation.country?.id?.let { LocationDocument(code = it) },
             state = organisation.state?.id?.let { LocationDocument(code = it) },
             postcode = organisation.postcode,
+            allowsOverridingUserIds = when (organisation) {
+                is ApiIntegration -> organisation.allowsOverridingUserIds
+                else -> null
+            },
             parentOrganisation = when (organisation) {
                 is School -> organisation.district?.let {
                     organisationDocument(
