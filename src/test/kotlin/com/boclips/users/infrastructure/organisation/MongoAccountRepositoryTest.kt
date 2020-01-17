@@ -404,4 +404,77 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(independentOrganisations!!.totalPages).isEqualTo(3)
         assertThat(independentOrganisations.totalElements).isEqualTo(6)
     }
+
+    @Test
+    fun `find accounts`() {
+        val district = accountRepository.save(OrganisationFactory.district())
+        val school = accountRepository.save(
+            OrganisationFactory.school(
+                name = "Independent School",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+        val districtSchool = accountRepository.save(
+            OrganisationFactory.school(
+                name = "School with District",
+                district = district,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+        val usaSchool = accountRepository.save(
+            OrganisationFactory.school(
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+        val accounts = accountRepository.findAccounts(AccountSearchRequest(page = 0, size = 10, countryCode = null))
+
+        assertThat(accounts).containsExactly(district, school, districtSchool, usaSchool)
+        assertThat(accounts).hasSize(4)
+    }
+
+    fun `filter accounts for USA organisations`() {
+        val district = accountRepository.save(
+            OrganisationFactory.district(
+                name = "District 9"
+            )
+        )
+
+        val districtSchool = accountRepository.save(
+            OrganisationFactory.school(
+                name = "School in District 9",
+                district = district,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+        val usaSchool = accountRepository.save(
+            OrganisationFactory.school(
+                name = "Independent USA School",
+                district = null,
+                country = Country.fromCode(Country.USA_ISO)
+            )
+        )
+
+        val gbrSchool = accountRepository.save(
+            OrganisationFactory.school(
+                name = "Independent GBR School",
+                district = null,
+                country = Country.fromCode(Country.GBR_ISO)
+            )
+        )
+
+        val accounts =
+            accountRepository.findAccounts(AccountSearchRequest(page = 0, size = 10, countryCode = Country.USA_ISO))
+
+        assertThat(accounts).hasSize(3)
+        assertThat(accounts).contains(district)
+        assertThat(accounts).contains(districtSchool)
+        assertThat(accounts).contains(usaSchool)
+        assertThat(accounts).doesNotContain(gbrSchool)
+    }
 }

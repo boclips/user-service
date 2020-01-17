@@ -138,9 +138,7 @@ class InfrastructureConfiguration(
     }
 
     @Bean
-    fun mongoOrganisationAccountRepository(
-
-    ): MongoAccountRepository {
+    fun mongoOrganisationAccountRepository(): MongoAccountRepository {
         return MongoAccountRepository(
             repository = organisationSpringDataRepository
         )

@@ -367,4 +367,36 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
         }
     }
+
+    @Nested
+    inner class GettingAccounts {
+        @Test
+        fun `gets a page of all accounts when filters are empty`() {
+            saveDistrict(district = OrganisationFactory.district(name = "district 1"))
+            saveDistrict(district = OrganisationFactory.district(name = "district 2"))
+            saveSchool(school = OrganisationFactory.school(name = "school 1"))
+
+            mvc.perform(
+                get("/v1/accounts").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.VIEW_ORGANISATIONS
+                )
+            ).andExpect(jsonPath("$._embedded.account", hasSize<Int>(3)))
+                .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo("district 1")))
+                .andExpect(jsonPath("$._embedded.account[1].organisation.name", equalTo("district 2")))
+                .andExpect(jsonPath("$._embedded.account[2].organisation.name", equalTo("school 1")))
+        }
+
+        @Test
+        fun `gets parent accounts when parent account filter present`(){}
+
+        @Test
+        fun `returns no results when there ware no matching organisations`(){}
+
+        @Test
+        fun `returns a forbidden response when user is not allowed to view organisations`(){}
+
+    }
+
+
 }

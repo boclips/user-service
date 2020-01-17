@@ -18,6 +18,7 @@ data class Country(
 
     companion object {
         const val USA_ISO = "USA"
+        const val GBR_ISO = "GBR"
         fun usa() = fromCode(USA_ISO)
 
         fun fromCode(countryCode: String): Country {

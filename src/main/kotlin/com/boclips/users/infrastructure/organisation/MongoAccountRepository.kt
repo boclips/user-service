@@ -19,7 +19,9 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import java.time.ZonedDateTime
 
-class MongoAccountRepository(private val repository: OrganisationSpringDataRepository) :
+class MongoAccountRepository(
+    private val repository: OrganisationSpringDataRepository
+) :
     AccountRepository {
 
     override fun lookupSchools(
@@ -68,8 +70,15 @@ class MongoAccountRepository(private val repository: OrganisationSpringDataRepos
         return fromDocument(repository.save(updatedDocument))
     }
 
+    override fun findAccounts(searchRequest: AccountSearchRequest): Page<Account<*>> {
+        val pageSize = searchRequest.size ?: 30
+        val page = searchRequest.page ?: 0
+
+        return repository.findAll(PageRequest.of(page, pageSize)).map(::fromDocument)
+    }
+
     override fun findAccountsByParentId(parentId: AccountId): List<Account<*>> {
-        return repository.findByParentOrganisationId(parentId.value).map { fromDocument(it) }
+        return repository.findByParentOrganisationId(parentId.value).map(::fromDocument)
     }
 
     private fun doSave(

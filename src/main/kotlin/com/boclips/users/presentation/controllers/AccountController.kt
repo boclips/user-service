@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.commands.GetAccountById
+import com.boclips.users.application.commands.GetAccounts
 import com.boclips.users.application.commands.GetIndependentAccounts
 import com.boclips.users.application.commands.UpdateAccount
 import com.boclips.users.infrastructure.organisation.AccountSearchRequest
@@ -26,7 +27,8 @@ class AccountController(
     private val getAccountById: GetAccountById,
     private val accountConverter: AccountConverter,
     private val updateAccount: UpdateAccount,
-    private val accountLinkBuilder: AccountLinkBuilder
+    private val accountLinkBuilder: AccountLinkBuilder,
+    private val getAccounts: GetAccounts
 ) {
     @GetMapping("/independent-accounts")
     fun getAllIndependentAccounts(
@@ -56,5 +58,20 @@ class AccountController(
     @PatchMapping("/accounts/{id}")
     fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateAccountRequest: UpdateAccountRequest?): Resource<AccountResource> {
         return accountConverter.toResource(updateAccount(id, updateAccountRequest))
+    }
+
+    @GetMapping("/accounts")
+    fun listAccounts(
+        @RequestParam(required = false) page: Int? = null,
+        @RequestParam(required = false) size: Int? = null
+    ): PagedResources<Resource<AccountResource>> {
+        val accounts = getAccounts(AccountSearchRequest(countryCode = null, page = page, size = size));
+
+        val accountResources = accounts.map { account -> accountConverter.toResource(account) }
+
+        return PagedResources(
+            accountResources.content,
+            PagedResources.PageMetadata(accounts.totalElements, 0, accounts.totalElements)
+        )
     }
 }
