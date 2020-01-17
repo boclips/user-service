@@ -1,7 +1,10 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.application.exceptions.InvalidDateException
+import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.exceptions.AccountNotFoundException
+import com.boclips.users.application.exceptions.InvalidDateException
+import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
@@ -15,6 +18,10 @@ import java.time.format.DateTimeParseException
 @Component
 class UpdateAccount(private val accountRepository: AccountRepository) {
     operator fun invoke(id: String, request: UpdateAccountRequest?): Account<*> {
+        if (!UserExtractor.currentUserHasRole(UserRoles.UPDATE_ORGANISATIONS)) {
+            throw PermissionDeniedException()
+        }
+
         val convertedDate = convertToZonedDateTime(request?.accessExpiresOn)
 
         return accountRepository.update(

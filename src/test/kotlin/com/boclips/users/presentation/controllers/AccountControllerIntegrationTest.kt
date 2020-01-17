@@ -301,17 +301,25 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `returns not found when caller is not allowed to update organisations`() {
+        fun `returns forbidden when caller is not allowed to update organisations`() {
+            val district = accountRepository.save(
+                OrganisationFactory.district(
+                    name = "my district",
+                    externalId = "123",
+                    state = State(id = "FL", name = "Florida")
+                )
+            )
+
             val expiryTime = ZonedDateTime.now()
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
             mvc.perform(
-                patch("/v1/accounts/not-an-organisation").asUser("some-boclipper")
+                patch("/v1/accounts/${district.id.value}").asUser("an-outsider")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
                     )
             )
-                .andExpect(MockMvcResultMatchers.status().isNotFound)
+                .andExpect(MockMvcResultMatchers.status().isForbidden)
         }
     }
 
