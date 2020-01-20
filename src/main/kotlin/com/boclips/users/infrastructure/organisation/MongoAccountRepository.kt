@@ -15,12 +15,11 @@ import com.boclips.users.domain.service.AccountTypeUpdate
 import com.boclips.users.domain.service.AccountUpdate
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import java.time.ZonedDateTime
 
 class MongoAccountRepository(
-    private val repository: OrganisationSpringDataRepository
+    private val repository: OrganisationRepository
 ) :
     AccountRepository {
 
@@ -68,13 +67,6 @@ class MongoAccountRepository(
         }
 
         return fromDocument(repository.save(updatedDocument))
-    }
-
-    override fun findAccounts(searchRequest: AccountSearchRequest): Page<Account<*>> {
-        val pageSize = searchRequest.size ?: 30
-        val page = searchRequest.page ?: 0
-
-        return repository.findAll(PageRequest.of(page, pageSize)).map(::fromDocument)
     }
 
     override fun findAccountsByParentId(parentId: AccountId): List<Account<*>> {
@@ -166,17 +158,20 @@ class MongoAccountRepository(
             }
     }
 
-    override fun findIndependentSchoolsAndDistricts(searchRequest: AccountSearchRequest): Page<Account<*>>? {
-        val results = searchRequest.countryCode?.let {
-            repository.findByCountryCodeAndParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
-                searchRequest.countryCode,
-                OrganisationType.API,
-                PageRequest.of(searchRequest.page ?: 0, searchRequest.size ?: 30)
+    override fun findAccounts(
+        countryCode: String?, types: List<OrganisationType>?, page: Int?, size: Int?
+    ): Page<Account<*>>? {
+        val results =
+            repository.findOrganisations(
+                OrganisationSearchRequest(
+                    countryCode = countryCode,
+                    organisationTypes = types,
+                    parentOnly = true,
+                    page = page,
+                    size = size
+                )
             )
-        } ?: repository.findByParentOrganisationIsNullAndTypeIsNotOrderByAccessExpiresOnDescNameAsc(
-            OrganisationType.API,
-            PageRequest.of(searchRequest.page ?: 0, searchRequest.size ?: 30)
-        )
+
         return results.map {
             @Suppress("UNCHECKED_CAST")
             fromDocument(it) as Account<Organisation>

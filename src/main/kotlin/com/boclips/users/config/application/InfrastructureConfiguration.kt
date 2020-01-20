@@ -16,7 +16,7 @@ import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.organisation.MongoAccountRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
-import com.boclips.users.infrastructure.organisation.OrganisationSpringDataRepository
+import com.boclips.users.infrastructure.organisation.OrganisationRepository
 import com.boclips.users.infrastructure.organisation.RoleBasedOrganisationIdResolver
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
@@ -39,7 +39,7 @@ import org.springframework.web.client.RestTemplate
 @Configuration
 class InfrastructureConfiguration(
     private val objectMapper: ObjectMapper,
-    private val organisationSpringDataRepository: OrganisationSpringDataRepository
+    private val organisationRepository: OrganisationRepository
 ) {
 
     @Profile("!test")
@@ -140,7 +140,7 @@ class InfrastructureConfiguration(
     @Bean
     fun mongoOrganisationAccountRepository(): MongoAccountRepository {
         return MongoAccountRepository(
-            repository = organisationSpringDataRepository
+            repository = organisationRepository
         )
     }
 }

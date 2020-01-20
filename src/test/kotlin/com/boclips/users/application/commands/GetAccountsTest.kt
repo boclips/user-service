@@ -1,8 +1,8 @@
 package com.boclips.users.application.commands
 
+import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.infrastructure.organisation.AccountSearchRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -39,7 +39,7 @@ internal class GetAccountsTest : AbstractSpringIntegrationTest(){
             )
         )
 
-        val organisations = getAccounts(AccountSearchRequest(countryCode = null, page = 0, size = 10))
+        val organisations = getAccounts(OrganisationFilter(countryCode = null, page = 0, size = 10))
 
         assertThat(organisations).hasSize(3)
         val organisationNames = organisations.content.map { it.organisation.name }
@@ -70,7 +70,7 @@ internal class GetAccountsTest : AbstractSpringIntegrationTest(){
             )
         )
 
-        val searchRequest = AccountSearchRequest(
+        val searchRequest = OrganisationFilter(
             countryCode = "GBR",
             page = 0,
             size = 2

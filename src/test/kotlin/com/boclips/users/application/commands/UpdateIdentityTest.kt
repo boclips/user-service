@@ -1,7 +1,9 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.application.exceptions.InvalidDateException
+import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.AccountNotFoundException
+import com.boclips.users.application.exceptions.InvalidDateException
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.requests.UpdateAccountRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -17,6 +19,7 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
     lateinit var updateAccount: UpdateAccount
     @BeforeEach
     fun setup() {
+        setSecurityContext("user-that-can-update-orgs", UserRoles.UPDATE_ORGANISATIONS)
         updateAccount = UpdateAccount(
             accountRepository = accountRepository
         )
@@ -44,6 +47,7 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `Throws an error when organisation to update cannot be found`() {
+
         assertThrows<AccountNotFoundException>{
             updateAccount("non-existent-org", UpdateAccountRequest(accessExpiresOn = "2019-06-06T00:00:00Z"))
         }

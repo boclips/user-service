@@ -4,7 +4,7 @@ import com.boclips.users.application.commands.GetAccountById
 import com.boclips.users.application.commands.GetAccounts
 import com.boclips.users.application.commands.GetIndependentAccounts
 import com.boclips.users.application.commands.UpdateAccount
-import com.boclips.users.infrastructure.organisation.AccountSearchRequest
+import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.presentation.hateoas.AccountLinkBuilder
 import com.boclips.users.presentation.requests.UpdateAccountRequest
 import com.boclips.users.presentation.resources.AccountResource
@@ -23,7 +23,6 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/v1", "/v1/")
 class AccountController(
-    private val getIndependentAccounts: GetIndependentAccounts,
     private val getAccountById: GetAccountById,
     private val accountConverter: AccountConverter,
     private val updateAccount: UpdateAccount,
@@ -37,7 +36,7 @@ class AccountController(
         @RequestParam(required = false) size: Int? = null
     ): PagedResources<Resource<AccountResource>> {
         val accounts =
-            getIndependentAccounts(AccountSearchRequest(countryCode = countryCode, page = page, size = size))
+            getAccounts(OrganisationFilter(countryCode = countryCode, page = page, size = size, id = null))
 
         val accountResources = accounts.map { account -> accountConverter.toResource(account) }
 
@@ -62,10 +61,11 @@ class AccountController(
 
     @GetMapping("/accounts")
     fun listAccounts(
+        @RequestParam(required = false) countryCode: String? = null,
         @RequestParam(required = false) page: Int? = null,
         @RequestParam(required = false) size: Int? = null
     ): PagedResources<Resource<AccountResource>> {
-        val accounts = getAccounts(AccountSearchRequest(countryCode = null, page = page, size = size));
+        val accounts = getAccounts(OrganisationFilter(countryCode = null, page = page, size = size, id = null));
 
         val accountResources = accounts.map { account -> accountConverter.toResource(account) }
 

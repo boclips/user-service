@@ -5,9 +5,9 @@ import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.infrastructure.organisation.AccountSearchRequest
 import org.springframework.data.domain.Page
 import java.time.ZonedDateTime
 import java.util.Collections.emptyList
@@ -31,11 +31,15 @@ interface AccountRepository {
 
     fun update(update: AccountUpdate): Account<*>?
 
-    fun findAccounts(searchRequest: AccountSearchRequest): Page<Account<*>>
     fun findAccountsByParentId(parentId: AccountId): List<Account<*>>
     fun findAccountById(id: AccountId): Account<*>?
     fun findAccountByExternalId(id: String): Account<*>?
-    fun findIndependentSchoolsAndDistricts(searchRequest: AccountSearchRequest): Page<Account<*>>?
+    fun findAccounts(
+        countryCode: String?,
+        types: List<OrganisationType>?,
+        page: Int?,
+        size: Int?
+    ): Page<Account<*>>?
 
     fun findApiIntegrationByRole(role: String): Account<ApiIntegration>?
     fun findApiIntegrationByName(name: String): Account<ApiIntegration>?

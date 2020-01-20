@@ -1,8 +1,8 @@
 package com.boclips.users.application.commands
 
+import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.service.AccountRepository
-import com.boclips.users.infrastructure.organisation.AccountSearchRequest
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
 
@@ -10,7 +10,12 @@ import org.springframework.stereotype.Component
 class GetIndependentAccounts(
     private val accountRepository: AccountRepository
 ) {
-    operator fun invoke(request : AccountSearchRequest): Page<Account<*>> {
-        return accountRepository.findIndependentSchoolsAndDistricts(request)!!
+    operator fun invoke(filter: OrganisationFilter): Page<Account<*>> {
+        return accountRepository.findAccounts(
+            filter.countryCode,
+            filter.organisationTypes,
+            filter.page,
+            filter.size
+        )!!
     }
 }

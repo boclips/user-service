@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.organisation
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
@@ -253,22 +254,24 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val searchRequestUSA = AccountSearchRequest(
-            countryCode = Country.USA_ISO,
-            page = 0,
-            size = 10
-        )
         val independentOrganisations =
-            accountRepository.findIndependentSchoolsAndDistricts(searchRequestUSA)
+            accountRepository.findAccounts(
+                countryCode = Country.USA_ISO,
+                page = 0,
+                size = 10,
+                types = listOf(OrganisationType.SCHOOL, OrganisationType.DISTRICT)
+            )
         assertThat(independentOrganisations).containsExactly(district, school)
         assertThat(independentOrganisations).hasSize(2)
 
-        val searchRequestGBR = AccountSearchRequest(
-            countryCode = "GBR",
-            page = 0,
-            size = 10
-        )
-        assertThat(accountRepository.findIndependentSchoolsAndDistricts(searchRequestGBR)).hasSize(1)
+        assertThat(
+            accountRepository.findAccounts(
+                countryCode = "GBR",
+                page = 0,
+                size = 10,
+                types = listOf(OrganisationType.SCHOOL, OrganisationType.DISTRICT)
+            )
+        ).hasSize(1)
     }
 
     @Test
@@ -322,14 +325,14 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
                 country = Country.fromCode(Country.USA_ISO)
             )
         )
-        val searchRequest = AccountSearchRequest(
-            countryCode = Country.USA_ISO,
-            page = 0,
-            size = 6
-        )
 
         val independentOrganisations: Page<Account<*>>? =
-            accountRepository.findIndependentSchoolsAndDistricts(searchRequest)
+            accountRepository.findAccounts(
+                countryCode = Country.USA_ISO,
+                page = 0,
+                size = 6,
+                types = listOf(OrganisationType.SCHOOL, OrganisationType.DISTRICT)
+            )
         assertThat(independentOrganisations).containsExactly(
             schoolOne,
             schoolThree,
@@ -392,89 +395,15 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val searchRequest = AccountSearchRequest(
-            countryCode = Country.USA_ISO,
-            page = 0,
-            size = 2
-        )
-
         val independentOrganisations: Page<Account<*>>? =
-            accountRepository.findIndependentSchoolsAndDistricts(searchRequest)
-        assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree)
-        assertThat(independentOrganisations!!.totalPages).isEqualTo(3)
+            accountRepository.findAccounts(
+                countryCode = Country.USA_ISO,
+                page = 0,
+                size = 2,
+                types = listOf(OrganisationType.SCHOOL, OrganisationType.DISTRICT)
+            )
+        assertThat(independentOrganisations!!.content).containsExactly(schoolOne, schoolThree)
+        assertThat(independentOrganisations.totalPages).isEqualTo(3)
         assertThat(independentOrganisations.totalElements).isEqualTo(6)
-    }
-
-    @Test
-    fun `find accounts`() {
-        val district = accountRepository.save(OrganisationFactory.district())
-        val school = accountRepository.save(
-            OrganisationFactory.school(
-                name = "Independent School",
-                district = null,
-                country = Country.fromCode(Country.USA_ISO)
-            )
-        )
-
-        val districtSchool = accountRepository.save(
-            OrganisationFactory.school(
-                name = "School with District",
-                district = district,
-                country = Country.fromCode(Country.USA_ISO)
-            )
-        )
-
-        val usaSchool = accountRepository.save(
-            OrganisationFactory.school(
-                district = null,
-                country = Country.fromCode(Country.USA_ISO)
-            )
-        )
-
-        val accounts = accountRepository.findAccounts(AccountSearchRequest(page = 0, size = 10, countryCode = null))
-
-        assertThat(accounts).containsExactly(district, school, districtSchool, usaSchool)
-        assertThat(accounts).hasSize(4)
-    }
-
-    fun `filter accounts for USA organisations`() {
-        val district = accountRepository.save(
-            OrganisationFactory.district(
-                name = "District 9"
-            )
-        )
-
-        val districtSchool = accountRepository.save(
-            OrganisationFactory.school(
-                name = "School in District 9",
-                district = district,
-                country = Country.fromCode(Country.USA_ISO)
-            )
-        )
-
-        val usaSchool = accountRepository.save(
-            OrganisationFactory.school(
-                name = "Independent USA School",
-                district = null,
-                country = Country.fromCode(Country.USA_ISO)
-            )
-        )
-
-        val gbrSchool = accountRepository.save(
-            OrganisationFactory.school(
-                name = "Independent GBR School",
-                district = null,
-                country = Country.fromCode(Country.GBR_ISO)
-            )
-        )
-
-        val accounts =
-            accountRepository.findAccounts(AccountSearchRequest(page = 0, size = 10, countryCode = Country.USA_ISO))
-
-        assertThat(accounts).hasSize(3)
-        assertThat(accounts).contains(district)
-        assertThat(accounts).contains(districtSchool)
-        assertThat(accounts).contains(usaSchool)
-        assertThat(accounts).doesNotContain(gbrSchool)
     }
 }
