@@ -37,8 +37,8 @@ interface AccountRepository {
     fun findAccounts(
         countryCode: String?,
         types: List<OrganisationType>?,
-        page: Int?,
-        size: Int?
+        page: Int,
+        size: Int
     ): Page<Account<*>>?
 
     fun findApiIntegrationByRole(role: String): Account<ApiIntegration>?

@@ -7,6 +7,6 @@ data class OrganisationFilter(
     val countryCode: String? = null,
     val organisationTypes: List<OrganisationType>? = null,
     val parentOnly: Boolean = false,
-    val page: Int?,
-    val size: Int?
+    val page: Int,
+    val size: Int
 )

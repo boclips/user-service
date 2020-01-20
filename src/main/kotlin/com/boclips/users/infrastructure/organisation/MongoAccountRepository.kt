@@ -159,7 +159,7 @@ class MongoAccountRepository(
     }
 
     override fun findAccounts(
-        countryCode: String?, types: List<OrganisationType>?, page: Int?, size: Int?
+        countryCode: String?, types: List<OrganisationType>?, page: Int, size: Int
     ): Page<Account<*>>? {
         val results =
             repository.findOrganisations(

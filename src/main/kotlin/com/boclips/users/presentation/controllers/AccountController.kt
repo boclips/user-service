@@ -2,10 +2,9 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.commands.GetAccountById
 import com.boclips.users.application.commands.GetAccounts
-import com.boclips.users.application.commands.GetIndependentAccounts
 import com.boclips.users.application.commands.UpdateAccount
 import com.boclips.users.application.model.OrganisationFilter
-import com.boclips.users.presentation.hateoas.AccountLinkBuilder
+import com.boclips.users.presentation.requests.ListAccountsRequest
 import com.boclips.users.presentation.requests.UpdateAccountRequest
 import com.boclips.users.presentation.resources.AccountResource
 import com.boclips.users.presentation.resources.converters.AccountConverter
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
@@ -26,26 +24,8 @@ class AccountController(
     private val getAccountById: GetAccountById,
     private val accountConverter: AccountConverter,
     private val updateAccount: UpdateAccount,
-    private val accountLinkBuilder: AccountLinkBuilder,
     private val getAccounts: GetAccounts
 ) {
-    @GetMapping("/independent-accounts")
-    fun getAllIndependentAccounts(
-        @RequestParam(required = false) countryCode: String?,
-        @RequestParam(required = false) page: Int? = null,
-        @RequestParam(required = false) size: Int? = null
-    ): PagedResources<Resource<AccountResource>> {
-        val accounts =
-            getAccounts(OrganisationFilter(countryCode = countryCode, page = page, size = size, id = null))
-
-        val accountResources = accounts.map { account -> accountConverter.toResource(account) }
-
-        return PagedResources(
-            accountResources.content,
-            PagedResources.PageMetadata(size?.toLong() ?: 30, page?.toLong() ?: 0, accounts.totalElements),
-            listOfNotNull(accountLinkBuilder.getNextPageLink(page ?: 0, accounts.totalPages))
-        )
-    }
 
     @GetMapping("/accounts/{id}")
     fun fetchOrganisationById(@PathVariable("id") id: String?): Resource<AccountResource> {
@@ -60,18 +40,23 @@ class AccountController(
     }
 
     @GetMapping("/accounts")
-    fun listAccounts(
-        @RequestParam(required = false) countryCode: String? = null,
-        @RequestParam(required = false) page: Int? = null,
-        @RequestParam(required = false) size: Int? = null
-    ): PagedResources<Resource<AccountResource>> {
-        val accounts = getAccounts(OrganisationFilter(countryCode = null, page = page, size = size, id = null));
+    fun listAccounts(listAccountsRequest: ListAccountsRequest?): PagedResources<Resource<AccountResource>> {
+        val filter = OrganisationFilter(
+            countryCode = listAccountsRequest?.countryCode,
+            page = listAccountsRequest?.page ?: 0,
+            size = listAccountsRequest?.size ?: 30
+        )
+        val accounts = getAccounts(filter)
 
         val accountResources = accounts.map { account -> accountConverter.toResource(account) }
 
         return PagedResources(
             accountResources.content,
-            PagedResources.PageMetadata(accounts.totalElements, 0, accounts.totalElements)
+            PagedResources.PageMetadata(
+                filter.size.toLong(),
+                filter.page.toLong(),
+                accountResources.totalElements
+            )
         )
     }
 }

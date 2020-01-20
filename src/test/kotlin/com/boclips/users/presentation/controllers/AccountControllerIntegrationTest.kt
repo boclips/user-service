@@ -28,7 +28,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a forbidden response when caller is not allowed to view organisations`() {
             mvc.perform(
-                get("/v1/independent-accounts?countryCode=USA")
+                get("/v1/accounts?countryCode=USA")
                     .asUser("has-role@test.com")
             )
                 .andExpect(MockMvcResultMatchers.status().isForbidden)
@@ -37,7 +37,6 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `lists all independent US schools and organisations`() {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
-            val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
             val district = accountRepository.save(
                 OrganisationFactory.district(
@@ -47,6 +46,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 ),
                 accessExpiresOn = expiryTime
             )
+
             accountRepository.save(
                 school = OrganisationFactory.school(
                     name = "my district school",
@@ -55,60 +55,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     district = district
                 )
             )
-            val school = accountRepository.save(
-                school = OrganisationFactory.school(
-                    name = "my independent school",
-                    countryName = "USA",
-                    state = State(id = "FL", name = "Florida"),
-                    district = null
-                ),
-                accessExpiresOn = expiryTime
-            )
-            mvc.perform(
-                get("/v1/independent-accounts?countryCode=USA").asUserWithRoles(
-                    "some-boclipper",
-                    UserRoles.VIEW_ORGANISATIONS
-                )
-            )
-                .andExpect(jsonPath("$._embedded.account", hasSize<Int>(2)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.account[0].organisation.type",
-                        equalTo(district.organisation.type().toString())
-                    )
-                )
-                .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.account[0]._links.edit.href",
-                        endsWith("/v1/accounts/${district.id.value}")
-                    )
-                )
-                .andExpect(jsonPath("$._embedded.account[1].organisation.name", equalTo(school.organisation.name)))
-        }
 
-        @Test
-        fun `it paginates independent US schools and organisations`() {
-            val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
-            val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
-
-            val district = accountRepository.save(
-                OrganisationFactory.district(
-                    name = "my district",
-                    externalId = "123",
-                    state = State(id = "FL", name = "Florida")
-                ),
-                accessExpiresOn = expiryTime
-            )
-            accountRepository.save(
-                school = OrganisationFactory.school(
-                    name = "my district school",
-                    countryName = "USA",
-                    state = State(id = "FL", name = "Florida"),
-                    district = district
-                )
-            )
             accountRepository.save(
                 school = OrganisationFactory.school(
                     name = "my independent school",
@@ -118,89 +65,27 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 ),
                 accessExpiresOn = expiryTime
             )
+
             mvc.perform(
-                get("/v1/independent-accounts?countryCode=USA&size=1").asUserWithRoles(
+                get("/v1/accounts?countryCode=USA&page=0&size=1").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.VIEW_ORGANISATIONS
                 )
             )
                 .andExpect(jsonPath("$._embedded.account", hasSize<Int>(1)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.account[0].organisation.type",
-                        equalTo(district.organisation.type().toString())
-                    )
-                )
-                .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.account[0]._links.edit.href",
-                        endsWith("/v1/accounts/${district.id.value}")
-                    )
-                )
-        }
-
-        @Test
-        fun `it provides a next link when there are further pages of independent US schools and organisations`() {
-            val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
-            val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
-
-            val district = accountRepository.save(
-                OrganisationFactory.district(
-                    name = "my district",
-                    externalId = "123",
-                    state = State(id = "FL", name = "Florida")
-                ),
-                accessExpiresOn = expiryTime
-            )
-            accountRepository.save(
-                school = OrganisationFactory.school(
-                    name = "my district school",
-                    countryName = "USA",
-                    state = State(id = "FL", name = "Florida"),
-                    district = district
-                )
-            )
-            accountRepository.save(
-                school = OrganisationFactory.school(
-                    name = "my independent school",
-                    countryName = "USA",
-                    state = State(id = "FL", name = "Florida"),
-                    district = null
-                ),
-                accessExpiresOn = expiryTime
-            )
-            mvc.perform(
-                get("/v1/independent-accounts?countryCode=USA&size=1").asUserWithRoles(
-                    "some-boclipper",
-                    UserRoles.VIEW_ORGANISATIONS
-                )
-            )
+                .andExpect(jsonPath("$._embedded.account[0].organisation.name").exists())
+                .andExpect(jsonPath("$._embedded.account[0].organisation.type").exists())
+                .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn").exists())
                 .andExpect(jsonPath("$._embedded.account", hasSize<Int>(1)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.account[0].organisation.type",
-                        equalTo(district.organisation.type().toString())
-                    )
-                )
-                .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn", equalTo(expiryTimeToString)))
                 .andExpect(
                     jsonPath(
                         "$._embedded.account[0]._links.edit.href",
                         endsWith("/v1/accounts/${district.id.value}")
                     )
                 )
-                .andExpect(jsonPath("$.page.size", equalTo(1)))
                 .andExpect(jsonPath("$.page.totalElements", equalTo(2)))
                 .andExpect(jsonPath("$.page.totalPages", equalTo(2)))
-                .andExpect(
-                    jsonPath(
-                        "$._links.next.href",
-                        endsWith("/v1/independent-accounts?countryCode=USA&size=1&page=1")
-                    )
-                )
+                .andExpect(jsonPath("$.page.size", equalTo(1)))
         }
 
         @Test
@@ -220,7 +105,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/independent-accounts").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
+                get("/v1/accounts").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(jsonPath("$._embedded.account", hasSize<Int>(2)))
                 .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
@@ -386,17 +271,5 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.account[1].organisation.name", equalTo("district 2")))
                 .andExpect(jsonPath("$._embedded.account[2].organisation.name", equalTo("school 1")))
         }
-
-        @Test
-        fun `gets parent accounts when parent account filter present`(){}
-
-        @Test
-        fun `returns no results when there ware no matching organisations`(){}
-
-        @Test
-        fun `returns a forbidden response when user is not allowed to view organisations`(){}
-
     }
-
-
 }

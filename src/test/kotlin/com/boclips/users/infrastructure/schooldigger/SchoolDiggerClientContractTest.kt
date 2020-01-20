@@ -2,11 +2,12 @@ package com.boclips.users.infrastructure.schooldigger
 
 import com.boclips.users.domain.model.school.Country
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.web.client.RestTemplate
-import java.util.regex.Pattern
 
-class SchoolDiggerClientTest {
+@Disabled
+class SchoolDiggerClientContractTest {
     // This are testing credentials that will return non production data
     val client = SchoolDiggerClient(SchoolDiggerProperties().apply {
         host = "https://api.schooldigger.com"
@@ -21,8 +22,8 @@ class SchoolDiggerClientTest {
         assertThat(lookupSchools).isNotEmpty
         assertThat(lookupSchools.first().id).isNotBlank()
         assertThat(lookupSchools.first().name).isNotBlank()
-        assertThat(lookupSchools.first().name).matches(Pattern.compile("^[\\w ]+, [\\w ]+$"))
     }
+
     @Test
     fun `lookup when failure returns empty array`() {
         val lookupSchools = client.lookupSchools("XXXXXX", "sc")

@@ -32,11 +32,11 @@ class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsB
         ).withRel("edit")
     }
 
-    fun getIndependentOrganisationsLink(): Link? {
+    fun getIndependentAccountsLink(): Link? {
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
             Link(
                 uriComponentsBuilderFactory.getInstance()
-                    .replacePath("/v1/independent-accounts")
+                    .replacePath("/v1/accounts")
                     .replaceQueryParams(null)
                     .toUriString() + "{?countryCode,page,size}",
                 "independentAccounts"

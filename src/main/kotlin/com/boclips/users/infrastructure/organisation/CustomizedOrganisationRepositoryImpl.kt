@@ -13,8 +13,8 @@ class CustomizedOrganisationRepositoryImpl(
 ) :
     CustomizedOrganisationRepository {
     override fun findOrganisations(searchRequest: OrganisationSearchRequest): Page<OrganisationDocument> {
-        val page = searchRequest.page ?: 0
-        val pageSize = searchRequest.size ?: 30
+        val page = searchRequest.page
+        val pageSize = searchRequest.size
 
         val offset = page * pageSize
         val query = Query()
