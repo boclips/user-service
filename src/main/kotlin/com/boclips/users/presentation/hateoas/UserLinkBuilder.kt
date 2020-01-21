@@ -4,23 +4,22 @@ import com.boclips.security.utils.UserExtractor.currentUserHasAnyRole
 import com.boclips.security.utils.UserExtractor.getCurrentUserIfNotAnonymous
 import com.boclips.security.utils.UserExtractor.getIfAuthenticated
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.service.AccessService
-import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.presentation.controllers.EventController
 import com.boclips.users.presentation.controllers.UserController
 import mu.KLogging
 import org.springframework.hateoas.Link
-import org.springframework.hateoas.mvc.ControllerLinkBuilder
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder
 import org.springframework.stereotype.Component
 
 @Component
-class UserLinkBuilder(private val userRepository: UserRepository, private val accessService: AccessService) :
+class UserLinkBuilder :
     KLogging() {
 
-    fun activateUserLink(): Link? {
-        return getIfAuthenticated { currentUserId ->
-            if (userRepository.findById(UserId(value = currentUserId))?.hasOnboarded() == true)
+    fun activateUserLink(user: User?): Link? {
+        return getIfAuthenticated {
+            if (user?.hasOnboarded() == true)
                 null
             else {
                 profileLink()?.withRel("activate")
@@ -30,8 +29,8 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
 
     fun createUserLink(): Link? {
         return if (getCurrentUserIfNotAnonymous() == null)
-            ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(UserController::class.java)
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserController::class.java)
                     .createAUser(null)
             ).withRel("createAccount")
         else null
@@ -39,21 +38,21 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
 
     fun profileLink(): Link? {
         return getCurrentUserIfNotAnonymous()?.let {
-            ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(UserController::class.java).getAUser(it.id)
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserController::class.java).getAUser(it.id)
             ).withRel("profile")
         }
     }
 
     fun newUserProfileLink(userId: UserId): Link? =
-        ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder
+        WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder
                 .methodOn(UserController::class.java).getAUser(userId.value)
         ).withRel("profile")
 
     fun userLink(): Link? {
         return if (currentUserHasAnyRole(UserRoles.VIEW_USERS)) {
-            ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController::class.java).getAUser(null))
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController::class.java).getAUser(null))
                 .withRel("user")
         } else {
             null
@@ -68,8 +67,8 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
 
     fun contractsLink(userId: UserId? = null): Link? {
         return if (currentUserHasAnyRole(UserRoles.VIEW_CONTRACTS)) {
-            ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(UserController::class.java).getContractsOfUser(
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserController::class.java).getContractsOfUser(
                     userId?.value
                 )
             )
@@ -79,13 +78,13 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
         }
     }
 
-    fun reportAccessExpiredLink(): Link? {
-        return getIfAuthenticated { currentUserId ->
-            if (userRepository.findById(UserId(value = currentUserId))?.let { accessService.userHasAccess(it) } != false) {
+    fun reportAccessExpiredLink(user: User?, hasAccess: Boolean): Link? {
+        return getIfAuthenticated {
+            if (user?.let { hasAccess } != false) {
                 null
             } else {
-                ControllerLinkBuilder.linkTo(
-                    ControllerLinkBuilder.methodOn(EventController::class.java).trackUserExpiredEvent()
+                WebMvcLinkBuilder.linkTo(
+                    WebMvcLinkBuilder.methodOn(EventController::class.java).trackUserExpiredEvent()
                 )
                     .withRel("reportAccessExpired")
             }
@@ -94,8 +93,8 @@ class UserLinkBuilder(private val userRepository: UserRepository, private val ac
 
     fun validateShareCodeLink(): Link? {
         return if (getCurrentUserIfNotAnonymous() == null) {
-            ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(UserController::class.java).checkUserShareCode(null, null)
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserController::class.java).checkUserShareCode(null, null)
             ).withRel("validateShareCode")
         } else {
             null

@@ -8,8 +8,8 @@ import com.boclips.users.presentation.requests.ListAccountsRequest
 import com.boclips.users.presentation.requests.UpdateAccountRequest
 import com.boclips.users.presentation.resources.AccountResource
 import com.boclips.users.presentation.resources.converters.AccountConverter
-import org.springframework.hateoas.PagedResources
-import org.springframework.hateoas.Resource
+import org.springframework.hateoas.EntityModel
+import org.springframework.hateoas.PagedModel
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -28,19 +28,19 @@ class AccountController(
 ) {
 
     @GetMapping("/accounts/{id}")
-    fun fetchOrganisationById(@PathVariable("id") id: String?): Resource<AccountResource> {
+    fun fetchOrganisationById(@PathVariable("id") id: String?): EntityModel<AccountResource> {
         val organisation = getAccountById(id!!)
 
         return accountConverter.toResource(organisation)
     }
 
     @PatchMapping("/accounts/{id}")
-    fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateAccountRequest: UpdateAccountRequest?): Resource<AccountResource> {
+    fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateAccountRequest: UpdateAccountRequest?): EntityModel<AccountResource> {
         return accountConverter.toResource(updateAccount(id, updateAccountRequest))
     }
 
     @GetMapping("/accounts")
-    fun listAccounts(listAccountsRequest: ListAccountsRequest?): PagedResources<Resource<AccountResource>> {
+    fun listAccounts(listAccountsRequest: ListAccountsRequest?): PagedModel<EntityModel<AccountResource>> {
         val filter = OrganisationFilter(
             countryCode = listAccountsRequest?.countryCode,
             page = listAccountsRequest?.page ?: 0,
@@ -50,9 +50,9 @@ class AccountController(
 
         val accountResources = accounts.map { account -> accountConverter.toResource(account) }
 
-        return PagedResources(
+        return PagedModel(
             accountResources.content,
-            PagedResources.PageMetadata(
+            PagedModel.PageMetadata(
                 filter.size.toLong(),
                 filter.page.toLong(),
                 accountResources.totalElements

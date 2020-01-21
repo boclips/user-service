@@ -1,3 +1,9 @@
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+
 app:
   registration-period-in-millis: 30000
 

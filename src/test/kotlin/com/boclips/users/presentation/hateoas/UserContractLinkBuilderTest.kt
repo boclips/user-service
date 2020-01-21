@@ -20,7 +20,7 @@ class UserContractLinkBuilderTest : AbstractSpringIntegrationTest() {
         val contractsSelfLink = userContractsLinkBuilder.self(UserId(userId))
 
         assertThat(contractsSelfLink!!.href).endsWith("/v1/users/$userId/contracts")
-        assertThat(contractsSelfLink.rel).isEqualTo("self")
+        assertThat(contractsSelfLink.rel.value()).isEqualTo("self")
     }
 
     @Test

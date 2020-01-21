@@ -1,14 +1,16 @@
 package com.boclips.users.presentation.resources.converters
 
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.account.Account
+import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.resources.SubjectResource
 import com.boclips.users.presentation.resources.TeacherPlatformAttributesResource
 import com.boclips.users.presentation.resources.UserResource
 import org.springframework.stereotype.Component
 
 @Component
-class UserConverter {
+class UserConverter(val userLinkBuilder: UserLinkBuilder) {
     fun toUserResource(user: User, organisationAccount: Account<*>?): UserResource {
         return UserResource(
             id = user.id.value,
@@ -28,7 +30,12 @@ class UserConverter {
                 TeacherPlatformAttributesResource(
                     shareCode = user.teacherPlatformAttributes.shareCode
                 )
-            }
+            },
+            _links = listOfNotNull(
+                userLinkBuilder.profileSelfLink(),
+                userLinkBuilder.profileLink(),
+                userLinkBuilder.contractsLink(UserId(user.id.value))
+            ).map { it.rel.value() to it }.toMap()
         )
     }
 }

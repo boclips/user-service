@@ -27,6 +27,6 @@ class EventLinkBuilderTest: AbstractSpringIntegrationTest() {
 
         assertThat(trackPageRendered).isNotNull
         assertThat(trackPageRendered!!.href).endsWith("/events/page-render")
-        assertThat(trackPageRendered.rel).endsWith("trackPageRendered")
+        assertThat(trackPageRendered.rel.value()).endsWith("trackPageRendered")
     }
 }

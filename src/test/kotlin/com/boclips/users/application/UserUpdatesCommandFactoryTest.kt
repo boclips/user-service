@@ -44,7 +44,7 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
     fun `converts subjects change to a command`() {
         val fakeClient = SubjectsClientFake()
         fakeClient.create(CreateSubjectRequest("some-subject"))
-        val subjectId = fakeClient.getSubjects().content.stream().collect(Collectors.toList()).first().id
+        val subjectId = fakeClient.getSubjects()._embedded.subjects.stream().collect(Collectors.toList()).first().id
 
         userUpdatesConverter =
             UserUpdatesCommandFactory(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))

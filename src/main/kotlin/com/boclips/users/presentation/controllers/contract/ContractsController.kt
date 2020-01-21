@@ -29,7 +29,7 @@ class ContractsController(
             ),
             listOfNotNull(
                 contractLinkBuilder.searchContracts(name = name, rel = "self")
-            )
+            ).map { it.rel.value() to it }.toMap()
         )
     }
 }

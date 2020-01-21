@@ -2,14 +2,14 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.users.presentation.controllers.contract.SelectedContentContractController
 import org.springframework.hateoas.Link
-import org.springframework.hateoas.mvc.ControllerLinkBuilder
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder
 import org.springframework.stereotype.Service
 
 @Service
 class SelectedContractLinkBuilder {
     fun addCollection(contractId: String): Link {
-        return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(SelectedContentContractController::class.java).addCollection(
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(SelectedContentContractController::class.java).addCollection(
                 contractId,
                 null
             )
@@ -17,8 +17,8 @@ class SelectedContractLinkBuilder {
     }
 
     fun removeCollection(contractId: String): Link {
-        return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(SelectedContentContractController::class.java).removeCollection(
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(SelectedContentContractController::class.java).removeCollection(
                 contractId,
                 null
             )

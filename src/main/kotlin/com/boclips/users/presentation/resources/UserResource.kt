@@ -3,8 +3,10 @@ package com.boclips.users.presentation.resources
 import com.boclips.users.presentation.projections.BoclipsServiceProjection
 import com.boclips.users.presentation.projections.TeacherProjection
 import com.boclips.users.presentation.projections.UserProjection
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonView
-import org.springframework.hateoas.core.Relation
+import org.springframework.hateoas.Link
+import org.springframework.hateoas.server.core.Relation
 
 @Relation(collectionRelation = "user")
 open class UserResource(
@@ -27,5 +29,7 @@ open class UserResource(
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
     val organisationAccountId: String?,
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
-    val organisation: OrganisationResource?
+    val organisation: OrganisationResource?,
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    var _links: Map<String, Link>? = null
 )

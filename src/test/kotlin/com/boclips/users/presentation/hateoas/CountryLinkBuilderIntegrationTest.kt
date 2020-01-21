@@ -15,7 +15,7 @@ class CountryLinkBuilderIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(countriesLink).isNotNull()
         assertThat(countriesLink!!.href).endsWith("/countries")
-        assertThat(countriesLink.rel).isEqualTo("countries")
+        assertThat(countriesLink.rel.value()).isEqualTo("countries")
     }
 
     @Test
@@ -31,7 +31,7 @@ class CountryLinkBuilderIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(selfLink).isNotNull()
         assertThat(selfLink!!.href).endsWith("/countries")
-        assertThat(selfLink.rel).isEqualTo("self")
+        assertThat(selfLink.rel.value()).isEqualTo("self")
     }
 
     @Test
@@ -41,7 +41,7 @@ class CountryLinkBuilderIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(stateLink).isNotNull()
         assertThat(stateLink!!.href).endsWith("countries/USA/states")
-        assertThat(stateLink.rel).isEqualTo("states")
+        assertThat(stateLink.rel.value()).isEqualTo("states")
     }
 
     @Test

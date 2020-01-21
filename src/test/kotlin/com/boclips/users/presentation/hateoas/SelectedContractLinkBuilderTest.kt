@@ -15,7 +15,7 @@ class SelectedContractLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         val link = selectedContractLinkBuilder.addCollection(contractId)
 
-        assertThat(link.rel).isEqualTo("addCollection")
+        assertThat(link.rel.value()).isEqualTo("addCollection")
         assertThat(link.href).endsWith("/v1/selected-content-contracts/$contractId/collections/{collectionId}")
         assertThat(link.isTemplated).isTrue()
     }
@@ -26,7 +26,7 @@ class SelectedContractLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         val link = selectedContractLinkBuilder.removeCollection(contractId)
 
-        assertThat(link.rel).isEqualTo("removeCollection")
+        assertThat(link.rel.value()).isEqualTo("removeCollection")
         assertThat(link.href).endsWith("/v1/selected-content-contracts/$contractId/collections/{collectionId}")
         assertThat(link.isTemplated).isTrue()
     }

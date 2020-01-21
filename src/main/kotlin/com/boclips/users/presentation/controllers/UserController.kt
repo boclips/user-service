@@ -16,8 +16,8 @@ import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.UserResource
 import com.boclips.users.presentation.resources.converters.ContractConverter
-import org.springframework.hateoas.ExposesResourceFor
-import org.springframework.hateoas.Resource
+import org.springframework.hateoas.EntityModel
+import org.springframework.hateoas.server.ExposesResourceFor
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -48,7 +48,7 @@ class UserController(
 ) {
 
     @PostMapping
-    fun createAUser(@Valid @RequestBody createTeacherRequest: CreateTeacherRequest?): ResponseEntity<Resource<*>> {
+    fun createAUser(@Valid @RequestBody createTeacherRequest: CreateTeacherRequest?): ResponseEntity<EntityModel<*>> {
         val user = createTeacherAccount(createTeacherRequest!!)
 
         val headers = HttpHeaders()
@@ -58,29 +58,19 @@ class UserController(
     }
 
     @PutMapping("/{id}")
-    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest): ResponseEntity<MappingJacksonValue> {
+    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest)
+        : ResponseEntity<MappingJacksonValue> {
         updateUser(id, updateUserRequest)
         return getAUser(id)
     }
 
     @GetMapping("/{id}")
     fun getAUser(@PathVariable id: String?): ResponseEntity<MappingJacksonValue> {
-
-        val userResource = getUser(id!!)
-
+        val userResource: UserResource = getUser(id!!)
         val headers = HttpHeaders()
 
         return ResponseEntity(
-            withProjection(
-                Resource(
-                    userResource,
-                    listOfNotNull(
-                        userLinkBuilder.profileSelfLink(),
-                        userLinkBuilder.profileLink(),
-                        userLinkBuilder.contractsLink(UserId(userResource.id))
-                    )
-                )
-            ),
+            withProjection(userResource),
             headers,
             HttpStatus.OK
         )
@@ -90,12 +80,12 @@ class UserController(
     fun getContractsOfUser(@PathVariable id: String?): ContractResourcesHateoasWrapper {
         val userId = UserId(id!!)
         return ContractResourcesHateoasWrapper(
-            ContractResourcesWrapper(
+            _embedded = ContractResourcesWrapper(
                 getContractsOfUser(userId).map { contractConverter.toResource(it) }
             ),
-            listOfNotNull(
+            _links = listOfNotNull(
                 userContractsLinkBuilder.self(userId)
-            )
+            ).map { it.rel.value() to it }.toMap()
         )
     }
 

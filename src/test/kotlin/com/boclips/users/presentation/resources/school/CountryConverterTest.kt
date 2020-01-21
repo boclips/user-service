@@ -7,12 +7,12 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.Link
-import org.springframework.hateoas.Resource
 
 class CountryConverterTest {
     @Test
-    fun `convert list of countries to list of Resource of CountryResource`() {
+    fun `convert list of countries to list of EntityModel of CountryResource`() {
         val countryLinkBuilder: CountryLinkBuilder = mock {
             on { getStatesLink(any()) } doReturn Link("link")
         }
@@ -27,7 +27,7 @@ class CountryConverterTest {
         assertThat(countryResources).isNotNull
         assertThat(countryResources).hasSize(1)
         assertThat(countryResources[0]).isEqualTo(
-            Resource(
+            EntityModel(
                 CountryResource(
                     id = "USA",
                     name = "United States",

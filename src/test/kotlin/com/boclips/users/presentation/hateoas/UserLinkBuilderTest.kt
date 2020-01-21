@@ -26,78 +26,74 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
     @BeforeEach
     fun setUp() {
-        userLinkBuilder = UserLinkBuilder(userRepository = userRepository, accessService = accessService)
+        userLinkBuilder = UserLinkBuilder()
     }
 
     @Test
     fun `activate link when authenticated and not yet activated`() {
         setSecurityContext("lovely-user")
 
-        userRepository.create(
-            UserFactory.sample(
-                identity = IdentityFactory.sample(id = "lovely-user"),
-                profile = null,
-                organisationAccountId = null
+        val activateUserLink =
+            userLinkBuilder.activateUserLink(
+                UserFactory.sample(
+                    profile = null,
+                    identity = IdentityFactory.sample(id = "lovely-user")
+                )
             )
-        )
-
-        val activateUserLink = userLinkBuilder.activateUserLink()
 
         assertThat(activateUserLink).isNotNull()
         assertThat(activateUserLink!!.href).endsWith("/users/lovely-user")
-        assertThat(activateUserLink.rel).isEqualTo("activate")
+        assertThat(activateUserLink.rel.value()).isEqualTo("activate")
     }
 
     @Test
     fun `activate link when authenticated, has partial profile information but has not onboarded`() {
         setSecurityContext("lovely-user")
 
-        userRepository.create(
-            UserFactory.sample(
-                identity = IdentityFactory.sample(id = "lovely-user"),
-                profile = ProfileFactory.sample(firstName = ""),
-                organisationAccountId = null
+        val activateUserLink =
+            userLinkBuilder.activateUserLink(
+                UserFactory.sample(
+                    identity = IdentityFactory.sample(id = "lovely-user"),
+                    profile = ProfileFactory.sample(firstName = ""),
+                    organisationAccountId = null
+                )
             )
-        )
-
-        val activateUserLink = userLinkBuilder.activateUserLink()
 
         assertThat(activateUserLink).isNotNull()
         assertThat(activateUserLink!!.href).endsWith("/users/lovely-user")
-        assertThat(activateUserLink.rel).isEqualTo("activate")
+        assertThat(activateUserLink.rel.value()).isEqualTo("activate")
     }
 
     @Test
     fun `activate link when authenticated and but not in the database`() {
         setSecurityContext("sso-first-time-user")
 
-        val activateUserLink = userLinkBuilder.activateUserLink()
+        val activateUserLink = userLinkBuilder.activateUserLink(null)
 
         assertThat(activateUserLink).isNotNull()
         assertThat(activateUserLink!!.href).endsWith("/users/sso-first-time-user")
-        assertThat(activateUserLink.rel).isEqualTo("activate")
+        assertThat(activateUserLink.rel.value()).isEqualTo("activate")
     }
 
     @Test
     fun `no activate link when authenticated and activated`() {
         setSecurityContext("lovely-user")
 
-        userRepository.create(
-            UserFactory.sample(
-                identity = IdentityFactory.sample(id = "lovely-user"),
-                profile = ProfileFactory.sample(),
-                organisationAccountId = AccountId("test")
+        val activateUserLink =
+            userLinkBuilder.activateUserLink(
+                UserFactory.sample(
+                    identity = IdentityFactory.sample(id = "lovely-user"),
+                    profile = ProfileFactory.sample(),
+                    organisationAccountId = AccountId("test")
+                )
             )
-        )
-
-        val activateUserLink = userLinkBuilder.activateUserLink()
 
         assertThat(activateUserLink).isNull()
     }
 
     @Test
     fun `no activate link when not authenticated`() {
-        val activateUserLink = userLinkBuilder.activateUserLink()
+        val activateUserLink = userLinkBuilder.activateUserLink(null)
 
         assertThat(activateUserLink).isNull()
     }
@@ -108,7 +104,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         assertThat(createUserLink).isNotNull()
         assertThat(createUserLink!!.href).endsWith("/users")
-        assertThat(createUserLink.rel).isEqualTo("createAccount")
+        assertThat(createUserLink.rel.value()).isEqualTo("createAccount")
     }
 
     @Test
@@ -128,7 +124,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         assertThat(profileLink).isNotNull
         assertThat(profileLink!!.href).endsWith("/users/a-user")
-        assertThat(profileLink.rel).isEqualTo("profile")
+        assertThat(profileLink.rel.value()).isEqualTo("profile")
     }
 
     @Test
@@ -145,7 +141,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         assertThat(profileLink).isNotNull
         assertThat(profileLink!!.href).endsWith("/users/$userId")
-        assertThat(profileLink.rel).isEqualTo("profile")
+        assertThat(profileLink.rel.value()).isEqualTo("profile")
     }
 
     @Test
@@ -172,7 +168,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         assertThat(userLink).isNotNull()
         assertThat(userLink!!.href).endsWith("/users/{id}")
-        assertThat(userLink.rel).isEqualTo("user")
+        assertThat(userLink.rel.value()).isEqualTo("user")
     }
 
     @Test
@@ -183,7 +179,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         assertThat(contractsLink).isNotNull()
         assertThat(contractsLink!!.href).endsWith("/users/a-user/contracts")
-        assertThat(contractsLink.rel).isEqualTo("contracts")
+        assertThat(contractsLink.rel.value()).isEqualTo("contracts")
     }
 
     @Test
@@ -199,16 +195,14 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `no reportAccessExpired link when user has access`() {
         setSecurityContext("lovely-user")
 
-        userRepository.create(
-            UserFactory.sample(
-                identity = IdentityFactory.sample(id = "lovely-user"),
-                profile = ProfileFactory.sample(),
-                organisationAccountId = AccountId("test"),
-                accessExpiresOn = null
-            )
+        val user = UserFactory.sample(
+            identity = IdentityFactory.sample(id = "lovely-user"),
+            profile = ProfileFactory.sample(),
+            organisationAccountId = AccountId("test"),
+            accessExpiresOn = null
         )
 
-        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink()
+        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink(user = user, hasAccess = true)
 
         assertThat(reportAccessExpiredLink).isNull()
     }
@@ -217,16 +211,13 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `no reportAccessExpired link when user has expired`() {
         setSecurityContext("lovely-user")
 
-        userRepository.create(
-            UserFactory.sample(
-                identity = IdentityFactory.sample(id = "lovely-user"),
-                profile = ProfileFactory.sample(),
-                organisationAccountId = AccountId("test"),
-                accessExpiresOn = ZonedDateTime.now().minusDays(1)
-            )
+        val user = UserFactory.sample(
+            identity = IdentityFactory.sample(id = "lovely-user"),
+            profile = ProfileFactory.sample(),
+            organisationAccountId = AccountId("test")
         )
 
-        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink()
+        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink(user, false)
 
         assertThat(reportAccessExpiredLink).isNotNull
         assertThat(reportAccessExpiredLink!!.href).endsWith("/events/expired-user-access")
@@ -234,7 +225,13 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `no reportAccessExpired link when unauthenticated`() {
-        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink()
+        val user = UserFactory.sample(
+            identity = IdentityFactory.sample(id = "lovely-user"),
+            profile = ProfileFactory.sample(),
+            organisationAccountId = AccountId("test")
+        )
+
+        val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink(user, false)
 
         assertThat(reportAccessExpiredLink).isNull()
     }

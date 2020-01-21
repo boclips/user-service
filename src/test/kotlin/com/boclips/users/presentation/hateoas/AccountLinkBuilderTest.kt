@@ -27,7 +27,7 @@ internal class AccountLinkBuilderTest {
         val organisationId = "test-id"
         val organisationLink = accountLinkBuilder.edit(AccountId(organisationId))
 
-        assertThat(organisationLink.rel).isEqualTo("edit")
+        assertThat(organisationLink.rel.value()).isEqualTo("edit")
         assertThat(organisationLink.href).endsWith("/accounts/$organisationId")
     }
 
@@ -36,7 +36,7 @@ internal class AccountLinkBuilderTest {
         setSecurityContext("org-viewer", UserRoles.VIEW_ORGANISATIONS)
         val organisationLink = accountLinkBuilder.getIndependentAccountsLink()
 
-        assertThat(organisationLink!!.rel).isEqualTo("independentAccounts")
+        assertThat(organisationLink!!.rel.value()).isEqualTo("independentAccounts")
         assertThat(organisationLink.href).endsWith("/accounts{?countryCode,page,size}")
     }
 
@@ -51,7 +51,7 @@ internal class AccountLinkBuilderTest {
         assertThat(nextLink).isNotNull
         assertThat(nextLink!!.href).contains("page=1")
         assertThat(nextLink.href).doesNotContain("page=0")
-        assertThat(nextLink.rel).contains("next")
+        assertThat(nextLink.rel.value()).contains("next")
     }
 
     @Test fun `does not return a next link when there are no more pages`() {

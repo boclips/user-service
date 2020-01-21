@@ -16,7 +16,7 @@ class ContractLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         val selfLink = contractLinkBuilder.self(ContractId(contractIdValue))
 
-        assertThat(selfLink.rel).isEqualTo("self")
+        assertThat(selfLink.rel.value()).isEqualTo("self")
         assertThat(selfLink.href).endsWith("/v1/contracts/$contractIdValue")
     }
 
@@ -31,7 +31,7 @@ class ContractLinkBuilderTest : AbstractSpringIntegrationTest() {
         fun `returns a templated link if name is not provided`() {
             val searchContractsLink = contractLinkBuilder.searchContracts()
 
-            assertThat(searchContractsLink!!.rel).isEqualTo("searchContracts")
+            assertThat(searchContractsLink!!.rel.value()).isEqualTo("searchContracts")
             assertThat(searchContractsLink.isTemplated).isTrue()
             assertThat(searchContractsLink.href).endsWith("/v1/contracts{?name}")
         }
@@ -40,7 +40,7 @@ class ContractLinkBuilderTest : AbstractSpringIntegrationTest() {
         fun `returns a fixed link when name is provided`() {
             val searchContractsLink = contractLinkBuilder.searchContracts(name = "Hello world")
 
-            assertThat(searchContractsLink!!.rel).isEqualTo("searchContracts")
+            assertThat(searchContractsLink!!.rel.value()).isEqualTo("searchContracts")
             assertThat(searchContractsLink.isTemplated).isFalse()
             assertThat(searchContractsLink.href).endsWith("/v1/contracts?name=Hello%20world")
         }
@@ -58,7 +58,7 @@ class ContractLinkBuilderTest : AbstractSpringIntegrationTest() {
         fun `allows to override rel`() {
             val searchContractsLink = contractLinkBuilder.searchContracts(rel = "self")
 
-            assertThat(searchContractsLink!!.rel).isEqualTo("self")
+            assertThat(searchContractsLink!!.rel.value()).isEqualTo("self")
             assertThat(searchContractsLink.isTemplated).isTrue()
             assertThat(searchContractsLink.href).endsWith("/v1/contracts{?name}")
         }

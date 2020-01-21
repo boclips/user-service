@@ -402,7 +402,9 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
                 size = 2,
                 types = listOf(OrganisationType.SCHOOL, OrganisationType.DISTRICT)
             )
+
         assertThat(independentOrganisations!!.content).containsExactly(schoolOne, schoolThree)
+        assertThat(independentOrganisations.size).isEqualTo(2)
         assertThat(independentOrganisations.totalPages).isEqualTo(3)
         assertThat(independentOrganisations.totalElements).isEqualTo(6)
     }

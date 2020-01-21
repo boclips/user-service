@@ -5,21 +5,21 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.presentation.controllers.AccountController
 import org.springframework.hateoas.Link
-import org.springframework.hateoas.mvc.ControllerLinkBuilder
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder
 import org.springframework.stereotype.Component
 
 @Component
 class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsBuilderFactory) {
     fun self(id: AccountId): Link {
-        return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(id.value)
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(id.value)
         ).withSelfRel()
     }
 
     fun getAccountLink(): Link? {
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
-            ControllerLinkBuilder.linkTo(
-                ControllerLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(null)
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(null)
             ).withRel("account")
         } else {
             null
@@ -27,8 +27,8 @@ class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsB
     }
 
     fun edit(id: AccountId): Link {
-        return ControllerLinkBuilder.linkTo(
-            ControllerLinkBuilder.methodOn(AccountController::class.java).updateAnAccount(id.value, null)
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(AccountController::class.java).updateAnAccount(id.value, null)
         ).withRel("edit")
     }
 

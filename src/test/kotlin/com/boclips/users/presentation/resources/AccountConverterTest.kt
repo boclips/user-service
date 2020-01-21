@@ -1,8 +1,8 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.AccountLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccountConverter
@@ -27,14 +27,13 @@ class AccountConverterTest {
             AccountLinkBuilder(mock())
         ).toResource(originalAccount)
 
-        assertThat(accountResource.content.id).isEqualTo(originalAccount.id.value)
-        assertThat(accountResource.content.accessExpiresOn).isEqualTo(originalAccount.accessExpiresOn)
-        assertThat(accountResource.content.organisation.name).isEqualTo(originalAccount.organisation.name)
-        assertThat(accountResource.content.organisation.country?.name).isEqualTo(originalAccount.organisation.country?.name)
-        assertThat(accountResource.content.organisation.state?.name).isEqualTo(originalAccount.organisation.state?.name)
-        assertThat(accountResource.content.organisation.type).isEqualTo(originalAccount.organisation.type().toString())
-        assertThat(accountResource.links)
-            .extracting("rel")
+        assertThat(accountResource.content!!.id).isEqualTo(originalAccount.id.value)
+        assertThat(accountResource.content!!.accessExpiresOn).isEqualTo(originalAccount.accessExpiresOn)
+        assertThat(accountResource.content!!.organisation.name).isEqualTo(originalAccount.organisation.name)
+        assertThat(accountResource.content!!.organisation.country?.name).isEqualTo(originalAccount.organisation.country?.name)
+        assertThat(accountResource.content!!.organisation.state?.name).isEqualTo(originalAccount.organisation.state?.name)
+        assertThat(accountResource.content!!.organisation.type).isEqualTo(originalAccount.organisation.type().toString())
+        assertThat(accountResource.links.map { it.rel.value() })
             .containsExactlyInAnyOrder("self", "edit")
     }
 }

@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.resources
 
-import org.springframework.hateoas.core.Relation
+import org.springframework.hateoas.server.core.Relation
 import java.time.ZonedDateTime
 
 @Relation(collectionRelation = "account")

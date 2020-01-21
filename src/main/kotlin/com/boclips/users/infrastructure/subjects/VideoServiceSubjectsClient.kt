@@ -6,7 +6,7 @@ import com.boclips.users.domain.service.SubjectService
 
 data class VideoServiceSubjectsClient(val cacheableSubjectsClient: CacheableSubjectsClient) : SubjectService {
     override fun allSubjectsExist(subjectIds: List<SubjectId>): Boolean {
-        val knownSubjectsIds = cacheableSubjectsClient.getSubjects().map { it.id }
+        val knownSubjectsIds = cacheableSubjectsClient.getSubjects()._embedded.subjects.map { it.id }
         return knownSubjectsIds.containsAll(subjectIds.map { it.value })
     }
 
@@ -14,7 +14,7 @@ data class VideoServiceSubjectsClient(val cacheableSubjectsClient: CacheableSubj
         val subjects = cacheableSubjectsClient.getSubjects()
 
         return subjectIds.mapNotNull { subjectId ->
-            subjects.find { it.id == subjectId.value }?.let {
+            subjects._embedded.subjects.find { it.id == subjectId.value }?.let {
                 Subject(
                     id = SubjectId(value = it.id),
                     name = it.name ?: ""

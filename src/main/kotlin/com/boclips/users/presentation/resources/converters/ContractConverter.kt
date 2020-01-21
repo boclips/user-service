@@ -14,25 +14,18 @@ class ContractConverter(
     fun toResource(contract: Contract): ContractResource {
         return when (contract) {
             is Contract.SelectedCollections -> ContractResource.SelectedCollections(
-                contract.name,
-                contract.collectionIds.map { it.value }
-            ).apply {
-                add(
-                    listOfNotNull(
-                        selectedContractLinkBuilder.addCollection(contractId = contract.id.value),
-                        selectedContractLinkBuilder.removeCollection(contractId = contract.id.value)
-                    )
-                )
-            }
-            is Contract.SelectedVideos -> ContractResource.SelectedVideos(
-                contract.name,
-                contract.videoIds.map { it.value }
-            )
-        }.apply {
-            add(
-                listOfNotNull(
+                name = contract.name,
+                collectionIds = contract.collectionIds.map { it.value },
+                _links = listOfNotNull(
+                    selectedContractLinkBuilder.addCollection(contractId = contract.id.value),
+                    selectedContractLinkBuilder.removeCollection(contractId = contract.id.value),
                     contractLinkBuilder.self(contract.id)
-                )
+                ).map { it.rel.value() to it }.toMap()
+            )
+            is Contract.SelectedVideos -> ContractResource.SelectedVideos(
+                name = contract.name,
+                videoIds = contract.videoIds.map { it.value },
+                _links = listOfNotNull(contractLinkBuilder.self(contract.id)).map { it.rel.value() to it }.toMap()
             )
         }
     }

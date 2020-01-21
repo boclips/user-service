@@ -1,12 +1,11 @@
 buildscript {
     ext {
-        kotlinVersion = '1.3.50'
-        springBootVersion = '2.1.11.RELEASE'
+        kotlinVersion = '1.3.61'
+        springBootVersion = '2.2.3.RELEASE'
         junitVersion = '5.3.1'
-        jacksonVersion = '2.9.10'
+        jacksonVersion = '2.10.1'
 
         lombok = 'org.projectlombok:lombok:1.18.8'
-        springSecurityOAuth2 = 'org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE'
     }
     repositories {
         jcenter()
@@ -21,7 +20,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.owasp.dependencycheck' version '5.2.0'
+    id 'org.owasp.dependencycheck' version '5.2.4'
 }
 
 apply plugin: 'kotlin'
@@ -131,12 +130,11 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.retry:spring-retry')
     implementation('org.springframework.boot:spring-boot-starter-aop')
-    implementation(springSecurityOAuth2)
 
-    implementation('com.github.boclips:event-bus:2.3.0')
+    implementation('com.github.boclips:event-bus:2.11.2')
     implementation('com.github.boclips:boclips-spring-web:0.128.0')
     implementation('com.github.boclips:boclips-spring-security:0.296.0')
-    implementation('com.github.boclips:videos:0.767.0')
+    implementation('com.github.boclips:videos:0.839.0')
 
     implementation('com.jayway.jsonpath:json-path:2.3.0')
     implementation('io.github.microutils:kotlin-logging:1.6.22')
@@ -158,9 +156,10 @@ dependencies {
     clientCompileOnly(lombok)
     clientAnnotationProcessor(lombok)
 
-    clientCompileOnly(springSecurityOAuth2)
-    clientCompileOnly('com.fasterxml.jackson.core:jackson-databind')
-    clientCompileOnly('org.springframework.boot:spring-boot-autoconfigure')
+    clientCompile("org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE")
+    clientCompile group: 'org.springframework.security', name: 'spring-security-core', version: '5.2.1.RELEASE'
+    clientCompile('com.fasterxml.jackson.core:jackson-databind')
+    clientCompile('org.springframework.boot:spring-boot-autoconfigure')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.springframework.security:spring-security-test')

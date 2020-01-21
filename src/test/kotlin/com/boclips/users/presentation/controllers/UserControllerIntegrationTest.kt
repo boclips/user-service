@@ -26,7 +26,6 @@ import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -37,6 +36,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -152,7 +152,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Nested
     inner class UpdateUser {
-
         @Test
         fun `updates a user`() {
             subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
@@ -504,6 +503,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             mvc.perform(
                 get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
             )
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(2)))
                 .andExpect(
@@ -521,7 +521,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(
                     jsonPath(
                         "$._embedded.contracts[*]._links.self.href",
-                        contains(
+                        containsInAnyOrder(
                             endsWith("/v1/contracts/${collectionsContract.id.value}"),
                             endsWith("/v1/contracts/${videosContract.id.value}")
                         )

@@ -1,12 +1,13 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.presentation.resources.converters.UserConverter
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.presentation.hateoas.UserLinkBuilder
+import com.boclips.users.presentation.resources.converters.UserConverter
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -20,7 +21,7 @@ class UserConverterTest {
     @Test
     fun `convert user and organisation`() {
         val userResource =
-            UserConverter().toUserResource(
+            UserConverter(UserLinkBuilder()).toUserResource(
                 user = UserFactory.sample(
                     identity = IdentityFactory.sample(
                         username = "thierry@henry.fr"
@@ -74,7 +75,7 @@ class UserConverterTest {
             )
         )
 
-        val userResource = UserConverter().toUserResource(user, organisationAccount)
+        val userResource = UserConverter(UserLinkBuilder()).toUserResource(user, organisationAccount)
 
         assertThat(userResource.teacherPlatformAttributes).isNotNull
         assertThat(userResource.teacherPlatformAttributes!!.shareCode).isEqualTo("TRWN")
@@ -83,7 +84,7 @@ class UserConverterTest {
     @Test
     fun `converts a user without an organisation`() {
         val userResource =
-            UserConverter().toUserResource(
+            UserConverter(UserLinkBuilder()).toUserResource(
                 user = UserFactory.sample(
                     organisationAccountId = null
                 ),

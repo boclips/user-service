@@ -1,11 +1,10 @@
 package com.boclips.users.presentation.resources.school
 
-import org.springframework.hateoas.Resource
-import org.springframework.hateoas.core.Relation
+import org.springframework.hateoas.server.core.Relation
 
 @Relation(collectionRelation = "countries")
 data class CountryResource(
-        val id: String,
-        val name: String,
-        val states: List<Resource<StateResource>>?
+    val id: String,
+    val name: String,
+    val states: List<StateResource>?
 )
