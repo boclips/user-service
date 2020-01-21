@@ -12,6 +12,7 @@ class RoleBasedProjectionResolver : ProjectionResolver {
         return when {
             currentUserHasRole(UserRoles.ROLE_TEACHER) -> TeacherProjection::class.java
             currentUserHasRole(UserRoles.ROLE_API) -> ApiUserProjection::class.java
+            currentUserHasRole(UserRoles.ROLE_BOCLIPS_SERVICE) -> BoclipsServiceProjection::class.java
             else -> UserProjection::class.java
         }
     }

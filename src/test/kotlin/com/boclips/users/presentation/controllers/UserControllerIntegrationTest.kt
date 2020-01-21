@@ -15,6 +15,7 @@ import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asApiUser
 import com.boclips.users.testsupport.asBackofficeUser
+import com.boclips.users.testsupport.asBoclipsService
 import com.boclips.users.testsupport.asTeacher
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -426,6 +427,26 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 get("/v1/users/rafal").asUserWithRoles("ben", UserRoles.VIEW_USERS)
             )
                 .andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `Boclips service is able to retrieve user information and see their organisation`() {
+            val organisationAccount = saveApiIntegration()
+            val user = saveUser(UserFactory.sample(organisationAccountId = organisationAccount.id))
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}").asBoclipsService()
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.organisationAccountId").exists())
+                .andExpect(jsonPath("$.organisation.name", equalTo(organisationAccount.organisation.name)))
+                .andExpect(
+                    jsonPath(
+                        "$.organisation.allowsOverridingUserIds",
+                        equalTo(organisationAccount.organisation.allowsOverridingUserIds)
+                    )
+                )
         }
     }
 

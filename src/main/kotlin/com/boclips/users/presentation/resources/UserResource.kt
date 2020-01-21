@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.resources
 
+import com.boclips.users.presentation.projections.BoclipsServiceProjection
 import com.boclips.users.presentation.projections.TeacherProjection
 import com.boclips.users.presentation.projections.UserProjection
 import com.fasterxml.jackson.annotation.JsonView
@@ -22,9 +23,9 @@ open class UserResource(
     @get:JsonView(TeacherProjection::class)
     val analyticsId: String?,
     @get:JsonView(TeacherProjection::class)
+    val teacherPlatformAttributes: TeacherPlatformAttributesResource?,
+    @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
     val organisationAccountId: String?,
-    @get:JsonView(TeacherProjection::class)
-    val organisation: OrganisationResource?,
-    @get:JsonView(TeacherProjection::class)
-    val teacherPlatformAttributes: TeacherPlatformAttributesResource?
+    @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
+    val organisation: OrganisationResource?
 )

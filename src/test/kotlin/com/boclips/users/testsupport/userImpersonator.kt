@@ -28,6 +28,13 @@ fun MockHttpServletRequestBuilder.asTeacher(userId: String = "teacher@example.co
             .roles(UserRoles.ROLE_TEACHER)
     )
 
+fun MockHttpServletRequestBuilder.asBoclipsService(userId: String = "boclips-service") =
+    this.with(
+        SecurityMockMvcRequestPostProcessors
+            .user(userId)
+            .roles(UserRoles.ROLE_BOCLIPS_SERVICE, UserRoles.VIEW_USERS, UserRoles.VIEW_ORGANISATIONS)
+    )
+
 fun MockHttpServletRequestBuilder.asApiUser(userId: String = "api@example.com") =
     this.with(
         SecurityMockMvcRequestPostProcessors
