@@ -8,7 +8,8 @@ commonLabels:
 commonAnnotations:
   boclips-version: "9"
 images:
-- name: eu.gcr.io/boclips-prod/boclips/user-service
+- name: app
+  newName: eu.gcr.io/boclips-prod/boclips/user-service
   newTag: "9"
 patches:
 - path: spread-across-zones.yaml
