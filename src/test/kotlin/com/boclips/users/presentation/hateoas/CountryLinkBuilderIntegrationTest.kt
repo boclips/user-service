@@ -20,6 +20,8 @@ class CountryLinkBuilderIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `when not authenticated we do not expose list of all countries`() {
+        setSecurityContext("anonymousUser")
+
         val countriesLink = countryLinkBuilder.getCountriesLink()
 
         assertThat(countriesLink).isNull()
