@@ -152,6 +152,7 @@ dependencies {
     implementation('io.micrometer:micrometer-core')
     implementation('io.micrometer:micrometer-registry-prometheus')
     implementation("io.opentracing.contrib:opentracing-spring-jaeger-web-starter:2.0.3")
+    implementation('org.codehaus.janino:janino:3.1.0')
 
     clientCompileOnly(lombok)
     clientAnnotationProcessor(lombok)

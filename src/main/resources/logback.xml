@@ -3,6 +3,17 @@
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <matcher>
+                    <Name>SpringHateoasWarnings</Name>
+                    <regex>.*Failed to evaluate Jackson serialization.*</regex>
+                </matcher>
+                <expression>SpringHateoasWarnings.matches(formattedMessage)</expression>
+            </evaluator>
+            <OnMismatch>NEUTRAL</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
     </appender>
 
     <appender name="Sentry" class="io.sentry.logback.SentryAppender">
