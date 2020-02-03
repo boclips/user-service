@@ -21,6 +21,7 @@ import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
@@ -196,7 +197,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `returns a 403 response if caller tries to update a different user`() {
+        fun `returns a 403 response if caller tries to update a different user and not have ROLE_UPDATE_USERS`() {
             saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "user-id")))
 
             mvc.perform(
@@ -212,6 +213,27 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     ).asUser("different-users-id")
             )
                 .andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `can update user if caller is different user but has ROLE_UPDATE_USERS`() {
+            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "user-id"), profile = ProfileFactory.sample(firstName = "oldname")))
+
+
+            mvc.perform(
+                put("/v1/users/user-id").asUserWithRoles("different-user-id", UserRoles.UPDATE_USERS, UserRoles.VIEW_USERS)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "newname"
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.firstName", equalTo("newname")))
         }
 
         @Test

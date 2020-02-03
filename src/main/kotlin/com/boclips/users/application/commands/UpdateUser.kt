@@ -4,6 +4,7 @@ import com.boclips.security.utils.UserExtractor
 import com.boclips.users.application.UserUpdatesCommandFactory
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
@@ -43,23 +44,23 @@ class UpdateUser(
 
     operator fun invoke(userId: String, updateUserRequest: UpdateUserRequest): User {
         val authenticatedUser = UserExtractor.getCurrentUser() ?: throw NotAuthenticatedException()
-        if (authenticatedUser.id != userId) throw PermissionDeniedException()
+        if (authenticatedUser.id != userId && !authenticatedUser.hasRole(UserRoles.UPDATE_USERS)) throw PermissionDeniedException()
 
-        val authenticatedUserId = UserId(authenticatedUser.id)
+        val updateUserId = UserId(userId)
 
-        logger.info { "User $userId has schoolId ${updateUserRequest.schoolId} and schoolName ${updateUserRequest.schoolName}" }
+        logger.info { "User $updateUserId has schoolId ${updateUserRequest.schoolId} and schoolName ${updateUserRequest.schoolName}" }
 
         val school = findOrCreateSchool(updateUserRequest)
 
-        getOrImportUser(authenticatedUserId).let { user ->
+        getOrImportUser(updateUserId).let { user ->
             val updateCommands = buildUpdateCommands(updateUserRequest, school, user)
             updateCommands.let { commands ->
                 userRepository.update(user, *commands.toTypedArray())
             }
-            updateMarketingService(authenticatedUserId)
+            updateMarketingService(updateUserId)
         }
 
-        return userService.findUserById(authenticatedUserId)
+        return userService.findUserById(updateUserId)
     }
 
     private fun buildUpdateCommands(
