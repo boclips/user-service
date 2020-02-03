@@ -429,7 +429,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `Boclips service is able to retrieve user information and see their organisation`() {
+        fun `Boclips service is able to retrieve user information and see their organisation and links`() {
             val organisationAccount = saveApiIntegration()
             val user = saveUser(UserFactory.sample(organisationAccountId = organisationAccount.id))
 
@@ -446,6 +446,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         equalTo(organisationAccount.organisation.allowsOverridingUserIds)
                     )
                 )
+                .andExpect(jsonPath("$._links.self.href", endsWith("users/${user.id.value}")))
+                .andExpect(jsonPath("$._links.profile.href", endsWith("users/${user.id.value}")))
         }
     }
 

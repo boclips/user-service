@@ -32,8 +32,8 @@ class UserConverter(val userLinkBuilder: UserLinkBuilder) {
                 )
             },
             _links = listOfNotNull(
-                userLinkBuilder.profileSelfLink(),
-                userLinkBuilder.profileLink(),
+                userLinkBuilder.profileSelfLink(UserId(user.id.value)),
+                userLinkBuilder.profileLink(UserId(user.id.value)),
                 userLinkBuilder.contractsLink(UserId(user.id.value))
             ).map { it.rel.value() to it }.toMap()
         )

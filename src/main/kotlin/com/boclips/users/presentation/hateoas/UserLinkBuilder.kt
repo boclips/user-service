@@ -22,7 +22,7 @@ class UserLinkBuilder :
             if (user?.hasOnboarded() == true)
                 null
             else {
-                profileLink()?.withRel("activate")
+                profileLink(user?.id)?.withRel("activate")
             }
         }
     }
@@ -36,10 +36,11 @@ class UserLinkBuilder :
         else null
     }
 
-    fun profileLink(): Link? {
+    fun profileLink(overrideUserId: UserId? = null): Link? {
         return getCurrentUserIfNotAnonymous()?.let {
+            val userId = overrideUserId?.value ?: it.id
             WebMvcLinkBuilder.linkTo(
-                WebMvcLinkBuilder.methodOn(UserController::class.java).getAUser(it.id)
+                WebMvcLinkBuilder.methodOn(UserController::class.java).getAUser(userId)
             ).withRel("profile")
         }
     }
@@ -59,9 +60,9 @@ class UserLinkBuilder :
         }
     }
 
-    fun profileSelfLink(): Link? {
+    fun profileSelfLink(userId: UserId): Link? {
         return getIfAuthenticated {
-            profileLink()?.withSelfRel()
+            profileLink(userId)?.withSelfRel()
         }
     }
 

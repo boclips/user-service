@@ -41,7 +41,7 @@ class LinksController(
                         accessService.userHasAccess(it)
                     )
                 },
-                userLinkBuilder.profileLink(),
+                userLinkBuilder.profileLink(user?.id),
                 userLinkBuilder.userLink(),
                 userLinkBuilder.contractsLink(),
                 countryLinkBuilder.getCountriesLink(),

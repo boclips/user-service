@@ -135,6 +135,17 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `profile link when overridden`() {
+        setSecurityContext("a-user")
+
+        val profileLink = userLinkBuilder.profileLink(UserId("different-user"))
+
+        assertThat(profileLink).isNotNull
+        assertThat(profileLink!!.href).endsWith("/users/different-user")
+        assertThat(profileLink.rel.value()).isEqualTo("profile")
+    }
+
+    @Test
     fun `profile link for new user when not authenticated`() {
         val userId = "new-user-id"
         val profileLink = userLinkBuilder.newUserProfileLink(UserId(userId))
