@@ -12,4 +12,6 @@ public interface UserServiceClient {
     List<Contract> getContracts(String userId);
 
     Account getAccount(String accountId);
+
+    Boolean validateShareCode(String userId, String shareCode);
 }

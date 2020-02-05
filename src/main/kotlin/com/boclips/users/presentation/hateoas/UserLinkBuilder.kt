@@ -93,12 +93,11 @@ class UserLinkBuilder :
     }
 
     fun validateShareCodeLink(): Link? {
-        return if (getCurrentUserIfNotAnonymous() == null) {
-            WebMvcLinkBuilder.linkTo(
-                WebMvcLinkBuilder.methodOn(UserController::class.java).checkUserShareCode(null, null)
-            ).withRel("validateShareCode")
-        } else {
-            null
-        }
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(UserController::class.java).checkUserShareCode(
+                null,
+                null
+            )
+        ).withRel("validateShareCode")
     }
 }

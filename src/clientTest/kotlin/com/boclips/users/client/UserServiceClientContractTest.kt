@@ -49,6 +49,37 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     }
 
     @Nested
+    inner class ValidateShareCode {
+        @Test
+        fun `returns true if share code is correct`(){
+            val organisation = insertTestOrganisation("test-organisation-id")
+            val user = insertTestUser(organisation, shareCode = "TEST")
+            assertThat(client.validateShareCode(user.id, user.teacherPlatformAttributes.shareCode)).isEqualTo(true)
+        }
+
+        @Test
+        fun `returns false if share code is incorrect`(){
+            val organisation = insertTestOrganisation("test-organisation-id")
+            val user = insertTestUser(organisation, shareCode = "TEST")
+            assertThat(client.validateShareCode(user.id, "BAD")).isEqualTo(false)
+        }
+
+        @Test
+        fun `returns false if share code is not provided`(){
+            val organisation = insertTestOrganisation("test-organisation-id")
+            val user = insertTestUser(organisation, shareCode = "TEST")
+            assertThat(client.validateShareCode(user.id, null)).isEqualTo(false)
+        }
+
+        @Test
+        fun `returns false if user id is not provided`(){
+            val organisation = insertTestOrganisation("test-organisation-id")
+            insertTestUser(organisation, shareCode = "TEST")
+            assertThat(client.validateShareCode(null, "TEST")).isEqualTo(false)
+        }
+    }
+
+    @Nested
     inner class GetContractsOfUser {
         @Test
         fun `returns an empty list when user is not eligible to any contracts`() {

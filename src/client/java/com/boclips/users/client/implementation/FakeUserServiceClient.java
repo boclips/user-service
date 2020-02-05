@@ -33,6 +33,14 @@ public class FakeUserServiceClient implements UserServiceClient {
         return account;
     }
 
+    @Override
+    public Boolean validateShareCode(String userId, String shareCode) {
+        if (user.getId().equals(userId)) {
+            return user.getTeacherPlatformAttributes().getShareCode().equals(shareCode);
+        }
+        return false;
+    }
+
     public void addContract(Contract contract) {
         contracts.add(contract);
     }

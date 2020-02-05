@@ -7,6 +7,7 @@ import com.boclips.users.client.implementation.api.hateoas.links.LinksResource;
 import com.boclips.users.client.model.Account;
 import com.boclips.users.client.model.User;
 import com.boclips.users.client.model.contract.Contract;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -46,6 +47,21 @@ public class ApiUserServiceClient implements UserServiceClient {
             return restTemplate.getForObject(getLinks().getAccount().getHref(), Account.class, accountId);
         } catch (HttpClientErrorException.NotFound ex) {
             return null;
+        }
+    }
+
+    @Override
+    public Boolean validateShareCode(String userId, String shareCode) {
+        if (StringUtils.isEmpty(shareCode) || StringUtils.isEmpty(userId)) {
+            return false;
+        }
+
+        try {
+            return restTemplate
+                    .getForEntity(getLinks().getValidateShareCode().getHref(), Object.class, userId, shareCode)
+                    .getStatusCode().is2xxSuccessful();
+        } catch (HttpClientErrorException e) {
+            return false;
         }
     }
 
