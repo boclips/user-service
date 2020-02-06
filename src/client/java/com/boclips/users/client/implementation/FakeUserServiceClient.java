@@ -35,6 +35,9 @@ public class FakeUserServiceClient implements UserServiceClient {
 
     @Override
     public Boolean validateShareCode(String userId, String shareCode) {
+        if (user == null) {
+            return false;
+        }
         if (user.getId().equals(userId)) {
             return user.getTeacherPlatformAttributes().getShareCode().equals(shareCode);
         }
