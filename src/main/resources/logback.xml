@@ -20,6 +20,17 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>WARN</level>
         </filter>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <matcher>
+                    <Name>SpringHateoasWarnings</Name>
+                    <regex>.*Failed to evaluate Jackson serialization.*</regex>
+                </matcher>
+                <expression>SpringHateoasWarnings.matches(formattedMessage)</expression>
+            </evaluator>
+            <OnMismatch>NEUTRAL</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
     </appender>
 
     <logger name="io.jaegertracing" level="ERROR" />
