@@ -4,8 +4,8 @@ import com.boclips.security.utils.UserExtractor
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.AccessService
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.AccountLinkBuilder
-import com.boclips.users.presentation.hateoas.ContractLinkBuilder
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.boclips.users.presentation.hateoas.EventLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
@@ -21,7 +21,7 @@ class LinksController(
     private val accessService: AccessService,
     private val userLinkBuilder: UserLinkBuilder,
     private val countryLinkBuilder: CountryLinkBuilder,
-    private val contractLinkBuilder: ContractLinkBuilder,
+    private val accessRuleLinkBuilder: AccessRuleLinkBuilder,
     private val eventLinkBuilder: EventLinkBuilder,
     private val accountLinkBuilder: AccountLinkBuilder
 ) {
@@ -43,9 +43,9 @@ class LinksController(
                 },
                 userLinkBuilder.profileLink(user?.id),
                 userLinkBuilder.userLink(),
-                userLinkBuilder.contractsLink(),
+                userLinkBuilder.accessRulesLink(),
                 countryLinkBuilder.getCountriesLink(),
-                contractLinkBuilder.searchContracts(),
+                accessRuleLinkBuilder.searchAccessRules(),
                 eventLinkBuilder.logPageRenderedEventLink(),
                 accountLinkBuilder.getIndependentAccountsLink(),
                 accountLinkBuilder.getAccountLink(),

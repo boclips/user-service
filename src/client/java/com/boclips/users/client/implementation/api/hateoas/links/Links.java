@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Links {
     private Link user;
-    private Link contracts;
+    private Link accessRules;
     private Link account;
     private Link validateShareCode;
 }

@@ -1,6 +1,6 @@
 package com.boclips.users.domain.model.account
 
-import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import java.time.ZonedDateTime
@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 data class Account<T: Organisation>(
     val id: AccountId,
     val type: AccountType,
-    val contractIds: List<ContractId>,
+    val accessRuleIds: List<AccessRuleId>,
     val accessExpiresOn: ZonedDateTime?,
     val organisation: T
 )

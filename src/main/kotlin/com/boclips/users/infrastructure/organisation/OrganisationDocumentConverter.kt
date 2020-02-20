@@ -1,11 +1,11 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.account.ApiIntegration
-import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.ApiIntegration
+import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
@@ -47,7 +47,7 @@ object OrganisationDocumentConverter {
         return Account(
             id = AccountId(organisationDocument.id!!),
             type = organisationDocument.accountType ?: organisationDocument.parentOrganisation?.accountType ?: AccountType.STANDARD,
-            contractIds = organisationDocument.contractIds.map { ContractId(it) },
+            accessRuleIds = organisationDocument.accessRuleIds.map { AccessRuleId(it) },
             organisation = organisation,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
         )

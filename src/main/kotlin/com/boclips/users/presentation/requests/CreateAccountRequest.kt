@@ -7,5 +7,5 @@ class CreateAccountRequest {
     var name: String? = null
     @field:NotEmpty
     var role: String? = null
-    var contractIds: List<String>? = null
+    var accessRuleIds: List<String>? = null
 }

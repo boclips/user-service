@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -44,7 +44,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
                         {
                             "name": "Test Organisation",
                             "role": "ROLE_TEST_ORGANISATION",
-                            "contractIds": ["A", "B", "C"]
+                            "accessRuleIds": ["A", "B", "C"]
                         }
                     """.trimIndent()
                     )
@@ -59,7 +59,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
             val organisationName = "Test Org"
             accountRepository.save(
                 apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
-                contractIds = emptyList(),
+                accessRuleIds = emptyList(),
                 role = "ROLE_TEST_ORG"
             )
 
@@ -71,7 +71,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
                         {
                             "name": "$organisationName",
                             "role": "ROLE_ANOTHER",
-                            "contractIds": []
+                            "accessRuleIds": []
                         }
                     """.trimIndent()
                     )
@@ -85,7 +85,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
             val role = "ROLE_TEST_ORG"
             accountRepository.save(
                 apiIntegration = OrganisationFactory.apiIntegration(name = "Some name"),
-                contractIds = emptyList(),
+                accessRuleIds = emptyList(),
                 role = role
             )
 
@@ -97,7 +97,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
                         {
                             "name": "Some other name",
                             "role": "$role",
-                            "contractIds": []
+                            "accessRuleIds": []
                         }
                     """.trimIndent()
                     )
@@ -140,7 +140,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
             val organisationName = "Test Org"
             val organisation = accountRepository.save(
                 apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
-                contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
+                accessRuleIds = listOf(AccessRuleId("A"), AccessRuleId("B"), AccessRuleId("C")),
                 role = "ROLE_TEST_ORG"
             )
 
@@ -155,7 +155,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
-                .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
+                .andExpect(jsonPath("$.accessRuleIds", containsInAnyOrder("A", "B", "C")))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/accounts/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${organisation.id.value}")))
         }

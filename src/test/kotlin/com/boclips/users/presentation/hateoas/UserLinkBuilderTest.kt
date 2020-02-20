@@ -13,7 +13,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.core.context.SecurityContextHolder
-import java.time.ZonedDateTime
 
 class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
 
@@ -183,23 +182,23 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `contracts link when authenticated and has VIEW_CONTRACTS role`() {
-        setSecurityContext("a-user", UserRoles.VIEW_CONTRACTS)
+    fun `access rules link when authenticated and has VIEW_ACCESS_RULES role`() {
+        setSecurityContext("a-user", UserRoles.VIEW_ACCESS_RULES)
 
-        val contractsLink = userLinkBuilder.contractsLink(UserId("a-user"))
+        val accessRulesLink = userLinkBuilder.accessRulesLink(UserId("a-user"))
 
-        assertThat(contractsLink).isNotNull()
-        assertThat(contractsLink!!.href).endsWith("/users/a-user/contracts")
-        assertThat(contractsLink.rel.value()).isEqualTo("contracts")
+        assertThat(accessRulesLink).isNotNull()
+        assertThat(accessRulesLink!!.href).endsWith("/users/a-user/access-rules")
+        assertThat(accessRulesLink.rel.value()).isEqualTo("accessRules")
     }
 
     @Test
-    fun `no contracts link when does not have VIEW_CONTRACTS role`() {
+    fun `no access rules link when does not have VIEW_ACCESS_RULES role`() {
         setSecurityContext("a-user")
 
-        val contractsLink = userLinkBuilder.contractsLink(UserId("a-user"))
+        val accessRulesLink = userLinkBuilder.accessRulesLink(UserId("a-user"))
 
-        assertThat(contractsLink).isNull()
+        assertThat(accessRulesLink).isNull()
     }
 
     @Test

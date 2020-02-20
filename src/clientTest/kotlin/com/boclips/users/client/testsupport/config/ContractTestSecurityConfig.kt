@@ -33,7 +33,7 @@ class ContractTestSecurityConfig(
         auth.inMemoryAuthentication()
             .withUser(testUser)
             .password(passwordEncoder().encode(testPassword))
-            .roles(UserRoles.VIEW_USERS, UserRoles.VIEW_CONTRACTS, UserRoles.ROLE_TEACHER, UserRoles.VIEW_ORGANISATIONS)
+            .roles(UserRoles.VIEW_USERS, UserRoles.VIEW_ACCESS_RULES, UserRoles.ROLE_TEACHER, UserRoles.VIEW_ORGANISATIONS)
     }
 
     @Bean

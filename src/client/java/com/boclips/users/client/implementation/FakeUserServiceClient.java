@@ -3,14 +3,14 @@ package com.boclips.users.client.implementation;
 import com.boclips.users.client.UserServiceClient;
 import com.boclips.users.client.model.Account;
 import com.boclips.users.client.model.User;
-import com.boclips.users.client.model.contract.Contract;
+import com.boclips.users.client.model.accessrule.AccessRule;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FakeUserServiceClient implements UserServiceClient {
     private User user = null;
-    private List<Contract> contracts = new ArrayList<>();
+    private List<AccessRule> accessRules = new ArrayList<>();
     private Account account = null;
 
     @Override
@@ -24,8 +24,8 @@ public class FakeUserServiceClient implements UserServiceClient {
     }
 
     @Override
-    public List<Contract> getContracts(String userId) {
-        return contracts;
+    public List<AccessRule> getAccessRules(String userId) {
+        return accessRules;
     }
 
     @Override
@@ -44,8 +44,8 @@ public class FakeUserServiceClient implements UserServiceClient {
         return false;
     }
 
-    public void addContract(Contract contract) {
-        contracts.add(contract);
+    public void addAccessRule(AccessRule accessRule) {
+        accessRules.add(accessRule);
     }
 
     public void addAccount(Account account) {
@@ -60,7 +60,7 @@ public class FakeUserServiceClient implements UserServiceClient {
         this.account = null;
     }
 
-    public void clearContracts() {
-        contracts.clear();
+    public void clearAccessRules() {
+        accessRules.clear();
     }
 }

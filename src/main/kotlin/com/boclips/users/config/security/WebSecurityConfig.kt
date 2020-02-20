@@ -32,15 +32,15 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.PUT, "/v1/users/*").authenticated()
             .antMatchers(HttpMethod.POST, "/v1/users/sync").hasRole(UserRoles.SYNCHRONIZE_USERS_HUBSPOT)
             .antMatchers(HttpMethod.POST, "/v1/users/sync-identities").hasRole(UserRoles.SYNCHRONIZE_USERS_KEYCLOAK)
-            .antMatchers(HttpMethod.GET, "/v1/users/*/contracts").hasRole(UserRoles.VIEW_CONTRACTS)
+            .antMatchers(HttpMethod.GET, "/v1/users/*/access-rules").hasRole(UserRoles.VIEW_ACCESS_RULES)
             .antMatchers(HttpMethod.GET, "/v1/users/*/shareCode/*").permitAll()
 
-            .antMatchers(HttpMethod.POST, "/v1/contracts").hasRole(UserRoles.INSERT_CONTRACTS)
-            .antMatchers(HttpMethod.GET, "/v1/contracts").hasRole(UserRoles.VIEW_CONTRACTS)
-            .antMatchers(HttpMethod.GET, "/v1/contracts/*").hasRole(UserRoles.VIEW_CONTRACTS)
+            .antMatchers(HttpMethod.POST, "/v1/access-rules").hasRole(UserRoles.INSERT_ACCESS_RULES)
+            .antMatchers(HttpMethod.GET, "/v1/access-rules").hasRole(UserRoles.VIEW_ACCESS_RULES)
+            .antMatchers(HttpMethod.GET, "/v1/access-rules/*").hasRole(UserRoles.VIEW_ACCESS_RULES)
 
-            .antMatchers(HttpMethod.PUT, "/v1/selected-content-contracts/**").hasRole(UserRoles.UPDATE_CONTRACTS)
-            .antMatchers(HttpMethod.DELETE, "/v1/selected-content-contracts/**").hasRole(UserRoles.UPDATE_CONTRACTS)
+            .antMatchers(HttpMethod.PUT, "/v1/selected-content-access-rules/**").hasRole(UserRoles.UPDATE_ACCESS_RULES)
+            .antMatchers(HttpMethod.DELETE, "/v1/selected-content-access-rules/**").hasRole(UserRoles.UPDATE_ACCESS_RULES)
 
             .antMatchers(HttpMethod.POST, "/v1/api-integrations").hasRole(UserRoles.INSERT_ORGANISATIONS)
             .antMatchers(HttpMethod.GET, "/v1/api-integrations").hasRole(UserRoles.VIEW_ORGANISATIONS)

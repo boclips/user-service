@@ -2,7 +2,7 @@ package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
-import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.AccountLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccountConverter
@@ -19,7 +19,7 @@ class AccountConverterTest {
         val originalAccount = OrganisationAccountFactory.sample(
             id = AccountId("organisation-account-id"),
             accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
-            contractIds = listOf(ContractId("123")),
+            accessRuleIds = listOf(AccessRuleId("123")),
             organisation = OrganisationFactory.district(name = "my-district", state = State.fromCode("NY")),
             type = AccountType.DESIGN_PARTNER
         )

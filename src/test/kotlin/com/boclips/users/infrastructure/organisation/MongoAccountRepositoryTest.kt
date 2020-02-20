@@ -1,10 +1,11 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.OrganisationType
-import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
 import com.boclips.users.domain.service.AccountTypeUpdate
@@ -21,20 +22,20 @@ class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
     fun `persists an organisation`() {
         val organisationName = "Persist Organisation"
 
-        val contractIds = listOf(ContractId("Contract A"), ContractId("Contract B"))
+        val accessRulesIds = listOf(AccessRuleId("Contract A"), AccessRuleId("Contract B"))
 
-        val organisationAccount = accountRepository.save(
+        val organisationAccount: Account<ApiIntegration> = accountRepository.save(
             apiIntegration = OrganisationFactory.apiIntegration(
                 name = organisationName,
                 allowsOverridingUserIds = true
             ),
-            contractIds = contractIds
+            accessRuleIds = accessRulesIds
         )
 
         assertThat(organisationAccount.id).isNotNull
         assertThat(organisationAccount.type).isEqualTo(AccountType.STANDARD)
         assertThat(organisationAccount.organisation.name).isEqualTo(organisationName)
-        assertThat(organisationAccount.contractIds).isEqualTo(contractIds)
+        assertThat(organisationAccount.accessRuleIds).isEqualTo(accessRulesIds)
         assertThat((organisationAccount).organisation.allowsOverridingUserIds).isTrue()
     }
 

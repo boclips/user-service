@@ -1,9 +1,9 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.AccountAlreadyExistsException
-import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.account.ApiIntegration
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.presentation.requests.CreateAccountRequest
 import org.springframework.stereotype.Service
@@ -19,7 +19,7 @@ class CreateApiIntegration(
             apiIntegration = ApiIntegration(
                 name = request.name!!
             ),
-            contractIds = request.contractIds!!.map { ContractId(it) },
+            accessRuleIds = request.accessRuleIds!!.map { AccessRuleId(it) },
             role = request.role
         )
     }

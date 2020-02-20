@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.LookupEntry
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.ApiIntegration
@@ -8,7 +9,6 @@ import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.account.School
-import com.boclips.users.domain.model.contract.ContractId
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.domain.service.AccountTypeUpdate
@@ -45,10 +45,10 @@ class MongoAccountRepository(
     @Suppress("UNCHECKED_CAST")
     override fun save(
         apiIntegration: ApiIntegration,
-        contractIds: List<ContractId>,
+        accessRuleIds: List<AccessRuleId>,
         role: String?
     ) =
-        doSave(role, contractIds, apiIntegration) as Account<ApiIntegration>
+        doSave(role, accessRuleIds, apiIntegration) as Account<ApiIntegration>
 
     @Suppress("UNCHECKED_CAST")
     override fun save(school: School, accessExpiresOn: ZonedDateTime?) =
@@ -75,7 +75,7 @@ class MongoAccountRepository(
 
     private fun doSave(
         role: String? = null,
-        contractIds: List<ContractId> = emptyList(),
+        accessRuleIds: List<AccessRuleId> = emptyList(),
         organisation: Organisation,
         accessExpiresOn: ZonedDateTime? = null
     ): Account<*> {
@@ -84,7 +84,7 @@ class MongoAccountRepository(
                 organisationDocument(
                     organisation = organisation,
                     role = role,
-                    contractIds = contractIds,
+                    accessRuleIds = accessRuleIds,
                     accessExpiresOn = accessExpiresOn
                 )
             )
@@ -94,7 +94,7 @@ class MongoAccountRepository(
     private fun organisationDocument(
         organisation: Organisation,
         role: String?,
-        contractIds: List<ContractId>,
+        accessRuleIds: List<AccessRuleId>,
         id: String? = null,
         accessExpiresOn: ZonedDateTime? = null
     ): OrganisationDocument {
@@ -103,7 +103,7 @@ class MongoAccountRepository(
             accountType = null,
             name = organisation.name,
             role = role,
-            contractIds = contractIds.map { it.value },
+            accessRuleIds = accessRuleIds.map { it.value },
             externalId = when (organisation) {
                 is School -> organisation.externalId
                 is District -> organisation.externalId
@@ -122,7 +122,7 @@ class MongoAccountRepository(
                     organisationDocument(
                         organisation = it.organisation,
                         role = null,
-                        contractIds = it.contractIds,
+                        accessRuleIds = it.accessRuleIds,
                         id = it.id.value
                     )
                 }

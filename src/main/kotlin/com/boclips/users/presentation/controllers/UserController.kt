@@ -2,20 +2,20 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.SynchronisationService
 import com.boclips.users.application.commands.CreateTeacherAccount
-import com.boclips.users.application.commands.GetContractsOfUser
+import com.boclips.users.application.commands.GetAccessRulesOfUser
 import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.commands.UpdateUser
 import com.boclips.users.application.commands.ValidateShareCode
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.presentation.hateoas.ContractResourcesHateoasWrapper
-import com.boclips.users.presentation.hateoas.ContractResourcesWrapper
-import com.boclips.users.presentation.hateoas.UserContractsLinkBuilder
+import com.boclips.users.presentation.hateoas.AccessRuleResourcesHateoasWrapper
+import com.boclips.users.presentation.hateoas.AccessRuleResourcesWrapper
+import com.boclips.users.presentation.hateoas.UserAccessRulesLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.projections.WithProjection
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.UserResource
-import com.boclips.users.presentation.resources.converters.ContractConverter
+import com.boclips.users.presentation.resources.converters.AccessRuleConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.server.ExposesResourceFor
 import org.springframework.http.HttpHeaders
@@ -39,10 +39,10 @@ class UserController(
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
     private val userLinkBuilder: UserLinkBuilder,
-    private val userContractsLinkBuilder: UserContractsLinkBuilder,
+    private val userAccessRulesLinkBuilder: UserAccessRulesLinkBuilder,
     private val synchronisationService: SynchronisationService,
-    private val contractConverter: ContractConverter,
-    private val getContractsOfUser: GetContractsOfUser,
+    private val accessRuleConverter: AccessRuleConverter,
+    private val getAccessRulesOfUser: GetAccessRulesOfUser,
     private val withProjection: WithProjection,
     private val validateShareCode: ValidateShareCode
 ) {
@@ -76,15 +76,15 @@ class UserController(
         )
     }
 
-    @GetMapping("/{id}/contracts")
-    fun getContractsOfUser(@PathVariable id: String?): ContractResourcesHateoasWrapper {
+    @GetMapping("/{id}/access-rules")
+    fun getAccessRulesOfUser(@PathVariable id: String?): AccessRuleResourcesHateoasWrapper {
         val userId = UserId(id!!)
-        return ContractResourcesHateoasWrapper(
-            _embedded = ContractResourcesWrapper(
-                getContractsOfUser(userId).map { contractConverter.toResource(it) }
+        return AccessRuleResourcesHateoasWrapper(
+            _embedded = AccessRuleResourcesWrapper(
+                getAccessRulesOfUser(userId).map { accessRuleConverter.toResource(it) }
             ),
             _links = listOfNotNull(
-                userContractsLinkBuilder.self(userId)
+                userAccessRulesLinkBuilder.self(userId)
             ).map { it.rel.value() to it }.toMap()
         )
     }

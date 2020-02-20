@@ -13,7 +13,7 @@ class OrganisationDocumentFactory {
         fun sample(
             name: String = "The Best Organisation",
             role: String? = null,
-            contractIds: List<String> = emptyList(),
+            accessRuleIds: List<String> = emptyList(),
             type: OrganisationType = OrganisationType.SCHOOL,
             accountType: AccountType? = null,
             externalId: String? = "external-id",
@@ -28,7 +28,7 @@ class OrganisationDocumentFactory {
             accountType = accountType,
             name = name,
             role = role,
-            contractIds = contractIds,
+            accessRuleIds = accessRuleIds,
             externalId = externalId,
             type = type,
             country = country,

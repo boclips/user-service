@@ -1,12 +1,12 @@
 package com.boclips.users.client.implementation;
 
 import com.boclips.users.client.UserServiceClient;
-import com.boclips.users.client.implementation.api.hateoas.contract.ContractsHateoasWrapper;
+import com.boclips.users.client.implementation.api.hateoas.accessrules.AccessRulesHateoasWrapper;
 import com.boclips.users.client.implementation.api.hateoas.links.Links;
 import com.boclips.users.client.implementation.api.hateoas.links.LinksResource;
 import com.boclips.users.client.model.Account;
 import com.boclips.users.client.model.User;
-import com.boclips.users.client.model.contract.Contract;
+import com.boclips.users.client.model.accessrule.AccessRule;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -34,11 +34,11 @@ public class ApiUserServiceClient implements UserServiceClient {
     }
 
     @Override
-    public List<Contract> getContracts(String userId) {
+    public List<AccessRule> getAccessRules(String userId) {
         return restTemplate
-                .getForObject(getLinks().getContracts().getHref(), ContractsHateoasWrapper.class, userId)
+                .getForObject(getLinks().getAccessRules().getHref(), AccessRulesHateoasWrapper.class, userId)
                 .get_embedded()
-                .getContracts();
+                .getAccessRules();
     }
 
     @Override

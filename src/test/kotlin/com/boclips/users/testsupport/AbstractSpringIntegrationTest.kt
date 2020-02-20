@@ -2,30 +2,30 @@ package com.boclips.users.testsupport
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.application.commands.AddCollectionToContract
+import com.boclips.users.application.commands.AddCollectionToAccessRule
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.School
-import com.boclips.users.domain.model.contract.CollectionId
-import com.boclips.users.domain.model.contract.Contract
-import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.contract.VideoId
+import com.boclips.users.domain.model.accessrules.CollectionId
+import com.boclips.users.domain.model.accessrules.AccessRule
+import com.boclips.users.domain.model.accessrules.AccessRuleId
+import com.boclips.users.domain.model.accessrules.VideoId
 import com.boclips.users.domain.service.AccessService
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.domain.service.AccountService
-import com.boclips.users.domain.service.ContractRepository
+import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.SelectedContentContractRepository
+import com.boclips.users.domain.service.SelectedContentAccessRuleRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
-import com.boclips.users.presentation.hateoas.ContractLinkBuilder
-import com.boclips.users.presentation.resources.converters.ContractConverter
+import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
+import com.boclips.users.presentation.resources.converters.AccessRuleConverter
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.github.tomakehurst.wiremock.WireMockServer
@@ -98,22 +98,22 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var organisationIdResolver: OrganisationIdResolver
 
     @Autowired
-    lateinit var selectedContentContractRepository: SelectedContentContractRepository
+    lateinit var selectedContentAccessRuleRepository: SelectedContentAccessRuleRepository
 
     @Autowired
-    lateinit var contractRepository: ContractRepository
+    lateinit var accessRuleRepository: AccessRuleRepository
 
     @Autowired
-    lateinit var contractConverter: ContractConverter
+    lateinit var accessRuleConverter: AccessRuleConverter
 
     @Autowired
     lateinit var fakeAmericanSchoolsProvider: FakeAmericanSchoolsProvider
 
     @Autowired
-    lateinit var contractLinkBuilder: ContractLinkBuilder
+    lateinit var accessRuleLinkBuilder: AccessRuleLinkBuilder
 
     @Autowired
-    lateinit var addCollectionToContract: AddCollectionToContract
+    lateinit var addCollectionToAccessRule: AddCollectionToAccessRule
 
     @Autowired
     lateinit var userService: UserService
@@ -161,25 +161,25 @@ abstract class AbstractSpringIntegrationTest {
         return user.id.value
     }
 
-    fun saveOrganisationWithContractDetails(
+    fun saveOrganisationWithAccessRuleDetails(
         organisationName: String = "Boclips for Teachers",
-        contractIds: List<Contract> = emptyList(),
+        accessRuleIds: List<AccessRule> = emptyList(),
         allowsOverridingUserIds: Boolean = false
     ): com.boclips.users.domain.model.account.Account<*> {
-        val organisationContracts = mutableListOf<Contract>()
-        contractIds.map {
+        val organisationAccessRules = mutableListOf<AccessRule>()
+        accessRuleIds.map {
             when (it) {
-                is Contract.SelectedCollections -> {
-                    organisationContracts.add(
-                        selectedContentContractRepository.saveSelectedCollectionsContract(
+                is AccessRule.SelectedCollections -> {
+                    organisationAccessRules.add(
+                        selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
                             it.name,
                             it.collectionIds
                         )
                     )
                 }
-                is Contract.SelectedVideos -> {
-                    organisationContracts.add(
-                        selectedContentContractRepository.saveSelectedVideosContract(
+                is AccessRule.SelectedVideos -> {
+                    organisationAccessRules.add(
+                        selectedContentAccessRuleRepository.saveSelectedVideosAccessRule(
                             it.name,
                             it.videoIds
                         )
@@ -193,17 +193,17 @@ abstract class AbstractSpringIntegrationTest {
                 name = organisationName,
                 allowsOverridingUserIds = allowsOverridingUserIds
             ),
-            contractIds = organisationContracts.map { it.id })
+            accessRuleIds = organisationAccessRules.map { it.id })
     }
 
     fun saveApiIntegration(
-        contractIds: List<ContractId> = emptyList(),
+        accessRuleIds: List<AccessRuleId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
         organisation: ApiIntegration = OrganisationFactory.apiIntegration(allowsOverridingUserIds = false)
     ): com.boclips.users.domain.model.account.Account<ApiIntegration> {
         return accountRepository.save(
             apiIntegration = organisation,
-            contractIds = contractIds,
+            accessRuleIds = accessRuleIds,
             role = role
         )
     }
@@ -222,12 +222,12 @@ abstract class AbstractSpringIntegrationTest {
         return accountRepository.save(school = school)
     }
 
-    fun saveSelectedCollectionsContract(name: String, collectionIds: List<CollectionId>): Contract.SelectedCollections {
-        return selectedContentContractRepository.saveSelectedCollectionsContract(name, collectionIds)
+    fun saveSelectedCollectionsAccessRule(name: String, collectionIds: List<CollectionId>): AccessRule.SelectedCollections {
+        return selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(name, collectionIds)
     }
 
-    fun saveSelectedVideosContract(name: String, videoIds: List<VideoId>): Contract.SelectedVideos {
-        return selectedContentContractRepository.saveSelectedVideosContract(name, videoIds)
+    fun saveSelectedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.SelectedVideos {
+        return selectedContentAccessRuleRepository.saveSelectedVideosAccessRule(name, videoIds)
     }
 
     fun ResultActions.andExpectApiErrorPayload(): ResultActions {

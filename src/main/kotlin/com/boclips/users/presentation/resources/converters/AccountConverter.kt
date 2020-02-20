@@ -12,7 +12,7 @@ class AccountConverter(private val accountLinkBuilder: AccountLinkBuilder) {
         return EntityModel(
             AccountResource(
                 id = account.id.value,
-                contractIds = account.contractIds.map { it.value },
+                accessRuleIds = account.accessRuleIds.map { it.value },
                 accessExpiresOn = account.accessExpiresOn,
                 organisation = OrganisationConverter().toResource(account.organisation)
             ),

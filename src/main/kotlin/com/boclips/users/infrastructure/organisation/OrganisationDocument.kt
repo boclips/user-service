@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.account.OrganisationType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.mongodb.core.mapping.Field
 import java.time.Instant
 
 @Document(collection = "organisations")
@@ -13,7 +14,8 @@ data class OrganisationDocument(
         val id: String?,
         val name: String,
         val role: String?,
-        val contractIds: List<String> = emptyList(),
+        @Field("contractIds")
+        val accessRuleIds: List<String> = emptyList(),
         val externalId: String?,
         val type: OrganisationType,
         val accountType: AccountType?,

@@ -7,9 +7,9 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.accessrules.CollectionId
+import com.boclips.users.domain.model.accessrules.VideoId
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.contract.CollectionId
-import com.boclips.users.domain.model.contract.VideoId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -404,7 +404,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.organisation.state").exists())
                 .andExpect(jsonPath("$.organisation.country").exists())
                 .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
-                .andExpect(jsonPath("$._links.contracts").doesNotExist())
+                .andExpect(jsonPath("$._links.accessRules").doesNotExist())
         }
 
         @Test
@@ -486,72 +486,70 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Nested
-    inner class Contracts {
+    inner class AccessRules {
         @Test
-        fun `returns a link to contracts if user has VIEW_CONTRACTS role`() {
+        fun `returns a link to access rules if user has VIEW_ACCESS_RULES role`() {
             val user = saveUser(UserFactory.sample())
 
             mvc.perform(
-                get("/v1/users/${user.id.value}").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
+                get("/v1/users/${user.id.value}").asUserWithRoles(user.id.value, UserRoles.VIEW_ACCESS_RULES)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$._links.contracts.href", endsWith("/v1/users/${user.id.value}/contracts")))
+                .andExpect(jsonPath("$._links.accessRules.href", endsWith("/v1/users/${user.id.value}/access-rules")))
         }
 
         @Test
-        fun `lists contracts user has access to`() {
-            val collectionsContractName = "Test collections contract"
+        fun `lists access rules user has access to`() {
+            val collectionsAccessRuleName = "Test collections contract"
             val collectionId = "test-collection-id"
-            val collectionsContract = saveSelectedCollectionsContract(
-                name = collectionsContractName,
+            val collectionsAccessRule = saveSelectedCollectionsAccessRule(
+                name = collectionsAccessRuleName,
                 collectionIds = listOf(CollectionId(collectionId))
             )
-            val videosContractName = "Test videos contract"
+            val videosAccessRuleName = "Test videos contract"
             val videoId = "test-video-id"
-            val videosContract = saveSelectedVideosContract(
-                name = videosContractName,
+            val videosContract = saveSelectedVideosAccessRule(
+                name = videosAccessRuleName,
                 videoIds = listOf(VideoId(videoId))
             )
 
             val organisation = saveApiIntegration(
-                contractIds = listOf(
-                    collectionsContract.id,
+                accessRuleIds = listOf(
+                    collectionsAccessRule.id,
                     videosContract.id
                 )
             )
 
-            val user = saveUser(
-                UserFactory.sample(organisationAccountId = organisation.id)
-            )
+            val user = saveUser(UserFactory.sample(organisationAccountId = organisation.id))
 
             mvc.perform(
-                get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
+                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(user.id.value, UserRoles.VIEW_ACCESS_RULES)
             )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(2)))
+                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(2)))
                 .andExpect(
                     jsonPath(
-                        "$._embedded.contracts[*].type",
+                        "$._embedded.accessRules[*].type",
                         containsInAnyOrder("SelectedCollections", "SelectedVideos")
                     )
                 )
                 .andExpect(
                     jsonPath(
-                        "$._embedded.contracts[*].name",
-                        containsInAnyOrder(collectionsContractName, videosContractName)
+                        "$._embedded.accessRules[*].name",
+                        containsInAnyOrder(collectionsAccessRuleName, videosAccessRuleName)
                     )
                 )
                 .andExpect(
                     jsonPath(
-                        "$._embedded.contracts[*]._links.self.href",
+                        "$._embedded.accessRules[*]._links.self.href",
                         containsInAnyOrder(
-                            endsWith("/v1/contracts/${collectionsContract.id.value}"),
-                            endsWith("/v1/contracts/${videosContract.id.value}")
+                            endsWith("/v1/access-rules/${collectionsAccessRule.id.value}"),
+                            endsWith("/v1/access-rules/${videosContract.id.value}")
                         )
                     )
                 )
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/users/${user.id.value}/contracts")))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/users/${user.id.value}/access-rules")))
         }
 
         @Test
@@ -572,7 +570,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/users/$userId/contracts").asUserWithRoles(userId, UserRoles.VIEW_CONTRACTS, authority)
+                get("/v1/users/$userId/access-rules").asUserWithRoles(userId, UserRoles.VIEW_ACCESS_RULES, authority)
             )
                 .andExpect(status().isOk)
 
@@ -583,22 +581,22 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `returns an empty list of contracts when user does not belong to an organisation`() {
+        fun `returns an empty list of access rules when user does not belong to an organisation`() {
             val user = saveUser(UserFactory.sample())
 
             mvc.perform(
-                get("/v1/users/${user.id.value}/contracts").asUserWithRoles(user.id.value, UserRoles.VIEW_CONTRACTS)
+                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(user.id.value, UserRoles.VIEW_ACCESS_RULES)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.contracts", hasSize<Int>(0)))
+                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(0)))
         }
 
         @Test
-        fun `returns a 403 response when caller does not have VIEW_CONTRACTS role`() {
+        fun `returns a 403 response when caller does not have VIEW_ACCESS_RULES role`() {
             val user = saveUser(UserFactory.sample())
 
             mvc.perform(
-                get("/v1/users/${user.id.value}/contracts").asUser(user.id.value)
+                get("/v1/users/${user.id.value}/access-rules").asUser(user.id.value)
             )
                 .andExpect(status().isForbidden)
         }

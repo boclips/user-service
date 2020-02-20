@@ -28,7 +28,7 @@ This is what needs to be done:
 
 ## Development
 
-Configure contract test credentials, and ktlint in intellij:
+Configure accessRule test credentials, and ktlint in intellij:
 ```
 ./setup
 ```

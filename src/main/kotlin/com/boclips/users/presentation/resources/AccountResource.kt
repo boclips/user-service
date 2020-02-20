@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 @Relation(collectionRelation = "account")
 data class AccountResource(
     val id: String?,
-    val contractIds: List<String>,
+    val accessRuleIds: List<String>,
     val accessExpiresOn: ZonedDateTime?,
     val organisation: OrganisationResource
 )

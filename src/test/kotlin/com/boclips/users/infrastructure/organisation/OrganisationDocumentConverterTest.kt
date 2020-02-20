@@ -1,8 +1,8 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.contract.ContractId
-import com.boclips.users.domain.model.account.District
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
@@ -15,7 +15,7 @@ class OrganisationDocumentConverterTest {
     @Test
     fun `independent school`() {
         val organisationDocument = OrganisationDocumentFactory.sample(
-            contractIds = listOf("A", "B"),
+            accessRuleIds = listOf("A", "B"),
             name = "amazing school",
             type = OrganisationType.SCHOOL,
             externalId = "external-id",
@@ -28,7 +28,7 @@ class OrganisationDocumentConverterTest {
 
         assertThat(organisationAccount.id.value).isEqualTo(organisationDocument.id!!)
         assertThat(organisationAccount.type).isEqualTo(AccountType.STANDARD)
-        assertThat(organisationAccount.contractIds).containsExactly(ContractId("A"), ContractId("B"))
+        assertThat(organisationAccount.accessRuleIds).containsExactly(AccessRuleId("A"), AccessRuleId("B"))
         assertThat(organisationAccount.organisation).isInstanceOf(School::class.java)
 
         val independentSchool = organisationAccount.organisation as School
@@ -45,7 +45,7 @@ class OrganisationDocumentConverterTest {
     @Test
     fun `school with district`() {
         val organisationDocument = OrganisationDocumentFactory.sample(
-            contractIds = listOf("A", "B"),
+            accessRuleIds = listOf("A", "B"),
             name = "amazing school",
             type = OrganisationType.SCHOOL,
             accountType = null,

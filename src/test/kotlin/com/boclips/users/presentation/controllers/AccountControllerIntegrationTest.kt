@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.contract.ContractId
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -218,7 +218,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     name = organisationName,
                     allowsOverridingUserIds = true
                 ),
-                contractIds = listOf(ContractId("A"), ContractId("B"), ContractId("C")),
+                accessRuleIds = listOf(AccessRuleId("A"), AccessRuleId("B"), AccessRuleId("C")),
                 role = "ROLE_TEST_ORG"
             )
 
@@ -227,7 +227,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(MockMvcResultMatchers.status().isOk)
-                .andExpect(jsonPath("$.contractIds", containsInAnyOrder("A", "B", "C")))
+                .andExpect(jsonPath("$.accessRuleIds", containsInAnyOrder("A", "B", "C")))
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.organisation.allowsOverridingUserIds", equalTo(true)))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/accounts/${organisation.id.value}")))

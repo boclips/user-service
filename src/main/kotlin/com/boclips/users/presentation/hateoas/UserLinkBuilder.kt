@@ -66,14 +66,14 @@ class UserLinkBuilder :
         }
     }
 
-    fun contractsLink(userId: UserId? = null): Link? {
-        return if (currentUserHasAnyRole(UserRoles.VIEW_CONTRACTS)) {
+    fun accessRulesLink(userId: UserId? = null): Link? {
+        return if (currentUserHasAnyRole(UserRoles.VIEW_ACCESS_RULES)) {
             WebMvcLinkBuilder.linkTo(
-                WebMvcLinkBuilder.methodOn(UserController::class.java).getContractsOfUser(
+                WebMvcLinkBuilder.methodOn(UserController::class.java).getAccessRulesOfUser(
                     userId?.value
                 )
             )
-                .withRel("contracts")
+                .withRel("accessRules")
         } else {
             null
         }
