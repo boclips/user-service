@@ -47,38 +47,4 @@ internal class GetAccountsTest : AbstractSpringIntegrationTest(){
         assertThat(organisationNames).contains("organisation 2")
         assertThat(organisationNames).contains("another one")
     }
-
-    @Test
-    fun `searching non usa organisations`() {
-        val ukSchool = accountRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "organisation 1",
-                country = Country.fromCode("GBR")
-            )
-        )
-        accountRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "organisation 2",
-                country = Country.fromCode("USA"),
-                state = State.fromCode("NY")
-            )
-        )
-        accountRepository.save(
-            district = OrganisationDetailsFactory.district(
-                name = "another one",
-                state = State.fromCode("FL")
-            )
-        )
-
-        val searchRequest = OrganisationFilter(
-            countryCode = "GBR",
-            page = 0,
-            size = 2
-        )
-//        val organisations = getAccounts(searchRequest)
-//
-//        assertThat1(organisations).hasSize(1)
-//        assertThat1(organisations).containsExactly(ukSchool)
-    }
-
 }

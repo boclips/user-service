@@ -16,10 +16,3 @@ sealed class AccessRule {
     abstract val id: AccessRuleId
     abstract val name: String
 }
-
-
-/*
-Started on accessRule rename, need to update the endpoint and figure out contract document changes
-
- */
-//////////////////
