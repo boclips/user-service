@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
@@ -45,7 +45,7 @@ object OrganisationDocumentConverter {
         }
 
         return Organisation(
-            id = AccountId(organisationDocument.id!!),
+            id = OrganisationId(organisationDocument.id!!),
             type = organisationDocument.accountType ?: organisationDocument.parentOrganisation?.accountType ?: AccountType.STANDARD,
             accessRuleIds = organisationDocument.accessRuleIds.map { AccessRuleId(it) },
             organisation = organisation,

@@ -3,7 +3,7 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.OrganisationType
@@ -31,8 +31,8 @@ interface AccountRepository {
 
     fun update(update: AccountUpdate): Organisation<*>?
 
-    fun findAccountsByParentId(parentId: AccountId): List<Organisation<*>>
-    fun findAccountById(id: AccountId): Organisation<*>?
+    fun findAccountsByParentId(parentId: OrganisationId): List<Organisation<*>>
+    fun findAccountById(id: OrganisationId): Organisation<*>?
     fun findAccountByExternalId(id: String): Organisation<*>?
     fun findAccounts(
         countryCode: String?,
@@ -45,6 +45,6 @@ interface AccountRepository {
     fun findApiIntegrationByName(name: String): Organisation<ApiIntegration>?
 
     fun lookupSchools(schoolName: String, countryCode: String) : List<LookupEntry>
-    fun findSchoolById(id: AccountId): Organisation<School>?
+    fun findSchoolById(id: OrganisationId): Organisation<School>?
     fun findSchools(): List<Organisation<School>>
 }

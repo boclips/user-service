@@ -29,7 +29,7 @@ class GetUser(
 
         val user = getOrImportUser(userId)
         val organisation: Organisation<*>? =
-            user.organisationAccountId?.let { accountRepository.findAccountById(it) }
+            user.organisationId?.let { accountRepository.findAccountById(it) }
 
         return userConverter.toUserResource(user, organisation)
     }

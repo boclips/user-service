@@ -71,7 +71,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(firstName = ""),
-                organisationAccountId = null
+                organisationId = null
             )
         )
 
@@ -98,7 +98,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
-                organisationAccountId = organisationAccount.id
+                organisationId = organisationAccount.id
             )
         )
 
@@ -125,7 +125,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
-                organisationAccountId = organisationAccount.id,
+                organisationId = organisationAccount.id,
                 accessExpiresOn = null
             )
         )
@@ -144,7 +144,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
-                organisationAccountId = organisationAccount.id,
+                organisationId = organisationAccount.id,
                 accessExpiresOn = ZonedDateTime.now().plusDays(1)
             )
         )
@@ -163,7 +163,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
-                organisationAccountId = organisationAccount.id,
+                organisationId = organisationAccount.id,
                 accessExpiresOn = ZonedDateTime.now().minusDays(1)
             )
         )

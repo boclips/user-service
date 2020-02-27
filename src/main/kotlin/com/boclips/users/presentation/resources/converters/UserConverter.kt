@@ -20,8 +20,8 @@ class UserConverter(val userLinkBuilder: UserLinkBuilder) {
             subjects = user.profile?.subjects?.map { SubjectResource(it.id.value) },
             email = user.identity.email,
             analyticsId = user.analyticsId?.value,
-            organisationAccountId = user.organisationAccountId?.value,
-            organisation = user.organisationAccountId?.let {
+            organisationAccountId = user.organisationId?.value,
+            organisation = user.organisationId?.let {
                 organisation?.let { orgAccount ->
                     OrganisationConverter().toResource(orgAccount.organisation)
                 }

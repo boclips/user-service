@@ -29,7 +29,7 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
         setSecurityContext(userId)
 
         val organisationAccount = saveSchool()
-        saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = userId), organisationAccountId = organisationAccount.id))
+        saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = userId), organisationId = organisationAccount.id))
 
         val path = "/v1/events/page-render"
         val content = """{

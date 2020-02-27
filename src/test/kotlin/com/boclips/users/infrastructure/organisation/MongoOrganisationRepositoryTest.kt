@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.OrganisationType
@@ -207,7 +207,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     fun `update returns null when organisation not found`() {
         val updatedOrganisation = accountRepository.update(
             AccountTypeUpdate(
-                id = AccountId("doesnotexist"),
+                id = OrganisationId("doesnotexist"),
                 type = AccountType.DESIGN_PARTNER
             )
         )

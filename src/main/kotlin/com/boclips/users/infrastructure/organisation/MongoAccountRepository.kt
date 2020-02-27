@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.organisation
 import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.OrganisationDetails
@@ -69,7 +69,7 @@ class MongoAccountRepository(
         return fromDocument(repository.save(updatedDocument))
     }
 
-    override fun findAccountsByParentId(parentId: AccountId): List<Organisation<*>> {
+    override fun findAccountsByParentId(parentId: OrganisationId): List<Organisation<*>> {
         return repository.findByParentOrganisationId(parentId.value).map(::fromDocument)
     }
 
@@ -132,7 +132,7 @@ class MongoAccountRepository(
         )
     }
 
-    override fun findAccountById(id: AccountId): Organisation<*>? {
+    override fun findAccountById(id: OrganisationId): Organisation<*>? {
         val potentialOrganisationDocument = repository.findById(id.value)
         return if (potentialOrganisationDocument.isPresent) {
             fromDocument(potentialOrganisationDocument.get())
@@ -141,7 +141,7 @@ class MongoAccountRepository(
         }
     }
 
-    override fun findSchoolById(id: AccountId): Organisation<School>? {
+    override fun findSchoolById(id: OrganisationId): Organisation<School>? {
         return findAccountById(id)
             ?.takeIf { it.organisation is School }
             ?.let {

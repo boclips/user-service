@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
@@ -49,14 +49,14 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = user.organisationAccountId?.value,
+                organisationId = user.organisationId?.value,
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
                 createdAt = user.identity.createdAt.toInstant(),
                 hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false
             )
         }
 
-        fun from(identity: Identity, organisationAccountId: AccountId?): UserDocument {
+        fun from(identity: Identity, organisationId: OrganisationId?): UserDocument {
             return UserDocument(
                 id = identity.id.value,
                 subjectIds = null,
@@ -70,7 +70,7 @@ data class UserDocument(
                 username = identity.username,
                 hasOptedIntoMarketing = false,
                 marketing = null,
-                organisationId = organisationAccountId?.value,
+                organisationId = organisationId?.value,
                 accessExpiresOn = null,
                 createdAt = identity.createdAt.toInstant(),
                 hasLifetimeAccess = false

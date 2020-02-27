@@ -65,7 +65,7 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.marketingTracking.utmMedium).isEqualTo("utmMedium")
         assertThat(convertedUser.marketingTracking.utmSource).isEqualTo("utmSource")
         assertThat(convertedUser.marketingTracking.utmCampaign).isEqualTo("utmCampaign")
-        assertThat(convertedUser.organisationAccountId!!.value).isEqualTo("new-org-id")
+        assertThat(convertedUser.organisationId!!.value).isEqualTo("new-org-id")
         assertThat(convertedUser.accessExpiresOn).isNull()
     }
 

@@ -22,8 +22,8 @@ class UserService(
         val schools = accountRepository.findSchools()
 
         val allTeachers = userRepository.findAll().filter {
-            it.organisationAccountId == null || schools.map { it.id }.contains(
-                it.organisationAccountId
+            it.organisationId == null || schools.map { it.id }.contains(
+                it.organisationId
             )
         }
 
@@ -55,7 +55,7 @@ class UserService(
                     utmContent = newTeacher.utmContent,
                     utmTerm = newTeacher.utmTerm
                 ),
-                organisationAccountId = null,
+                organisationId = null,
                 accessExpiresOn = null
             )
         )

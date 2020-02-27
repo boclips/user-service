@@ -2,7 +2,7 @@ package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 class OrganisationAccountFactory {
     companion object {
         fun sample(
-            id: AccountId = AccountId(value = ObjectId().toHexString()),
+            id: OrganisationId = OrganisationId(value = ObjectId().toHexString()),
             type: AccountType = AccountType.STANDARD,
             accessRuleIds: List<AccessRuleId> = emptyList(),
             organisationDetails: OrganisationDetails = OrganisationDetailsFactory.school(),

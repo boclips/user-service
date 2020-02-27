@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
@@ -41,7 +41,7 @@ class MongoUserRepository(
                     )
                 }
                 is UserUpdateCommand.ReplaceOrganisationId -> userDocument.apply {
-                    organisationId = updateCommand.organisationAccountId.value
+                    organisationId = updateCommand.organisationId.value
                 }
                 is UserUpdateCommand.ReplaceAccessExpiresOn -> userDocument.apply {
                     accessExpiresOn = updateCommand.accessExpiresOn.toInstant()
@@ -66,7 +66,7 @@ class MongoUserRepository(
         return userDocumentMongoRepository.findAll().map { document -> userDocumentConverter.convertToUser(document) }
     }
 
-    override fun findAllByOrganisationId(id: AccountId): List<User> {
+    override fun findAllByOrganisationId(id: OrganisationId): List<User> {
         return userDocumentMongoRepository.findByOrganisationId(id.value)
             .map { document -> userDocumentConverter.convertToUser(document) }
     }
@@ -79,11 +79,11 @@ class MongoUserRepository(
     }
 
     override fun create(identity: Identity): User {
-        val organisationAccountId = organisationIdResolver.resolve(identity.roles)
+        val organisationId = organisationIdResolver.resolve(identity.roles)
 
         val document = UserDocument.from(
             identity = identity,
-            organisationAccountId = organisationAccountId
+            organisationId = organisationId
         )
 
         return saveUserDocument(document)

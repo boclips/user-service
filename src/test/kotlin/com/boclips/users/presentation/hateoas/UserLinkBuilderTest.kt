@@ -3,7 +3,7 @@ package com.boclips.users.presentation.hateoas
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -54,7 +54,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "lovely-user"),
                     profile = ProfileFactory.sample(firstName = ""),
-                    organisationAccountId = null
+                    organisationId = null
                 )
             )
 
@@ -83,7 +83,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "lovely-user"),
                     profile = ProfileFactory.sample(),
-                    organisationAccountId = AccountId("test")
+                    organisationId = OrganisationId("test")
                 )
             )
 
@@ -208,7 +208,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         val user = UserFactory.sample(
             identity = IdentityFactory.sample(id = "lovely-user"),
             profile = ProfileFactory.sample(),
-            organisationAccountId = AccountId("test"),
+            organisationId = OrganisationId("test"),
             accessExpiresOn = null
         )
 
@@ -224,7 +224,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         val user = UserFactory.sample(
             identity = IdentityFactory.sample(id = "lovely-user"),
             profile = ProfileFactory.sample(),
-            organisationAccountId = AccountId("test")
+            organisationId = OrganisationId("test")
         )
 
         val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink(user, false)
@@ -238,7 +238,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         val user = UserFactory.sample(
             identity = IdentityFactory.sample(id = "lovely-user"),
             profile = ProfileFactory.sample(),
-            organisationAccountId = AccountId("test")
+            organisationId = OrganisationId("test")
         )
 
         val reportAccessExpiredLink = userLinkBuilder.reportAccessExpiredLink(user, false)

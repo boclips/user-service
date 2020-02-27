@@ -5,10 +5,9 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationAccountFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -57,7 +56,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
                 utmTerm = "test-term",
                 utmContent = "test-content"
             ),
-            organisationAccountId = AccountId("org-id")
+            organisationId = OrganisationId("org-id")
         )
 
         val crmProfile: CrmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))!!

@@ -2,7 +2,7 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.presentation.controllers.AccountController
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsBuilderFactory) {
-    fun self(id: AccountId): Link {
+    fun self(id: OrganisationId): Link {
         return WebMvcLinkBuilder.linkTo(
             WebMvcLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(id.value)
         ).withSelfRel()
@@ -26,7 +26,7 @@ class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsB
         }
     }
 
-    fun edit(id: AccountId): Link {
+    fun edit(id: OrganisationId): Link {
         return WebMvcLinkBuilder.linkTo(
             WebMvcLinkBuilder.methodOn(AccountController::class.java).updateAnAccount(id.value, null)
         ).withRel("edit")

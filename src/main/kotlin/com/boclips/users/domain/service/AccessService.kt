@@ -12,7 +12,7 @@ class AccessService(val accountRepository: AccountRepository) {
         val userAccessExpiry = user.accessExpiresOn ?: return true
 
         val organisation: Organisation<School>? =
-            user.organisationAccountId?.let { accountRepository.findSchoolById(it) }
+            user.organisationId?.let { accountRepository.findSchoolById(it) }
 
         val organisationAccessExpiry =
             organisation?.let {

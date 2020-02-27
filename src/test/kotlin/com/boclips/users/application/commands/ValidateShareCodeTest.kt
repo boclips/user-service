@@ -52,7 +52,7 @@ class ValidateShareCodeTest : AbstractSpringIntegrationTest() {
                 referralCode = null,
                 teacherPlatformAttributes = null,
                 marketingTracking = MarketingTrackingFactory.sample(),
-                organisationAccountId = null,
+                organisationId = null,
                 accessExpiresOn = null)
         )
         assertThrows<ShareCodeNotFoundException>{validateShareCode(user.id.value, "CODE")}

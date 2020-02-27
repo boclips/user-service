@@ -6,7 +6,7 @@ import com.boclips.users.application.exceptions.InvalidDateException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.presentation.requests.UpdateAccountRequest
@@ -26,7 +26,7 @@ class UpdateAccount(private val accountRepository: AccountRepository) {
 
         return accountRepository.update(
             AccountExpiresOnUpdate(
-                AccountId(id),
+                OrganisationId(id),
                 convertedDate
             )
         ) ?: throw AccountNotFoundException(id)

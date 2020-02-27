@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.AccountLinkBuilder
@@ -17,7 +17,7 @@ class OrganisationConverterTest {
     @Test
     fun toResource() {
         val originalAccount = OrganisationAccountFactory.sample(
-            id = AccountId("organisation-account-id"),
+            id = OrganisationId("organisation-account-id"),
             accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
             accessRuleIds = listOf(AccessRuleId("123")),
             organisationDetails = OrganisationDetailsFactory.district(name = "my-district", state = State.fromCode("NY")),

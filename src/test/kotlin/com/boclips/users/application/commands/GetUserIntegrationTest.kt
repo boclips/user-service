@@ -39,7 +39,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
                     firstName = "Jane",
                     lastName = "Doe"
                 ),
-                organisationAccountId = school.id
+                organisationId = school.id
             )
         )
 

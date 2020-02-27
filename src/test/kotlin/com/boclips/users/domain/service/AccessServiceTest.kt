@@ -43,7 +43,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
 
         val user = UserFactory.sample(
             accessExpiresOn = ZonedDateTime.now().minusDays(1),
-            organisationAccountId = schoolAccount.id
+            organisationId = schoolAccount.id
         )
 
         assertThat(accessService.userHasAccess(user)).isEqualTo(true)
@@ -59,7 +59,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
         val schoolAccount = accountRepository.save(school)
 
         val user = UserFactory.sample(
-            organisationAccountId = schoolAccount.id,
+            organisationId = schoolAccount.id,
             accessExpiresOn = ZonedDateTime.now().plusDays(10)
         )
 
@@ -75,7 +75,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
         val schoolAccount = accountRepository.save(school)
 
         val user = UserFactory.sample(
-            organisationAccountId = schoolAccount.id,
+            organisationId = schoolAccount.id,
             accessExpiresOn = null
         )
 
@@ -91,7 +91,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
         val schoolAccount = accountRepository.save(school)
 
         val user = UserFactory.sample(
-            organisationAccountId = schoolAccount.id,
+            organisationId = schoolAccount.id,
             accessExpiresOn = ZonedDateTime.now().minusMonths(10)
         )
 

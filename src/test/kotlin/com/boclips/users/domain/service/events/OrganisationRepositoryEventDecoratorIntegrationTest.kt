@@ -20,9 +20,9 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
     fun `user updated events are dispatched when district is updated`() {
         val district = saveDistrict()
         val school = saveSchool(OrganisationDetailsFactory.school(district = district))
-        saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u1")))
-        saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u2")))
-        saveUser(UserFactory.sample(organisationAccountId = null, identity = IdentityFactory.sample("u3")))
+        saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u1")))
+        saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u2")))
+        saveUser(UserFactory.sample(organisationId = null, identity = IdentityFactory.sample("u3")))
 
         repository.update(
             AccountTypeUpdate(
@@ -38,9 +38,9 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
     @Test
     fun `user updated events are dispatched when school is updated`() {
         val school = saveSchool(OrganisationDetailsFactory.school(district = null))
-        saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u1")))
-        saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u2")))
-        saveUser(UserFactory.sample(organisationAccountId = null, identity = IdentityFactory.sample("u3")))
+        saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u1")))
+        saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u2")))
+        saveUser(UserFactory.sample(organisationId = null, identity = IdentityFactory.sample("u3")))
 
         repository.update(
             AccountTypeUpdate(

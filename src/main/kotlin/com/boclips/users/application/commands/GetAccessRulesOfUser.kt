@@ -20,7 +20,7 @@ class GetAccessRulesOfUser(
     }
 
     private fun findUser(userId: UserId): Organisation<*>? {
-        return getOrImportUser(userId).organisationAccountId?.let {
+        return getOrImportUser(userId).organisationId?.let {
             accountRepository.findAccountById((it))
         }
     }

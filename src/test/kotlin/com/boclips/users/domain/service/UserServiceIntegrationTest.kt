@@ -27,14 +27,14 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "1"),
-                    organisationAccountId = organisation.id
+                    organisationId = organisation.id
                 )
             ),
-            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "4"), organisationAccountId = null)),
+            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "4"), organisationId = null)),
             saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "5"),
-                    organisationAccountId = apiOrganisation.id
+                    organisationId = apiOrganisation.id
                 )
             )
         )
@@ -104,6 +104,6 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = userService.createTeacher(newUser)
 
-        assertThat(persistedUser.organisationAccountId).isNull()
+        assertThat(persistedUser.organisationId).isNull()
     }
 }

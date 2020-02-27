@@ -2,7 +2,7 @@ package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
@@ -33,10 +33,10 @@ class UserConverterTest {
                         subjects = listOf(Subject(SubjectId("subject-id"), name = "Math"))
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id"),
-                    organisationAccountId = AccountId("1234")
+                    organisationId = OrganisationId("1234")
                 ),
                 organisation = OrganisationAccountFactory.sample(
-                    id = AccountId("1234"),
+                    id = OrganisationId("1234"),
                     organisationDetails = OrganisationDetailsFactory.school(
                         name = "My school",
                         state = State.fromCode("NY"),
@@ -64,10 +64,10 @@ class UserConverterTest {
     fun `converts teachers platform specific fields`() {
         val user = UserFactory.sample(
             teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "TRWN"),
-            organisationAccountId = AccountId("1234"))
+            organisationId = OrganisationId("1234"))
 
         val organisationAccount = OrganisationAccountFactory.sample(
-            id = AccountId("1234"),
+            id = OrganisationId("1234"),
             organisationDetails = OrganisationDetailsFactory.school(
                 name = "My school",
                 state = State.fromCode("NY"),
@@ -86,7 +86,7 @@ class UserConverterTest {
         val userResource =
             UserConverter(UserLinkBuilder()).toUserResource(
                 user = UserFactory.sample(
-                    organisationAccountId = null
+                    organisationId = null
                 ),
                 organisation = null
             )

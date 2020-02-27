@@ -14,7 +14,7 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.accessrules.AccessRule
 import com.boclips.users.domain.model.accessrules.CollectionId
 import com.boclips.users.domain.model.accessrules.VideoId
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
@@ -179,7 +179,7 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
         subjectService.addSubject(com.boclips.users.domain.model.Subject(id = SubjectId(subjectId), name = subjectId))
 
         val user = UserFactory.sample(
-            organisationAccountId = AccountId(organisationId),
+            organisationId = OrganisationId(organisationId),
             profile = ProfileFactory.sample(
                 subjects = listOf(
                     com.boclips.users.domain.model.Subject(
@@ -196,7 +196,7 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
 
         return User(
             user.id.value,
-            user.organisationAccountId!!.value,
+            user.organisationId!!.value,
             listOf(Subject(subjectId)),
             TeacherPlatformAttributes(shareCode)
         )

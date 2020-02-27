@@ -189,7 +189,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 accountRepository.lookupSchools(schoolName = "new school", countryCode = "ESP")
                     .firstOrNull()
             assertThat(newSchool).isNotNull
-            assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool?.id)
+            assertThat(updatedUser.organisationId?.value).isEqualTo(newSchool?.id)
         }
 
         @Test
@@ -216,7 +216,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val newSchool =
                 accountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "ESP")
             assertThat(newSchool).hasSize(1)
-            assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchool.first().id)
+            assertThat(updatedUser.organisationId?.value).isEqualTo(newSchool.first().id)
         }
     }
 
@@ -247,7 +247,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val newSchools =
                 accountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
             assertThat(newSchools).hasSize(1)
-            assertThat(updatedUser.organisationAccountId?.value).isEqualTo(newSchools.first().id)
+            assertThat(updatedUser.organisationId?.value).isEqualTo(newSchools.first().id)
         }
 
         @Test
@@ -266,7 +266,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = userId),
-                    organisationAccountId = school.id
+                    organisationId = school.id
                 )
             )
             val updatedUser = updateUser(
@@ -280,7 +280,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             val organisationAccount =
-                accountRepository.findSchoolById(updatedUser.organisationAccountId!!)!!
+                accountRepository.findSchoolById(updatedUser.organisationId!!)!!
             assertThat(organisationAccount.organisation.country.isUSA()).isEqualTo(true)
             assertThat(organisationAccount.organisation.state!!.id).isEqualTo("AZ")
             assertThat(organisationAccount.organisation.externalId).isNull()

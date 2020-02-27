@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.account.AccountId
+import com.boclips.users.domain.model.account.OrganisationId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import java.time.ZonedDateTime
@@ -20,7 +20,7 @@ class UserFactory {
             identity: Identity = IdentityFactory.sample(),
             profile: Profile? = ProfileFactory.sample(),
             teacherPlatformAttributes: TeacherPlatformAttributes? = TeacherPlatformAttributesFactory.sample(),
-            organisationAccountId: AccountId? = null,
+            organisationId: OrganisationId? = null,
             accessExpiresOn: ZonedDateTime? = null
         ) = User(
             identity = identity,
@@ -29,7 +29,7 @@ class UserFactory {
             referralCode = referralCode,
             teacherPlatformAttributes = teacherPlatformAttributes,
             marketingTracking = marketing,
-            organisationAccountId = organisationAccountId,
+            organisationId = organisationId,
             accessExpiresOn = accessExpiresOn)
 
         fun sample(
