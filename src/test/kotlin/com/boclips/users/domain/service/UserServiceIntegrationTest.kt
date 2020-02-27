@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -19,9 +19,9 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can find all teachers`() {
         val organisation =
-            accountRepository.save(OrganisationFactory.school())
+            accountRepository.save(OrganisationDetailsFactory.school())
         val apiOrganisation =
-            saveApiIntegration(organisation = OrganisationFactory.apiIntegration())
+            saveApiIntegration(organisation = OrganisationDetailsFactory.apiIntegration())
 
         listOf(
             saveUser(

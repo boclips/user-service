@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.ZonedDateTime
 
-class OrganisationRepositoryTest : AbstractSpringIntegrationTest() {
+class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
     @Autowired
     lateinit var repository: OrganisationRepository
 

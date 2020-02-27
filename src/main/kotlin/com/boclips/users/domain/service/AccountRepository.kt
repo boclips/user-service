@@ -2,7 +2,7 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
@@ -17,34 +17,34 @@ interface AccountRepository {
         apiIntegration: ApiIntegration,
         accessRuleIds: List<AccessRuleId> = emptyList(),
         role: String? = null
-    ): Account<ApiIntegration>
+    ): Organisation<ApiIntegration>
 
     fun save(
         school: School,
         accessExpiresOn: ZonedDateTime? = null
-    ): Account<School>
+    ): Organisation<School>
 
     fun save(
         district: District,
         accessExpiresOn: ZonedDateTime? = null
-    ): Account<District>
+    ): Organisation<District>
 
-    fun update(update: AccountUpdate): Account<*>?
+    fun update(update: AccountUpdate): Organisation<*>?
 
-    fun findAccountsByParentId(parentId: AccountId): List<Account<*>>
-    fun findAccountById(id: AccountId): Account<*>?
-    fun findAccountByExternalId(id: String): Account<*>?
+    fun findAccountsByParentId(parentId: AccountId): List<Organisation<*>>
+    fun findAccountById(id: AccountId): Organisation<*>?
+    fun findAccountByExternalId(id: String): Organisation<*>?
     fun findAccounts(
         countryCode: String?,
         types: List<OrganisationType>?,
         page: Int,
         size: Int
-    ): Page<Account<*>>?
+    ): Page<Organisation<*>>?
 
-    fun findApiIntegrationByRole(role: String): Account<ApiIntegration>?
-    fun findApiIntegrationByName(name: String): Account<ApiIntegration>?
+    fun findApiIntegrationByRole(role: String): Organisation<ApiIntegration>?
+    fun findApiIntegrationByName(name: String): Organisation<ApiIntegration>?
 
     fun lookupSchools(schoolName: String, countryCode: String) : List<LookupEntry>
-    fun findSchoolById(id: AccountId): Account<School>?
-    fun findSchools(): List<Account<School>>
+    fun findSchoolById(id: AccountId): Organisation<School>?
+    fun findSchools(): List<Organisation<School>>
 }

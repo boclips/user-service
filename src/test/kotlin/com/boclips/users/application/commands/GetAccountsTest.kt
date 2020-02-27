@@ -4,7 +4,7 @@ import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,14 +17,14 @@ internal class GetAccountsTest : AbstractSpringIntegrationTest(){
     @Test
     fun `Lists all accounts`() {
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 externalId = "org-id-1",
                 name = "organisation 1",
                 country = Country.fromCode("GBR")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 externalId = "org-id-2",
                 name = "organisation 2",
                 country = Country.fromCode("USA"),
@@ -32,7 +32,7 @@ internal class GetAccountsTest : AbstractSpringIntegrationTest(){
             )
         )
         accountRepository.save(
-            district = OrganisationFactory.district(
+            district = OrganisationDetailsFactory.district(
                 externalId = "org-id-3",
                 name = "another one",
                 state = State.fromCode("FL")
@@ -51,20 +51,20 @@ internal class GetAccountsTest : AbstractSpringIntegrationTest(){
     @Test
     fun `searching non usa organisations`() {
         val ukSchool = accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "organisation 1",
                 country = Country.fromCode("GBR")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "organisation 2",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("NY")
             )
         )
         accountRepository.save(
-            district = OrganisationFactory.district(
+            district = OrganisationDetailsFactory.district(
                 name = "another one",
                 state = State.fromCode("FL")
             )

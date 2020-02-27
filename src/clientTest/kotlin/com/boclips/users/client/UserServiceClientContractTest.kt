@@ -125,7 +125,7 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     }
 
     @Nested
-    inner class GetOrganisationAccount {
+    inner class GetOrganisation {
         @Test
         fun `returns an organisation account`() {
             val organisationId = insertTestOrganisation(

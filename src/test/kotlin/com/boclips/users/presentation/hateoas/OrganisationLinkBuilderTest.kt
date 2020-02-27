@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.util.UriComponentsBuilder
 
-internal class AccountLinkBuilderTest {
+internal class OrganisationLinkBuilderTest {
 
     lateinit var accountLinkBuilder: AccountLinkBuilder
     lateinit var uriComponentsBuilderFactory :UriComponentsBuilderFactory

@@ -26,7 +26,7 @@ import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccessRuleConverter
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
@@ -165,7 +165,7 @@ abstract class AbstractSpringIntegrationTest {
         organisationName: String = "Boclips for Teachers",
         accessRuleIds: List<AccessRule> = emptyList(),
         allowsOverridingUserIds: Boolean = false
-    ): com.boclips.users.domain.model.account.Account<*> {
+    ): com.boclips.users.domain.model.account.Organisation<*> {
         val organisationAccessRules = mutableListOf<AccessRule>()
         accessRuleIds.map {
             when (it) {
@@ -189,7 +189,7 @@ abstract class AbstractSpringIntegrationTest {
         }
 
         return saveApiIntegration(
-            organisation = OrganisationFactory.apiIntegration(
+            organisation = OrganisationDetailsFactory.apiIntegration(
                 name = organisationName,
                 allowsOverridingUserIds = allowsOverridingUserIds
             ),
@@ -199,8 +199,8 @@ abstract class AbstractSpringIntegrationTest {
     fun saveApiIntegration(
         accessRuleIds: List<AccessRuleId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
-        organisation: ApiIntegration = OrganisationFactory.apiIntegration(allowsOverridingUserIds = false)
-    ): com.boclips.users.domain.model.account.Account<ApiIntegration> {
+        organisation: ApiIntegration = OrganisationDetailsFactory.apiIntegration(allowsOverridingUserIds = false)
+    ): com.boclips.users.domain.model.account.Organisation<ApiIntegration> {
         return accountRepository.save(
             apiIntegration = organisation,
             accessRuleIds = accessRuleIds,
@@ -209,16 +209,16 @@ abstract class AbstractSpringIntegrationTest {
     }
 
     fun saveDistrict(
-        district: District = OrganisationFactory.district()
-    ): com.boclips.users.domain.model.account.Account<District> {
+        district: District = OrganisationDetailsFactory.district()
+    ): com.boclips.users.domain.model.account.Organisation<District> {
         return accountRepository.save(
             district = district
         )
     }
 
     fun saveSchool(
-        school: School = OrganisationFactory.school()
-    ): com.boclips.users.domain.model.account.Account<School> {
+        school: School = OrganisationDetailsFactory.school()
+    ): com.boclips.users.domain.model.account.Organisation<School> {
         return accountRepository.save(school = school)
     }
 

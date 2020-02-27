@@ -1,12 +1,12 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
-import com.boclips.users.domain.model.account.Organisation
+import com.boclips.users.domain.model.account.OrganisationDetails
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
@@ -19,21 +19,21 @@ class OrganisationAccountFactory {
             id: AccountId = AccountId(value = ObjectId().toHexString()),
             type: AccountType = AccountType.STANDARD,
             accessRuleIds: List<AccessRuleId> = emptyList(),
-            organisation: Organisation = OrganisationFactory.school(),
+            organisationDetails: OrganisationDetails = OrganisationDetailsFactory.school(),
             accessExpiresOn: ZonedDateTime? = null
-        ): Account<*> {
-            return Account(
+        ): Organisation<*> {
+            return Organisation(
                 id = id,
                 type = type,
                 accessRuleIds = accessRuleIds,
-                organisation = organisation,
+                organisation = organisationDetails,
                 accessExpiresOn = accessExpiresOn
             )
         }
     }
 }
 
-class OrganisationFactory {
+class OrganisationDetailsFactory {
     companion object {
         fun school(
             name: String = "Amazing Organisation",
@@ -42,7 +42,7 @@ class OrganisationFactory {
             countryName: String? = null,
             postCode: String? = null,
             state: State = State.fromCode("IL"),
-            district: Account<District>? = null
+            district: Organisation<District>? = null
             ): School {
             return School(
                 name = name,

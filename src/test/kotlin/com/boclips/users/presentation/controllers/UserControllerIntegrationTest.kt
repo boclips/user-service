@@ -20,7 +20,7 @@ import com.boclips.users.testsupport.asTeacher
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -158,7 +158,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
             val user = saveUser(UserFactory.sample())
             val school = saveSchool(
-                school = OrganisationFactory.school(
+                school = OrganisationDetailsFactory.school(
                     name = "San Fran Forest School",
                     state = State.fromCode("CA"),
                     country = Country.fromCode("USA")
@@ -251,7 +251,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
             saveUser(UserFactory.sample())
             saveSchool(
-                school = OrganisationFactory.school(
+                school = OrganisationDetailsFactory.school(
                     name = "San Fran Forest School",
                     state = State.fromCode("CA"),
                     country = Country.fromCode("USA")
@@ -373,7 +373,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
             saveSchool(
-                school = OrganisationFactory.school(
+                school = OrganisationDetailsFactory.school(
                     name = "San Fran Forest School",
                     state = State.fromCode("CA"),
                     country = Country.fromCode("USA")

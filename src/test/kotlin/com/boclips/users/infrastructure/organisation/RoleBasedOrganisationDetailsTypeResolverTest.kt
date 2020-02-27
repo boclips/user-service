@@ -4,7 +4,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class RoleBasedOrganisationTypeResolverTest : AbstractSpringIntegrationTest() {
+class RoleBasedOrganisationDetailsTypeResolverTest : AbstractSpringIntegrationTest() {
     @Test
     fun `matches a teacher user to "Boclips for Teachers"`() {
         val organisationId = organisationIdResolver.resolve(listOf("ROLE_TEACHER"))

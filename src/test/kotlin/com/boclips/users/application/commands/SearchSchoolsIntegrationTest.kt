@@ -3,7 +3,7 @@ package com.boclips.users.application.commands
 import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,19 +15,19 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `when school is not from USA`() {
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "school 1",
                 country = Country.fromCode("GBR")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "school 2",
                 country = Country.fromCode("HUN")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "another one",
                 country = Country.fromCode("GBR")
             )
@@ -42,7 +42,7 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `when school is from the USA fetches them from external API only`() {
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "school 1",
                 country = Country.fromCode("USA")
             )

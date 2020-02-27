@@ -1,26 +1,26 @@
 package com.boclips.users.presentation.resources
 
+import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
-import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.AccountLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccountConverter
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
-class AccountConverterTest {
+class OrganisationConverterTest {
     @Test
     fun toResource() {
         val originalAccount = OrganisationAccountFactory.sample(
             id = AccountId("organisation-account-id"),
             accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
             accessRuleIds = listOf(AccessRuleId("123")),
-            organisation = OrganisationFactory.district(name = "my-district", state = State.fromCode("NY")),
+            organisationDetails = OrganisationDetailsFactory.district(name = "my-district", state = State.fromCode("NY")),
             type = AccountType.DESIGN_PARTNER
         )
         val accountResource = AccountConverter(

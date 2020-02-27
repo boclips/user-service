@@ -2,7 +2,7 @@ package com.boclips.users.presentation.resources.converters
 
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.resources.SubjectResource
 import com.boclips.users.presentation.resources.TeacherPlatformAttributesResource
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserConverter(val userLinkBuilder: UserLinkBuilder) {
-    fun toUserResource(user: User, organisationAccount: Account<*>?): UserResource {
+    fun toUserResource(user: User, organisation: Organisation<*>?): UserResource {
         return UserResource(
             id = user.id.value,
             firstName = user.profile?.firstName,
@@ -22,7 +22,7 @@ class UserConverter(val userLinkBuilder: UserLinkBuilder) {
             analyticsId = user.analyticsId?.value,
             organisationAccountId = user.organisationAccountId?.value,
             organisation = user.organisationAccountId?.let {
-                organisationAccount?.let { orgAccount ->
+                organisation?.let { orgAccount ->
                     OrganisationConverter().toResource(orgAccount.organisation)
                 }
             },

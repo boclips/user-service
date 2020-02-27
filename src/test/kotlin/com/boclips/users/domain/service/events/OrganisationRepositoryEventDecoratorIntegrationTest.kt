@@ -5,13 +5,13 @@ import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.service.AccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.assertj.core.api.Assertions.assertThat
 
-class AccountRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTest() {
+class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
     lateinit var repository: AccountRepositoryEventDecorator
@@ -19,7 +19,7 @@ class AccountRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegration
     @Test
     fun `user updated events are dispatched when district is updated`() {
         val district = saveDistrict()
-        val school = saveSchool(OrganisationFactory.school(district = district))
+        val school = saveSchool(OrganisationDetailsFactory.school(district = district))
         saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u1")))
         saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u2")))
         saveUser(UserFactory.sample(organisationAccountId = null, identity = IdentityFactory.sample("u3")))
@@ -37,7 +37,7 @@ class AccountRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegration
 
     @Test
     fun `user updated events are dispatched when school is updated`() {
-        val school = saveSchool(OrganisationFactory.school(district = null))
+        val school = saveSchool(OrganisationDetailsFactory.school(district = null))
         saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u1")))
         saveUser(UserFactory.sample(organisationAccountId = school.id, identity = IdentityFactory.sample("u2")))
         saveUser(UserFactory.sample(organisationAccountId = null, identity = IdentityFactory.sample("u3")))

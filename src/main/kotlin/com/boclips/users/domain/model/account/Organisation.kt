@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import java.time.ZonedDateTime
 
-data class Account<T: Organisation>(
+data class Organisation<T: OrganisationDetails>(
     val id: AccountId,
     val type: AccountType,
     val accessRuleIds: List<AccessRuleId>,
@@ -22,7 +22,7 @@ enum class OrganisationType {
     API, SCHOOL, DISTRICT
 }
 
-sealed class Organisation(
+sealed class OrganisationDetails(
     open val name: String,
     open val country: Country? = null,
     open val state: State? = null,
@@ -36,9 +36,9 @@ data class School(
     override val country: Country,
     override val state: State? = null,
     override val postcode: String? = null,
-    val district: Account<District>?,
+    val district: Organisation<District>?,
     val externalId: String?
-) : Organisation(
+) : OrganisationDetails(
     name = name,
     country = country,
     state = state
@@ -52,7 +52,7 @@ data class District(
     override val name: String,
     override val state: State,
     val externalId: String
-) : Organisation(
+) : OrganisationDetails(
     name = name,
     country = Country.usa(),
     state = state
@@ -67,7 +67,7 @@ data class ApiIntegration(
     override val country: Country? = null,
     override val state: State? = null,
     val allowsOverridingUserIds: Boolean = false
-) : Organisation(
+) : OrganisationDetails(
     name = name,
     country = country,
     state = state

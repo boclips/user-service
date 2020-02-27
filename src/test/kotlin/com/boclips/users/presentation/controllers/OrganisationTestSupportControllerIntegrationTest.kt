@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.endsWith
@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
-class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTest() {
+class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class CreatingOrganisations {
         @Test
@@ -58,7 +58,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
         fun `returns a 409 response when organisation name collides`() {
             val organisationName = "Test Org"
             accountRepository.save(
-                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
+                apiIntegration = OrganisationDetailsFactory.apiIntegration(name = organisationName),
                 accessRuleIds = emptyList(),
                 role = "ROLE_TEST_ORG"
             )
@@ -84,7 +84,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
         fun `returns a 409 response when organisation role collides`() {
             val role = "ROLE_TEST_ORG"
             accountRepository.save(
-                apiIntegration = OrganisationFactory.apiIntegration(name = "Some name"),
+                apiIntegration = OrganisationDetailsFactory.apiIntegration(name = "Some name"),
                 accessRuleIds = emptyList(),
                 role = role
             )
@@ -139,7 +139,7 @@ class AccountTestSupportControllerIntegrationTest : AbstractSpringIntegrationTes
         fun `returns given organisation when it's found by name`() {
             val organisationName = "Test Org"
             val organisation = accountRepository.save(
-                apiIntegration = OrganisationFactory.apiIntegration(name = organisationName),
+                apiIntegration = OrganisationDetailsFactory.apiIntegration(name = organisationName),
                 accessRuleIds = listOf(AccessRuleId("A"), AccessRuleId("B"), AccessRuleId("C")),
                 role = "ROLE_TEST_ORG"
             )

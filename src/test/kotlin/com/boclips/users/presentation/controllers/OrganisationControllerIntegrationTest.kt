@@ -7,7 +7,7 @@ import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
+class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class FetchingIndependentAccounts {
         @Test
@@ -39,7 +39,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
 
             val district = accountRepository.save(
-                OrganisationFactory.district(
+                OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
                     state = State(id = "FL", name = "Florida")
@@ -48,7 +48,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             accountRepository.save(
-                school = OrganisationFactory.school(
+                school = OrganisationDetailsFactory.school(
                     name = "my district school",
                     countryName = "USA",
                     state = State(id = "FL", name = "Florida"),
@@ -57,7 +57,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             accountRepository.save(
-                school = OrganisationFactory.school(
+                school = OrganisationDetailsFactory.school(
                     name = "my independent school",
                     countryName = "USA",
                     state = State(id = "FL", name = "Florida"),
@@ -91,14 +91,14 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `fetches all independent accounts when no countryCode is provided`() {
             val district = accountRepository.save(
-                OrganisationFactory.district(
+                OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
                     state = State(id = "FL", name = "Florida")
                 )
             )
             val school = accountRepository.save(
-                OrganisationFactory.school(
+                OrganisationDetailsFactory.school(
                     name = "my school",
                     country = Country.fromCode("GBR")
                 )
@@ -121,7 +121,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
             val district = accountRepository.save(
-                OrganisationFactory.district(
+                OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
                     state = State(id = "FL", name = "Florida")
@@ -147,7 +147,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `bad request when date is invalid`() {
             val district = accountRepository.save(
-                OrganisationFactory.district(
+                OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
                     state = State(id = "FL", name = "Florida")
@@ -188,7 +188,7 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns forbidden when caller is not allowed to update organisations`() {
             val district = accountRepository.save(
-                OrganisationFactory.district(
+                OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
                     state = State(id = "FL", name = "Florida")
@@ -209,12 +209,12 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Nested
-    inner class FetchingOrganisationsAccountById {
+    inner class FetchingOrganisationById {
         @Test
         fun `retrieves an api integration organisation account by id`() {
             val organisationName = "Test Org"
             val organisation = accountRepository.save(
-                apiIntegration = OrganisationFactory.apiIntegration(
+                apiIntegration = OrganisationDetailsFactory.apiIntegration(
                     name = organisationName,
                     allowsOverridingUserIds = true
                 ),
@@ -257,9 +257,9 @@ class AccountControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class GettingAccounts {
         @Test
         fun `gets a page of all accounts when filters are empty`() {
-            saveDistrict(district = OrganisationFactory.district(name = "district 1"))
-            saveDistrict(district = OrganisationFactory.district(name = "district 2"))
-            saveSchool(school = OrganisationFactory.school(name = "school 1"))
+            saveDistrict(district = OrganisationDetailsFactory.district(name = "district 1"))
+            saveDistrict(district = OrganisationDetailsFactory.district(name = "district 2"))
+            saveSchool(school = OrganisationDetailsFactory.school(name = "school 1"))
 
             mvc.perform(
                 get("/v1/accounts").asUserWithRoles(

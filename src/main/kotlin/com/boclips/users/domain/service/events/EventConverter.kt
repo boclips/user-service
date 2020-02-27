@@ -2,11 +2,10 @@ package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.domain.Subject
 import com.boclips.eventbus.domain.SubjectId
-import com.boclips.eventbus.domain.user.Organisation
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.account.Account
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.service.AccountRepository
+import com.boclips.eventbus.domain.user.Organisation
 
 class EventConverter(
     private val accountRepository: AccountRepository
@@ -31,21 +30,21 @@ class EventConverter(
         return toEventOrganisation(account)
     }
 
-    private fun toEventOrganisation(account: Account<*>): Organisation {
-        val parent = parentOrganisation(account.organisation)
+    private fun toEventOrganisation(organisation: com.boclips.users.domain.model.account.Organisation<*>): Organisation {
+        val parent = parentOrganisation(organisation.organisation)
         return Organisation.builder()
-            .id(account.id.value)
-            .accountType(account.type.name)
-            .type(account.organisation.type().name)
-            .name(account.organisation.name)
-            .postcode(account.organisation.postcode)
+            .id(organisation.id.value)
+            .accountType(organisation.type.name)
+            .type(organisation.organisation.type().name)
+            .name(organisation.organisation.name)
+            .postcode(organisation.organisation.postcode)
             .parent(parent)
             .build()
     }
 
-    private fun parentOrganisation(organisation: com.boclips.users.domain.model.account.Organisation): Organisation? {
-        return when (organisation) {
-            is School -> organisation.district?.let(this::toEventOrganisation)
+    private fun parentOrganisation(organisationDetails: com.boclips.users.domain.model.account.OrganisationDetails): Organisation? {
+        return when (organisationDetails) {
+            is School -> organisationDetails.district?.let(this::toEventOrganisation)
             else -> null
         }
     }

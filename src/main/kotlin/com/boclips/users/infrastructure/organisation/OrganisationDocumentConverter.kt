@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.AccountType
 import com.boclips.users.domain.model.account.ApiIntegration
@@ -14,7 +14,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 object OrganisationDocumentConverter {
-    fun fromDocument(organisationDocument: OrganisationDocument): Account<*> {
+    fun fromDocument(organisationDocument: OrganisationDocument): Organisation<*> {
         val organisation = when (organisationDocument.type) {
 
             OrganisationType.API -> ApiIntegration(
@@ -44,7 +44,7 @@ object OrganisationDocumentConverter {
             )
         }
 
-        return Account(
+        return Organisation(
             id = AccountId(organisationDocument.id!!),
             type = organisationDocument.accountType ?: organisationDocument.parentOrganisation?.accountType ?: AccountType.STANDARD,
             accessRuleIds = organisationDocument.accessRuleIds.map { AccessRuleId(it) },
@@ -53,12 +53,12 @@ object OrganisationDocumentConverter {
         )
     }
 
-    private fun mapSchoolDistrict(organisationDocument: OrganisationDocument): Account<District>? =
+    private fun mapSchoolDistrict(organisationDocument: OrganisationDocument): Organisation<District>? =
         organisationDocument.parentOrganisation
             ?.let { fromDocument(it) }
             ?.takeIf { it.organisation is District }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
-                it as Account<District>
+                it as Organisation<District>
             }
 }

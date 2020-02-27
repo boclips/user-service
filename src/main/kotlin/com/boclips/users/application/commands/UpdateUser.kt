@@ -8,7 +8,7 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.model.account.School
 import com.boclips.users.domain.model.school.Country
@@ -65,7 +65,7 @@ class UpdateUser(
 
     private fun buildUpdateCommands(
         updateUserRequest: UpdateUserRequest,
-        school: Account<School>?,
+        school: Organisation<School>?,
         user: User
     ): List<UserUpdateCommand> {
         val updateCommands = userUpdatesCommandFactory.buildCommands(updateUserRequest, school)
@@ -84,7 +84,7 @@ class UpdateUser(
         return (user.teacherPlatformAttributes == null || !user.teacherPlatformAttributes.hasLifetimeAccess) && !user.hasOnboarded()
     }
 
-    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): Account<School>? {
+    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): Organisation<School>? {
         val schoolById = updateUserRequest.schoolId?.let {
             accountService.findOrCreateSchooldiggerSchool(it)
         }
@@ -107,7 +107,7 @@ class UpdateUser(
     private fun findSchoolByName(
         schoolName: String,
         countryCode: String
-    ): Account<School>? {
+    ): Organisation<School>? {
         return accountRepository.lookupSchools(
             schoolName,
             countryCode

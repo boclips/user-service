@@ -5,7 +5,7 @@ import com.boclips.users.application.exceptions.AccountNotFoundException
 import com.boclips.users.application.exceptions.InvalidDateException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.AccountId
 import com.boclips.users.domain.service.AccountExpiresOnUpdate
 import com.boclips.users.domain.service.AccountRepository
@@ -17,7 +17,7 @@ import java.time.format.DateTimeParseException
 
 @Component
 class UpdateAccount(private val accountRepository: AccountRepository) {
-    operator fun invoke(id: String, request: UpdateAccountRequest?): Account<*> {
+    operator fun invoke(id: String, request: UpdateAccountRequest?): Organisation<*> {
         if (!UserExtractor.currentUserHasRole(UserRoles.UPDATE_ORGANISATIONS)) {
             throw PermissionDeniedException()
         }

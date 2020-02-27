@@ -1,16 +1,16 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class AccountServiceTest: AbstractSpringIntegrationTest() {
+class OrganisationServiceTest: AbstractSpringIntegrationTest() {
 
     @Test
     fun `when school and district already exists delegates on DB`() {
-        val district = accountRepository.save(OrganisationFactory.district())
-        val originalSchool = OrganisationFactory.school(externalId = "external-school-id", district = district)
+        val district = accountRepository.save(OrganisationDetailsFactory.district())
+        val originalSchool = OrganisationDetailsFactory.school(externalId = "external-school-id", district = district)
         accountRepository.save(originalSchool)
 
         val school = accountService.findOrCreateSchooldiggerSchool("external-school-id")
@@ -21,9 +21,9 @@ class AccountServiceTest: AbstractSpringIntegrationTest() {
 
     @Test
     fun `existing district new school searches them first time only and links both`() {
-        val district = OrganisationFactory.district(externalId = "external-district-id")
+        val district = OrganisationDetailsFactory.district(externalId = "external-district-id")
         val districtAccount = accountRepository.save(district)
-        val expectedSchool = OrganisationFactory.school(
+        val expectedSchool = OrganisationDetailsFactory.school(
                 externalId = "external-school-id",
                 district = districtAccount
         )
@@ -39,8 +39,8 @@ class AccountServiceTest: AbstractSpringIntegrationTest() {
 
     @Test
     fun `when neither school nor district exists creates both`() {
-        val district = OrganisationFactory.district(externalId = "external-district-id")
-        val school = OrganisationFactory.school(externalId = "external-school-id")
+        val district = OrganisationDetailsFactory.district(externalId = "external-district-id")
+        val school = OrganisationDetailsFactory.school(externalId = "external-school-id")
         fakeAmericanSchoolsProvider.createSchoolAndDistrict(school to district)
 
         val schoolAccount = accountService.findOrCreateSchooldiggerSchool("external-school-id")!!

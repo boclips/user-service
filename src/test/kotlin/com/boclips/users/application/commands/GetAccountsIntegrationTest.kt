@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,20 +16,20 @@ class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `searching non usa organisations`() {
         val ukSchool = accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "organisation 1",
                 country = Country.fromCode("GBR")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "organisation 2",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("NY")
             )
         )
         accountRepository.save(
-            district = OrganisationFactory.district(
+            district = OrganisationDetailsFactory.district(
                 name = "another one",
                 state = State.fromCode("FL")
             )
@@ -49,20 +49,20 @@ class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `searching USA organisations`() {
         accountRepository.save(
-            district = OrganisationFactory.district(
+            district = OrganisationDetailsFactory.district(
                 name = "floridistrict",
                 state = State.fromCode("FL")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "oregon-isation",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("OR")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "gb skool",
                 country = Country.fromCode("GBR")
             )
@@ -87,20 +87,20 @@ class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `searching organisations without filters`() {
         accountRepository.save(
-            district = OrganisationFactory.district(
+            district = OrganisationDetailsFactory.district(
                 name = "floridistrict",
                 state = State.fromCode("FL")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "oregon-isation",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("OR")
             )
         )
         accountRepository.save(
-            school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
                 name = "gb skool",
                 country = Country.fromCode("GBR")
             )

@@ -2,7 +2,7 @@ package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.AccountAlreadyExistsException
 import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.service.AccountRepository
 import com.boclips.users.presentation.requests.CreateAccountRequest
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 class CreateApiIntegration(
     private val repository: AccountRepository
 ) {
-    operator fun invoke(request: CreateAccountRequest): Account<ApiIntegration> {
+    operator fun invoke(request: CreateAccountRequest): Organisation<ApiIntegration> {
         assertNewApiIntegrationDoesNotCollide(request)
 
         return repository.save(

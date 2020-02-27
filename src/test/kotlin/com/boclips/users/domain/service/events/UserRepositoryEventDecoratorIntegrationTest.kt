@@ -7,7 +7,7 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -17,7 +17,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
 
     @Test
     fun `it publishes an event when user is created`() {
-        val organisation = accountRepository.save(OrganisationFactory.school())
+        val organisation = accountRepository.save(OrganisationDetailsFactory.school())
         val user = userRepository.create(
             UserFactory.sample(
                 organisationAccountId = organisation.id
@@ -35,8 +35,8 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
             id = SubjectId(value = "1"),
             name = "Maths"
         ))
-        val district = accountRepository.save(OrganisationFactory.district(name = "District 9"))
-        val school = accountRepository.save(OrganisationFactory.school(
+        val district = accountRepository.save(OrganisationDetailsFactory.district(name = "District 9"))
+        val school = accountRepository.save(OrganisationDetailsFactory.school(
             name = "The Street Wise Academy",
             district = district,
             postCode = "012345"))

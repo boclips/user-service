@@ -17,7 +17,7 @@ import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import com.boclips.users.testsupport.factories.UserDocumentFactory
@@ -203,7 +203,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
             val school =
-                accountRepository.save(OrganisationFactory.school(country = Country.fromCode("ESP")))
+                accountRepository.save(OrganisationDetailsFactory.school(country = Country.fromCode("ESP")))
 
             val updatedUser = updateUser(
                 userId,
@@ -234,7 +234,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
             val school =
-                accountRepository.save(OrganisationFactory.school(country = Country.fromCode("USA")))
+                accountRepository.save(OrganisationDetailsFactory.school(country = Country.fromCode("USA")))
 
             val updatedUser = updateUser(
                 userId,
@@ -256,7 +256,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext(userId)
             val school =
                 accountRepository.save(
-                    OrganisationFactory.school(
+                    OrganisationDetailsFactory.school(
                         country = Country.fromCode("USA"),
                         state = State.fromCode("CA"),
                         externalId = "i'm in schooldigger"

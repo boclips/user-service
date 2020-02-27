@@ -10,7 +10,7 @@ import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.resources.converters.UserConverter
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationAccountFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -35,9 +35,9 @@ class UserConverterTest {
                     analyticsId = AnalyticsId(value = "some-analytics-id"),
                     organisationAccountId = AccountId("1234")
                 ),
-                organisationAccount = OrganisationAccountFactory.sample(
+                organisation = OrganisationAccountFactory.sample(
                     id = AccountId("1234"),
-                    organisation = OrganisationFactory.school(
+                    organisationDetails = OrganisationDetailsFactory.school(
                         name = "My school",
                         state = State.fromCode("NY"),
                         country = Country.fromCode("USA")
@@ -68,7 +68,7 @@ class UserConverterTest {
 
         val organisationAccount = OrganisationAccountFactory.sample(
             id = AccountId("1234"),
-            organisation = OrganisationFactory.school(
+            organisationDetails = OrganisationDetailsFactory.school(
                 name = "My school",
                 state = State.fromCode("NY"),
                 country = Country.fromCode("USA")
@@ -88,7 +88,7 @@ class UserConverterTest {
                 user = UserFactory.sample(
                     organisationAccountId = null
                 ),
-                organisationAccount = null
+                organisation = null
             )
 
         assertThat(userResource.organisation).isNull()
