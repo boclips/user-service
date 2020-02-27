@@ -1,6 +1,6 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.DealType
 import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
@@ -15,7 +15,7 @@ class OrganisationDocumentFactory {
             role: String? = null,
             accessRuleIds: List<String> = emptyList(),
             type: OrganisationType = OrganisationType.SCHOOL,
-            accountType: AccountType? = null,
+            dealType: DealType? = null,
             externalId: String? = "external-id",
             country: LocationDocument? = LocationDocumentFactory.country(),
             state: LocationDocument? = LocationDocumentFactory.state(),
@@ -25,7 +25,7 @@ class OrganisationDocumentFactory {
             accessExpiresOn: ZonedDateTime? = null
         ) = OrganisationDocument(
             id = ObjectId().toHexString(),
-            accountType = accountType,
+            dealType = dealType,
             name = name,
             role = role,
             accessRuleIds = accessRuleIds,

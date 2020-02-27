@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.DealType
 import com.boclips.users.domain.service.AccountTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -27,7 +27,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
         repository.update(
             AccountTypeUpdate(
                 district.id,
-                AccountType.DESIGN_PARTNER
+                DealType.DESIGN_PARTNER
             )
         )
 
@@ -45,7 +45,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
         repository.update(
             AccountTypeUpdate(
                 school.id,
-                AccountType.DESIGN_PARTNER
+                DealType.DESIGN_PARTNER
             )
         )
 

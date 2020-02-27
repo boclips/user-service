@@ -7,13 +7,13 @@ import java.time.ZonedDateTime
 
 data class Organisation<T: OrganisationDetails>(
     val id: OrganisationId,
-    val type: AccountType,
+    val type: DealType,
     val accessRuleIds: List<AccessRuleId>,
     val accessExpiresOn: ZonedDateTime?,
     val organisation: T
 )
 
-enum class AccountType {
+enum class DealType {
     DESIGN_PARTNER,
     STANDARD
 }

@@ -62,7 +62,7 @@ class MongoAccountRepository(
         val document = repository.findByIdOrNull(update.id.value) ?: return null
 
         val updatedDocument = when (update) {
-            is AccountTypeUpdate -> document.copy(accountType = update.type)
+            is AccountTypeUpdate -> document.copy(dealType = update.type)
             is AccountExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
         }
 
@@ -100,7 +100,7 @@ class MongoAccountRepository(
     ): OrganisationDocument {
         return OrganisationDocument(
             id = id,
-            accountType = null,
+            dealType = null,
             name = organisationDetails.name,
             role = role,
             accessRuleIds = accessRuleIds.map { it.value },

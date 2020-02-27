@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.DealType
 import com.boclips.users.domain.model.account.OrganisationType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
@@ -18,7 +18,7 @@ data class OrganisationDocument(
         val accessRuleIds: List<String> = emptyList(),
         val externalId: String?,
         val type: OrganisationType,
-        val accountType: AccountType?,
+        val dealType: DealType?,
         val country: LocationDocument?,
         val state: LocationDocument?,
         val postcode: String?,

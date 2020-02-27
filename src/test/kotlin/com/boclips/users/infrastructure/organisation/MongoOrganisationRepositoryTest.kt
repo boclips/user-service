@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.organisation
 import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.OrganisationId
-import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.DealType
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.OrganisationType
 import com.boclips.users.domain.model.school.Country
@@ -33,7 +33,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         )
 
         assertThat(organisation.id).isNotNull
-        assertThat(organisation.type).isEqualTo(AccountType.STANDARD)
+        assertThat(organisation.type).isEqualTo(DealType.STANDARD)
         assertThat(organisation.organisation.name).isEqualTo(organisationName)
         assertThat(organisation.accessRuleIds).isEqualTo(accessRulesIds)
         assertThat((organisation).organisation.allowsOverridingUserIds).isTrue()
@@ -50,10 +50,10 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         val fetchedSchool = accountRepository.findSchoolById(school.id)
 
         assertThat(fetchedSchool?.id).isNotNull
-        assertThat(fetchedSchool?.type).isEqualTo(AccountType.STANDARD)
+        assertThat(fetchedSchool?.type).isEqualTo(DealType.STANDARD)
         assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
         assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
-        assertThat(fetchedSchool?.organisation?.district?.type).isEqualTo(AccountType.STANDARD)
+        assertThat(fetchedSchool?.organisation?.district?.type).isEqualTo(DealType.STANDARD)
         assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
     }
 
@@ -66,7 +66,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         val fetchedSchool = accountRepository.findSchoolById(school.id)
 
         assertThat(fetchedSchool?.id).isNotNull
-        assertThat(fetchedSchool?.type).isEqualTo(AccountType.STANDARD)
+        assertThat(fetchedSchool?.type).isEqualTo(DealType.STANDARD)
         assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
         assertThat(fetchedSchool?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
@@ -83,7 +83,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         val fetchedSchoolAccount = accountRepository.findSchoolById(school.id)
 
         assertThat(fetchedSchoolAccount?.id).isNotNull
-        assertThat(fetchedSchoolAccount?.type).isEqualTo(AccountType.STANDARD)
+        assertThat(fetchedSchoolAccount?.type).isEqualTo(DealType.STANDARD)
         assertThat(fetchedSchoolAccount?.organisation?.postcode).isEqualTo("12345")
         assertThat(fetchedSchoolAccount?.organisation?.district?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
@@ -171,19 +171,19 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     fun `account type update`() {
         val organisation = accountRepository.save(OrganisationDetailsFactory.district())
 
-        assertThat(organisation.type).isEqualTo(AccountType.STANDARD)
+        assertThat(organisation.type).isEqualTo(DealType.STANDARD)
 
         val updatedOrganisation = accountRepository.update(
             AccountTypeUpdate(
                 id = organisation.id,
-                type = AccountType.DESIGN_PARTNER
+                type = DealType.DESIGN_PARTNER
             )
         )
 
         assertThat(updatedOrganisation).isNotNull
-        assertThat(updatedOrganisation?.type).isEqualTo(AccountType.DESIGN_PARTNER)
+        assertThat(updatedOrganisation?.type).isEqualTo(DealType.DESIGN_PARTNER)
         assertThat(accountRepository.findAccountById(organisation.id)?.type).isEqualTo(
-            AccountType.DESIGN_PARTNER
+            DealType.DESIGN_PARTNER
         )
     }
 
@@ -208,7 +208,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         val updatedOrganisation = accountRepository.update(
             AccountTypeUpdate(
                 id = OrganisationId("doesnotexist"),
-                type = AccountType.DESIGN_PARTNER
+                type = DealType.DESIGN_PARTNER
             )
         )
         assertThat(updatedOrganisation).isNull()

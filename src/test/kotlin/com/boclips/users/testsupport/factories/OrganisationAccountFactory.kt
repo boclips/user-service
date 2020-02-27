@@ -3,7 +3,7 @@ package com.boclips.users.testsupport.factories
 import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.OrganisationId
-import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.DealType
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.OrganisationDetails
@@ -17,7 +17,7 @@ class OrganisationAccountFactory {
     companion object {
         fun sample(
             id: OrganisationId = OrganisationId(value = ObjectId().toHexString()),
-            type: AccountType = AccountType.STANDARD,
+            type: DealType = DealType.STANDARD,
             accessRuleIds: List<AccessRuleId> = emptyList(),
             organisationDetails: OrganisationDetails = OrganisationDetailsFactory.school(),
             accessExpiresOn: ZonedDateTime? = null

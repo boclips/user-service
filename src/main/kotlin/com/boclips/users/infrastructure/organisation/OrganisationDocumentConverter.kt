@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.organisation
 import com.boclips.users.domain.model.accessrules.AccessRuleId
 import com.boclips.users.domain.model.account.Organisation
 import com.boclips.users.domain.model.account.OrganisationId
-import com.boclips.users.domain.model.account.AccountType
+import com.boclips.users.domain.model.account.DealType
 import com.boclips.users.domain.model.account.ApiIntegration
 import com.boclips.users.domain.model.account.District
 import com.boclips.users.domain.model.account.OrganisationType
@@ -46,7 +46,7 @@ object OrganisationDocumentConverter {
 
         return Organisation(
             id = OrganisationId(organisationDocument.id!!),
-            type = organisationDocument.accountType ?: organisationDocument.parentOrganisation?.accountType ?: AccountType.STANDARD,
+            type = organisationDocument.dealType ?: organisationDocument.parentOrganisation?.dealType ?: DealType.STANDARD,
             accessRuleIds = organisationDocument.accessRuleIds.map { AccessRuleId(it) },
             organisation = organisation,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
