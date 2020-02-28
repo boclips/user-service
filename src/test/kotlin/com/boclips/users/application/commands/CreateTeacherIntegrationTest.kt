@@ -15,15 +15,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 
-class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
+class CreateTeacherIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var createTeacherAccount: CreateTeacherAccount
+    lateinit var createTeacher: CreateTeacher
 
     @Test
     fun `create account without optional values`() {
         val shareCodePattern = """^[\w\d]{4}$""".toRegex()
 
-        val createdAccount = createTeacherAccount(
+        val createdAccount = createTeacher(
             CreateTeacherRequest(
                 email = "hans@muster.com",
                 password = "hansli",
@@ -48,7 +48,7 @@ class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `create account with referral and analytics information`() {
-        val user = createTeacherAccount(
+        val user = createTeacher(
             CreateUserRequestFactory.sample(
                 referralCode = "referral-code-123",
                 analyticsId = "123",
@@ -78,20 +78,20 @@ class CreateTeacherAccountIntegrationTest : AbstractSpringIntegrationTest() {
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
 
         assertThrows<CaptchaScoreBelowThresholdException> {
-            createTeacherAccount(CreateUserRequestFactory.sample())
+            createTeacher(CreateUserRequestFactory.sample())
         }
     }
 
     @Test
     fun `update contact on hubspot after user creation`() {
-        createTeacherAccount(CreateUserRequestFactory.sample())
+        createTeacher(CreateUserRequestFactory.sample())
 
         verify(marketingService, times(1)).updateProfile(any())
     }
 
     @Test
     fun `update subscription on hubspot after user creation`() {
-        createTeacherAccount(CreateUserRequestFactory.sample())
+        createTeacher(CreateUserRequestFactory.sample())
 
         verify(marketingService, times(1)).updateSubscription(any())
     }

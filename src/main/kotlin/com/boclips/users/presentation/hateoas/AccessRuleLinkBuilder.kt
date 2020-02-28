@@ -2,7 +2,7 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.utils.UserExtractor.getIfHasRole
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.accessrules.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.presentation.controllers.accessrules.AccessRuleTestSupportController
 import com.boclips.users.presentation.controllers.accessrules.AccessRulesController
 import org.springframework.hateoas.Link

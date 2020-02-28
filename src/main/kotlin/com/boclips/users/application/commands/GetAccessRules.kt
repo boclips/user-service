@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.model.AccessRuleFilter
-import com.boclips.users.domain.model.accessrules.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.service.AccessRuleRepository
 import org.springframework.stereotype.Service
 

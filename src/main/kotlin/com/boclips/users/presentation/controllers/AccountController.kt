@@ -1,11 +1,11 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.commands.GetAccountById
-import com.boclips.users.application.commands.GetAccounts
-import com.boclips.users.application.commands.UpdateAccount
+import com.boclips.users.application.commands.GetOrganisationById
+import com.boclips.users.application.commands.GetOrganisations
+import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.presentation.requests.ListAccountsRequest
-import com.boclips.users.presentation.requests.UpdateAccountRequest
+import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import com.boclips.users.presentation.resources.AccountResource
 import com.boclips.users.presentation.resources.converters.AccountConverter
 import org.springframework.hateoas.EntityModel
@@ -21,22 +21,22 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/v1", "/v1/")
 class AccountController(
-    private val getAccountById: GetAccountById,
+    private val getOrganisationById: GetOrganisationById,
     private val accountConverter: AccountConverter,
-    private val updateAccount: UpdateAccount,
-    private val getAccounts: GetAccounts
+    private val updateOrganisation: UpdateOrganisation,
+    private val getOrganisations: GetOrganisations
 ) {
 
     @GetMapping("/accounts/{id}")
     fun fetchOrganisationById(@PathVariable("id") id: String?): EntityModel<AccountResource> {
-        val organisation = getAccountById(id!!)
+        val organisation = getOrganisationById(id!!)
 
         return accountConverter.toResource(organisation)
     }
 
     @PatchMapping("/accounts/{id}")
-    fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateAccountRequest: UpdateAccountRequest?): EntityModel<AccountResource> {
-        return accountConverter.toResource(updateAccount(id, updateAccountRequest))
+    fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<AccountResource> {
+        return accountConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
     }
 
     @GetMapping("/accounts")
@@ -46,7 +46,7 @@ class AccountController(
             page = listAccountsRequest?.page ?: 0,
             size = listAccountsRequest?.size ?: 30
         )
-        val accounts = getAccounts(filter)
+        val accounts = getOrganisations(filter)
 
         val accountResources = accounts.map { account -> accountConverter.toResource(account) }
 

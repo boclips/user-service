@@ -2,7 +2,7 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.accessrules.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

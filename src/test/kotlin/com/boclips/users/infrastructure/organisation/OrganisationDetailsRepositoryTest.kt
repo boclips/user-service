@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.account.OrganisationType
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.LocationDocumentFactory
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
@@ -11,29 +11,29 @@ import java.time.ZonedDateTime
 
 class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var repository: OrganisationRepository
+    lateinit var repositorySpringDataMongo: SpringDataMongoOrganisationRepository
 
     @Test
     fun `parent organisations can be linked to children via a dbref`() {
-        val persistedParent = repository.save(OrganisationDocumentFactory.sample(name = "parent"))
+        val persistedParent = repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "parent"))
 
         val persistedChild =
-            repository.save(OrganisationDocumentFactory.sample(name = "child", parentOrganisation = persistedParent))
+            repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "child", parentOrganisation = persistedParent))
 
         assertThat(persistedChild.parentOrganisation).isEqualTo(persistedParent)
 
-        val retrievedChild: OrganisationDocument = repository.findById(persistedChild.id!!).get()
+        val retrievedChild: OrganisationDocument = repositorySpringDataMongo.findById(persistedChild.id!!).get()
         assertThat(retrievedChild.parentOrganisation).isEqualTo(persistedParent)
     }
 
     @Test
     fun `findParentOrganisations sorts by expiry date first then alphabetically`() {
         val NOW = ZonedDateTime.now()
-        repository.save(OrganisationDocumentFactory.sample(name = "second", accessExpiresOn = NOW))
-        repository.save(OrganisationDocumentFactory.sample(name = "aaa", accessExpiresOn = NOW.minusDays(1)))
-        repository.save(OrganisationDocumentFactory.sample(name = "first", accessExpiresOn = NOW))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "second", accessExpiresOn = NOW))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "aaa", accessExpiresOn = NOW.minusDays(1)))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "first", accessExpiresOn = NOW))
 
-        val results = repository.findOrganisations(
+        val results = repositorySpringDataMongo.findOrganisations(
             OrganisationSearchRequest(
                 countryCode = "USA",
                 organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
@@ -47,15 +47,15 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `findParentOrganisations filters by country code`() {
-        repository.save(
+        repositorySpringDataMongo.save(
             OrganisationDocumentFactory.sample(
                 name = "second",
                 country = LocationDocumentFactory.country(code = "GBR")
             )
         )
-        repository.save(OrganisationDocumentFactory.sample(name = "aaa"))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "aaa"))
 
-        val results = repository.findOrganisations(OrganisationSearchRequest(
+        val results = repositorySpringDataMongo.findOrganisations(OrganisationSearchRequest(
             countryCode = "GBR",
             organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
             page = 0,
@@ -67,10 +67,10 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `findParentOrganisations filters by organisation type`() {
-        repository.save(OrganisationDocumentFactory.sample(name = "second", type = OrganisationType.DISTRICT))
-        repository.save(OrganisationDocumentFactory.sample(name = "aaa", type = OrganisationType.SCHOOL))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "second", type = OrganisationType.DISTRICT))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "aaa", type = OrganisationType.SCHOOL))
 
-        val results = repository.findOrganisations(
+        val results = repositorySpringDataMongo.findOrganisations(
             OrganisationSearchRequest(
                 countryCode = "USA",
                 organisationTypes = listOf(OrganisationType.SCHOOL),
@@ -84,10 +84,10 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `findParentOrganisations retrieves parent organisations only`() {
-        val persistedParent = repository.save(OrganisationDocumentFactory.sample(name = "parent"))
-        repository.save(OrganisationDocumentFactory.sample(name = "child", parentOrganisation = persistedParent))
+        val persistedParent = repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "parent"))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "child", parentOrganisation = persistedParent))
 
-        val results = repository.findOrganisations(
+        val results = repositorySpringDataMongo.findOrganisations(
             OrganisationSearchRequest(
                 countryCode = "USA",
                 organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
@@ -103,11 +103,11 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `findParentOrganisations retrieves appropriate page with page info`() {
         val now = ZonedDateTime.now()
-        repository.save(OrganisationDocumentFactory.sample(name = "abc", accessExpiresOn = now))
-        repository.save(OrganisationDocumentFactory.sample(name = "xyz", accessExpiresOn = now.minusDays(1)))
-        repository.save(OrganisationDocumentFactory.sample(name = "def", accessExpiresOn = now))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "abc", accessExpiresOn = now))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "xyz", accessExpiresOn = now.minusDays(1)))
+        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "def", accessExpiresOn = now))
 
-        val results = repository.findOrganisations(OrganisationSearchRequest(
+        val results = repositorySpringDataMongo.findOrganisations(OrganisationSearchRequest(
             countryCode = "USA",
             organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
             page = 1,

@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.account.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory

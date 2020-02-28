@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.domain.model.accessrules.CollectionId
-import com.boclips.users.domain.model.accessrules.VideoId
+import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.SelectedAccessRuleLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccessRuleConverter

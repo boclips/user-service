@@ -1,13 +1,13 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.OrganisationId
-import com.boclips.users.domain.model.account.DealType
-import com.boclips.users.domain.model.account.ApiIntegration
-import com.boclips.users.domain.model.account.District
-import com.boclips.users.domain.model.account.OrganisationType
-import com.boclips.users.domain.model.account.School
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.DealType
+import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import java.time.ZoneOffset

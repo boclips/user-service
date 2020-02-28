@@ -2,7 +2,7 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.account.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat

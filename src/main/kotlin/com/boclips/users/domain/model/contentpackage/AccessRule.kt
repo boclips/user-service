@@ -1,4 +1,4 @@
-package com.boclips.users.domain.model.accessrules
+package com.boclips.users.domain.model.contentpackage
 
 sealed class AccessRule {
     data class SelectedCollections(

@@ -1,17 +1,17 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.account.District
-import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.School
+import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.School
 import org.springframework.stereotype.Service
 
 @Service
-class AccountService(
+class OrganisationService(
     val americanSchoolsProvider: AmericanSchoolsProvider,
-    val accountRepository: AccountRepository
+    val organisationRepository: OrganisationRepository
 ) {
     fun findOrCreateSchooldiggerSchool(externalSchoolId: String): Organisation<School>? {
-        var schoolAccount = accountRepository.findAccountByExternalId(externalSchoolId)
+        var schoolAccount = organisationRepository.findOrganisationByExternalId(externalSchoolId)
             ?.takeIf { it.organisation is School }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
@@ -22,19 +22,19 @@ class AccountService(
             val (school, district) = americanSchoolsProvider.fetchSchool(externalSchoolId) ?: null to null
             schoolAccount = school
                 ?.copy(district = district?.let { getOrCreateDistrict(district) })
-                ?.let { accountRepository.save(it) }
+                ?.let { organisationRepository.save(it) }
         }
 
         return schoolAccount
     }
 
     private fun getOrCreateDistrict(district: District): Organisation<District>? {
-        return accountRepository.findAccountByExternalId(district.externalId)
+        return organisationRepository.findOrganisationByExternalId(district.externalId)
             ?.takeIf { it.organisation is District }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
                 it as Organisation<District>
             }
-            ?: accountRepository.save(district)
+            ?: organisationRepository.save(district)
     }
 }

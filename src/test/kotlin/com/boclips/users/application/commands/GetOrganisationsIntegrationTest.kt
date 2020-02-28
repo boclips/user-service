@@ -1,6 +1,6 @@
 package com.boclips.users.application.commands
 import com.boclips.users.application.model.OrganisationFilter
-import com.boclips.users.domain.model.account.OrganisationType
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -9,26 +9,26 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
+class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var getAccounts: GetAccounts
+    lateinit var getOrganisations: GetOrganisations
 
     @Test
     fun `searching non usa organisations`() {
-        val ukSchool = accountRepository.save(
+        val ukSchool = organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "organisation 1",
                 country = Country.fromCode("GBR")
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "organisation 2",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("NY")
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             district = OrganisationDetailsFactory.district(
                 name = "another one",
                 state = State.fromCode("FL")
@@ -40,7 +40,7 @@ class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
             page = 0,
             size = 2
         )
-        val organisations = getAccounts(searchRequest)
+        val organisations = getOrganisations(searchRequest)
 
         assertThat(organisations).hasSize(1)
         assertThat(organisations).containsExactly(ukSchool)
@@ -48,20 +48,20 @@ class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `searching USA organisations`() {
-        accountRepository.save(
+        organisationRepository.save(
             district = OrganisationDetailsFactory.district(
                 name = "floridistrict",
                 state = State.fromCode("FL")
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "oregon-isation",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("OR")
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "gb skool",
                 country = Country.fromCode("GBR")
@@ -74,7 +74,7 @@ class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
             page = 0,
             size = 2
         )
-        val organisations = getAccounts(searchRequest)
+        val organisations = getOrganisations(searchRequest)
 
         assertThat(organisations).hasSize(2)
         assertThat(organisations.totalElements).isEqualTo(2)
@@ -86,20 +86,20 @@ class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `searching organisations without filters`() {
-        accountRepository.save(
+        organisationRepository.save(
             district = OrganisationDetailsFactory.district(
                 name = "floridistrict",
                 state = State.fromCode("FL")
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "oregon-isation",
                 country = Country.fromCode("USA"),
                 state = State.fromCode("OR")
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "gb skool",
                 country = Country.fromCode("GBR")
@@ -110,7 +110,7 @@ class GetAccountsIntegrationTest : AbstractSpringIntegrationTest() {
             page = 0,
             size = 3
         )
-        val organisations = getAccounts(searchRequest)
+        val organisations = getOrganisations(searchRequest)
 
         assertThat(organisations).hasSize(3)
         assertThat(organisations.totalElements).isEqualTo(3)

@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.accessrules.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -38,7 +38,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `lists all independent US schools and organisations`() {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
 
-            val district = accountRepository.save(
+            val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
@@ -47,7 +47,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 accessExpiresOn = expiryTime
             )
 
-            accountRepository.save(
+            organisationRepository.save(
                 school = OrganisationDetailsFactory.school(
                     name = "my district school",
                     countryName = "USA",
@@ -56,7 +56,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            accountRepository.save(
+            organisationRepository.save(
                 school = OrganisationDetailsFactory.school(
                     name = "my independent school",
                     countryName = "USA",
@@ -90,14 +90,14 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `fetches all independent accounts when no countryCode is provided`() {
-            val district = accountRepository.save(
+            val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
                     state = State(id = "FL", name = "Florida")
                 )
             )
-            val school = accountRepository.save(
+            val school = organisationRepository.save(
                 OrganisationDetailsFactory.school(
                     name = "my school",
                     country = Country.fromCode("GBR")
@@ -120,7 +120,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.537Z")
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
-            val district = accountRepository.save(
+            val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
@@ -146,7 +146,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `bad request when date is invalid`() {
-            val district = accountRepository.save(
+            val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
@@ -187,7 +187,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns forbidden when caller is not allowed to update organisations`() {
-            val district = accountRepository.save(
+            val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
@@ -213,7 +213,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `retrieves an api integration organisation account by id`() {
             val organisationName = "Test Org"
-            val organisation = accountRepository.save(
+            val organisation = organisationRepository.save(
                 apiIntegration = OrganisationDetailsFactory.apiIntegration(
                     name = organisationName,
                     allowsOverridingUserIds = true

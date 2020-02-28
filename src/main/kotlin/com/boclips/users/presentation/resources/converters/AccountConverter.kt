@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.resources.converters
 
-import com.boclips.users.domain.model.account.Organisation
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.presentation.hateoas.AccountLinkBuilder
 import com.boclips.users.presentation.resources.AccountResource
 import org.springframework.hateoas.EntityModel

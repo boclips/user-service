@@ -33,7 +33,7 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(userRepository.findAll()).hasSize(1)
 
-        synchronisationService.synchroniseAccounts()
+        synchronisationService.synchroniseUserAccounts()
 
         assertThat(userRepository.findAll()).hasSize(2)
         assertThat(userRepository.findAll().map { it.id }).containsExactly(UserId("cat"), UserId("dog"))

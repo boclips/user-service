@@ -1,8 +1,8 @@
 package com.boclips.users.infrastructure.accessrules
 
-import com.boclips.users.domain.model.accessrules.AccessRule
-import com.boclips.users.domain.model.accessrules.CollectionId
-import com.boclips.users.domain.model.accessrules.VideoId
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.testsupport.factories.AccessRuleDocumentFactory
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import org.assertj.core.api.Assertions.assertThat

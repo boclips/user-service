@@ -1,12 +1,12 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.OrganisationId
-import com.boclips.users.domain.model.account.DealType
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.AccountLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccountConverter
-import com.boclips.users.testsupport.factories.OrganisationAccountFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions.assertThat
@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 class OrganisationConverterTest {
     @Test
     fun toResource() {
-        val originalAccount = OrganisationAccountFactory.sample(
+        val originalAccount = OrganisationFactory.sample(
             id = OrganisationId("organisation-account-id"),
             accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
             accessRuleIds = listOf(AccessRuleId("123")),

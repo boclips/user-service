@@ -51,8 +51,8 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             userService = userService,
             getOrImportUser = getOrImportUser,
             marketingService = mockMarketingService,
-            accountRepository = accountRepository,
-            accountService = accountService,
+            organisationRepository = organisationRepository,
+            organisationService = organisationService,
             userRepository = userRepository,
             userUpdatesCommandFactory = UserUpdatesCommandFactory(subjectService = subjectService)
         )
@@ -186,7 +186,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 updateUser(userId, UpdateUserRequestFactory.sample(schoolName = "new school", country = "ESP"))
 
             val newSchool =
-                accountRepository.lookupSchools(schoolName = "new school", countryCode = "ESP")
+                organisationRepository.lookupSchools(schoolName = "new school", countryCode = "ESP")
                     .firstOrNull()
             assertThat(newSchool).isNotNull
             assertThat(updatedUser.organisationId?.value).isEqualTo(newSchool?.id)
@@ -203,7 +203,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
             val school =
-                accountRepository.save(OrganisationDetailsFactory.school(country = Country.fromCode("ESP")))
+                organisationRepository.save(OrganisationDetailsFactory.school(country = Country.fromCode("ESP")))
 
             val updatedUser = updateUser(
                 userId,
@@ -214,7 +214,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             val newSchool =
-                accountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "ESP")
+                organisationRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "ESP")
             assertThat(newSchool).hasSize(1)
             assertThat(updatedUser.organisationId?.value).isEqualTo(newSchool.first().id)
         }
@@ -234,7 +234,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
             val school =
-                accountRepository.save(OrganisationDetailsFactory.school(country = Country.fromCode("USA")))
+                organisationRepository.save(OrganisationDetailsFactory.school(country = Country.fromCode("USA")))
 
             val updatedUser = updateUser(
                 userId,
@@ -245,7 +245,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             val newSchools =
-                accountRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
+                organisationRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
             assertThat(newSchools).hasSize(1)
             assertThat(updatedUser.organisationId?.value).isEqualTo(newSchools.first().id)
         }
@@ -255,7 +255,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)
             val school =
-                accountRepository.save(
+                organisationRepository.save(
                     OrganisationDetailsFactory.school(
                         country = Country.fromCode("USA"),
                         state = State.fromCode("CA"),
@@ -280,7 +280,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             val organisationAccount =
-                accountRepository.findSchoolById(updatedUser.organisationId!!)!!
+                organisationRepository.findSchoolById(updatedUser.organisationId!!)!!
             assertThat(organisationAccount.organisation.country.isUSA()).isEqualTo(true)
             assertThat(organisationAccount.organisation.state!!.id).isEqualTo("AZ")
             assertThat(organisationAccount.organisation.externalId).isNull()

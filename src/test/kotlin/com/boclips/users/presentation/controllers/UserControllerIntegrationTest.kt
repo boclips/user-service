@@ -7,8 +7,8 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.accessrules.CollectionId
-import com.boclips.users.domain.model.accessrules.VideoId
+import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State

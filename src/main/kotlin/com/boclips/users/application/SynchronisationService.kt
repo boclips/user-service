@@ -36,16 +36,16 @@ class SynchronisationService(
         logger.info { "Updated ${allCrmProfiles.size} profiles" }
     }
 
-    fun synchroniseAccounts() {
+    fun synchroniseUserAccounts() {
         val users = userRepository.findAll()
 
         val allUserIds = users.map { it.id }.toSet()
         logger.info { "Found ${allUserIds.size} users" }
 
-        identityProvider.getIdentity().forEach { account ->
-            if (!allUserIds.contains(account.id)) {
-                userImportService.importFromIdentityProvider(listOf(account.id))
-                logger.info { "Import of user $account completed" }
+        identityProvider.getIdentity().forEach { userAccount ->
+            if (!allUserIds.contains(userAccount.id)) {
+                userImportService.importFromIdentityProvider(listOf(userAccount.id))
+                logger.info { "Import of user $userAccount completed" }
             }
         }
     }

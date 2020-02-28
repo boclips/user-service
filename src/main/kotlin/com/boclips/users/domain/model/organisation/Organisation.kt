@@ -1,6 +1,6 @@
-package com.boclips.users.domain.model.account
+package com.boclips.users.domain.model.organisation
 
-import com.boclips.users.domain.model.accessrules.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import java.time.ZonedDateTime

@@ -1,8 +1,8 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.account.DealType
-import com.boclips.users.domain.service.AccountTypeUpdate
+import com.boclips.users.domain.model.organisation.DealType
+import com.boclips.users.domain.service.OrganisationTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
@@ -14,7 +14,7 @@ import org.assertj.core.api.Assertions.assertThat
 class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
-    lateinit var repository: AccountRepositoryEventDecorator
+    lateinit var repository: OrganisationRepositoryEventDecorator
 
     @Test
     fun `user updated events are dispatched when district is updated`() {
@@ -25,7 +25,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
         saveUser(UserFactory.sample(organisationId = null, identity = IdentityFactory.sample("u3")))
 
         repository.update(
-            AccountTypeUpdate(
+            OrganisationTypeUpdate(
                 district.id,
                 DealType.DESIGN_PARTNER
             )
@@ -43,7 +43,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
         saveUser(UserFactory.sample(organisationId = null, identity = IdentityFactory.sample("u3")))
 
         repository.update(
-            AccountTypeUpdate(
+            OrganisationTypeUpdate(
                 school.id,
                 DealType.DESIGN_PARTNER
             )

@@ -1,6 +1,6 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.account.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSessionsFactory
 import org.assertj.core.api.Assertions.assertThat

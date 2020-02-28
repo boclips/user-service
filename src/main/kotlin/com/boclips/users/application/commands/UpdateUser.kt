@@ -8,14 +8,14 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.OrganisationId
-import com.boclips.users.domain.model.account.School
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.AccountRepository
-import com.boclips.users.domain.service.AccountService
+import com.boclips.users.domain.service.OrganisationRepository
+import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.UserUpdateCommand
@@ -34,8 +34,8 @@ class UpdateUser(
     private val userRepository: UserRepository,
     private val marketingService: MarketingService,
     private val userUpdatesCommandFactory: UserUpdatesCommandFactory,
-    private val accountRepository: AccountRepository,
-    private val accountService: AccountService,
+    private val organisationRepository: OrganisationRepository,
+    private val organisationService: OrganisationService,
     private val getOrImportUser: GetOrImportUser
 ) {
     companion object : KLogging() {
@@ -86,13 +86,13 @@ class UpdateUser(
 
     private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): Organisation<School>? {
         val schoolById = updateUserRequest.schoolId?.let {
-            accountService.findOrCreateSchooldiggerSchool(it)
+            organisationService.findOrCreateSchooldiggerSchool(it)
         }
 
         return schoolById
             ?: updateUserRequest.schoolName?.let { schoolName ->
                 findSchoolByName(schoolName, updateUserRequest.country!!)
-                    ?: accountRepository.save(
+                    ?: organisationRepository.save(
                         School(
                             name = schoolName,
                             country = Country.fromCode(updateUserRequest.country!!),
@@ -108,11 +108,11 @@ class UpdateUser(
         schoolName: String,
         countryCode: String
     ): Organisation<School>? {
-        return accountRepository.lookupSchools(
+        return organisationRepository.lookupSchools(
             schoolName,
             countryCode
         ).firstOrNull { it.name == schoolName }
-            ?.let { accountRepository.findSchoolById(OrganisationId(it.id)) }
+            ?.let { organisationRepository.findSchoolById(OrganisationId(it.id)) }
     }
 
     private fun updateMarketingService(id: UserId) {

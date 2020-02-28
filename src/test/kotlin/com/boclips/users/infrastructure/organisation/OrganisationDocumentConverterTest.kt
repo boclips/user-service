@@ -1,10 +1,10 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.DealType
-import com.boclips.users.domain.model.account.District
-import com.boclips.users.domain.model.account.OrganisationType
-import com.boclips.users.domain.model.account.School
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.organisation.DealType
+import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

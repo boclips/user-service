@@ -11,10 +11,10 @@ import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testUser
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.accessrules.AccessRule
-import com.boclips.users.domain.model.accessrules.CollectionId
-import com.boclips.users.domain.model.accessrules.VideoId
-import com.boclips.users.domain.model.account.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory

@@ -2,7 +2,7 @@ package com.boclips.users.presentation.resources.converters
 
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.Organisation
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.resources.SubjectResource
 import com.boclips.users.presentation.resources.TeacherPlatformAttributesResource

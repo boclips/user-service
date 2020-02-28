@@ -93,7 +93,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with profile and organization is set up`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = accountRepository.save(OrganisationDetailsFactory.school())
+        val organisationAccount = organisationRepository.save(OrganisationDetailsFactory.school())
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -120,7 +120,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered lifetime user`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = accountRepository.save(OrganisationDetailsFactory.school())
+        val organisationAccount = organisationRepository.save(OrganisationDetailsFactory.school())
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -139,7 +139,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with an unexpired access period`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = accountRepository.save(OrganisationDetailsFactory.school())
+        val organisationAccount = organisationRepository.save(OrganisationDetailsFactory.school())
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -158,7 +158,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with an expired access period`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = accountRepository.save(OrganisationDetailsFactory.school())
+        val organisationAccount = organisationRepository.save(OrganisationDetailsFactory.school())
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),

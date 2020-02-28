@@ -6,16 +6,16 @@ import com.boclips.users.application.commands.AddCollectionToAccessRule
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.account.ApiIntegration
-import com.boclips.users.domain.model.account.District
-import com.boclips.users.domain.model.account.School
-import com.boclips.users.domain.model.accessrules.CollectionId
-import com.boclips.users.domain.model.accessrules.AccessRule
-import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.accessrules.VideoId
+import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.service.AccessService
-import com.boclips.users.domain.service.AccountRepository
-import com.boclips.users.domain.service.AccountService
+import com.boclips.users.domain.service.OrganisationRepository
+import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
@@ -71,7 +71,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var getOrImportUser: GetOrImportUser
 
     @Autowired
-    lateinit var accountRepository: AccountRepository
+    lateinit var organisationRepository: OrganisationRepository
 
     @Autowired
     lateinit var keycloakClientFake: KeycloakClientFake
@@ -119,7 +119,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var userService: UserService
 
     @Autowired
-    lateinit var accountService: AccountService
+    lateinit var organisationService: OrganisationService
 
     @BeforeEach
     fun resetState() {
@@ -165,7 +165,7 @@ abstract class AbstractSpringIntegrationTest {
         organisationName: String = "Boclips for Teachers",
         accessRuleIds: List<AccessRule> = emptyList(),
         allowsOverridingUserIds: Boolean = false
-    ): com.boclips.users.domain.model.account.Organisation<*> {
+    ): com.boclips.users.domain.model.organisation.Organisation<*> {
         val organisationAccessRules = mutableListOf<AccessRule>()
         accessRuleIds.map {
             when (it) {
@@ -200,8 +200,8 @@ abstract class AbstractSpringIntegrationTest {
         accessRuleIds: List<AccessRuleId> = emptyList(),
         role: String = "ROLE_VIEWSONIC",
         organisation: ApiIntegration = OrganisationDetailsFactory.apiIntegration(allowsOverridingUserIds = false)
-    ): com.boclips.users.domain.model.account.Organisation<ApiIntegration> {
-        return accountRepository.save(
+    ): com.boclips.users.domain.model.organisation.Organisation<ApiIntegration> {
+        return organisationRepository.save(
             apiIntegration = organisation,
             accessRuleIds = accessRuleIds,
             role = role
@@ -210,16 +210,16 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveDistrict(
         district: District = OrganisationDetailsFactory.district()
-    ): com.boclips.users.domain.model.account.Organisation<District> {
-        return accountRepository.save(
+    ): com.boclips.users.domain.model.organisation.Organisation<District> {
+        return organisationRepository.save(
             district = district
         )
     }
 
     fun saveSchool(
         school: School = OrganisationDetailsFactory.school()
-    ): com.boclips.users.domain.model.account.Organisation<School> {
-        return accountRepository.save(school = school)
+    ): com.boclips.users.domain.model.organisation.Organisation<School> {
+        return organisationRepository.save(school = school)
     }
 
     fun saveSelectedCollectionsAccessRule(name: String, collectionIds: List<CollectionId>): AccessRule.SelectedCollections {

@@ -3,7 +3,7 @@ package com.boclips.users.presentation.hateoas
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory

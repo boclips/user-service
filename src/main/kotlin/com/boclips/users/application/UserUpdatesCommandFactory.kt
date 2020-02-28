@@ -3,7 +3,7 @@ package com.boclips.users.application
 import com.boclips.users.application.exceptions.InvalidSubjectException
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.account.Organisation
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.presentation.requests.UpdateUserRequest

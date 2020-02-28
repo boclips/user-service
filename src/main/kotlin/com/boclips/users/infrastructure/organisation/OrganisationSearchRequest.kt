@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.account.OrganisationType
+import com.boclips.users.domain.model.organisation.OrganisationType
 
 data class OrganisationSearchRequest(
     val countryCode: String?,

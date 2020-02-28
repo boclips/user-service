@@ -1,8 +1,8 @@
 package com.boclips.users.infrastructure.accessrules
 
-import com.boclips.users.domain.model.accessrules.AccessRule
-import com.boclips.users.domain.model.accessrules.CollectionId
-import com.boclips.users.domain.model.accessrules.VideoId
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.service.SelectedContentAccessRuleRepository
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Repository

@@ -35,11 +35,11 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it allows a user with expiry date in the past, but district expiry in the future`() {
-        val district = accountRepository.save(
+        val district = organisationRepository.save(
             OrganisationDetailsFactory.district(), accessExpiresOn = ZonedDateTime.now().plusMonths(3)
         )
         val school = OrganisationDetailsFactory.school(district = district)
-        val schoolAccount = accountRepository.save(school)
+        val schoolAccount = organisationRepository.save(school)
 
         val user = UserFactory.sample(
             accessExpiresOn = ZonedDateTime.now().minusDays(1),
@@ -51,12 +51,12 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it allows a user with expiry date in the future, but district expiry in the past`() {
-        val district = accountRepository.save(
+        val district = organisationRepository.save(
             OrganisationDetailsFactory.district(),
             accessExpiresOn = ZonedDateTime.now().minusMonths(3)
         )
         val school = OrganisationDetailsFactory.school(district = district)
-        val schoolAccount = accountRepository.save(school)
+        val schoolAccount = organisationRepository.save(school)
 
         val user = UserFactory.sample(
             organisationId = schoolAccount.id,
@@ -68,11 +68,11 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it allows a lifetime user, but district expiry in the past`() {
-        val district = accountRepository.save(
+        val district = organisationRepository.save(
             OrganisationDetailsFactory.district(), accessExpiresOn = ZonedDateTime.now().minusMonths(3)
         )
         val school = OrganisationDetailsFactory.school(district = district)
-        val schoolAccount = accountRepository.save(school)
+        val schoolAccount = organisationRepository.save(school)
 
         val user = UserFactory.sample(
             organisationId = schoolAccount.id,
@@ -84,11 +84,11 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it disallows a user with expiry date in the past, and a district expiry in the past`() {
-        val district = accountRepository.save(
+        val district = organisationRepository.save(
             OrganisationDetailsFactory.district(), accessExpiresOn = ZonedDateTime.now().minusMonths(3)
         )
         val school = OrganisationDetailsFactory.school(district = district)
-        val schoolAccount = accountRepository.save(school)
+        val schoolAccount = organisationRepository.save(school)
 
         val user = UserFactory.sample(
             organisationId = schoolAccount.id,

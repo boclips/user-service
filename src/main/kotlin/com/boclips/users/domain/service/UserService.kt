@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
     val userRepository: UserRepository,
-    val accountRepository: AccountRepository,
+    val organisationRepository: OrganisationRepository,
     val identityProvider: IdentityProvider
 ) {
     companion object : KLogging()
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
-        val schools = accountRepository.findSchools()
+        val schools = organisationRepository.findSchools()
 
         val allTeachers = userRepository.findAll().filter {
             it.organisationId == null || schools.map { it.id }.contains(

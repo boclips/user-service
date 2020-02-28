@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.resources.converters
 
-import com.boclips.users.domain.model.accessrules.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.SelectedAccessRuleLinkBuilder
 import com.boclips.users.presentation.resources.AccessRuleResource

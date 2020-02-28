@@ -1,12 +1,12 @@
 package com.boclips.users.config.application
 
 import com.boclips.eventbus.EventBus
-import com.boclips.users.domain.service.AccountRepository
-import com.boclips.users.domain.service.events.AccountRepositoryEventDecorator
+import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.events.EventConverter
+import com.boclips.users.domain.service.events.OrganisationRepositoryEventDecorator
 import com.boclips.users.domain.service.events.UserRepositoryEventDecorator
-import com.boclips.users.infrastructure.organisation.MongoAccountRepository
+import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
 import com.boclips.users.infrastructure.user.MongoUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Primary
 class DomainConfiguration(
         private val eventBus: EventBus,
         private val mongoUserRepository: MongoUserRepository,
-        private val mongoOrganisationAccountRepository: MongoAccountRepository
+        private val mongoOrganisationRepository: MongoOrganisationRepository
 ) {
     @Primary
     @Bean
@@ -30,9 +30,9 @@ class DomainConfiguration(
 
     @Primary
     @Bean
-    fun organisationAccountRepository(): AccountRepository {
-        return AccountRepositoryEventDecorator(
-            repository = mongoOrganisationAccountRepository,
+    fun organisationAccountRepository(): OrganisationRepository {
+        return OrganisationRepositoryEventDecorator(
+            repository = mongoOrganisationRepository,
             eventBus = eventBus,
             eventConverter = eventConverter(),
             userRepository = mongoUserRepository
@@ -41,6 +41,6 @@ class DomainConfiguration(
 
     @Bean
     fun eventConverter(): EventConverter {
-        return EventConverter(mongoOrganisationAccountRepository)
+        return EventConverter(mongoOrganisationRepository)
     }
 }

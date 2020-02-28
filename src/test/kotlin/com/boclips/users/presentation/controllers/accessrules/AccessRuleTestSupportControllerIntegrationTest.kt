@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers.accessrules
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.accessrules.CollectionId
+import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles

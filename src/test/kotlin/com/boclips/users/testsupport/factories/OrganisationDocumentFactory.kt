@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.account.DealType
-import com.boclips.users.domain.model.account.OrganisationType
+import com.boclips.users.domain.model.organisation.DealType
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import org.bson.types.ObjectId

@@ -9,21 +9,21 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-internal class GetAccountsTest : AbstractSpringIntegrationTest(){
+internal class GetOrganisationsTest : AbstractSpringIntegrationTest(){
 
     @Autowired
-    lateinit var getAccounts: GetAccounts
+    lateinit var getOrganisations: GetOrganisations
 
     @Test
-    fun `Lists all accounts`() {
-        accountRepository.save(
+    fun `Lists all organisations`() {
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 externalId = "org-id-1",
                 name = "organisation 1",
                 country = Country.fromCode("GBR")
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 externalId = "org-id-2",
                 name = "organisation 2",
@@ -31,7 +31,7 @@ internal class GetAccountsTest : AbstractSpringIntegrationTest(){
                 state = State.fromCode("NY")
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             district = OrganisationDetailsFactory.district(
                 externalId = "org-id-3",
                 name = "another one",
@@ -39,7 +39,7 @@ internal class GetAccountsTest : AbstractSpringIntegrationTest(){
             )
         )
 
-        val organisations = getAccounts(OrganisationFilter(countryCode = null, page = 0, size = 10))
+        val organisations = getOrganisations(OrganisationFilter(countryCode = null, page = 0, size = 10))
 
         assertThat(organisations).hasSize(3)
         val organisationNames = organisations.content.map { it.organisation.name }

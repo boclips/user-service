@@ -1,18 +1,18 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.LookupEntry
-import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.OrganisationId
-import com.boclips.users.domain.model.account.ApiIntegration
-import com.boclips.users.domain.model.account.District
-import com.boclips.users.domain.model.account.OrganisationType
-import com.boclips.users.domain.model.account.School
+import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import org.springframework.data.domain.Page
 import java.time.ZonedDateTime
 import java.util.Collections.emptyList
 
-interface AccountRepository {
+interface OrganisationRepository {
     fun save(
         apiIntegration: ApiIntegration,
         accessRuleIds: List<AccessRuleId> = emptyList(),
@@ -29,12 +29,12 @@ interface AccountRepository {
         accessExpiresOn: ZonedDateTime? = null
     ): Organisation<District>
 
-    fun update(update: AccountUpdate): Organisation<*>?
+    fun update(update: OrganisationUpdate): Organisation<*>?
 
-    fun findAccountsByParentId(parentId: OrganisationId): List<Organisation<*>>
-    fun findAccountById(id: OrganisationId): Organisation<*>?
-    fun findAccountByExternalId(id: String): Organisation<*>?
-    fun findAccounts(
+    fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation<*>>
+    fun findOrganisationById(id: OrganisationId): Organisation<*>?
+    fun findOrganisationByExternalId(id: String): Organisation<*>?
+    fun findOrganisations(
         countryCode: String?,
         types: List<OrganisationType>?,
         page: Int,

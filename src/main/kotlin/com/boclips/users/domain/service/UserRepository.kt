@@ -3,7 +3,7 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.account.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationId
 
 interface UserRepository {
     fun create(identity: Identity): User

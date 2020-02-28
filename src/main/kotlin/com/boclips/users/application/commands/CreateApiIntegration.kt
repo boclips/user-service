@@ -1,16 +1,16 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.application.exceptions.AccountAlreadyExistsException
-import com.boclips.users.domain.model.accessrules.AccessRuleId
-import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.ApiIntegration
-import com.boclips.users.domain.service.AccountRepository
+import com.boclips.users.application.exceptions.OrganisationAlreadyExistsException
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.presentation.requests.CreateAccountRequest
 import org.springframework.stereotype.Service
 
 @Service
 class CreateApiIntegration(
-    private val repository: AccountRepository
+    private val repository: OrganisationRepository
 ) {
     operator fun invoke(request: CreateAccountRequest): Organisation<ApiIntegration> {
         assertNewApiIntegrationDoesNotCollide(request)
@@ -26,10 +26,10 @@ class CreateApiIntegration(
 
     private fun assertNewApiIntegrationDoesNotCollide(request: CreateAccountRequest) {
         repository.findApiIntegrationByName(request.name!!)?.let {
-            throw AccountAlreadyExistsException(request.name!!)
+            throw OrganisationAlreadyExistsException(request.name!!)
         }
         repository.findApiIntegrationByRole(request.role!!)?.let {
-            throw AccountAlreadyExistsException(request.role!!)
+            throw OrganisationAlreadyExistsException(request.role!!)
         }
     }
 }

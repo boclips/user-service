@@ -1,11 +1,11 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.application.exceptions.AccountNotFoundException
+import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.application.exceptions.InvalidDateException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.presentation.requests.UpdateAccountRequest
+import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -16,12 +16,12 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class UpdateIdentityTest : AbstractSpringIntegrationTest() {
-    lateinit var updateAccount: UpdateAccount
+    lateinit var updateOrganisation: UpdateOrganisation
     @BeforeEach
     fun setup() {
         setSecurityContext("user-that-can-update-orgs", UserRoles.UPDATE_ORGANISATIONS)
-        updateAccount = UpdateAccount(
-            accountRepository = accountRepository
+        updateOrganisation = UpdateOrganisation(
+            organisationRepository = organisationRepository
         )
     }
 
@@ -29,7 +29,7 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
     fun `Updates an organisation with a valid request`() {
         val oldExpiryTime = ZonedDateTime.parse("2019-06-06T00:00:00Z")
 
-        val district = accountRepository.save(
+        val district = organisationRepository.save(
             district = OrganisationDetailsFactory.district(
                 name = "my district",
                 externalId = "123",
@@ -39,8 +39,8 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
         )
         val updatedExpiryTime = oldExpiryTime.plusDays(10)
         val updatedExpiryTimeToString = updatedExpiryTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-        val request = UpdateAccountRequest(accessExpiresOn = updatedExpiryTimeToString)
-        val updatedOrganisation = updateAccount(district.id.value, request)
+        val request = UpdateOrganisationRequest(accessExpiresOn = updatedExpiryTimeToString)
+        val updatedOrganisation = updateOrganisation(district.id.value, request)
 
         assertThat(updatedOrganisation.accessExpiresOn).isEqualTo(updatedExpiryTime)
     }
@@ -48,17 +48,17 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
     @Test
     fun `Throws an error when organisation to update cannot be found`() {
 
-        assertThrows<AccountNotFoundException>{
-            updateAccount("non-existent-org", UpdateAccountRequest(accessExpiresOn = "2019-06-06T00:00:00Z"))
+        assertThrows<OrganisationNotFoundException>{
+            updateOrganisation("non-existent-org", UpdateOrganisationRequest(accessExpiresOn = "2019-06-06T00:00:00Z"))
         }
     }
 
     @Test
     fun `Throws an exception when the request contains an invalid date`() {
         assertThrows<InvalidDateException> {
-            updateAccount(
+            updateOrganisation(
                 id = "organisation-id",
-                request = UpdateAccountRequest("invalid-date")
+                request = UpdateOrganisationRequest("invalid-date")
             )
         }
     }

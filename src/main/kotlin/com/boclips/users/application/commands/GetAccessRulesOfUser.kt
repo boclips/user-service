@@ -1,15 +1,15 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.accessrules.AccessRule
-import com.boclips.users.domain.model.account.Organisation
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.AccessRuleRepository
-import com.boclips.users.domain.service.AccountRepository
+import com.boclips.users.domain.service.OrganisationRepository
 import org.springframework.stereotype.Service
 
 @Service
 class GetAccessRulesOfUser(
-    private val accountRepository: AccountRepository,
+    private val organisationRepository: OrganisationRepository,
     private val accessRuleRepository: AccessRuleRepository,
     private val getOrImportUser: GetOrImportUser
 ) {
@@ -21,7 +21,7 @@ class GetAccessRulesOfUser(
 
     private fun findUser(userId: UserId): Organisation<*>? {
         return getOrImportUser(userId).organisationId?.let {
-            accountRepository.findAccountById((it))
+            organisationRepository.findOrganisationById((it))
         }
     }
 }

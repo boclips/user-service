@@ -14,9 +14,9 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountConverter
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
-import com.boclips.users.infrastructure.organisation.MongoAccountRepository
+import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
+import com.boclips.users.infrastructure.organisation.SpringDataMongoOrganisationRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
-import com.boclips.users.infrastructure.organisation.OrganisationRepository
 import com.boclips.users.infrastructure.organisation.RoleBasedOrganisationIdResolver
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
@@ -39,7 +39,7 @@ import org.springframework.web.client.RestTemplate
 @Configuration
 class InfrastructureConfiguration(
     private val objectMapper: ObjectMapper,
-    private val organisationRepository: OrganisationRepository
+    private val springDataMongoOrganisationRepository: SpringDataMongoOrganisationRepository
 ) {
 
     @Profile("!test")
@@ -138,9 +138,9 @@ class InfrastructureConfiguration(
     }
 
     @Bean
-    fun mongoOrganisationAccountRepository(): MongoAccountRepository {
-        return MongoAccountRepository(
-            repository = organisationRepository
+    fun mongoOrganisationAccountRepository(): MongoOrganisationRepository {
+        return MongoOrganisationRepository(
+            repository = springDataMongoOrganisationRepository
         )
     }
 }

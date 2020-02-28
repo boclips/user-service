@@ -17,7 +17,7 @@ import mu.KLogging
 import org.springframework.stereotype.Component
 
 @Component
-class CreateTeacherAccount(
+class CreateTeacher(
     private val userService: UserService,
     private val marketingService: MarketingService,
     private val captchaProvider: CaptchaProvider,
@@ -47,7 +47,7 @@ class CreateTeacherAccount(
         val createdUser = userService.createTeacher(newTeacher = newUser)
 
         attemptToUpdateProfile(createdUser)
-        createdUser.analyticsId?.let { trackAccountCreatedEvent(it) }
+        createdUser.analyticsId?.let { trackUserCreatedEvent(it) }
 
         return createdUser
     }
@@ -63,7 +63,7 @@ class CreateTeacherAccount(
         }
     }
 
-    private fun trackAccountCreatedEvent(id: AnalyticsId?) {
+    private fun trackUserCreatedEvent(id: AnalyticsId?) {
         id?.let {
             analyticsClient.track(Event(eventType = EventType.ACCOUNT_CREATED, userId = id.value))
             logger.info { "Send MixPanel event ACCOUNT_CREATED for MixPanel ID $id" }

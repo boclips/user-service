@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.accessrules
 
-import com.boclips.users.domain.model.accessrules.AccessRule
-import com.boclips.users.domain.model.accessrules.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.service.AccessRuleRepository
 import org.springframework.stereotype.Repository
 import java.util.Optional

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import javax.validation.Validation
 import javax.validation.Validator
 
-class CreateTeacherAccountRequestTest {
+class CreateTeacherRequestTest {
 
     lateinit var validator: Validator
 

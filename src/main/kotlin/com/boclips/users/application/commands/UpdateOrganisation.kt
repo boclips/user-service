@@ -1,35 +1,35 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
-import com.boclips.users.application.exceptions.AccountNotFoundException
 import com.boclips.users.application.exceptions.InvalidDateException
+import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.account.Organisation
-import com.boclips.users.domain.model.account.OrganisationId
-import com.boclips.users.domain.service.AccountExpiresOnUpdate
-import com.boclips.users.domain.service.AccountRepository
-import com.boclips.users.presentation.requests.UpdateAccountRequest
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
+import com.boclips.users.domain.service.OrganisationRepository
+import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 @Component
-class UpdateAccount(private val accountRepository: AccountRepository) {
-    operator fun invoke(id: String, request: UpdateAccountRequest?): Organisation<*> {
+class UpdateOrganisation(private val organisationRepository: OrganisationRepository) {
+    operator fun invoke(id: String, request: UpdateOrganisationRequest?): Organisation<*> {
         if (!UserExtractor.currentUserHasRole(UserRoles.UPDATE_ORGANISATIONS)) {
             throw PermissionDeniedException()
         }
 
         val convertedDate = convertToZonedDateTime(request?.accessExpiresOn)
 
-        return accountRepository.update(
-            AccountExpiresOnUpdate(
+        return organisationRepository.update(
+            OrganisationExpiresOnUpdate(
                 OrganisationId(id),
                 convertedDate
             )
-        ) ?: throw AccountNotFoundException(id)
+        ) ?: throw OrganisationNotFoundException(id)
     }
 
     private fun convertToZonedDateTime(date: String?): ZonedDateTime {

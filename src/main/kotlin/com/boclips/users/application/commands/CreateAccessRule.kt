@@ -1,9 +1,9 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.AccessRuleExistsException
-import com.boclips.users.domain.model.accessrules.AccessRule
-import com.boclips.users.domain.model.accessrules.CollectionId
-import com.boclips.users.domain.model.accessrules.VideoId
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.SelectedContentAccessRuleRepository
 import com.boclips.users.presentation.requests.CreateAccessRuleRequest

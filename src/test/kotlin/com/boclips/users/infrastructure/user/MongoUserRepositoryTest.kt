@@ -2,7 +2,7 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.account.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest

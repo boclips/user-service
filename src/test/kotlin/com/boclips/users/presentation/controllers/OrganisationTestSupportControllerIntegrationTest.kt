@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.accessrules.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -57,7 +57,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns a 409 response when organisation name collides`() {
             val organisationName = "Test Org"
-            accountRepository.save(
+            organisationRepository.save(
                 apiIntegration = OrganisationDetailsFactory.apiIntegration(name = organisationName),
                 accessRuleIds = emptyList(),
                 role = "ROLE_TEST_ORG"
@@ -83,7 +83,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns a 409 response when organisation role collides`() {
             val role = "ROLE_TEST_ORG"
-            accountRepository.save(
+            organisationRepository.save(
                 apiIntegration = OrganisationDetailsFactory.apiIntegration(name = "Some name"),
                 accessRuleIds = emptyList(),
                 role = role
@@ -138,7 +138,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns given organisation when it's found by name`() {
             val organisationName = "Test Org"
-            val organisation = accountRepository.save(
+            val organisation = organisationRepository.save(
                 apiIntegration = OrganisationDetailsFactory.apiIntegration(name = organisationName),
                 accessRuleIds = listOf(AccessRuleId("A"), AccessRuleId("B"), AccessRuleId("C")),
                 role = "ROLE_TEST_ORG"

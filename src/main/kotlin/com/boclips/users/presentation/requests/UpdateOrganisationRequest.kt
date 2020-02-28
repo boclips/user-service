@@ -1,4 +1,4 @@
 package com.boclips.users.presentation.requests
 
-open class UpdateAccountRequest(
+open class UpdateOrganisationRequest(
     var accessExpiresOn: String? = null)

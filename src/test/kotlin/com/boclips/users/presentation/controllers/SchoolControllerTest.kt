@@ -11,19 +11,19 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 class SchoolControllerTest : AbstractSpringIntegrationTest() {
     @Test
     fun `lists schools when given only query and country - outside USA schools`() {
-        val school = accountRepository.save(
+        val school = organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "my school 1",
                 countryName = "GBR"
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "my school 2",
                 countryName = "POL"
             )
         )
-        accountRepository.save(
+        organisationRepository.save(
             school = OrganisationDetailsFactory.school(
                 name = "something else",
                 countryName = "GBR"

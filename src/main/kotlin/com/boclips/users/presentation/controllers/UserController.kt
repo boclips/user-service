@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.SynchronisationService
-import com.boclips.users.application.commands.CreateTeacherAccount
+import com.boclips.users.application.commands.CreateTeacher
 import com.boclips.users.application.commands.GetAccessRulesOfUser
 import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.commands.UpdateUser
@@ -35,7 +35,7 @@ import javax.validation.Valid
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
 class UserController(
-    private val createTeacherAccount: CreateTeacherAccount,
+    private val createTeacher: CreateTeacher,
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
     private val userLinkBuilder: UserLinkBuilder,
@@ -49,7 +49,7 @@ class UserController(
 
     @PostMapping
     fun createAUser(@Valid @RequestBody createTeacherRequest: CreateTeacherRequest?): ResponseEntity<EntityModel<*>> {
-        val user = createTeacherAccount(createTeacherRequest!!)
+        val user = createTeacher(createTeacherRequest!!)
 
         val headers = HttpHeaders()
         headers.set(HttpHeaders.LOCATION, userLinkBuilder.newUserProfileLink(user.id)?.href)
@@ -96,7 +96,7 @@ class UserController(
 
     @PostMapping("/sync-identities")
     fun syncAccounts() {
-        synchronisationService.synchroniseAccounts()
+        synchronisationService.synchroniseUserAccounts()
     }
 
     @GetMapping("/{id}/shareCode/{shareCode}")

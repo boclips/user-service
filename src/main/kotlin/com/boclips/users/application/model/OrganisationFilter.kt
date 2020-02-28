@@ -1,6 +1,6 @@
 package com.boclips.users.application.model
 
-import com.boclips.users.domain.model.account.OrganisationType
+import com.boclips.users.domain.model.organisation.OrganisationType
 
 data class OrganisationFilter(
     val id: String? = null,

@@ -5,7 +5,7 @@ import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.presentation.requests.MarketingTrackingRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationAccountFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.boclips.videos.api.request.subject.CreateSubjectRequest
 import org.assertj.core.api.Assertions.assertThat
@@ -95,7 +95,7 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `converts organisation change to a command`() {
-        val organisation = OrganisationAccountFactory.sample()
+        val organisation = OrganisationFactory.sample()
         val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(), organisation)
 
         assertThat(commands).hasSize(1)
