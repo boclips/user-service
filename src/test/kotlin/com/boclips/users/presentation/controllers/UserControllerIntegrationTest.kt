@@ -310,6 +310,104 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
+        fun `successful onboarding sets up shareCode if user do not have it - sso users`() {
+            val user = UserFactory.sample(
+                analyticsId = AnalyticsId(
+                    value = "1234567"
+                ),
+                teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null),
+                identity = IdentityFactory.sample(id = "user-id"),
+                profile = null,
+                organisationId = null,
+                accessExpiresOn = null
+            )
+
+            saveUser(user)
+
+            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            saveSchool(
+                school = OrganisationDetailsFactory.school(
+                    name = "San Fran Forest School",
+                    state = State.fromCode("CA"),
+                    country = Country.fromCode("USA")
+                )
+            )
+
+            setSecurityContext("user-id")
+
+            val userBeforeOnboarding = userRepository.findById(user.id)
+            assertThat(userBeforeOnboarding!!.teacherPlatformAttributes!!.shareCode).isNull()
+
+            mvc.perform(
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "jane",
+                         "lastName": "doe",
+                         "subjects": ["subject-1"],
+                         "ages": [4,5,6],
+                         "country": "USA",
+                         "state": "CA",
+                         "schoolName": "San Fran Forest School"
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+
+            val userAfterOnboarding = userRepository.findById(user.id)
+            assertThat(userAfterOnboarding!!.teacherPlatformAttributes!!.shareCode).isNotNull()
+        }
+
+        @Test
+        fun `successful onboarding does not override shareCode if user already has one`() {
+            val user = UserFactory.sample(
+                analyticsId = AnalyticsId(
+                    value = "1234567"
+                ),
+                teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "HYML"),
+                identity = IdentityFactory.sample(id = "user-id"),
+                profile = null,
+                organisationId = null,
+                accessExpiresOn = null
+            )
+
+            saveUser(user)
+
+            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            saveSchool(
+                school = OrganisationDetailsFactory.school(
+                    name = "San Fran Forest School",
+                    state = State.fromCode("CA"),
+                    country = Country.fromCode("USA")
+                )
+            )
+
+            setSecurityContext("user-id")
+
+            mvc.perform(
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"firstName": "jane",
+                         "lastName": "doe",
+                         "subjects": ["subject-1"],
+                         "ages": [4,5,6],
+                         "country": "USA",
+                         "state": "CA",
+                         "schoolName": "San Fran Forest School"
+                         }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+
+            val userAfterOnboarding = userRepository.findById(user.id)
+            assertThat(userAfterOnboarding!!.teacherPlatformAttributes!!.shareCode).isEqualTo("HYML")
+        }
+        @Test
         fun `updates for an onboarded user does not change the access expiry`() {
             val user = setupSampleUserBeforeOnboarding("user-id")
 

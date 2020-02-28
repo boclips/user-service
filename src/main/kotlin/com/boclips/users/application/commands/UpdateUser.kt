@@ -36,7 +36,8 @@ class UpdateUser(
     private val userUpdatesCommandFactory: UserUpdatesCommandFactory,
     private val organisationRepository: OrganisationRepository,
     private val organisationService: OrganisationService,
-    private val getOrImportUser: GetOrImportUser
+    private val getOrImportUser: GetOrImportUser,
+    private val generateShareCode: GenerateTeacherShareCode
 ) {
     companion object : KLogging() {
         const val DEFAULT_TRIAL_DAYS_LENGTH = 10L
@@ -54,9 +55,9 @@ class UpdateUser(
 
         getOrImportUser(updateUserId).let { user ->
             val updateCommands = buildUpdateCommands(updateUserRequest, school, user)
-            updateCommands.let { commands ->
-                userRepository.update(user, *commands.toTypedArray())
-            }
+
+            userRepository.update(user, *updateCommands.toTypedArray())
+
             updateMarketingService(updateUserId)
         }
 
@@ -67,18 +68,14 @@ class UpdateUser(
         updateUserRequest: UpdateUserRequest,
         school: Organisation<School>?,
         user: User
-    ): List<UserUpdateCommand> {
-        val updateCommands = userUpdatesCommandFactory.buildCommands(updateUserRequest, school)
-
-        return if (shouldSetAccessExpiresOn(user)) {
-            // To calculate the expiry date we decided to round up the date so users get at least the default trial days
-            val accessExpiry = ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
-
-            updateCommands + UserUpdateCommand.ReplaceAccessExpiresOn(accessExpiresOn = accessExpiry)
-        } else {
-            updateCommands
-        }
-    }
+    ): List<UserUpdateCommand> = userUpdatesCommandFactory.buildCommands(updateUserRequest, school) +
+        listOfNotNull(
+            takeIf { user.teacherPlatformAttributes?.shareCode == null }?.let { UserUpdateCommand.ReplaceShareCode(generateShareCode()) },
+            takeIf { shouldSetAccessExpiresOn(user) }?.let {
+                val accessExpiry = ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
+                UserUpdateCommand.ReplaceAccessExpiresOn(accessExpiresOn = accessExpiry)
+            }
+        )
 
     private fun shouldSetAccessExpiresOn(user: User): Boolean {
         return (user.teacherPlatformAttributes == null || !user.teacherPlatformAttributes.hasLifetimeAccess) && !user.hasOnboarded()
