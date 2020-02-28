@@ -13,7 +13,11 @@ import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.ArgumentsProvider
+import org.junit.jupiter.params.provider.ArgumentsSource
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
@@ -21,21 +25,34 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.stream.Stream
 
 class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
+
+    class ResourceProvider : ArgumentsProvider {
+        override fun provideArguments(context: ExtensionContext?): Stream<out Arguments> {
+            return Stream.of(
+                Arguments.of("accounts"),
+                Arguments.of("organisations")
+            )
+        }
+    }
+
     @Nested
     inner class FetchingIndependentAccounts {
-        @Test
-        fun `returns a forbidden response when caller is not allowed to view organisations`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `returns a forbidden response when caller is not allowed to view organisations`(resource: String) {
             mvc.perform(
-                get("/v1/accounts?countryCode=USA")
+                get("/v1/$resource?countryCode=USA")
                     .asUser("has-role@test.com")
             )
                 .andExpect(MockMvcResultMatchers.status().isForbidden)
         }
 
-        @Test
-        fun `lists all independent US schools and organisations`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `lists all independent US schools and organisations`(resource: String) {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
 
             val district = organisationRepository.save(
@@ -67,7 +84,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/accounts?countryCode=USA&page=0&size=1").asUserWithRoles(
+                get("/v1/$resource?countryCode=USA&page=0&size=1").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.VIEW_ORGANISATIONS
                 )
@@ -80,7 +97,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(
                     jsonPath(
                         "$._embedded.account[0]._links.edit.href",
-                        endsWith("/v1/accounts/${district.id.value}")
+                        endsWith("/v1/organisations/${district.id.value}")
                     )
                 )
                 .andExpect(jsonPath("$.page.totalElements", equalTo(2)))
@@ -88,8 +105,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.page.size", equalTo(1)))
         }
 
-        @Test
-        fun `fetches all independent accounts when no countryCode is provided`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `fetches all independent accounts when no countryCode is provided`(resource: String) {
             val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
@@ -115,8 +133,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Nested
     inner class UpdatingAccounts {
-        @Test
-        fun `updating an organisation account`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `updating an organisation account`(resource: String) {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.537Z")
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
@@ -129,7 +148,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                patch("/v1/accounts/${district.id.value}").asUserWithRoles(
+                patch("/v1/$resource/${district.id.value}").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.UPDATE_ORGANISATIONS
                 )
@@ -139,13 +158,14 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     )
             )
                 .andExpect(MockMvcResultMatchers.status().isOk)
-                .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${district.id.value}")))
+                .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${district.id.value}")))
                 .andExpect(jsonPath("$.id", equalTo(district.id.value)))
                 .andExpect(jsonPath("$.accessExpiresOn", equalTo(expiryTimeToString)))
         }
 
-        @Test
-        fun `bad request when date is invalid`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `bad request when date is invalid`(resource: String) {
             val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
@@ -155,7 +175,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                patch("/v1/accounts/${district.id.value}").asUserWithRoles(
+                patch("/v1/$resource/${district.id.value}").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.UPDATE_ORGANISATIONS
                 )
@@ -167,13 +187,14 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
         }
 
-        @Test
-        fun `bad request when updating non existent organisation`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `bad request when updating non existent organisation`(resource: String) {
             val expiryTime = ZonedDateTime.now()
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
             mvc.perform(
-                patch("/v1/accounts/not-an-organisation").asUserWithRoles(
+                patch("/v1/$resource/not-an-organisation").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.UPDATE_ORGANISATIONS
                 )
@@ -185,8 +206,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
         }
 
-        @Test
-        fun `returns forbidden when caller is not allowed to update organisations`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `returns forbidden when caller is not allowed to update organisations`(resource: String) {
             val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
@@ -198,7 +220,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTime = ZonedDateTime.now()
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
             mvc.perform(
-                patch("/v1/accounts/${district.id.value}").asUser("an-outsider")
+                patch("/v1/$resource/${district.id.value}").asUser("an-outsider")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
@@ -210,8 +232,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Nested
     inner class FetchingOrganisationById {
-        @Test
-        fun `retrieves an api integration organisation account by id`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `retrieves an api integration organisation account by id`(resource: String) {
             val organisationName = "Test Org"
             val organisation = organisationRepository.save(
                 apiIntegration = OrganisationDetailsFactory.apiIntegration(
@@ -223,30 +246,32 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/accounts/${organisation.id.value}")
+                get("/v1/$resource/${organisation.id.value}")
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(jsonPath("$.accessRuleIds", containsInAnyOrder("A", "B", "C")))
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.organisation.allowsOverridingUserIds", equalTo(true)))
-                .andExpect(jsonPath("$._links.self.href", endsWith("/accounts/${organisation.id.value}")))
-                .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${organisation.id.value}")))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
+                .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
         }
 
-        @Test
-        fun `returns a forbidden response when caller does not have view organisations role`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `returns a forbidden response when caller does not have view organisations role`(resource: String) {
             mvc.perform(
-                get("/v1/accounts/some-org")
+                get("/v1/$resource/some-org")
                     .asUser("has-role@test.com")
             )
                 .andExpect(MockMvcResultMatchers.status().isForbidden)
         }
 
-        @Test
-        fun `returns a 404 response when organisation account is not found by id`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `returns a 404 response when organisation account is not found by id`(resource: String) {
             mvc.perform(
-                get("/v1/accounts/this-does-not-exist")
+                get("/v1/$resource/this-does-not-exist")
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -255,8 +280,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Nested
     inner class GettingAccounts {
-        @Test
-        fun `gets a page of all accounts when filters are empty`() {
+        @ParameterizedTest
+        @ArgumentsSource(ResourceProvider::class)
+        fun `gets a page of all accounts when filters are empty`(resource: String) {
             saveDistrict(district = OrganisationDetailsFactory.district(name = "district 1"))
             saveDistrict(district = OrganisationDetailsFactory.district(name = "district 2"))
             saveSchool(school = OrganisationDetailsFactory.school(name = "school 1"))

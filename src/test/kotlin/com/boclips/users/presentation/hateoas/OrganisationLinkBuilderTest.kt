@@ -12,32 +12,37 @@ import org.springframework.web.util.UriComponentsBuilder
 
 internal class OrganisationLinkBuilderTest {
 
-    lateinit var accountLinkBuilder: AccountLinkBuilder
-    lateinit var uriComponentsBuilderFactory :UriComponentsBuilderFactory
+    lateinit var organisationLinkBuilder: OrganisationLinkBuilder
+    lateinit var uriComponentsBuilderFactory: UriComponentsBuilderFactory
 
     @BeforeEach
     fun setUp() {
         uriComponentsBuilderFactory = mock()
         whenever(uriComponentsBuilderFactory.getInstance()).thenReturn(UriComponentsBuilder.newInstance())
-        accountLinkBuilder = AccountLinkBuilder(uriComponentsBuilderFactory = uriComponentsBuilderFactory)
+        organisationLinkBuilder = OrganisationLinkBuilder(uriComponentsBuilderFactory = uriComponentsBuilderFactory)
     }
 
     @Test
     fun `edit link for organisation`() {
         val organisationId = "test-id"
-        val organisationLink = accountLinkBuilder.edit(OrganisationId(organisationId))
+        val organisationLink = organisationLinkBuilder.edit(OrganisationId(organisationId))
 
         assertThat(organisationLink.rel.value()).isEqualTo("edit")
-        assertThat(organisationLink.href).endsWith("/accounts/$organisationId")
+        assertThat(organisationLink.href).endsWith("/organisations/$organisationId")
     }
 
     @Test
     fun `expose organisations link`() {
         setSecurityContext("org-viewer", UserRoles.VIEW_ORGANISATIONS)
-        val organisationLink = accountLinkBuilder.getIndependentAccountsLink()
+        val legacyIndependentAccountsLink = organisationLinkBuilder.getIndependentAccountsLink()
 
-        assertThat(organisationLink!!.rel.value()).isEqualTo("independentAccounts")
-        assertThat(organisationLink.href).endsWith("/accounts{?countryCode,page,size}")
+        assertThat(legacyIndependentAccountsLink!!.rel.value()).isEqualTo("independentAccounts")
+        assertThat(legacyIndependentAccountsLink.href).endsWith("/organisations{?countryCode,page,size}")
+
+        val organisationsLink = organisationLinkBuilder.getOrganisationsLink()!!
+
+        assertThat(organisationsLink.rel.value()).isEqualTo("organisations")
+        assertThat(organisationsLink.href).endsWith("/organisations{?countryCode,page,size}")
     }
 
     @Test
@@ -46,7 +51,7 @@ internal class OrganisationLinkBuilderTest {
         val totalPages = 4
 
         whenever(uriComponentsBuilderFactory.getInstance()).thenReturn(UriComponentsBuilder.fromHttpUrl("https://localhost/v1?page=${currentPage}"))
-        val nextLink = accountLinkBuilder.getNextPageLink(currentPage, totalPages)
+        val nextLink = organisationLinkBuilder.getNextPageLink(currentPage, totalPages)
 
         assertThat(nextLink).isNotNull
         assertThat(nextLink!!.href).contains("page=1")
@@ -54,10 +59,11 @@ internal class OrganisationLinkBuilderTest {
         assertThat(nextLink.rel.value()).contains("next")
     }
 
-    @Test fun `does not return a next link when there are no more pages`() {
+    @Test
+    fun `does not return a next link when there are no more pages`() {
         val currentPage = 2
         val totalPages = 3
 
-        assertThat(accountLinkBuilder.getNextPageLink(currentPage, totalPages)).isNull()
+        assertThat(organisationLinkBuilder.getNextPageLink(currentPage, totalPages)).isNull()
     }
 }

@@ -35,7 +35,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         }
 
         @Test
-        fun `inserts an organisation and returns it's id in Location header`() {
+        fun `inserts an organisation and returns its id in Location header`() {
             mvc.perform(
                 post("/v1/api-integrations")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -51,7 +51,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
             )
                 .andExpect(status().isCreated)
-                .andExpect(header().string("Location", containsString("/accounts/")))
+                .andExpect(header().string("Location", containsString("/organisations/")))
         }
 
         @Test
@@ -156,8 +156,8 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.accessRuleIds", containsInAnyOrder("A", "B", "C")))
-                .andExpect(jsonPath("$._links.self.href", endsWith("/accounts/${organisation.id.value}")))
-                .andExpect(jsonPath("$._links.edit.href", endsWith("/accounts/${organisation.id.value}")))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
+                .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
         }
 
         @Test

@@ -205,8 +205,12 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.independentAccounts").exists())
             .andExpect(jsonPath("$._links.independentAccounts.templated", equalTo(true)))
-            .andExpect(jsonPath("$._links.independentAccounts.href",endsWith("/accounts{?countryCode,page,size}")))
-            .andExpect(jsonPath("$._links.account.href", endsWith("/accounts/{id}")))
+            .andExpect(jsonPath("$._links.independentAccounts.href",endsWith("/organisations{?countryCode,page,size}")))
+            .andExpect(jsonPath("$._links.organisations").exists())
+            .andExpect(jsonPath("$._links.organisations.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.organisations.href",endsWith("/organisations{?countryCode,page,size}")))
+            .andExpect(jsonPath("$._links.account.href", endsWith("/organisations/{id}")))
+            .andExpect(jsonPath("$._links.organisation.href", endsWith("/organisations/{id}")))
     }
 
     @Test

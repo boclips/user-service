@@ -20,27 +20,36 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/v1", "/v1/")
-class AccountController(
+class OrganisationController(
     private val getOrganisationById: GetOrganisationById,
     private val accountConverter: AccountConverter,
     private val updateOrganisation: UpdateOrganisation,
     private val getOrganisations: GetOrganisations
 ) {
 
-    @GetMapping("/accounts/{id}")
+    @GetMapping("/organisations/{id}")
     fun fetchOrganisationById(@PathVariable("id") id: String?): EntityModel<AccountResource> {
         val organisation = getOrganisationById(id!!)
-
         return accountConverter.toResource(organisation)
+    }
+
+    @GetMapping("/accounts/{id}")
+    fun fetchAccountById(@PathVariable("id") id: String?): EntityModel<AccountResource> {
+        return fetchOrganisationById(id)
+    }
+
+    @PatchMapping("/organisations/{id}")
+    fun update(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<AccountResource> {
+        return accountConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
     }
 
     @PatchMapping("/accounts/{id}")
     fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<AccountResource> {
-        return accountConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
+        return update(id, updateOrganisationRequest)
     }
 
-    @GetMapping("/accounts")
-    fun listAccounts(listAccountsRequest: ListAccountsRequest?): PagedModel<EntityModel<AccountResource>> {
+    @GetMapping("/organisations")
+    fun fetchAll(listAccountsRequest: ListAccountsRequest?): PagedModel<EntityModel<AccountResource>> {
         val filter = OrganisationFilter(
             countryCode = listAccountsRequest?.countryCode,
             page = listAccountsRequest?.page ?: 0,
@@ -58,5 +67,10 @@ class AccountController(
                 accountResources.totalElements
             )
         )
+    }
+
+    @GetMapping("/accounts")
+    fun listAccounts(listAccountsRequest: ListAccountsRequest?): PagedModel<EntityModel<AccountResource>> {
+        return fetchAll(listAccountsRequest)
     }
 }

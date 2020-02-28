@@ -3,7 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.commands.CreateApiIntegration
 import com.boclips.users.application.commands.GetApiIntegrationByName
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
-import com.boclips.users.presentation.hateoas.AccountLinkBuilder
+import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.requests.CreateAccountRequest
 import com.boclips.users.presentation.resources.AccountResource
 import com.boclips.users.presentation.resources.converters.AccountConverter
@@ -26,7 +26,7 @@ import javax.validation.constraints.NotBlank
 @RestController
 @RequestMapping("/v1", "/v1/")
 class AccountTestSupportController(
-    private val accountLinkBuilder: AccountLinkBuilder,
+    private val organisationLinkBuilder: OrganisationLinkBuilder,
     private val createApiIntegration: CreateApiIntegration,
     private val getApiIntegrationByName: GetApiIntegrationByName,
     private val accountConverter: AccountConverter
@@ -36,7 +36,7 @@ class AccountTestSupportController(
         val createdOrganisation = createApiIntegration(request)
 
         val headers = HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, accountLinkBuilder.self(createdOrganisation.id).href)
+        headers.set(HttpHeaders.LOCATION, organisationLinkBuilder.self(createdOrganisation.id).href)
 
         return ResponseEntity(headers, HttpStatus.CREATED)
     }

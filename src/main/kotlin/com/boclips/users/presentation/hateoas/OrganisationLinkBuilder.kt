@@ -3,24 +3,34 @@ package com.boclips.users.presentation.hateoas
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.presentation.controllers.AccountController
+import com.boclips.users.presentation.controllers.OrganisationController
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder
 import org.springframework.stereotype.Component
 
 @Component
-class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsBuilderFactory) {
+class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsBuilderFactory) {
     fun self(id: OrganisationId): Link {
         return WebMvcLinkBuilder.linkTo(
-            WebMvcLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(id.value)
+            WebMvcLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisationById(id.value)
         ).withSelfRel()
     }
 
     fun getAccountLink(): Link? {
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
             WebMvcLinkBuilder.linkTo(
-                WebMvcLinkBuilder.methodOn(AccountController::class.java).fetchOrganisationById(null)
+                WebMvcLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisationById(null)
             ).withRel("account")
+        } else {
+            null
+        }
+    }
+
+    fun getOrganisationLink(): Link? {
+        return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisationById(null)
+            ).withRel("organisation")
         } else {
             null
         }
@@ -28,7 +38,7 @@ class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsB
 
     fun edit(id: OrganisationId): Link {
         return WebMvcLinkBuilder.linkTo(
-            WebMvcLinkBuilder.methodOn(AccountController::class.java).updateAnAccount(id.value, null)
+            WebMvcLinkBuilder.methodOn(OrganisationController::class.java).update(id.value, null)
         ).withRel("edit")
     }
 
@@ -36,10 +46,24 @@ class AccountLinkBuilder(private val uriComponentsBuilderFactory: UriComponentsB
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
             Link(
                 uriComponentsBuilderFactory.getInstance()
-                    .replacePath("/v1/accounts")
+                    .replacePath("/v1/organisations")
                     .replaceQueryParams(null)
                     .toUriString() + "{?countryCode,page,size}",
                 "independentAccounts"
+            )
+        } else {
+            null
+        }
+    }
+
+    fun getOrganisationsLink(): Link? {
+        return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
+            Link(
+                uriComponentsBuilderFactory.getInstance()
+                    .replacePath("/v1/organisations")
+                    .replaceQueryParams(null)
+                    .toUriString() + "{?countryCode,page,size}",
+                "organisations"
             )
         } else {
             null
