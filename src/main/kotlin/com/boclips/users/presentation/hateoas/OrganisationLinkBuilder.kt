@@ -16,16 +16,6 @@ class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriCompon
         ).withSelfRel()
     }
 
-    fun getAccountLink(): Link? {
-        return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
-            WebMvcLinkBuilder.linkTo(
-                WebMvcLinkBuilder.methodOn(OrganisationController::class.java).fetchOrganisationById(null)
-            ).withRel("account")
-        } else {
-            null
-        }
-    }
-
     fun getOrganisationLink(): Link? {
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
             WebMvcLinkBuilder.linkTo(
@@ -40,20 +30,6 @@ class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriCompon
         return WebMvcLinkBuilder.linkTo(
             WebMvcLinkBuilder.methodOn(OrganisationController::class.java).update(id.value, null)
         ).withRel("edit")
-    }
-
-    fun getIndependentAccountsLink(): Link? {
-        return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_ORGANISATIONS)) {
-            Link(
-                uriComponentsBuilderFactory.getInstance()
-                    .replacePath("/v1/organisations")
-                    .replaceQueryParams(null)
-                    .toUriString() + "{?countryCode,page,size}",
-                "independentAccounts"
-            )
-        } else {
-            null
-        }
     }
 
     fun getOrganisationsLink(): Link? {

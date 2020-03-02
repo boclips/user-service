@@ -33,8 +33,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.countries").doesNotExist())
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
-            .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
-            .andExpect(jsonPath("$._links.account").doesNotExist())
+            .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }
 
@@ -58,8 +57,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.accessRules").doesNotExist())
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
-            .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
-            .andExpect(jsonPath("$._links.account").doesNotExist())
+            .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }
 
@@ -84,8 +82,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.accessRules").doesNotExist())
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
-            .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
-            .andExpect(jsonPath("$._links.account").doesNotExist())
+            .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }
 
@@ -111,7 +108,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.countries").exists())
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
-            .andExpect(jsonPath("$._links.independentOrganisations").doesNotExist())
+            .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.account").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }
@@ -203,13 +200,9 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `user with VIEW_ORGANISATIONS role`() {
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ORGANISATIONS))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.independentAccounts").exists())
-            .andExpect(jsonPath("$._links.independentAccounts.templated", equalTo(true)))
-            .andExpect(jsonPath("$._links.independentAccounts.href",endsWith("/organisations{?countryCode,page,size}")))
             .andExpect(jsonPath("$._links.organisations").exists())
             .andExpect(jsonPath("$._links.organisations.templated", equalTo(true)))
             .andExpect(jsonPath("$._links.organisations.href",endsWith("/organisations{?countryCode,page,size}")))
-            .andExpect(jsonPath("$._links.account.href", endsWith("/organisations/{id}")))
             .andExpect(jsonPath("$._links.organisation.href", endsWith("/organisations/{id}")))
     }
 

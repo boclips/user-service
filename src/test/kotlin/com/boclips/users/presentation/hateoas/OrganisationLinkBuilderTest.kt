@@ -34,10 +34,6 @@ internal class OrganisationLinkBuilderTest {
     @Test
     fun `expose organisations link`() {
         setSecurityContext("org-viewer", UserRoles.VIEW_ORGANISATIONS)
-        val legacyIndependentAccountsLink = organisationLinkBuilder.getIndependentAccountsLink()
-
-        assertThat(legacyIndependentAccountsLink!!.rel.value()).isEqualTo("independentAccounts")
-        assertThat(legacyIndependentAccountsLink.href).endsWith("/organisations{?countryCode,page,size}")
 
         val organisationsLink = organisationLinkBuilder.getOrganisationsLink()!!
 

@@ -33,19 +33,9 @@ class OrganisationController(
         return organisationConverter.toResource(organisation)
     }
 
-    @GetMapping("/accounts/{id}")
-    fun fetchAccountById(@PathVariable("id") id: String?): EntityModel<OrganisationResource> {
-        return fetchOrganisationById(id)
-    }
-
     @PatchMapping("/organisations/{id}")
     fun update(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<OrganisationResource> {
         return organisationConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
-    }
-
-    @PatchMapping("/accounts/{id}")
-    fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<OrganisationResource> {
-        return update(id, updateOrganisationRequest)
     }
 
     @GetMapping("/organisations")
@@ -67,10 +57,5 @@ class OrganisationController(
                 accountResources.totalElements
             )
         )
-    }
-
-    @GetMapping("/accounts")
-    fun listAccounts(organisationFilterRequest: OrganisationFilterRequest?): PagedModel<EntityModel<OrganisationResource>> {
-        return fetchAll(organisationFilterRequest)
     }
 }
