@@ -6,6 +6,6 @@ import lombok.Data;
 public class Links {
     private Link user;
     private Link accessRules;
-    private Link account;
+    private Link organisation;
     private Link validateShareCode;
 }

@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Organisation {
-    private Boolean allowsOverridingUserIds;
+    private String id;
+    private OrganisationDetails organisationDetails;
 }

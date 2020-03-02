@@ -89,14 +89,14 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     UserRoles.VIEW_ORGANISATIONS
                 )
             )
-                .andExpect(jsonPath("$._embedded.account", hasSize<Int>(1)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.name").exists())
-                .andExpect(jsonPath("$._embedded.account[0].organisation.type").exists())
-                .andExpect(jsonPath("$._embedded.account[0].accessExpiresOn").exists())
-                .andExpect(jsonPath("$._embedded.account", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name").exists())
+                .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.type").exists())
+                .andExpect(jsonPath("$._embedded.organisations[0].accessExpiresOn").exists())
+                .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(
                     jsonPath(
-                        "$._embedded.account[0]._links.edit.href",
+                        "$._embedded.organisations[0]._links.edit.href",
                         endsWith("/v1/organisations/${district.id.value}")
                     )
                 )
@@ -107,7 +107,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @ParameterizedTest
         @ArgumentsSource(ResourceProvider::class)
-        fun `fetches all independent accounts when no countryCode is provided`(resource: String) {
+        fun `fetches all independent organisations when no countryCode is provided`(resource: String) {
             val district = organisationRepository.save(
                 OrganisationDetailsFactory.district(
                     name = "my district",
@@ -123,19 +123,19 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/accounts").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
+                get("/v1/$resource").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
             )
-                .andExpect(jsonPath("$._embedded.account", hasSize<Int>(2)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo(district.organisation.name)))
-                .andExpect(jsonPath("$._embedded.account[1].organisation.name", equalTo(school.organisation.name)))
+                .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(2)))
+                .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name", equalTo(district.organisation.name)))
+                .andExpect(jsonPath("$._embedded.organisations[1].organisationDetails.name", equalTo(school.organisation.name)))
         }
     }
 
     @Nested
-    inner class UpdatingAccounts {
+    inner class UpdatingOrganisations {
         @ParameterizedTest
         @ArgumentsSource(ResourceProvider::class)
-        fun `updating an organisation account`(resource: String) {
+        fun `updating an organisation`(resource: String) {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.537Z")
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
@@ -234,7 +234,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class FetchingOrganisationById {
         @ParameterizedTest
         @ArgumentsSource(ResourceProvider::class)
-        fun `retrieves an api integration organisation account by id`(resource: String) {
+        fun `retrieves an api integration organisation by id`(resource: String) {
             val organisationName = "Test Org"
             val organisation = organisationRepository.save(
                 apiIntegration = OrganisationDetailsFactory.apiIntegration(
@@ -251,8 +251,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(jsonPath("$.accessRuleIds", containsInAnyOrder("A", "B", "C")))
-                .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
-                .andExpect(jsonPath("$.organisation.allowsOverridingUserIds", equalTo(true)))
+                .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
+                .andExpect(jsonPath("$.organisationDetails.allowsOverridingUserIds", equalTo(true)))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
         }
@@ -269,7 +269,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @ParameterizedTest
         @ArgumentsSource(ResourceProvider::class)
-        fun `returns a 404 response when organisation account is not found by id`(resource: String) {
+        fun `returns a 404 response when organisation is not found by id`(resource: String) {
             mvc.perform(
                 get("/v1/$resource/this-does-not-exist")
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
@@ -279,23 +279,23 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Nested
-    inner class GettingAccounts {
+    inner class GettingOrganisations {
         @ParameterizedTest
         @ArgumentsSource(ResourceProvider::class)
-        fun `gets a page of all accounts when filters are empty`(resource: String) {
+        fun `gets a page of all organisations when filters are empty`(resource: String) {
             saveDistrict(district = OrganisationDetailsFactory.district(name = "district 1"))
             saveDistrict(district = OrganisationDetailsFactory.district(name = "district 2"))
             saveSchool(school = OrganisationDetailsFactory.school(name = "school 1"))
 
             mvc.perform(
-                get("/v1/accounts").asUserWithRoles(
+                get("/v1/$resource").asUserWithRoles(
                     "some-boclipper",
                     UserRoles.VIEW_ORGANISATIONS
                 )
-            ).andExpect(jsonPath("$._embedded.account", hasSize<Int>(3)))
-                .andExpect(jsonPath("$._embedded.account[0].organisation.name", equalTo("district 1")))
-                .andExpect(jsonPath("$._embedded.account[1].organisation.name", equalTo("district 2")))
-                .andExpect(jsonPath("$._embedded.account[2].organisation.name", equalTo("school 1")))
+            ).andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(3)))
+                .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name", equalTo("district 1")))
+                .andExpect(jsonPath("$._embedded.organisations[1].organisationDetails.name", equalTo("district 2")))
+                .andExpect(jsonPath("$._embedded.organisations[2].organisationDetails.name", equalTo("school 1")))
         }
     }
 }

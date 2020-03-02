@@ -1,7 +1,7 @@
 package com.boclips.users.client.implementation;
 
 import com.boclips.users.client.UserServiceClient;
-import com.boclips.users.client.model.Account;
+import com.boclips.users.client.model.Organisation;
 import com.boclips.users.client.model.User;
 import com.boclips.users.client.model.accessrule.AccessRule;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class FakeUserServiceClient implements UserServiceClient {
     private User user = null;
     private List<AccessRule> accessRules = new ArrayList<>();
-    private Account account = null;
+    private Organisation organisation = null;
 
     @Override
     public User findUser(String userId) {
@@ -29,8 +29,8 @@ public class FakeUserServiceClient implements UserServiceClient {
     }
 
     @Override
-    public Account getAccount(String accountId) {
-        return account;
+    public Organisation getOrganisation(String organisationId) {
+        return organisation;
     }
 
     @Override
@@ -48,16 +48,16 @@ public class FakeUserServiceClient implements UserServiceClient {
         accessRules.add(accessRule);
     }
 
-    public void addAccount(Account account) {
-        this.account = account;
+    public void addOrganisation(Organisation organisation) {
+        this.organisation = organisation;
     }
 
     public void clearUser() {
         this.user = null;
     }
 
-    public void clearAccount() {
-        this.account = null;
+    public void clearOrganisation() {
+        this.organisation = null;
     }
 
     public void clearAccessRules() {

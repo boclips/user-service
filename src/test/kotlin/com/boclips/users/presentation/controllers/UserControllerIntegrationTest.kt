@@ -217,11 +217,20 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `can update user if caller is different user but has ROLE_UPDATE_USERS`() {
-            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "user-id"), profile = ProfileFactory.sample(firstName = "oldname")))
+            saveUser(
+                UserFactory.sample(
+                    identity = IdentityFactory.sample(id = "user-id"),
+                    profile = ProfileFactory.sample(firstName = "oldname")
+                )
+            )
 
 
             mvc.perform(
-                put("/v1/users/user-id").asUserWithRoles("different-user-id", UserRoles.UPDATE_USERS, UserRoles.VIEW_USERS)
+                put("/v1/users/user-id").asUserWithRoles(
+                    "different-user-id",
+                    UserRoles.UPDATE_USERS,
+                    UserRoles.VIEW_USERS
+                )
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -407,6 +416,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val userAfterOnboarding = userRepository.findById(user.id)
             assertThat(userAfterOnboarding!!.teacherPlatformAttributes!!.shareCode).isEqualTo("HYML")
         }
+
         @Test
         fun `updates for an onboarded user does not change the access expiry`() {
             val user = setupSampleUserBeforeOnboarding("user-id")
@@ -621,7 +631,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val user = saveUser(UserFactory.sample(organisationId = organisation.id))
 
             mvc.perform(
-                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(user.id.value, UserRoles.VIEW_ACCESS_RULES)
+                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(
+                    user.id.value,
+                    UserRoles.VIEW_ACCESS_RULES
+                )
             )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk)
@@ -683,7 +696,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val user = saveUser(UserFactory.sample())
 
             mvc.perform(
-                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(user.id.value, UserRoles.VIEW_ACCESS_RULES)
+                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(
+                    user.id.value,
+                    UserRoles.VIEW_ACCESS_RULES
+                )
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(0)))

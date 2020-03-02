@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.requests
 
-class ListAccountsRequest {
+class OrganisationFilterRequest {
     var countryCode: String? = null
     var page: Int = 0
     var size: Int = 30

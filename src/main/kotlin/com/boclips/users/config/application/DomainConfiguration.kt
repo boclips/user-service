@@ -30,7 +30,7 @@ class DomainConfiguration(
 
     @Primary
     @Bean
-    fun organisationAccountRepository(): OrganisationRepository {
+    fun organisationRepository(): OrganisationRepository {
         return OrganisationRepositoryEventDecorator(
             repository = mongoOrganisationRepository,
             eventBus = eventBus,

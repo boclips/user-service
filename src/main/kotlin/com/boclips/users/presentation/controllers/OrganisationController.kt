@@ -4,10 +4,10 @@ import com.boclips.users.application.commands.GetOrganisationById
 import com.boclips.users.application.commands.GetOrganisations
 import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.application.model.OrganisationFilter
-import com.boclips.users.presentation.requests.ListAccountsRequest
+import com.boclips.users.presentation.requests.OrganisationFilterRequest
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
-import com.boclips.users.presentation.resources.AccountResource
-import com.boclips.users.presentation.resources.converters.AccountConverter
+import com.boclips.users.presentation.resources.OrganisationResource
+import com.boclips.users.presentation.resources.converters.OrganisationConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.PagedModel
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,42 +22,42 @@ import javax.validation.Valid
 @RequestMapping("/v1", "/v1/")
 class OrganisationController(
     private val getOrganisationById: GetOrganisationById,
-    private val accountConverter: AccountConverter,
+    private val organisationConverter: OrganisationConverter,
     private val updateOrganisation: UpdateOrganisation,
     private val getOrganisations: GetOrganisations
 ) {
 
     @GetMapping("/organisations/{id}")
-    fun fetchOrganisationById(@PathVariable("id") id: String?): EntityModel<AccountResource> {
+    fun fetchOrganisationById(@PathVariable("id") id: String?): EntityModel<OrganisationResource> {
         val organisation = getOrganisationById(id!!)
-        return accountConverter.toResource(organisation)
+        return organisationConverter.toResource(organisation)
     }
 
     @GetMapping("/accounts/{id}")
-    fun fetchAccountById(@PathVariable("id") id: String?): EntityModel<AccountResource> {
+    fun fetchAccountById(@PathVariable("id") id: String?): EntityModel<OrganisationResource> {
         return fetchOrganisationById(id)
     }
 
     @PatchMapping("/organisations/{id}")
-    fun update(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<AccountResource> {
-        return accountConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
+    fun update(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<OrganisationResource> {
+        return organisationConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
     }
 
     @PatchMapping("/accounts/{id}")
-    fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<AccountResource> {
+    fun updateAnAccount(@PathVariable id: String, @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?): EntityModel<OrganisationResource> {
         return update(id, updateOrganisationRequest)
     }
 
     @GetMapping("/organisations")
-    fun fetchAll(listAccountsRequest: ListAccountsRequest?): PagedModel<EntityModel<AccountResource>> {
+    fun fetchAll(organisationFilterRequest: OrganisationFilterRequest?): PagedModel<EntityModel<OrganisationResource>> {
         val filter = OrganisationFilter(
-            countryCode = listAccountsRequest?.countryCode,
-            page = listAccountsRequest?.page ?: 0,
-            size = listAccountsRequest?.size ?: 30
+            countryCode = organisationFilterRequest?.countryCode,
+            page = organisationFilterRequest?.page ?: 0,
+            size = organisationFilterRequest?.size ?: 30
         )
         val accounts = getOrganisations(filter)
 
-        val accountResources = accounts.map { account -> accountConverter.toResource(account) }
+        val accountResources = accounts.map { account -> organisationConverter.toResource(account) }
 
         return PagedModel(
             accountResources.content,
@@ -70,7 +70,7 @@ class OrganisationController(
     }
 
     @GetMapping("/accounts")
-    fun listAccounts(listAccountsRequest: ListAccountsRequest?): PagedModel<EntityModel<AccountResource>> {
-        return fetchAll(listAccountsRequest)
+    fun listAccounts(organisationFilterRequest: OrganisationFilterRequest?): PagedModel<EntityModel<OrganisationResource>> {
+        return fetchAll(organisationFilterRequest)
     }
 }

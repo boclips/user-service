@@ -154,7 +154,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$.organisation.name", equalTo(organisationName)))
+                .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.accessRuleIds", containsInAnyOrder("A", "B", "C")))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))

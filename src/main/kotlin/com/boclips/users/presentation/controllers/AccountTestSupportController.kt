@@ -4,9 +4,9 @@ import com.boclips.users.application.commands.CreateApiIntegration
 import com.boclips.users.application.commands.GetApiIntegrationByName
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
-import com.boclips.users.presentation.requests.CreateAccountRequest
-import com.boclips.users.presentation.resources.AccountResource
-import com.boclips.users.presentation.resources.converters.AccountConverter
+import com.boclips.users.presentation.requests.CreateOrganisationRequest
+import com.boclips.users.presentation.resources.OrganisationResource
+import com.boclips.users.presentation.resources.converters.OrganisationConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -29,10 +29,10 @@ class AccountTestSupportController(
     private val organisationLinkBuilder: OrganisationLinkBuilder,
     private val createApiIntegration: CreateApiIntegration,
     private val getApiIntegrationByName: GetApiIntegrationByName,
-    private val accountConverter: AccountConverter
+    private val organisationConverter: OrganisationConverter
 ) {
     @PostMapping("/api-integrations")
-    fun insertApiIntegration(@Valid @RequestBody request: CreateAccountRequest): ResponseEntity<EntityModel<*>> {
+    fun insertApiIntegration(@Valid @RequestBody request: CreateOrganisationRequest): ResponseEntity<EntityModel<*>> {
         val createdOrganisation = createApiIntegration(request)
 
         val headers = HttpHeaders()
@@ -42,9 +42,9 @@ class AccountTestSupportController(
     }
 
     @GetMapping("/api-integrations")
-    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): EntityModel<AccountResource> {
+    fun fetchApiIntegrationByName(@NotBlank @RequestParam(required = false) name: String?): EntityModel<OrganisationResource> {
         val apiIntegration = getApiIntegrationByName(name!!)
 
-        return accountConverter.toResource(apiIntegration)
+        return organisationConverter.toResource(apiIntegration)
     }
 }

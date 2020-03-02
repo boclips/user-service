@@ -5,14 +5,14 @@ import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.presentation.requests.CreateAccountRequest
+import com.boclips.users.presentation.requests.CreateOrganisationRequest
 import org.springframework.stereotype.Service
 
 @Service
 class CreateApiIntegration(
     private val repository: OrganisationRepository
 ) {
-    operator fun invoke(request: CreateAccountRequest): Organisation<ApiIntegration> {
+    operator fun invoke(request: CreateOrganisationRequest): Organisation<ApiIntegration> {
         assertNewApiIntegrationDoesNotCollide(request)
 
         return repository.save(
@@ -24,7 +24,7 @@ class CreateApiIntegration(
         )
     }
 
-    private fun assertNewApiIntegrationDoesNotCollide(request: CreateAccountRequest) {
+    private fun assertNewApiIntegrationDoesNotCollide(request: CreateOrganisationRequest) {
         repository.findApiIntegrationByName(request.name!!)?.let {
             throw OrganisationAlreadyExistsException(request.name!!)
         }

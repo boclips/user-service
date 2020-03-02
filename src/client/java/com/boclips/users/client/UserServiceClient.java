@@ -1,6 +1,6 @@
 package com.boclips.users.client;
 
-import com.boclips.users.client.model.Account;
+import com.boclips.users.client.model.Organisation;
 import com.boclips.users.client.model.User;
 import com.boclips.users.client.model.accessrule.AccessRule;
 
@@ -11,7 +11,7 @@ public interface UserServiceClient {
 
     List<AccessRule> getAccessRules(String userId);
 
-    Account getAccount(String accountId);
+    Organisation getOrganisation(String organisationId);
 
     Boolean validateShareCode(String userId, String shareCode);
 }

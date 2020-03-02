@@ -11,10 +11,10 @@ import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testUser
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
@@ -24,8 +24,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.web.client.RestTemplateBuilder
-import com.boclips.users.client.model.Account as ClientAccount
-import com.boclips.users.client.model.Organisation as ClientOrganisation
+import com.boclips.users.client.model.OrganisationDetails
+import com.boclips.users.client.model.Organisation
 
 abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     @Nested
@@ -127,16 +127,17 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     @Nested
     inner class GetOrganisation {
         @Test
-        fun `returns an organisation account`() {
+        fun `returns an organisation`() {
             val organisationId = insertTestOrganisation(
                 name = "overriding org",
                 allowsOverridingUserIds = true
             )
-            val user = insertTestUser(organisationId)
 
-            val account = client.getAccount(organisationId)
+            insertTestUser(organisationId)
 
-            assertThat(account.organisation.allowsOverridingUserIds).isTrue()
+            val organisation = client.getOrganisation(organisationId)
+
+            assertThat(organisation.organisationDetails.allowsOverridingUserIds).isTrue()
         }
     }
 
@@ -229,11 +230,12 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
             (client as FakeUserServiceClient).addAccessRule(convertedContract)
         }
 
-        val organisation = ClientOrganisation(allowsOverridingUserIds)
-        val account = ClientAccount(name, organisation)
-        (client as FakeUserServiceClient).addAccount(account)
+        val organisationDetails = OrganisationDetails(allowsOverridingUserIds)
+        val organisation = Organisation(name, organisationDetails)
 
-        return account.id
+        (client as FakeUserServiceClient).addOrganisation(organisation)
+
+        return organisation.id
     }
 
     override fun insertTestUser(organisationId: String, subjectId: String, shareCode: String): User {

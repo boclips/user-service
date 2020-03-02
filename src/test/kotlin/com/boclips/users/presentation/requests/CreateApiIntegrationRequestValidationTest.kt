@@ -10,7 +10,7 @@ class CreateApiIntegrationRequestValidationTest {
     @BeforeEach
     fun setupValidator() {
         validator = Validation.buildDefaultValidatorFactory().validator
-        request = CreateAccountRequest().apply {
+        request = CreateOrganisationRequest().apply {
             name = "Test Name"
             role = "ROLE_TEST_NAME"
         }
@@ -62,5 +62,5 @@ class CreateApiIntegrationRequestValidationTest {
     }
 
     lateinit var validator: Validator
-    lateinit var request: CreateAccountRequest
+    lateinit var request: CreateOrganisationRequest
 }

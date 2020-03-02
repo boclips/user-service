@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account {
-    private String id;
-    private Organisation organisation;
+public class OrganisationDetails {
+    private Boolean allowsOverridingUserIds;
 }

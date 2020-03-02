@@ -1,12 +1,12 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.presentation.resources.school.CountryResource
-import com.boclips.users.presentation.resources.school.StateResource
+import org.springframework.hateoas.server.core.Relation
+import java.time.ZonedDateTime
 
+@Relation(collectionRelation = "organisations")
 data class OrganisationResource(
-    val name: String,
-    val type: String?,
-    val state: StateResource?,
-    val country: CountryResource?,
-    val allowsOverridingUserIds: Boolean?
+    val id: String?,
+    val accessRuleIds: List<String>,
+    val accessExpiresOn: ZonedDateTime?,
+    val organisationDetails: OrganisationDetailsResource
 )

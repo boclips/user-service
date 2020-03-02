@@ -23,7 +23,7 @@ class UserConverter(val userLinkBuilder: UserLinkBuilder) {
             organisationAccountId = user.organisationId?.value,
             organisation = user.organisationId?.let {
                 organisation?.let { orgAccount ->
-                    OrganisationConverter().toResource(orgAccount.organisation)
+                    OrganisationDetailsConverter().toResource(orgAccount.organisation)
                 }
             },
             teacherPlatformAttributes = user.teacherPlatformAttributes?.let {
