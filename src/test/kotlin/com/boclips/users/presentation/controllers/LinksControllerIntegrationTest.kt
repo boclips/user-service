@@ -7,6 +7,7 @@ import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.Matchers.containsString
@@ -90,7 +91,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with profile and organization is set up`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = organisationRepository.save(OrganisationDetailsFactory.school())
+        val organisationAccount =
+            organisationRepository.save(OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -117,7 +119,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered lifetime user`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = organisationRepository.save(OrganisationDetailsFactory.school())
+        val organisationAccount =
+            organisationRepository.save(OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -136,7 +139,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with an unexpired access period`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = organisationRepository.save(OrganisationDetailsFactory.school())
+        val organisationAccount =
+            organisationRepository.save(OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -155,7 +159,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `registered user with an expired access period`() {
         setSecurityContext("a-user-id")
 
-        val organisationAccount = organisationRepository.save(OrganisationDetailsFactory.school())
+        val organisationAccount =
+            organisationRepository.save(OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -202,7 +207,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.organisations").exists())
             .andExpect(jsonPath("$._links.organisations.templated", equalTo(true)))
-            .andExpect(jsonPath("$._links.organisations.href",endsWith("/organisations{?countryCode,page,size}")))
+            .andExpect(jsonPath("$._links.organisations.href", endsWith("/organisations{?countryCode,page,size}")))
             .andExpect(jsonPath("$._links.organisation.href", endsWith("/organisations/{id}")))
     }
 

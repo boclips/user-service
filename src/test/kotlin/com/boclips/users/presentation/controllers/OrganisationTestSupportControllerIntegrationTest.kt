@@ -6,6 +6,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.endsWith
@@ -58,9 +59,11 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         fun `returns a 409 response when organisation name collides`() {
             val organisationName = "Test Org"
             organisationRepository.save(
-                apiIntegration = OrganisationDetailsFactory.apiIntegration(name = organisationName),
-                accessRuleIds = emptyList(),
-                role = "ROLE_TEST_ORG"
+                OrganisationFactory.sample(
+                    organisation = OrganisationDetailsFactory.apiIntegration(name = organisationName),
+                    accessRuleIds = emptyList(),
+                    role = "ROLE_TEST_ORG"
+                )
             )
 
             mvc.perform(
@@ -84,9 +87,11 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         fun `returns a 409 response when organisation role collides`() {
             val role = "ROLE_TEST_ORG"
             organisationRepository.save(
-                apiIntegration = OrganisationDetailsFactory.apiIntegration(name = "Some name"),
-                accessRuleIds = emptyList(),
-                role = role
+                OrganisationFactory.sample(
+                    organisation = OrganisationDetailsFactory.apiIntegration(name = "Some name"),
+                    accessRuleIds = emptyList(),
+                    role = role
+                )
             )
 
             mvc.perform(
@@ -139,9 +144,11 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         fun `returns given organisation when it's found by name`() {
             val organisationName = "Test Org"
             val organisation = organisationRepository.save(
-                apiIntegration = OrganisationDetailsFactory.apiIntegration(name = organisationName),
-                accessRuleIds = listOf(AccessRuleId("A"), AccessRuleId("B"), AccessRuleId("C")),
-                role = "ROLE_TEST_ORG"
+                OrganisationFactory.sample(
+                    organisation = OrganisationDetailsFactory.apiIntegration(name = organisationName),
+                    accessRuleIds = listOf(AccessRuleId("A"), AccessRuleId("B"), AccessRuleId("C")),
+                    role = "ROLE_TEST_ORG"
+                )
             )
 
             mvc.perform(

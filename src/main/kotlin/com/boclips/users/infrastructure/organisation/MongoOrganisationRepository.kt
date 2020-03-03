@@ -2,21 +2,18 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationDetails
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
+import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationTypeUpdate
 import com.boclips.users.domain.service.OrganisationUpdate
-import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.findByIdOrNull
-import java.time.ZonedDateTime
 
 class MongoOrganisationRepository(
     private val repository: SpringDataMongoOrganisationRepository
@@ -41,21 +38,12 @@ class MongoOrganisationRepository(
             }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun save(
-        apiIntegration: ApiIntegration,
-        accessRuleIds: List<AccessRuleId>,
-        role: String?
-    ) =
-        doSave(role, accessRuleIds, apiIntegration) as Organisation<ApiIntegration>
-
-    @Suppress("UNCHECKED_CAST")
-    override fun save(school: School, accessExpiresOn: ZonedDateTime?) =
-        doSave(organisationDetails = school, accessExpiresOn = accessExpiresOn) as Organisation<School>
-
-    @Suppress("UNCHECKED_CAST")
-    override fun save(district: District, accessExpiresOn: ZonedDateTime?) =
-        doSave(organisationDetails = district, accessExpiresOn = accessExpiresOn) as Organisation<District>
+    override fun <T : OrganisationDetails> save(organisation: Organisation<T>): Organisation<T> {
+        return repository.save(OrganisationDocumentConverter.toDocument(organisation)).let {
+            @Suppress("UNCHECKED_CAST")
+            OrganisationDocumentConverter.fromDocument(it) as Organisation<T>
+        }
+    }
 
     override fun update(update: OrganisationUpdate): Organisation<*>? {
         val document = repository.findByIdOrNull(update.id.value) ?: return null
@@ -70,65 +58,6 @@ class MongoOrganisationRepository(
 
     override fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation<*>> {
         return repository.findByParentOrganisationId(parentId.value).map(::fromDocument)
-    }
-
-    private fun doSave(
-        role: String? = null,
-        accessRuleIds: List<AccessRuleId> = emptyList(),
-        organisationDetails: OrganisationDetails,
-        accessExpiresOn: ZonedDateTime? = null
-    ): Organisation<*> {
-        return fromDocument(
-            repository.save(
-                organisationDocument(
-                    organisationDetails = organisationDetails,
-                    role = role,
-                    accessRuleIds = accessRuleIds,
-                    accessExpiresOn = accessExpiresOn
-                )
-            )
-        )
-    }
-
-    private fun organisationDocument(
-        organisationDetails: OrganisationDetails,
-        role: String?,
-        accessRuleIds: List<AccessRuleId>,
-        id: String? = null,
-        accessExpiresOn: ZonedDateTime? = null
-    ): OrganisationDocument {
-        return OrganisationDocument(
-            id = id,
-            dealType = null,
-            name = organisationDetails.name,
-            role = role,
-            accessRuleIds = accessRuleIds.map { it.value },
-            externalId = when (organisationDetails) {
-                is School -> organisationDetails.externalId
-                is District -> organisationDetails.externalId
-                is ApiIntegration -> null
-            },
-            type = organisationDetails.type(),
-            country = organisationDetails.country?.id?.let { LocationDocument(code = it) },
-            state = organisationDetails.state?.id?.let { LocationDocument(code = it) },
-            postcode = organisationDetails.postcode,
-            allowsOverridingUserIds = when (organisationDetails) {
-                is ApiIntegration -> organisationDetails.allowsOverridingUserIds
-                else -> null
-            },
-            parentOrganisation = when (organisationDetails) {
-                is School -> organisationDetails.district?.let {
-                    organisationDocument(
-                        organisationDetails = it.organisation,
-                        role = null,
-                        accessRuleIds = it.accessRuleIds,
-                        id = it.id.value
-                    )
-                }
-                else -> null
-            },
-            accessExpiresOn = accessExpiresOn?.toInstant()
-        )
     }
 
     override fun findOrganisationById(id: OrganisationId): Organisation<*>? {

@@ -1,7 +1,9 @@
 package com.boclips.users.domain.service
 
+import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
 import org.springframework.stereotype.Service
 
@@ -11,21 +13,32 @@ class OrganisationService(
     val organisationRepository: OrganisationRepository
 ) {
     fun findOrCreateSchooldiggerSchool(externalSchoolId: String): Organisation<School>? {
-        var schoolAccount = organisationRepository.findOrganisationByExternalId(externalSchoolId)
+        var schoolOrganisation = organisationRepository.findOrganisationByExternalId(externalSchoolId)
             ?.takeIf { it.organisation is School }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
                 it as Organisation<School>
             }
 
-        if (schoolAccount == null) {
+        if (schoolOrganisation == null) {
             val (school, district) = americanSchoolsProvider.fetchSchool(externalSchoolId) ?: null to null
-            schoolAccount = school
+            schoolOrganisation = school
                 ?.copy(district = district?.let { getOrCreateDistrict(district) })
-                ?.let { organisationRepository.save(it) }
+                ?.let {
+                    val organisation = Organisation(
+                        id = OrganisationId.create(),
+                        organisation = it,
+                        accessExpiresOn = null,
+                        accessRuleIds = emptyList(),
+                        type = DealType.STANDARD,
+                        role = null
+                    )
+
+                    organisationRepository.save(organisation)
+                }
         }
 
-        return schoolAccount
+        return schoolOrganisation
     }
 
     private fun getOrCreateDistrict(district: District): Organisation<District>? {
@@ -35,6 +48,15 @@ class OrganisationService(
                 @Suppress("UNCHECKED_CAST")
                 it as Organisation<District>
             }
-            ?: organisationRepository.save(district)
+            ?: organisationRepository.save(
+                Organisation(
+                    id = OrganisationId.create(),
+                    organisation = district,
+                    accessExpiresOn = null,
+                    accessRuleIds = emptyList(),
+                    type = DealType.STANDARD,
+                    role = null
+                )
+            )
     }
 }

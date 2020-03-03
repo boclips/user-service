@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,13 +31,16 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
         val oldExpiryTime = ZonedDateTime.parse("2019-06-06T00:00:00Z")
 
         val district = organisationRepository.save(
-            district = OrganisationDetailsFactory.district(
-                name = "my district",
-                externalId = "123",
-                state = State(id = "FL", name = "Florida")
-            ),
-            accessExpiresOn = oldExpiryTime
+            OrganisationFactory.sample(
+                organisation = OrganisationDetailsFactory.district(
+                    name = "my district",
+                    externalId = "123",
+                    state = State(id = "FL", name = "Florida")
+                ),
+                accessExpiresOn = oldExpiryTime
+            )
         )
+
         val updatedExpiryTime = oldExpiryTime.plusDays(10)
         val updatedExpiryTimeToString = updatedExpiryTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
         val request = UpdateOrganisationRequest(accessExpiresOn = updatedExpiryTimeToString)
@@ -48,7 +52,7 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
     @Test
     fun `Throws an error when organisation to update cannot be found`() {
 
-        assertThrows<OrganisationNotFoundException>{
+        assertThrows<OrganisationNotFoundException> {
             updateOrganisation("non-existent-org", UpdateOrganisationRequest(accessExpiresOn = "2019-06-06T00:00:00Z"))
         }
     }

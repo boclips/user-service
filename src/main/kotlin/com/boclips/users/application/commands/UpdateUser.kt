@@ -8,6 +8,7 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
@@ -22,6 +23,7 @@ import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import mu.KLogging
+import org.bson.types.ObjectId
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.ZonedDateTime
@@ -70,9 +72,14 @@ class UpdateUser(
         user: User
     ): List<UserUpdateCommand> = userUpdatesCommandFactory.buildCommands(updateUserRequest, school) +
         listOfNotNull(
-            takeIf { user.teacherPlatformAttributes?.shareCode == null }?.let { UserUpdateCommand.ReplaceShareCode(generateShareCode()) },
+            takeIf { user.teacherPlatformAttributes?.shareCode == null }?.let {
+                UserUpdateCommand.ReplaceShareCode(
+                    generateShareCode()
+                )
+            },
             takeIf { shouldSetAccessExpiresOn(user) }?.let {
-                val accessExpiry = ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
+                val accessExpiry =
+                    ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
                 UserUpdateCommand.ReplaceAccessExpiresOn(accessExpiresOn = accessExpiry)
             }
         )
@@ -90,12 +97,19 @@ class UpdateUser(
             ?: updateUserRequest.schoolName?.let { schoolName ->
                 findSchoolByName(schoolName, updateUserRequest.country!!)
                     ?: organisationRepository.save(
-                        School(
-                            name = schoolName,
-                            country = Country.fromCode(updateUserRequest.country!!),
-                            state = updateUserRequest.state?.let { State.fromCode(it) },
-                            district = null,
-                            externalId = null
+                        organisation = Organisation(
+                            id = OrganisationId.create(),
+                            organisation = School(
+                                name = schoolName,
+                                country = Country.fromCode(updateUserRequest.country!!),
+                                state = updateUserRequest.state?.let { State.fromCode(it) },
+                                district = null,
+                                externalId = null
+                            ),
+                            accessExpiresOn = null,
+                            accessRuleIds = emptyList(),
+                            type = DealType.STANDARD,
+                            role = null
                         )
                     )
             }

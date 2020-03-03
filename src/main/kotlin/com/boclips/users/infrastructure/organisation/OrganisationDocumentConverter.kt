@@ -1,11 +1,11 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.DealType
+import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.model.organisation.DealType
-import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
@@ -46,12 +46,42 @@ object OrganisationDocumentConverter {
 
         return Organisation(
             id = OrganisationId(organisationDocument.id!!),
-            type = organisationDocument.dealType ?: organisationDocument.parentOrganisation?.dealType ?: DealType.STANDARD,
+            type = organisationDocument.dealType ?: organisationDocument.parentOrganisation?.dealType
+            ?: DealType.STANDARD,
             accessRuleIds = organisationDocument.accessRuleIds.map { AccessRuleId(it) },
             organisation = organisation,
-            accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
+            accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
+            role = organisationDocument.role
         )
     }
+
+    fun toDocument(organisation: Organisation<*>): OrganisationDocument = OrganisationDocument(
+        id = organisation.id.value,
+        dealType = organisation.type,
+        name = organisation.organisation.name,
+        role = organisation.role,
+        accessRuleIds = organisation.accessRuleIds.map { it.value },
+        externalId = when (organisation.organisation) {
+            is School -> organisation.organisation.externalId
+            is District -> organisation.organisation.externalId
+            is ApiIntegration -> null
+        },
+        type = organisation.organisation.type(),
+        country = organisation.organisation.country?.id?.let { LocationDocument(code = it) },
+        state = organisation.organisation.state?.id?.let { LocationDocument(code = it) },
+        postcode = organisation.organisation.postcode,
+        allowsOverridingUserIds = when (organisation.organisation) {
+            is ApiIntegration -> organisation.organisation.allowsOverridingUserIds
+            else -> null
+        },
+        parentOrganisation = when (organisation.organisation) {
+            is School -> organisation.organisation.district?.let {
+                toDocument(organisation = it)
+            }
+            else -> null
+        },
+        accessExpiresOn = organisation.accessExpiresOn?.toInstant()
+    )
 
     private fun mapSchoolDistrict(organisationDocument: OrganisationDocument): Organisation<District>? =
         organisationDocument.parentOrganisation

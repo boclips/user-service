@@ -2,15 +2,15 @@ package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.resources.converters.UserConverter
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -37,7 +37,7 @@ class UserConverterTest {
                 ),
                 organisation = OrganisationFactory.sample(
                     id = OrganisationId("1234"),
-                    organisationDetails = OrganisationDetailsFactory.school(
+                    organisation = OrganisationDetailsFactory.school(
                         name = "My school",
                         state = State.fromCode("NY"),
                         country = Country.fromCode("USA")
@@ -68,7 +68,7 @@ class UserConverterTest {
 
         val organisationAccount = OrganisationFactory.sample(
             id = OrganisationId("1234"),
-            organisationDetails = OrganisationDetailsFactory.school(
+            organisation = OrganisationDetailsFactory.school(
                 name = "My school",
                 state = State.fromCode("NY"),
                 country = Country.fromCode("USA")

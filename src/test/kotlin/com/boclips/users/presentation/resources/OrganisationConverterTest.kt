@@ -1,13 +1,13 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.DealType
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.resources.converters.OrganisationConverter
-import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,7 +20,7 @@ class OrganisationConverterTest {
             id = OrganisationId("organisation-account-id"),
             accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
             accessRuleIds = listOf(AccessRuleId("123")),
-            organisationDetails = OrganisationDetailsFactory.district(name = "my-district", state = State.fromCode("NY")),
+            organisation = OrganisationDetailsFactory.district(name = "my-district", state = State.fromCode("NY")),
             type = DealType.DESIGN_PARTNER
         )
         val accountResource = OrganisationConverter(

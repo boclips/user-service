@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
@@ -85,5 +86,14 @@ class OrganisationDocumentConverterTest {
         assertThat(school.type).isEqualTo(DealType.DESIGN_PARTNER)
         assertThat((school.organisation as School).district?.type).isEqualTo(DealType.DESIGN_PARTNER)
         assertThat((school.organisation as School).district?.accessExpiresOn).isEqualTo(accessExpiresOn)
+    }
+
+    @Test
+    fun `symmetrical conversion`() {
+        val organisation = OrganisationFactory.school()
+        val organisationDocument = OrganisationDocumentConverter.toDocument(organisation)
+        val convertedOrganisation =
+            OrganisationDocumentConverter.fromDocument(organisationDocument = organisationDocument)
+        assertThat(organisation).isEqualTo(convertedOrganisation)
     }
 }

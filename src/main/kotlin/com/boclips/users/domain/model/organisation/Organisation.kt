@@ -10,7 +10,8 @@ data class Organisation<T: OrganisationDetails>(
     val type: DealType,
     val accessRuleIds: List<AccessRuleId>,
     val accessExpiresOn: ZonedDateTime?,
-    val organisation: T
+    val organisation: T,
+    val role: String?
 )
 
 enum class DealType {

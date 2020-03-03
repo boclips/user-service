@@ -15,19 +15,39 @@ import java.time.ZonedDateTime
 
 class OrganisationFactory {
     companion object {
-        fun sample(
+        fun <T : OrganisationDetails> sample(
             id: OrganisationId = OrganisationId(value = ObjectId().toHexString()),
             type: DealType = DealType.STANDARD,
-            accessRuleIds: List<AccessRuleId> = emptyList(),
-            organisationDetails: OrganisationDetails = OrganisationDetailsFactory.school(),
-            accessExpiresOn: ZonedDateTime? = null
-        ): Organisation<*> {
+            accessRuleIds: List<AccessRuleId> = emptyList<AccessRuleId>(),
+            organisation: T,
+            accessExpiresOn: ZonedDateTime? = null,
+            role: String? = "SAMPLE_ROLE"
+        ): Organisation<T> {
             return Organisation(
                 id = id,
                 type = type,
                 accessRuleIds = accessRuleIds,
-                organisation = organisationDetails,
-                accessExpiresOn = accessExpiresOn
+                organisation = organisation,
+                accessExpiresOn = accessExpiresOn,
+                role = role
+            )
+        }
+
+        fun school(
+            id: OrganisationId = OrganisationId(value = ObjectId().toHexString()),
+            type: DealType = DealType.STANDARD,
+            accessRuleIds: List<AccessRuleId> = emptyList<AccessRuleId>(),
+            school: School = OrganisationDetailsFactory.school(),
+            accessExpiresOn: ZonedDateTime? = null,
+            role: String? = "SAMPLE_ROLE"
+        ): Organisation<School> {
+            return Organisation(
+                id = id,
+                type = type,
+                accessRuleIds = accessRuleIds,
+                organisation = school,
+                accessExpiresOn = accessExpiresOn,
+                role = role
             )
         }
     }
@@ -43,7 +63,7 @@ class OrganisationDetailsFactory {
             postCode: String? = null,
             state: State = State.fromCode("IL"),
             district: Organisation<District>? = null
-            ): School {
+        ): School {
             return School(
                 name = name,
                 externalId = externalId,

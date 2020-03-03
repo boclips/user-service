@@ -95,7 +95,7 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `converts organisation change to a command`() {
-        val organisation = OrganisationFactory.sample()
+        val organisation = OrganisationFactory.school()
         val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(), organisation)
 
         assertThat(commands).hasSize(1)

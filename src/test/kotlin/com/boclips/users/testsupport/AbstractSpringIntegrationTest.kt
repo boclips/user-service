@@ -27,6 +27,7 @@ import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccessRuleConverter
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.nhaarman.mockitokotlin2.any
@@ -202,9 +203,11 @@ abstract class AbstractSpringIntegrationTest {
         organisation: ApiIntegration = OrganisationDetailsFactory.apiIntegration(allowsOverridingUserIds = false)
     ): com.boclips.users.domain.model.organisation.Organisation<ApiIntegration> {
         return organisationRepository.save(
-            apiIntegration = organisation,
-            accessRuleIds = accessRuleIds,
-            role = role
+            OrganisationFactory.sample(
+                organisation = organisation,
+                accessRuleIds = accessRuleIds,
+                role = role
+            )
         )
     }
 
@@ -212,17 +215,22 @@ abstract class AbstractSpringIntegrationTest {
         district: District = OrganisationDetailsFactory.district()
     ): com.boclips.users.domain.model.organisation.Organisation<District> {
         return organisationRepository.save(
-            district = district
+            OrganisationFactory.sample(
+                organisation = district
+            )
         )
     }
 
     fun saveSchool(
         school: School = OrganisationDetailsFactory.school()
     ): com.boclips.users.domain.model.organisation.Organisation<School> {
-        return organisationRepository.save(school = school)
+        return organisationRepository.save(OrganisationFactory.sample(organisation = school))
     }
 
-    fun saveSelectedCollectionsAccessRule(name: String, collectionIds: List<CollectionId>): AccessRule.SelectedCollections {
+    fun saveSelectedCollectionsAccessRule(
+        name: String,
+        collectionIds: List<CollectionId>
+    ): AccessRule.SelectedCollections {
         return selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(name, collectionIds)
     }
 

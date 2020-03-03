@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -12,21 +13,27 @@ class SchoolControllerTest : AbstractSpringIntegrationTest() {
     @Test
     fun `lists schools when given only query and country - outside USA schools`() {
         val school = organisationRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "my school 1",
-                countryName = "GBR"
+            OrganisationFactory.sample(
+                organisation = OrganisationDetailsFactory.school(
+                    name = "my school 1",
+                    countryName = "GBR"
+                )
             )
         )
         organisationRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "my school 2",
-                countryName = "POL"
+            OrganisationFactory.sample(
+                organisation = OrganisationDetailsFactory.school(
+                    name = "my school 2",
+                    countryName = "POL"
+                )
             )
         )
         organisationRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "something else",
-                countryName = "GBR"
+            OrganisationFactory.sample(
+                organisation = OrganisationDetailsFactory.school(
+                    name = "something else",
+                    countryName = "GBR"
+                )
             )
         )
 

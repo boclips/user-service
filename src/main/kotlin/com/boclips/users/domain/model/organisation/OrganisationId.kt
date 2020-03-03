@@ -1,3 +1,9 @@
 package com.boclips.users.domain.model.organisation
 
-data class OrganisationId(val value: String)
+import org.bson.types.ObjectId
+
+data class OrganisationId(val value: String) {
+    companion object {
+        fun create(): OrganisationId = OrganisationId(ObjectId.get().toHexString())
+    }
+}

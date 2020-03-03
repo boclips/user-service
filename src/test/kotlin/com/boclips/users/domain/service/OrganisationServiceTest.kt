@@ -2,16 +2,20 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class OrganisationServiceTest: AbstractSpringIntegrationTest() {
+class OrganisationServiceTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `when school and district already exists delegates on DB`() {
-        val district = organisationRepository.save(OrganisationDetailsFactory.district())
+        val district = organisationRepository.save(
+            OrganisationFactory.sample(organisation = OrganisationDetailsFactory.district())
+        )
+
         val originalSchool = OrganisationDetailsFactory.school(externalId = "external-school-id", district = district)
-        organisationRepository.save(originalSchool)
+        organisationRepository.save(OrganisationFactory.sample(organisation = originalSchool))
 
         val school = organisationService.findOrCreateSchooldiggerSchool("external-school-id")
 
@@ -22,10 +26,10 @@ class OrganisationServiceTest: AbstractSpringIntegrationTest() {
     @Test
     fun `existing district new school searches them first time only and links both`() {
         val district = OrganisationDetailsFactory.district(externalId = "external-district-id")
-        val districtAccount = organisationRepository.save(district)
+        val districtAccount = organisationRepository.save(OrganisationFactory.sample(organisation = district))
         val expectedSchool = OrganisationDetailsFactory.school(
-                externalId = "external-school-id",
-                district = districtAccount
+            externalId = "external-school-id",
+            district = districtAccount
         )
         fakeAmericanSchoolsProvider.createSchoolAndDistrict(expectedSchool.copy(district = null) to district)
 

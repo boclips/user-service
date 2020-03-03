@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,21 +16,27 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `when school is not from USA`() {
         organisationRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "school 1",
-                country = Country.fromCode("GBR")
+            OrganisationFactory.sample(
+                organisation = OrganisationDetailsFactory.school(
+                    name = "school 1",
+                    country = Country.fromCode("GBR")
+                )
             )
         )
         organisationRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "school 2",
-                country = Country.fromCode("HUN")
+            OrganisationFactory.sample(
+                organisation = OrganisationDetailsFactory.school(
+                    name = "school 2",
+                    country = Country.fromCode("HUN")
+                )
             )
         )
         organisationRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "another one",
-                country = Country.fromCode("GBR")
+            OrganisationFactory.sample(
+                organisation = OrganisationDetailsFactory.school(
+                    name = "another one",
+                    country = Country.fromCode("GBR")
+                )
             )
         )
 
@@ -42,9 +49,11 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `when school is from the USA fetches them from external API only`() {
         organisationRepository.save(
-            school = OrganisationDetailsFactory.school(
-                name = "school 1",
-                country = Country.fromCode("USA")
+            OrganisationFactory.sample(
+                organisation = OrganisationDetailsFactory.school(
+                    name = "school 1",
+                    country = Country.fromCode("USA")
+                )
             )
         )
         fakeAmericanSchoolsProvider.createLookupEntries(
