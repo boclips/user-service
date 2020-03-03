@@ -33,6 +33,7 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.POST, "/v1/users/sync").hasRole(UserRoles.SYNCHRONIZE_USERS_HUBSPOT)
             .antMatchers(HttpMethod.POST, "/v1/users/sync-identities").hasRole(UserRoles.SYNCHRONIZE_USERS_KEYCLOAK)
             .antMatchers(HttpMethod.GET, "/v1/users/*/access-rules").hasRole(UserRoles.VIEW_ACCESS_RULES)
+            .antMatchers(HttpMethod.GET, "/v1/users/*/content-package").hasRole(UserRoles.VIEW_CONTENT_PACKAGES)
             .antMatchers(HttpMethod.GET, "/v1/users/*/shareCode/*").permitAll()
 
             .antMatchers(HttpMethod.POST, "/v1/access-rules").hasRole(UserRoles.INSERT_ACCESS_RULES)
@@ -52,6 +53,8 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.GET, "/v1/organisations").hasRole(UserRoles.VIEW_ORGANISATIONS)
             .antMatchers(HttpMethod.GET, "/v1/organisations/*").hasRole(UserRoles.VIEW_ORGANISATIONS)
             .antMatchers(HttpMethod.PUT, "/v1/organisations/*").hasRole(UserRoles.UPDATE_ORGANISATIONS)
+
+            .antMatchers(HttpMethod.GET, "/v1/content-packages/*").hasRole(UserRoles.VIEW_CONTENT_PACKAGES)
 
             .anyRequest().authenticated()
     }

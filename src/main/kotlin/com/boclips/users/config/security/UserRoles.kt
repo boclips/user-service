@@ -9,6 +9,8 @@ object UserRoles {
     const val VIEW_ACCESS_RULES = "VIEW_ACCESS_RULES"
     const val UPDATE_ACCESS_RULES = "UPDATE_ACCESS_RULES"
 
+    const val VIEW_CONTENT_PACKAGES = "VIEW_CONTENT_PACKAGES"
+
     const val VIEW_USERS = "VIEW_USERS"
     const val UPDATE_USERS = "UPDATE_USERS"
 

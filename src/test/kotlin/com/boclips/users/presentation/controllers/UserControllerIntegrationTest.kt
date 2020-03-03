@@ -724,6 +724,14 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class ContentPackages {
         @Test
+        fun `returns forbidden status when lacking correct role`() {
+            mvc.perform(
+                get("/v1/users/user-123/content-package").asUserWithRoles("bad-user")
+            ).andExpect(status().isForbidden)
+        }
+
+
+        @Test
         fun `can get the content package assigned to a user`() {
             val collectionsAccessRuleName = "Test collections contract"
             val collectionId = "test-collection-id"
@@ -760,7 +768,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             mvc.perform(
                 get("/v1/users/${user.id.value}/content-package").asUserWithRoles(
                     user.id.value,
-                    UserRoles.VIEW_ACCESS_RULES
+                    UserRoles.VIEW_CONTENT_PACKAGES
                 )
             )
                 .andDo(MockMvcResultHandlers.print())
