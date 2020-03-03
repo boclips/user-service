@@ -38,8 +38,8 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(retrievedOrganisation.id).isNotNull
         assertThat(retrievedOrganisation.type).isEqualTo(DealType.STANDARD)
-        assertThat(retrievedOrganisation.organisation.name).isEqualTo(organisationName)
-        assertThat(retrievedOrganisation.organisation.allowsOverridingUserIds).isTrue()
+        assertThat(retrievedOrganisation.details.name).isEqualTo(organisationName)
+        assertThat(retrievedOrganisation.details.allowsOverridingUserIds).isTrue()
     }
 
     @Test
@@ -59,10 +59,10 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(fetchedSchool?.id).isNotNull
         assertThat(fetchedSchool?.type).isEqualTo(DealType.STANDARD)
-        assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
-        assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
-        assertThat(fetchedSchool?.organisation?.district?.type).isEqualTo(DealType.STANDARD)
-        assertThat(fetchedSchool?.organisation?.district?.organisation?.name).isEqualTo("good stuff")
+        assertThat(fetchedSchool?.details?.postcode).isEqualTo("12345")
+        assertThat(fetchedSchool?.details?.district?.details?.name).isEqualTo("good stuff")
+        assertThat(fetchedSchool?.details?.district?.type).isEqualTo(DealType.STANDARD)
+        assertThat(fetchedSchool?.details?.district?.details?.name).isEqualTo("good stuff")
     }
 
     @Test
@@ -78,7 +78,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(fetchedSchool?.id).isNotNull
         assertThat(fetchedSchool?.type).isEqualTo(DealType.STANDARD)
-        assertThat(fetchedSchool?.organisation?.postcode).isEqualTo("12345")
+        assertThat(fetchedSchool?.details?.postcode).isEqualTo("12345")
         assertThat(fetchedSchool?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 
@@ -101,8 +101,8 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(fetchedSchoolAccount?.id).isNotNull
         assertThat(fetchedSchoolAccount?.type).isEqualTo(DealType.STANDARD)
-        assertThat(fetchedSchoolAccount?.organisation?.postcode).isEqualTo("12345")
-        assertThat(fetchedSchoolAccount?.organisation?.district?.accessExpiresOn).isEqualTo(accessExpiresOn)
+        assertThat(fetchedSchoolAccount?.details?.postcode).isEqualTo("12345")
+        assertThat(fetchedSchoolAccount?.details?.district?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 
     @Test

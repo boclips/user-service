@@ -218,13 +218,13 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val updatedUser = updateUser(
                 userId,
                 UpdateUserRequestFactory.sample(
-                    schoolName = school.organisation.name,
+                    schoolName = school.details.name,
                     country = "ESP"
                 )
             )
 
             val newSchool =
-                organisationRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "ESP")
+                organisationRepository.lookupSchools(schoolName = school.details.name, countryCode = "ESP")
             assertThat(newSchool).hasSize(1)
             assertThat(updatedUser.organisationId?.value).isEqualTo(newSchool.first().id)
         }
@@ -258,12 +258,12 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 userId,
                 UpdateUserRequestFactory.sample(
                     country = "USA",
-                    schoolId = school.organisation.externalId
+                    schoolId = school.details.externalId
                 )
             )
 
             val newSchools =
-                organisationRepository.lookupSchools(schoolName = school.organisation.name, countryCode = "USA")
+                organisationRepository.lookupSchools(schoolName = school.details.name, countryCode = "USA")
             assertThat(newSchools).hasSize(1)
             assertThat(updatedUser.organisationId?.value).isEqualTo(newSchools.first().id)
         }
@@ -301,9 +301,9 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             val organisationAccount =
                 organisationRepository.findSchoolById(updatedUser.organisationId!!)!!
-            assertThat(organisationAccount.organisation.country.isUSA()).isEqualTo(true)
-            assertThat(organisationAccount.organisation.state!!.id).isEqualTo("AZ")
-            assertThat(organisationAccount.organisation.externalId).isNull()
+            assertThat(organisationAccount.details.country.isUSA()).isEqualTo(true)
+            assertThat(organisationAccount.details.state!!.id).isEqualTo("AZ")
+            assertThat(organisationAccount.details.externalId).isNull()
         }
     }
 

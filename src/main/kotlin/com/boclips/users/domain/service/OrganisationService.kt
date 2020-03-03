@@ -14,7 +14,7 @@ class OrganisationService(
 ) {
     fun findOrCreateSchooldiggerSchool(externalSchoolId: String): Organisation<School>? {
         var schoolOrganisation = organisationRepository.findOrganisationByExternalId(externalSchoolId)
-            ?.takeIf { it.organisation is School }
+            ?.takeIf { it.details is School }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
                 it as Organisation<School>
@@ -27,7 +27,7 @@ class OrganisationService(
                 ?.let {
                     val organisation = Organisation(
                         id = OrganisationId.create(),
-                        organisation = it,
+                        details = it,
                         accessExpiresOn = null,
                         accessRuleIds = emptyList(),
                         type = DealType.STANDARD,
@@ -43,7 +43,7 @@ class OrganisationService(
 
     private fun getOrCreateDistrict(district: District): Organisation<District>? {
         return organisationRepository.findOrganisationByExternalId(district.externalId)
-            ?.takeIf { it.organisation is District }
+            ?.takeIf { it.details is District }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
                 it as Organisation<District>
@@ -51,7 +51,7 @@ class OrganisationService(
             ?: organisationRepository.save(
                 Organisation(
                     id = OrganisationId.create(),
-                    organisation = district,
+                    details = district,
                     accessExpiresOn = null,
                     accessRuleIds = emptyList(),
                     type = DealType.STANDARD,

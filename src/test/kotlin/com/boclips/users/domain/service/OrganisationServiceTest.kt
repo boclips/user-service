@@ -19,7 +19,7 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
 
         val school = organisationService.findOrCreateSchooldiggerSchool("external-school-id")
 
-        assertThat(school?.organisation).isEqualTo(originalSchool)
+        assertThat(school?.details).isEqualTo(originalSchool)
         assertThat(fakeAmericanSchoolsProvider.callCount()).isEqualTo(0)
     }
 
@@ -36,8 +36,8 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
         val schoolAccount = organisationService.findOrCreateSchooldiggerSchool("external-school-id")!!
 
         assertThat(schoolAccount).isEqualTo(organisationService.findOrCreateSchooldiggerSchool("external-school-id"))
-        assertThat(schoolAccount.organisation).isEqualTo(expectedSchool)
-        assertThat(schoolAccount.organisation.district).isEqualTo(districtAccount)
+        assertThat(schoolAccount.details).isEqualTo(expectedSchool)
+        assertThat(schoolAccount.details.district).isEqualTo(districtAccount)
         assertThat(fakeAmericanSchoolsProvider.callCount()).isEqualTo(1)
     }
 
@@ -50,8 +50,8 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
         val schoolAccount = organisationService.findOrCreateSchooldiggerSchool("external-school-id")!!
 
         assertThat(schoolAccount).isEqualTo(organisationService.findOrCreateSchooldiggerSchool("external-school-id"))
-        assertThat(schoolAccount.organisation.externalId).isEqualTo("external-school-id")
-        assertThat(schoolAccount.organisation.district?.organisation).isEqualTo(district)
+        assertThat(schoolAccount.details.externalId).isEqualTo("external-school-id")
+        assertThat(schoolAccount.details.district?.details).isEqualTo(district)
         assertThat(fakeAmericanSchoolsProvider.callCount()).isEqualTo(1)
     }
 

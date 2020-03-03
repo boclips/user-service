@@ -49,7 +49,7 @@ object OrganisationDocumentConverter {
             type = organisationDocument.dealType ?: organisationDocument.parentOrganisation?.dealType
             ?: DealType.STANDARD,
             accessRuleIds = organisationDocument.accessRuleIds.map { AccessRuleId(it) },
-            organisation = organisation,
+            details = organisation,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
             role = organisationDocument.role
         )
@@ -58,24 +58,24 @@ object OrganisationDocumentConverter {
     fun toDocument(organisation: Organisation<*>): OrganisationDocument = OrganisationDocument(
         id = organisation.id.value,
         dealType = organisation.type,
-        name = organisation.organisation.name,
+        name = organisation.details.name,
         role = organisation.role,
         accessRuleIds = organisation.accessRuleIds.map { it.value },
-        externalId = when (organisation.organisation) {
-            is School -> organisation.organisation.externalId
-            is District -> organisation.organisation.externalId
+        externalId = when (organisation.details) {
+            is School -> organisation.details.externalId
+            is District -> organisation.details.externalId
             is ApiIntegration -> null
         },
-        type = organisation.organisation.type(),
-        country = organisation.organisation.country?.id?.let { LocationDocument(code = it) },
-        state = organisation.organisation.state?.id?.let { LocationDocument(code = it) },
-        postcode = organisation.organisation.postcode,
-        allowsOverridingUserIds = when (organisation.organisation) {
-            is ApiIntegration -> organisation.organisation.allowsOverridingUserIds
+        type = organisation.details.type(),
+        country = organisation.details.country?.id?.let { LocationDocument(code = it) },
+        state = organisation.details.state?.id?.let { LocationDocument(code = it) },
+        postcode = organisation.details.postcode,
+        allowsOverridingUserIds = when (organisation.details) {
+            is ApiIntegration -> organisation.details.allowsOverridingUserIds
             else -> null
         },
-        parentOrganisation = when (organisation.organisation) {
-            is School -> organisation.organisation.district?.let {
+        parentOrganisation = when (organisation.details) {
+            is School -> organisation.details.district?.let {
                 toDocument(organisation = it)
             }
             else -> null
@@ -86,7 +86,7 @@ object OrganisationDocumentConverter {
     private fun mapSchoolDistrict(organisationDocument: OrganisationDocument): Organisation<District>? =
         organisationDocument.parentOrganisation
             ?.let { fromDocument(it) }
-            ?.takeIf { it.organisation is District }
+            ?.takeIf { it.details is District }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
                 it as Organisation<District>

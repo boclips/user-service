@@ -16,7 +16,7 @@ class AccessService(val organisationRepository: OrganisationRepository) {
 
         val organisationAccessExpiry =
             organisation?.let {
-                it.organisation.district?.accessExpiresOn ?: it.accessExpiresOn
+                it.details.district?.accessExpiresOn ?: it.accessExpiresOn
             }
 
         val accessExpiresOn = getLatestDate(userAccessExpiry, organisationAccessExpiry)

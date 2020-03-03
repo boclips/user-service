@@ -71,7 +71,7 @@ class MongoOrganisationRepository(
 
     override fun findSchoolById(id: OrganisationId): Organisation<School>? {
         return findOrganisationById(id)
-            ?.takeIf { it.organisation is School }
+            ?.takeIf { it.details is School }
             ?.let {
                 @Suppress("UNCHECKED_CAST")
                 it as Organisation<School>

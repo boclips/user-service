@@ -19,7 +19,7 @@ class CreateApiIntegration(
 
         val organisation = Organisation(
             id = OrganisationId.create(),
-            organisation = ApiIntegration(
+            details = ApiIntegration(
                 name = request.name ?: throw IllegalStateException("Name cannot be null")
             ),
             type = DealType.STANDARD,

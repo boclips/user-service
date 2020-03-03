@@ -14,7 +14,7 @@ class OrganisationConverter(private val organisationLinkBuilder: OrganisationLin
                 id = organisation.id.value,
                 accessRuleIds = organisation.accessRuleIds.map { it.value },
                 accessExpiresOn = organisation.accessExpiresOn,
-                organisationDetails = OrganisationDetailsConverter().toResource(organisation.organisation)
+                organisationDetails = OrganisationDetailsConverter().toResource(organisation.details)
             ),
             listOfNotNull(
                 organisationLinkBuilder.self(organisation.id),

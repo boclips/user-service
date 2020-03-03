@@ -30,9 +30,9 @@ class OrganisationDocumentConverterTest {
         assertThat(organisationAccount.id.value).isEqualTo(organisationDocument.id!!)
         assertThat(organisationAccount.type).isEqualTo(DealType.STANDARD)
         assertThat(organisationAccount.accessRuleIds).containsExactly(AccessRuleId("A"), AccessRuleId("B"))
-        assertThat(organisationAccount.organisation).isInstanceOf(School::class.java)
+        assertThat(organisationAccount.details).isInstanceOf(School::class.java)
 
-        val independentSchool = organisationAccount.organisation as School
+        val independentSchool = organisationAccount.details as School
         assertThat(independentSchool.name).isEqualTo("amazing school")
         assertThat(independentSchool.country.id).isEqualTo(organisationDocument.country?.code)
         assertThat(independentSchool.state?.id).isEqualTo(organisationDocument.state?.code)
@@ -62,9 +62,9 @@ class OrganisationDocumentConverterTest {
         val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
         assertThat(school.type).isEqualTo(DealType.STANDARD)
-        assertThat(school.organisation).isInstanceOf(School::class.java)
-        assertThat((school.organisation as School).district?.type).isEqualTo(DealType.STANDARD)
-        assertThat((school.organisation as School).district?.organisation).isInstanceOf(District::class.java)
+        assertThat(school.details).isInstanceOf(School::class.java)
+        assertThat((school.details as School).district?.type).isEqualTo(DealType.STANDARD)
+        assertThat((school.details as School).district?.details).isInstanceOf(District::class.java)
     }
 
     @Test
@@ -84,8 +84,8 @@ class OrganisationDocumentConverterTest {
         val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
         assertThat(school.type).isEqualTo(DealType.DESIGN_PARTNER)
-        assertThat((school.organisation as School).district?.type).isEqualTo(DealType.DESIGN_PARTNER)
-        assertThat((school.organisation as School).district?.accessExpiresOn).isEqualTo(accessExpiresOn)
+        assertThat((school.details as School).district?.type).isEqualTo(DealType.DESIGN_PARTNER)
+        assertThat((school.details as School).district?.accessExpiresOn).isEqualTo(accessExpiresOn)
     }
 
     @Test

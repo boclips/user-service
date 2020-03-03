@@ -94,10 +94,10 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisations).hasSize(2)
         assertThat(organisations.totalElements).isEqualTo(2)
-        assertThat(organisations.content[0].organisation.name).isEqualTo("floridistrict")
-        assertThat(organisations.content[0].organisation.country).isEqualTo(Country.usa())
-        assertThat(organisations.content[1].organisation.name).isEqualTo("oregon-isation")
-        assertThat(organisations.content[1].organisation.country).isEqualTo(Country.usa())
+        assertThat(organisations.content[0].details.name).isEqualTo("floridistrict")
+        assertThat(organisations.content[0].details.country).isEqualTo(Country.usa())
+        assertThat(organisations.content[1].details.name).isEqualTo("oregon-isation")
+        assertThat(organisations.content[1].details.country).isEqualTo(Country.usa())
     }
 
     @Test
@@ -136,8 +136,8 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisations).hasSize(3)
         assertThat(organisations.totalElements).isEqualTo(3)
-        assertThat(organisations.content[0].organisation.name).isEqualTo("floridistrict")
-        assertThat(organisations.content[1].organisation.name).isEqualTo("gb skool")
-        assertThat(organisations.content[2].organisation.name).isEqualTo("oregon-isation")
+        assertThat(organisations.content[0].details.name).isEqualTo("floridistrict")
+        assertThat(organisations.content[1].details.name).isEqualTo("gb skool")
+        assertThat(organisations.content[2].details.name).isEqualTo("oregon-isation")
     }
 }

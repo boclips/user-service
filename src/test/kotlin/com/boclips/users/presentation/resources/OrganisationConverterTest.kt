@@ -29,10 +29,10 @@ class OrganisationConverterTest {
 
         assertThat(accountResource.content!!.id).isEqualTo(originalAccount.id.value)
         assertThat(accountResource.content!!.accessExpiresOn).isEqualTo(originalAccount.accessExpiresOn)
-        assertThat(accountResource.content!!.organisationDetails.name).isEqualTo(originalAccount.organisation.name)
-        assertThat(accountResource.content!!.organisationDetails.country?.name).isEqualTo(originalAccount.organisation.country?.name)
-        assertThat(accountResource.content!!.organisationDetails.state?.name).isEqualTo(originalAccount.organisation.state?.name)
-        assertThat(accountResource.content!!.organisationDetails.type).isEqualTo(originalAccount.organisation.type().toString())
+        assertThat(accountResource.content!!.organisationDetails.name).isEqualTo(originalAccount.details.name)
+        assertThat(accountResource.content!!.organisationDetails.country?.name).isEqualTo(originalAccount.details.country?.name)
+        assertThat(accountResource.content!!.organisationDetails.state?.name).isEqualTo(originalAccount.details.state?.name)
+        assertThat(accountResource.content!!.organisationDetails.type).isEqualTo(originalAccount.details.type().toString())
         assertThat(accountResource.links.map { it.rel.value() })
             .containsExactlyInAnyOrder("self", "edit")
     }

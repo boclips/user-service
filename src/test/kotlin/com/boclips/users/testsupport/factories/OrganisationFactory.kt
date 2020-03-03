@@ -27,7 +27,7 @@ class OrganisationFactory {
                 id = id,
                 type = type,
                 accessRuleIds = accessRuleIds,
-                organisation = organisation,
+                details = organisation,
                 accessExpiresOn = accessExpiresOn,
                 role = role
             )
@@ -45,7 +45,7 @@ class OrganisationFactory {
                 id = id,
                 type = type,
                 accessRuleIds = accessRuleIds,
-                organisation = school,
+                details = school,
                 accessExpiresOn = accessExpiresOn,
                 role = role
             )

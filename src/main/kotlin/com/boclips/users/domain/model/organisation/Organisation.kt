@@ -10,7 +10,7 @@ data class Organisation<T: OrganisationDetails>(
     val type: DealType,
     val accessRuleIds: List<AccessRuleId>,
     val accessExpiresOn: ZonedDateTime?,
-    val organisation: T,
+    val details: T,
     val role: String?
 )
 

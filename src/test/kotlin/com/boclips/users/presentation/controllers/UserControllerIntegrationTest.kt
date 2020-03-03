@@ -569,11 +569,11 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.organisationAccountId").exists())
-                .andExpect(jsonPath("$.organisation.name", equalTo(organisationAccount.organisation.name)))
+                .andExpect(jsonPath("$.organisation.name", equalTo(organisationAccount.details.name)))
                 .andExpect(
                     jsonPath(
                         "$.organisation.allowsOverridingUserIds",
-                        equalTo(organisationAccount.organisation.allowsOverridingUserIds)
+                        equalTo(organisationAccount.details.allowsOverridingUserIds)
                     )
                 )
                 .andExpect(jsonPath("$._links.self.href", endsWith("users/${user.id.value}")))

@@ -51,11 +51,11 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(userResource.analyticsId!!).isEqualTo("123")
         assertThat(userResource.email).isEqualTo("jane@doe.com")
         assertThat(userResource.organisationAccountId).isEqualTo(school.id.value)
-        assertThat(userResource.organisation!!.name).isEqualTo(school.organisation.name)
-        assertThat(userResource.organisation!!.state!!.name).isEqualTo(school.organisation.state!!.name)
-        assertThat(userResource.organisation!!.state!!.id).isEqualTo(school.organisation.state!!.id)
-        assertThat(userResource.organisation!!.country!!.name).isEqualTo(school.organisation.country.name)
-        assertThat(userResource.organisation!!.country!!.id).isEqualTo(school.organisation.country.id)
+        assertThat(userResource.organisation!!.name).isEqualTo(school.details.name)
+        assertThat(userResource.organisation!!.state!!.name).isEqualTo(school.details.state!!.name)
+        assertThat(userResource.organisation!!.state!!.id).isEqualTo(school.details.state!!.id)
+        assertThat(userResource.organisation!!.country!!.name).isEqualTo(school.details.country.name)
+        assertThat(userResource.organisation!!.country!!.id).isEqualTo(school.details.country.id)
     }
 
     @Test

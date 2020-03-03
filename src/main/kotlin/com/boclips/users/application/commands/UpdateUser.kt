@@ -23,7 +23,6 @@ import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import mu.KLogging
-import org.bson.types.ObjectId
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.ZonedDateTime
@@ -99,7 +98,7 @@ class UpdateUser(
                     ?: organisationRepository.save(
                         organisation = Organisation(
                             id = OrganisationId.create(),
-                            organisation = School(
+                            details = School(
                                 name = schoolName,
                                 country = Country.fromCode(updateUserRequest.country!!),
                                 state = updateUserRequest.state?.let { State.fromCode(it) },

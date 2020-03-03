@@ -121,13 +121,13 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(
                     jsonPath(
                         "$._embedded.organisations[0].organisationDetails.name",
-                        equalTo(district.organisation.name)
+                        equalTo(district.details.name)
                     )
                 )
                 .andExpect(
                     jsonPath(
                         "$._embedded.organisations[1].organisationDetails.name",
-                        equalTo(school.organisation.name)
+                        equalTo(school.details.name)
                     )
                 )
         }
