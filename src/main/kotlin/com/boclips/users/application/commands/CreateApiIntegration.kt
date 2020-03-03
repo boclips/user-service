@@ -26,7 +26,8 @@ class CreateApiIntegration(
             accessRuleIds = request.accessRuleIds?.map { AccessRuleId(it) }
                 ?: throw IllegalStateException("Access rules cannot be null"),
             role = request.role,
-            accessExpiresOn = null
+            accessExpiresOn = null,
+            contentPackageId = null
         )
 
         return repository.save(organisation)

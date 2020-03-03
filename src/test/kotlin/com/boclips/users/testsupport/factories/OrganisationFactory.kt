@@ -1,6 +1,7 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
@@ -21,7 +22,8 @@ class OrganisationFactory {
             accessRuleIds: List<AccessRuleId> = emptyList<AccessRuleId>(),
             organisation: T,
             accessExpiresOn: ZonedDateTime? = null,
-            role: String? = "SAMPLE_ROLE"
+            role: String? = "SAMPLE_ROLE",
+            contentPackageId: ContentPackageId? = null
         ): Organisation<T> {
             return Organisation(
                 id = id,
@@ -29,7 +31,8 @@ class OrganisationFactory {
                 accessRuleIds = accessRuleIds,
                 details = organisation,
                 accessExpiresOn = accessExpiresOn,
-                role = role
+                role = role,
+                contentPackageId = contentPackageId
             )
         }
 

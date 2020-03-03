@@ -12,11 +12,15 @@ import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.ContentPackage
+import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.AccessService
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.AccessRuleRepository
+import com.boclips.users.domain.service.ContentPackageRepository
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SelectedContentAccessRuleRepository
@@ -25,6 +29,7 @@ import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
+import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccessRuleConverter
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -75,6 +80,9 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var organisationRepository: OrganisationRepository
 
     @Autowired
+    lateinit var contentPackageRepository: ContentPackageRepository
+
+    @Autowired
     lateinit var keycloakClientFake: KeycloakClientFake
 
     @Autowired
@@ -112,6 +120,9 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var accessRuleLinkBuilder: AccessRuleLinkBuilder
+
+    @Autowired
+    lateinit var contentPackageLinkBuilder: ContentPackageLinkBuilder
 
     @Autowired
     lateinit var addCollectionToAccessRule: AddCollectionToAccessRule
@@ -166,7 +177,7 @@ abstract class AbstractSpringIntegrationTest {
         organisationName: String = "Boclips for Teachers",
         accessRuleIds: List<AccessRule> = emptyList(),
         allowsOverridingUserIds: Boolean = false
-    ): com.boclips.users.domain.model.organisation.Organisation<*> {
+    ): Organisation<*> {
         val organisationAccessRules = mutableListOf<AccessRule>()
         accessRuleIds.map {
             when (it) {
@@ -197,23 +208,31 @@ abstract class AbstractSpringIntegrationTest {
             accessRuleIds = organisationAccessRules.map { it.id })
     }
 
+    fun saveContentPackage(
+        contentPackage: ContentPackage
+    ) {
+        contentPackageRepository.save(contentPackage)
+    }
+
     fun saveApiIntegration(
         accessRuleIds: List<AccessRuleId> = emptyList(),
+        contentPackageId: ContentPackageId? = null,
         role: String = "ROLE_VIEWSONIC",
         organisation: ApiIntegration = OrganisationDetailsFactory.apiIntegration(allowsOverridingUserIds = false)
-    ): com.boclips.users.domain.model.organisation.Organisation<ApiIntegration> {
+    ): Organisation<ApiIntegration> {
         return organisationRepository.save(
             OrganisationFactory.sample(
                 organisation = organisation,
                 accessRuleIds = accessRuleIds,
-                role = role
+                role = role,
+                contentPackageId = contentPackageId
             )
         )
     }
 
     fun saveDistrict(
         district: District = OrganisationDetailsFactory.district()
-    ): com.boclips.users.domain.model.organisation.Organisation<District> {
+    ): Organisation<District> {
         return organisationRepository.save(
             OrganisationFactory.sample(
                 organisation = district
@@ -223,7 +242,7 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveSchool(
         school: School = OrganisationDetailsFactory.school()
-    ): com.boclips.users.domain.model.organisation.Organisation<School> {
+    ): Organisation<School> {
         return organisationRepository.save(OrganisationFactory.sample(organisation = school))
     }
 

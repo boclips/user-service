@@ -25,7 +25,8 @@ data class OrganisationDocument(
         val allowsOverridingUserIds: Boolean?,
         @DBRef
         val parentOrganisation: OrganisationDocument? = null,
-        val accessExpiresOn: Instant? = null
+        val accessExpiresOn: Instant? = null,
+        val contentPackageId: String? = null
 )
 
 data class LocationDocument(

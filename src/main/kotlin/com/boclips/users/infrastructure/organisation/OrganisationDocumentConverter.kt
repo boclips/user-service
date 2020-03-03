@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
@@ -51,7 +52,8 @@ object OrganisationDocumentConverter {
             accessRuleIds = organisationDocument.accessRuleIds.map { AccessRuleId(it) },
             details = organisation,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
-            role = organisationDocument.role
+            role = organisationDocument.role,
+            contentPackageId = organisationDocument.contentPackageId?.let { ContentPackageId(value = it) }
         )
     }
 
@@ -80,7 +82,8 @@ object OrganisationDocumentConverter {
             }
             else -> null
         },
-        accessExpiresOn = organisation.accessExpiresOn?.toInstant()
+        accessExpiresOn = organisation.accessExpiresOn?.toInstant(),
+        contentPackageId = organisation.contentPackageId?.value
     )
 
     private fun mapSchoolDistrict(organisationDocument: OrganisationDocument): Organisation<District>? =

@@ -41,7 +41,7 @@ class MongoOrganisationRepository(
     override fun <T : OrganisationDetails> save(organisation: Organisation<T>): Organisation<T> {
         return repository.save(OrganisationDocumentConverter.toDocument(organisation)).let {
             @Suppress("UNCHECKED_CAST")
-            OrganisationDocumentConverter.fromDocument(it) as Organisation<T>
+            fromDocument(it) as Organisation<T>
         }
     }
 

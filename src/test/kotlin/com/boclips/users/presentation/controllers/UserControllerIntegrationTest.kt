@@ -7,9 +7,13 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.contentpackage.CollectionId
-import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.ContentPackage
+import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -27,6 +31,7 @@ import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
+import org.bson.types.ObjectId
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -713,6 +718,78 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 get("/v1/users/${user.id.value}/access-rules").asUser(user.id.value)
             )
                 .andExpect(status().isForbidden)
+        }
+    }
+
+    @Nested
+    inner class ContentPackages {
+        @Test
+        fun `can get the content package assigned to a user`() {
+            val collectionsAccessRuleName = "Test collections contract"
+            val collectionId = "test-collection-id"
+
+            val collectionsAccessRule = AccessRule.SelectedCollections(
+                name = collectionsAccessRuleName,
+                collectionIds = listOf(CollectionId((collectionId))),
+                id = AccessRuleId(ObjectId.get().toHexString())
+            )
+
+            val videosAccessRuleName = "Test videos contract"
+            val videoId = "test-video-id"
+            val videosAccessRule = AccessRule.SelectedVideos(
+                name = videosAccessRuleName,
+                videoIds = listOf(VideoId(videoId)),
+                id = AccessRuleId(ObjectId.get().toHexString())
+            )
+
+            val contentPackageId = ContentPackageId(ObjectId.get().toHexString())
+            val contentPackage = ContentPackage(
+                name = "Package 1",
+                id = contentPackageId,
+                accessRules = listOf(collectionsAccessRule, videosAccessRule)
+            )
+
+            saveContentPackage(contentPackage)
+
+            val organisation = saveApiIntegration(
+                contentPackageId = contentPackage.id
+            )
+
+            val user = saveUser(UserFactory.sample(organisationId = organisation.id))
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}/content-package").asUserWithRoles(
+                    user.id.value,
+                    UserRoles.VIEW_ACCESS_RULES
+                )
+            )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id", equalTo(contentPackageId.value)))
+                .andExpect(jsonPath("$.name", equalTo("Package 1")))
+                .andExpect(jsonPath("$.accessRules", hasSize<Int>(2)))
+                .andExpect(
+                    jsonPath(
+                        "$.accessRules[*].type",
+                        containsInAnyOrder("SelectedCollections", "SelectedVideos")
+                    )
+                )
+                .andExpect(
+                    jsonPath(
+                        "$.accessRules[*].name",
+                        containsInAnyOrder(collectionsAccessRuleName, videosAccessRuleName)
+                    )
+                )
+                .andExpect(
+                    jsonPath(
+                        "$.accessRules[*]._links.self.href",
+                        containsInAnyOrder(
+                            endsWith("/v1/access-rules/${collectionsAccessRule.id.value}"),
+                            endsWith("/v1/access-rules/${videosAccessRule.id.value}")
+                        )
+                    )
+                )
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/content-packages/${contentPackageId.value}")))
         }
     }
 
