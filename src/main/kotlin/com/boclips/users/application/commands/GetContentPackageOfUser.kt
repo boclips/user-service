@@ -1,6 +1,6 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.application.exceptions.ContentPackageNotForUserFoundException
+import com.boclips.users.application.exceptions.ContentPackageForUserNotFoundException
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.organisation.Organisation
@@ -18,7 +18,7 @@ class GetContentPackageOfUser(
         return UserId(value = userId).let {
             findOrganisationOfUser(it)?.contentPackageId?.let { contentPackageId ->
                 contentPackageRepository.findById(contentPackageId)
-            } ?: throw ContentPackageNotForUserFoundException(it)
+            } ?: throw ContentPackageForUserNotFoundException(it)
         }
     }
 

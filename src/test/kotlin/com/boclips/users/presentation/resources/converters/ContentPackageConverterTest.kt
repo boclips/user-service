@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
     @Autowired
-    lateinit var contentPackageConvert: ContentPackageConverter
+    lateinit var contentPackageConverter: ContentPackageConverter
 
     @Test
     fun `can convert to a resource`() {
@@ -20,15 +20,16 @@ class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
             collectionIds = listOf(CollectionId("hello"), CollectionId("collection")),
             name = "name of the accessRule"
         )
+        accessRuleRepository.save(collectionAccessRule)
 
         val contentPackage =
             ContentPackageFactory.sampleContentPackage(
                 name = "package",
                 id = packageId,
-                accessRules = listOf(collectionAccessRule)
+                accessRules = listOf(collectionAccessRule.id)
             )
 
-        val convertedResource = contentPackageConvert.toResource(contentPackage)
+        val convertedResource = contentPackageConverter.toResource(contentPackage)
 
         assertThat(convertedResource.id).isEqualTo(packageId)
         assertThat(convertedResource.name).isEqualTo("package")

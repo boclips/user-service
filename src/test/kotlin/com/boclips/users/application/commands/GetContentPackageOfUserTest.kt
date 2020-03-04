@@ -1,6 +1,6 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.application.exceptions.ContentPackageNotForUserFoundException
+import com.boclips.users.application.exceptions.ContentPackageForUserNotFoundException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -28,7 +28,7 @@ class GetContentPackageOfUserTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `throws when no content package for that user`() {
-        assertThrows<ContentPackageNotForUserFoundException> {
+        assertThrows<ContentPackageForUserNotFoundException> {
             val organisation = saveApiIntegration(contentPackageId = null)
             val user = saveUser(UserFactory.sample(organisationId = organisation.id))
 

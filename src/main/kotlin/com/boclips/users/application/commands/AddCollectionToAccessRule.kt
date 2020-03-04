@@ -15,13 +15,11 @@ class AddCollectionToAccessRule(
         accessRuleRepository
             .findById(accessRuleId)
             ?.let {
-                when (it) {
-                    is AccessRule.SelectedCollections -> {
-                        val updatedAccessRule = it.copy(
-                            collectionIds = it.collectionIds.toMutableSet().apply { add(collectionId) }.toList()
-                        )
-                        accessRuleRepository.save(updatedAccessRule)
-                    }
+                if (it is AccessRule.SelectedCollections) {
+                    val updatedAccessRule = it.copy(
+                        collectionIds = it.collectionIds.toMutableSet().apply { add(collectionId) }.toList()
+                    )
+                    accessRuleRepository.save(updatedAccessRule)
                 }
             } ?: throw AccessRuleNotFoundException(accessRuleId.value)
     }

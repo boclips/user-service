@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service
 class RemoveCollectionFromAccessRule(private val accessRuleRepository: AccessRuleRepository) {
     operator fun invoke(accessRuleId: AccessRuleId, collectionId: CollectionId) {
         accessRuleRepository.findById(accessRuleId)?.let { accessRule ->
-            when (accessRule) {
-                is AccessRule.SelectedCollections -> accessRule.collectionIds.filter { it != collectionId }.let {
+            if (accessRule is AccessRule.SelectedCollections) {
+                accessRule.collectionIds.filter { it != collectionId }.let {
                     val updatedAccessRule = accessRule.copy(collectionIds = it)
                     accessRuleRepository.save(updatedAccessRule)
                 }
