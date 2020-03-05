@@ -3,7 +3,6 @@ package com.boclips.users.client.implementation;
 import com.boclips.users.client.UserServiceClient;
 import com.boclips.users.client.model.Organisation;
 import com.boclips.users.client.model.User;
-import com.boclips.users.client.model.accessrule.AccessRule;
 import com.boclips.users.client.model.accessrule.ContentPackage;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.List;
 
 public class FakeUserServiceClient implements UserServiceClient {
     private User user = null;
-    private List<AccessRule> accessRules = new ArrayList<>();
     private Organisation organisation = null;
     private List<ContentPackage> contentPackages = new ArrayList<>();
 
@@ -23,11 +21,6 @@ public class FakeUserServiceClient implements UserServiceClient {
     public User addUser(User user) {
         this.user = user;
         return user;
-    }
-
-    @Override
-    public List<AccessRule> getAccessRules(String userId) {
-        return accessRules;
     }
 
     @Override
@@ -56,10 +49,6 @@ public class FakeUserServiceClient implements UserServiceClient {
         return false;
     }
 
-    public void addAccessRule(AccessRule accessRule) {
-        accessRules.add(accessRule);
-    }
-
     public void addOrganisation(Organisation organisation) {
         this.organisation = organisation;
     }
@@ -74,10 +63,6 @@ public class FakeUserServiceClient implements UserServiceClient {
 
     public void clearOrganisation() {
         this.organisation = null;
-    }
-
-    public void clearAccessRules() {
-        accessRules.clear();
     }
 
     public void clearContentPackage() {
