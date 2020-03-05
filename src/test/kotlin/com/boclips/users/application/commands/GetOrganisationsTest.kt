@@ -19,7 +19,7 @@ internal class GetOrganisationsTest : AbstractSpringIntegrationTest() {
     fun `Lists all organisations`() {
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     externalId = "org-id-1",
                     name = "organisation 1",
                     country = Country.fromCode("GBR")
@@ -28,7 +28,7 @@ internal class GetOrganisationsTest : AbstractSpringIntegrationTest() {
         )
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     externalId = "org-id-2",
                     name = "organisation 2",
                     country = Country.fromCode("USA"),
@@ -38,7 +38,7 @@ internal class GetOrganisationsTest : AbstractSpringIntegrationTest() {
         )
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.district(
+                details = OrganisationDetailsFactory.district(
                     externalId = "org-id-3",
                     name = "another one",
                     state = State.fromCode("FL")

@@ -19,7 +19,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
     @Test
     fun `it publishes an event when user is created`() {
         val organisation =
-            organisationRepository.save(organisation = OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
+            organisationRepository.save(organisation = OrganisationFactory.sample(details = OrganisationDetailsFactory.school()))
         val user = userRepository.create(
             UserFactory.sample(
                 organisationId = organisation.id
@@ -41,12 +41,12 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
         )
         val district = organisationRepository.save(
             organisation = OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.district(name = "District 9")
+                details = OrganisationDetailsFactory.district(name = "District 9")
             )
         )
         val school = organisationRepository.save(
             organisation = OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     name = "The Street Wise Academy",
                     district = district,
                     postCode = "012345"

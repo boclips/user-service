@@ -9,10 +9,10 @@ object ContentPackageFactory {
     fun sampleContentPackage(
         id: String = ObjectId.get().toHexString(),
         name: String = "A Content Package",
-        accessRules: List<AccessRuleId> = emptyList()
+        accessRuleIds: List<AccessRuleId> = emptyList()
     ) = ContentPackage(
         id = ContentPackageId(value = id),
         name = name,
-        accessRules = accessRules
+        accessRuleIds = accessRuleIds
     )
 }

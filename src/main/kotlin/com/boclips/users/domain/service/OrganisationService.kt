@@ -29,7 +29,6 @@ class OrganisationService(
                         id = OrganisationId.create(),
                         details = it,
                         accessExpiresOn = null,
-                        accessRuleIds = emptyList(),
                         type = DealType.STANDARD,
                         role = null
                     )
@@ -53,7 +52,6 @@ class OrganisationService(
                     id = OrganisationId.create(),
                     details = district,
                     accessExpiresOn = null,
-                    accessRuleIds = emptyList(),
                     type = DealType.STANDARD,
                     role = null
                 )

@@ -106,7 +106,6 @@ class UpdateUser(
                                 externalId = null
                             ),
                             accessExpiresOn = null,
-                            accessRuleIds = emptyList(),
                             type = DealType.STANDARD,
                             role = null
                         )

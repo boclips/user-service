@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.resources
 
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.State
@@ -16,24 +16,25 @@ import java.time.ZonedDateTime
 class OrganisationConverterTest {
     @Test
     fun toResource() {
-        val originalAccount = OrganisationFactory.sample(
+        val originalOrganisation = OrganisationFactory.sample(
             id = OrganisationId("organisation-account-id"),
             accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
-            accessRuleIds = listOf(AccessRuleId("123")),
-            organisation = OrganisationDetailsFactory.district(name = "my-district", state = State.fromCode("NY")),
+            contentPackageId = ContentPackageId("content-package-id"),
+            details = OrganisationDetailsFactory.district(name = "my-district", state = State.fromCode("NY")),
             type = DealType.DESIGN_PARTNER
         )
-        val accountResource = OrganisationConverter(
+        val organisationResource = OrganisationConverter(
             OrganisationLinkBuilder(mock())
-        ).toResource(originalAccount)
+        ).toResource(originalOrganisation)
 
-        assertThat(accountResource.content!!.id).isEqualTo(originalAccount.id.value)
-        assertThat(accountResource.content!!.accessExpiresOn).isEqualTo(originalAccount.accessExpiresOn)
-        assertThat(accountResource.content!!.organisationDetails.name).isEqualTo(originalAccount.details.name)
-        assertThat(accountResource.content!!.organisationDetails.country?.name).isEqualTo(originalAccount.details.country?.name)
-        assertThat(accountResource.content!!.organisationDetails.state?.name).isEqualTo(originalAccount.details.state?.name)
-        assertThat(accountResource.content!!.organisationDetails.type).isEqualTo(originalAccount.details.type().toString())
-        assertThat(accountResource.links.map { it.rel.value() })
+        assertThat(organisationResource.content!!.id).isEqualTo(originalOrganisation.id.value)
+        assertThat(organisationResource.content!!.accessExpiresOn).isEqualTo(originalOrganisation.accessExpiresOn)
+        assertThat(organisationResource.content!!.contentPackageId).isEqualTo(originalOrganisation.contentPackageId!!.value)
+        assertThat(organisationResource.content!!.organisationDetails.name).isEqualTo(originalOrganisation.details.name)
+        assertThat(organisationResource.content!!.organisationDetails.country?.name).isEqualTo(originalOrganisation.details.country?.name)
+        assertThat(organisationResource.content!!.organisationDetails.state?.name).isEqualTo(originalOrganisation.details.state.name)
+        assertThat(organisationResource.content!!.organisationDetails.type).isEqualTo(originalOrganisation.details.type().toString())
+        assertThat(organisationResource.links.map { it.rel.value() })
             .containsExactlyInAnyOrder("self", "edit")
     }
 }

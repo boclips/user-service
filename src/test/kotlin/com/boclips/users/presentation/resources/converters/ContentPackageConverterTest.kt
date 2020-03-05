@@ -26,7 +26,7 @@ class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
             ContentPackageFactory.sampleContentPackage(
                 name = "package",
                 id = packageId,
-                accessRules = listOf(collectionAccessRule.id)
+                accessRuleIds = listOf(collectionAccessRule.id)
             )
 
         val convertedResource = contentPackageConverter.toResource(contentPackage)

@@ -1,6 +1,5 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
@@ -19,8 +18,7 @@ class OrganisationFactory {
         fun <T : OrganisationDetails> sample(
             id: OrganisationId = OrganisationId(value = ObjectId().toHexString()),
             type: DealType = DealType.STANDARD,
-            accessRuleIds: List<AccessRuleId> = emptyList<AccessRuleId>(),
-            organisation: T,
+            details: T,
             accessExpiresOn: ZonedDateTime? = null,
             role: String? = "SAMPLE_ROLE",
             contentPackageId: ContentPackageId? = null
@@ -28,8 +26,7 @@ class OrganisationFactory {
             return Organisation(
                 id = id,
                 type = type,
-                accessRuleIds = accessRuleIds,
-                details = organisation,
+                details = details,
                 accessExpiresOn = accessExpiresOn,
                 role = role,
                 contentPackageId = contentPackageId
@@ -39,7 +36,6 @@ class OrganisationFactory {
         fun school(
             id: OrganisationId = OrganisationId(value = ObjectId().toHexString()),
             type: DealType = DealType.STANDARD,
-            accessRuleIds: List<AccessRuleId> = emptyList<AccessRuleId>(),
             school: School = OrganisationDetailsFactory.school(),
             accessExpiresOn: ZonedDateTime? = null,
             role: String? = "SAMPLE_ROLE"
@@ -47,7 +43,6 @@ class OrganisationFactory {
             return Organisation(
                 id = id,
                 type = type,
-                accessRuleIds = accessRuleIds,
                 details = school,
                 accessExpiresOn = accessExpiresOn,
                 role = role

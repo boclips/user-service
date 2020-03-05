@@ -43,7 +43,7 @@ class LinksController(
                 },
                 userLinkBuilder.profileLink(user?.id),
                 userLinkBuilder.userLink(),
-                userLinkBuilder.accessRulesLink(),
+                userLinkBuilder.contentPackageLink(),
                 countryLinkBuilder.getCountriesLink(),
                 accessRuleLinkBuilder.searchAccessRules(),
                 eventLinkBuilder.logPageRenderedEventLink(),

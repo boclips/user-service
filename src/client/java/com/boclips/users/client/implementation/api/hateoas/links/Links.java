@@ -8,4 +8,5 @@ public class Links {
     private Link accessRules;
     private Link organisation;
     private Link validateShareCode;
+    private Link contentPackage;
 }

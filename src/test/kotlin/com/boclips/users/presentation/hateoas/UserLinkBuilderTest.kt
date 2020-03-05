@@ -182,23 +182,23 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `access rules link when authenticated and has VIEW_ACCESS_RULES role`() {
-        setSecurityContext("a-user", UserRoles.VIEW_ACCESS_RULES)
+    fun `access rules link when authenticated and has VIEW_CONTENT_PACKAGES role`() {
+        setSecurityContext("a-user", UserRoles.VIEW_CONTENT_PACKAGES)
 
-        val accessRulesLink = userLinkBuilder.accessRulesLink(UserId("a-user"))
+        val contentPackageLink = userLinkBuilder.contentPackageLink(UserId("a-user"))
 
-        assertThat(accessRulesLink).isNotNull()
-        assertThat(accessRulesLink!!.href).endsWith("/users/a-user/access-rules")
-        assertThat(accessRulesLink.rel.value()).isEqualTo("accessRules")
+        assertThat(contentPackageLink).isNotNull()
+        assertThat(contentPackageLink!!.href).endsWith("/users/a-user/content-package")
+        assertThat(contentPackageLink.rel.value()).isEqualTo("contentPackage")
     }
 
     @Test
-    fun `no access rules link when does not have VIEW_ACCESS_RULES role`() {
+    fun `no access rules link when does not have VIEW_CONTENT_PACKAGES role`() {
         setSecurityContext("a-user")
 
-        val accessRulesLink = userLinkBuilder.accessRulesLink(UserId("a-user"))
+        val contentPackageLink = userLinkBuilder.contentPackageLink(UserId("a-user"))
 
-        assertThat(accessRulesLink).isNull()
+        assertThat(contentPackageLink).isNull()
     }
 
     @Test

@@ -66,14 +66,14 @@ class UserLinkBuilder :
         }
     }
 
-    fun accessRulesLink(userId: UserId? = null): Link? {
-        return if (currentUserHasAnyRole(UserRoles.VIEW_ACCESS_RULES)) {
+    fun contentPackageLink(userId: UserId? = null): Link? {
+        return if (currentUserHasAnyRole(UserRoles.VIEW_CONTENT_PACKAGES)) {
             WebMvcLinkBuilder.linkTo(
-                WebMvcLinkBuilder.methodOn(UserController::class.java).getAccessRulesOfUser(
+                WebMvcLinkBuilder.methodOn(UserController::class.java).getContentPackageResourceOfUser(
                     userId?.value
                 )
             )
-                .withRel("accessRules")
+                .withRel("contentPackage")
         } else {
             null
         }

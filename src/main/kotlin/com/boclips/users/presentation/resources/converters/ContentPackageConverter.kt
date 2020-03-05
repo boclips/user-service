@@ -15,7 +15,7 @@ class ContentPackageConverter(
     fun toResource(contentPackage: ContentPackage): ContentPackageResource = ContentPackageResource(
         id = contentPackage.id.value,
         name = contentPackage.name,
-        accessRules = contentPackage.accessRules.map { accessRuleConverter.toResource(getAccessRuleById(it.value)) },
+        accessRules = contentPackage.accessRuleIds.map { accessRuleConverter.toResource(getAccessRuleById(it.value)) },
         _links = listOfNotNull(
             contentPackageLinkBuilder.self(contentPackageId = contentPackage.id).let { link ->
                 link.rel.value() to link

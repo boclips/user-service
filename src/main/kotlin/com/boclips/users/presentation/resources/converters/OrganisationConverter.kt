@@ -12,7 +12,7 @@ class OrganisationConverter(private val organisationLinkBuilder: OrganisationLin
         return EntityModel(
             OrganisationResource(
                 id = organisation.id.value,
-                accessRuleIds = organisation.accessRuleIds.map { it.value },
+                contentPackageId = organisation.contentPackageId?.value,
                 accessExpiresOn = organisation.accessExpiresOn,
                 organisationDetails = OrganisationDetailsConverter().toResource(organisation.details)
             ),

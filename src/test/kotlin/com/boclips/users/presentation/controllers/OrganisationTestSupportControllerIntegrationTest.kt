@@ -1,13 +1,12 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -60,8 +59,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
             val organisationName = "Test Org"
             organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.apiIntegration(name = organisationName),
-                    accessRuleIds = emptyList(),
+                    details = OrganisationDetailsFactory.apiIntegration(name = organisationName),
                     role = "ROLE_TEST_ORG"
                 )
             )
@@ -88,8 +86,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
             val role = "ROLE_TEST_ORG"
             organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.apiIntegration(name = "Some name"),
-                    accessRuleIds = emptyList(),
+                    details = OrganisationDetailsFactory.apiIntegration(name = "Some name"),
                     role = role
                 )
             )
@@ -145,9 +142,9 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
             val organisationName = "Test Org"
             val organisation = organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.apiIntegration(name = organisationName),
-                    accessRuleIds = listOf(AccessRuleId("A"), AccessRuleId("B"), AccessRuleId("C")),
-                    role = "ROLE_TEST_ORG"
+                    details = OrganisationDetailsFactory.apiIntegration(name = organisationName),
+                    role = "ROLE_TEST_ORG",
+                    contentPackageId = ContentPackageId("content-package-id")
                 )
             )
 
@@ -162,7 +159,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
-                .andExpect(jsonPath("$.accessRuleIds", containsInAnyOrder("A", "B", "C")))
+                .andExpect(jsonPath("$.contentPackageId", equalTo("content-package-id")))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
         }

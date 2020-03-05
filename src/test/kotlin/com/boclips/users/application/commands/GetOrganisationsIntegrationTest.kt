@@ -20,7 +20,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
 
         val ukSchool = organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     name = "organisation 1",
                     country = Country.fromCode("GBR")
                 )
@@ -28,7 +28,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
         )
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     name = "organisation 2",
                     country = Country.fromCode("USA"),
                     state = State.fromCode("NY")
@@ -38,7 +38,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
 
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.district(
+                details = OrganisationDetailsFactory.district(
                     name = "another one",
                     state = State.fromCode("FL")
                 )
@@ -60,7 +60,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
     fun `searching USA organisations`() {
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.district(
+                details = OrganisationDetailsFactory.district(
                     name = "floridistrict",
                     state = State.fromCode("FL")
                 )
@@ -68,7 +68,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
         )
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     name = "oregon-isation",
                     country = Country.fromCode("USA"),
                     state = State.fromCode("OR")
@@ -77,7 +77,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
         )
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     name = "gb skool",
                     country = Country.fromCode("GBR")
                 )
@@ -104,7 +104,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
     fun `searching organisations without filters`() {
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.district(
+                details = OrganisationDetailsFactory.district(
                     name = "floridistrict",
                     state = State.fromCode("FL")
                 )
@@ -112,7 +112,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
         )
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     name = "oregon-isation",
                     country = Country.fromCode("USA"),
                     state = State.fromCode("OR")
@@ -121,7 +121,7 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
         )
         organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.school(
+                details = OrganisationDetailsFactory.school(
                     name = "gb skool",
                     country = Country.fromCode("GBR")
                 )

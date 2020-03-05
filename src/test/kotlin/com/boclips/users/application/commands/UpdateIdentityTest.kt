@@ -32,7 +32,7 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
 
         val district = organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = OrganisationDetailsFactory.district(
+                details = OrganisationDetailsFactory.district(
                     name = "my district",
                     externalId = "123",
                     state = State(id = "FL", name = "Florida")

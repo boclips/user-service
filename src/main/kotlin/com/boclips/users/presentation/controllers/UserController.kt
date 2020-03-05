@@ -2,22 +2,16 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.SynchronisationService
 import com.boclips.users.application.commands.CreateTeacher
-import com.boclips.users.application.commands.GetAccessRulesOfUser
 import com.boclips.users.application.commands.GetContentPackageOfUser
 import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.commands.UpdateUser
 import com.boclips.users.application.commands.ValidateShareCode
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.presentation.hateoas.AccessRuleResourcesHateoasWrapper
-import com.boclips.users.presentation.hateoas.AccessRuleResourcesWrapper
-import com.boclips.users.presentation.hateoas.UserAccessRulesLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.projections.WithProjection
 import com.boclips.users.presentation.requests.CreateTeacherRequest
 import com.boclips.users.presentation.requests.UpdateUserRequest
 import com.boclips.users.presentation.resources.ContentPackageResource
 import com.boclips.users.presentation.resources.UserResource
-import com.boclips.users.presentation.resources.converters.AccessRuleConverter
 import com.boclips.users.presentation.resources.converters.ContentPackageConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.server.ExposesResourceFor
@@ -42,10 +36,7 @@ class UserController(
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
     private val userLinkBuilder: UserLinkBuilder,
-    private val userAccessRulesLinkBuilder: UserAccessRulesLinkBuilder,
     private val synchronisationService: SynchronisationService,
-    private val accessRuleConverter: AccessRuleConverter,
-    private val getAccessRulesOfUser: GetAccessRulesOfUser,
     private val withProjection: WithProjection,
     private val validateShareCode: ValidateShareCode,
     private val contentPackageConverter: ContentPackageConverter,
@@ -78,19 +69,6 @@ class UserController(
             withProjection(userResource),
             headers,
             HttpStatus.OK
-        )
-    }
-
-    @GetMapping("/{id}/access-rules")
-    fun getAccessRulesOfUser(@PathVariable id: String?): AccessRuleResourcesHateoasWrapper {
-        val userId = UserId(id!!)
-        return AccessRuleResourcesHateoasWrapper(
-            _embedded = AccessRuleResourcesWrapper(
-                getAccessRulesOfUser(userId).map { accessRuleConverter.toResource(it) }
-            ),
-            _links = listOfNotNull(
-                userAccessRulesLinkBuilder.self(userId)
-            ).map { it.rel.value() to it }.toMap()
         )
     }
 

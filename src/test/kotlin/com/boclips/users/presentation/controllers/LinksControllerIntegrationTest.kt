@@ -92,7 +92,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         val organisationAccount =
-            organisationRepository.save(OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
+            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school()))
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -120,7 +120,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         val organisationAccount =
-            organisationRepository.save(OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
+            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school()))
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -140,7 +140,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         val organisationAccount =
-            organisationRepository.save(OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
+            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school()))
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -160,7 +160,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext("a-user-id")
 
         val organisationAccount =
-            organisationRepository.save(OrganisationFactory.sample(organisation = OrganisationDetailsFactory.school()))
+            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school()))
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
@@ -195,10 +195,16 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `user with VIEW_ACCESS_RULES role`() {
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ACCESS_RULES))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.accessRules.href", endsWith("/users/{id}/access-rules")))
-            .andExpect(jsonPath("$._links.accessRules.templated", equalTo(true)))
             .andExpect(jsonPath("$._links.searchAccessRules.href", endsWith("/access-rules{?name}")))
             .andExpect(jsonPath("$._links.searchAccessRules.templated", equalTo(true)))
+    }
+
+    @Test
+    fun `user with VIEW_CONTENT_PACKAGES role`() {
+        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_CONTENT_PACKAGES))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.contentPackage.href", endsWith("/users/{id}/content-package")))
+            .andExpect(jsonPath("$._links.contentPackage.templated", equalTo(true)))
     }
 
     @Test

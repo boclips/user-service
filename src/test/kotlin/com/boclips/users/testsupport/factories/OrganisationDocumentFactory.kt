@@ -6,14 +6,12 @@ import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import org.bson.types.ObjectId
 import java.time.ZonedDateTime
-import java.util.Collections.emptyList
 
 class OrganisationDocumentFactory {
     companion object {
         fun sample(
             name: String = "The Best Organisation",
             role: String? = null,
-            accessRuleIds: List<String> = emptyList(),
             type: OrganisationType = OrganisationType.SCHOOL,
             dealType: DealType? = null,
             externalId: String? = "external-id",
@@ -28,7 +26,6 @@ class OrganisationDocumentFactory {
             dealType = dealType,
             name = name,
             role = role,
-            accessRuleIds = accessRuleIds,
             externalId = externalId,
             type = type,
             country = country,

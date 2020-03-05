@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 @Relation(collectionRelation = "organisations")
 data class OrganisationResource(
     val id: String?,
-    val accessRuleIds: List<String>,
     val accessExpiresOn: ZonedDateTime?,
+    val contentPackageId: String?,
     val organisationDetails: OrganisationDetailsResource
 )

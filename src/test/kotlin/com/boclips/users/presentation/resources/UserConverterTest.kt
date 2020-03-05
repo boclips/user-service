@@ -37,7 +37,7 @@ class UserConverterTest {
                 ),
                 organisation = OrganisationFactory.sample(
                     id = OrganisationId("1234"),
-                    organisation = OrganisationDetailsFactory.school(
+                    details = OrganisationDetailsFactory.school(
                         name = "My school",
                         state = State.fromCode("NY"),
                         country = Country.fromCode("USA")
@@ -68,7 +68,7 @@ class UserConverterTest {
 
         val organisationAccount = OrganisationFactory.sample(
             id = OrganisationId("1234"),
-            organisation = OrganisationDetailsFactory.school(
+            details = OrganisationDetailsFactory.school(
                 name = "My school",
                 state = State.fromCode("NY"),
                 country = Country.fromCode("USA")

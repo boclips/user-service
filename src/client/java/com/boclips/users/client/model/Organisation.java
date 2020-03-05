@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Organisation {
     private String id;
+    private String contentPackageId;
     private OrganisationDetails organisationDetails;
 }

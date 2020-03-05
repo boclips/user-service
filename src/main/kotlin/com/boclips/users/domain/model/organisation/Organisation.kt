@@ -1,6 +1,5 @@
 package com.boclips.users.domain.model.organisation
 
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
@@ -9,7 +8,6 @@ import java.time.ZonedDateTime
 data class Organisation<T : OrganisationDetails>(
     val id: OrganisationId,
     val type: DealType,
-    val accessRuleIds: List<AccessRuleId>,
     val accessExpiresOn: ZonedDateTime?,
     val details: T,
     val role: String?,

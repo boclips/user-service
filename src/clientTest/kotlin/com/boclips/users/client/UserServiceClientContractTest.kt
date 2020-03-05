@@ -2,9 +2,12 @@ package com.boclips.users.client
 
 import com.boclips.users.client.implementation.ApiUserServiceClient
 import com.boclips.users.client.implementation.FakeUserServiceClient
+import com.boclips.users.client.model.Organisation
+import com.boclips.users.client.model.OrganisationDetails
 import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
+import com.boclips.users.client.model.accessrule.ContentPackage
 import com.boclips.users.client.model.accessrule.SelectedCollectionsAccessRule
 import com.boclips.users.client.model.accessrule.SelectedVideosAccessRule
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
@@ -13,19 +16,19 @@ import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Co
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.testsupport.factories.AccessRuleFactory
+import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.web.client.RestTemplateBuilder
-import com.boclips.users.client.model.OrganisationDetails
-import com.boclips.users.client.model.Organisation
 
 abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     @Nested
@@ -80,44 +83,48 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     }
 
     @Nested
-    inner class GetAccessRulesOfUser {
+    inner class GetContentPackageOfUser {
         @Test
-        fun `returns an empty list when user is not eligible to any access rules`() {
-            val organisation = insertTestOrganisation("test-organisation-id")
+        fun `returns a package of an empty list of access rules when user has no permitted access rules`() {
+            val organisation = insertTestOrganisation("test-organisation-id", null)
             val user = insertTestUser(organisation)
 
-            assertThat(client.getAccessRules(user.id)).isEmpty()
+            assertThat(client.getContentPackage(user.id)).isNull()
         }
 
         @Test
-        fun `returns a list of access rules user is eligible to`() {
+        fun `returns a package of a user's permitted access rules`() {
+            val accessRuleCollections = saveSelectedCollectionsAccessRule(
+                name = "First",
+                collectionIds = listOf(CollectionId("A"), CollectionId("B"))
+            )
+
+            val accessRuleVideos = saveSelectedVideosAccessRule(
+                name = "Second",
+                videoIds = listOf(VideoId("C"), VideoId("D"))
+            )
+            val contentPackageId =
+                insertContentPackage("My content package", listOf(accessRuleCollections, accessRuleVideos))
+
             val organisation = insertTestOrganisation(
-                "test-organisation-id",
-                listOf(
-                    AccessRuleFactory.sampleSelectedCollectionsAccessRule(
-                        name = "First",
-                        collectionIds = listOf(CollectionId("A"), CollectionId("B"))
-                    ),
-                    AccessRuleFactory.sampleSelectedVideosAccessRule(
-                        name = "Second",
-                        videoIds = listOf(VideoId("C"), VideoId("D"))
-                    )
-                )
+                "test-organisation-id", contentPackageId
+
             )
             val user = insertTestUser(organisation)
 
-            val accessRules = client.getAccessRules(user.id)
+            val contentPackage = client.getContentPackage(user.id)
 
-            assertThat(accessRules)
+            assertThat(contentPackage)
                 .extracting("name")
-                .containsExactlyInAnyOrder("First", "Second")
+                .contains("My content package")
 
-            val selectedCollectionsAccessRules = accessRules.filterIsInstance<SelectedCollectionsAccessRule>()
+            val selectedCollectionsAccessRules =
+                contentPackage.accessRules.filterIsInstance<SelectedCollectionsAccessRule>()
             assertThat(selectedCollectionsAccessRules)
                 .flatExtracting("collectionIds")
                 .containsExactlyInAnyOrder("A", "B")
 
-            val selectedVideosAccessRules = accessRules.filterIsInstance<SelectedVideosAccessRule>()
+            val selectedVideosAccessRules = contentPackage.accessRules.filterIsInstance<SelectedVideosAccessRule>()
             assertThat(selectedVideosAccessRules)
                 .flatExtracting("videoIds")
                 .containsExactlyInAnyOrder("C", "D")
@@ -143,9 +150,11 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
 
     abstract fun insertTestOrganisation(
         name: String,
-        accessRules: List<AccessRule> = emptyList(),
+        contentPackageId: ContentPackageId? = null,
         allowsOverridingUserIds: Boolean = false
     ): String
+
+    abstract fun insertContentPackage(name: String, accessRules: List<AccessRule>): ContentPackageId
 
     abstract fun insertTestUser(
         organisationId: String,
@@ -159,7 +168,6 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
 class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
     @BeforeEach
     fun initialiseApiClient() {
-
         client = ApiUserServiceClient(
             userServiceUrl(),
             RestTemplateBuilder()
@@ -170,10 +178,22 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
 
     override fun insertTestOrganisation(
         name: String,
-        accessRules: List<AccessRule>,
+        contentPackageId: ContentPackageId?,
         allowsOverridingUserIds: Boolean
     ): String {
-        return saveOrganisationWithAccessRuleDetails(name, accessRules.toList(), allowsOverridingUserIds).id.value
+
+        return saveOrganisationWithContentPackage(
+            organisationName = name,
+            contentPackageId = contentPackageId,
+            allowsOverridingUserIds = allowsOverridingUserIds
+        ).id.value
+    }
+
+    override fun insertContentPackage(
+        name: String,
+        accessRules: List<AccessRule>
+    ): ContentPackageId {
+        return saveContentPackage(ContentPackageFactory.sampleContentPackage(name = name, accessRuleIds = accessRules.map { it.id })).id
     }
 
     override fun insertTestUser(organisationId: String, subjectId: String, shareCode: String): User {
@@ -212,30 +232,32 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
 
     override fun insertTestOrganisation(
         name: String,
-        accessRules: List<AccessRule>,
+        contentPackageId: ContentPackageId?,
         allowsOverridingUserIds: Boolean
     ): String {
-        accessRules.map { domainAccessRule ->
-            when (domainAccessRule) {
-                is AccessRule.SelectedCollections -> SelectedCollectionsAccessRule().apply {
-                    this.name = domainAccessRule.name
-                    this.collectionIds = domainAccessRule.collectionIds.map { it.value }
-                }
-                is AccessRule.SelectedVideos -> SelectedVideosAccessRule().apply {
-                    this.name = domainAccessRule.name
-                    this.videoIds = domainAccessRule.videoIds.map { it.value }
-                }
-            }
-        }.forEach { convertedContract ->
-            (client as FakeUserServiceClient).addAccessRule(convertedContract)
-        }
-
         val organisationDetails = OrganisationDetails(allowsOverridingUserIds)
-        val organisation = Organisation(name, organisationDetails)
+        val organisation = Organisation(name, contentPackageId?.value, organisationDetails)
 
         (client as FakeUserServiceClient).addOrganisation(organisation)
 
         return organisation.id
+    }
+
+    override fun insertContentPackage(name: String, accessRules: List<AccessRule>): ContentPackageId {
+        val id = ObjectId.get().toHexString()
+        (client as FakeUserServiceClient).addContentPackage(
+            ContentPackage.builder()
+                .id(id)
+                .name(name)
+                .accessRules(accessRules.map {
+                    when (it) {
+                        is AccessRule.SelectedCollections -> SelectedCollectionsAccessRule(it.collectionIds.map { id -> id.value })
+                        is AccessRule.SelectedVideos -> SelectedVideosAccessRule(it.videoIds.map { id -> id.value })
+                    }
+                }).build()
+        )
+
+        return ContentPackageId(value = id)
     }
 
     override fun insertTestUser(organisationId: String, subjectId: String, shareCode: String): User {

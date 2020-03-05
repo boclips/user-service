@@ -23,6 +23,7 @@ import com.boclips.users.testsupport.asBoclipsService
 import com.boclips.users.testsupport.asTeacher
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -599,129 +600,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Nested
-    inner class AccessRules {
-        @Test
-        fun `returns a link to access rules if user has VIEW_ACCESS_RULES role`() {
-            val user = saveUser(UserFactory.sample())
-
-            mvc.perform(
-                get("/v1/users/${user.id.value}").asUserWithRoles(user.id.value, UserRoles.VIEW_ACCESS_RULES)
-            )
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._links.accessRules.href", endsWith("/v1/users/${user.id.value}/access-rules")))
-        }
-
-        @Test
-        fun `lists access rules user has access to`() {
-            val collectionsAccessRuleName = "Test collections contract"
-            val collectionId = "test-collection-id"
-            val collectionsAccessRule = saveSelectedCollectionsAccessRule(
-                name = collectionsAccessRuleName,
-                collectionIds = listOf(CollectionId(collectionId))
-            )
-            val videosAccessRuleName = "Test videos contract"
-            val videoId = "test-video-id"
-            val videosContract = saveSelectedVideosAccessRule(
-                name = videosAccessRuleName,
-                videoIds = listOf(VideoId(videoId))
-            )
-
-            val organisation = saveApiIntegration(
-                accessRuleIds = listOf(
-                    collectionsAccessRule.id,
-                    videosContract.id
-                )
-            )
-
-            val user = saveUser(UserFactory.sample(organisationId = organisation.id))
-
-            mvc.perform(
-                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(
-                    user.id.value,
-                    UserRoles.VIEW_ACCESS_RULES
-                )
-            )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(2)))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[*].type",
-                        containsInAnyOrder("SelectedCollections", "SelectedVideos")
-                    )
-                )
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[*].name",
-                        containsInAnyOrder(collectionsAccessRuleName, videosAccessRuleName)
-                    )
-                )
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[*]._links.self.href",
-                        containsInAnyOrder(
-                            endsWith("/v1/access-rules/${collectionsAccessRule.id.value}"),
-                            endsWith("/v1/access-rules/${videosContract.id.value}")
-                        )
-                    )
-                )
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/users/${user.id.value}/access-rules")))
-        }
-
-        @Test
-        fun `imports the user into the system`() {
-            val userId = "709f86bf-3292-4c96-9c84-5c89a255a07c"
-            val authority = "TEST_ORGANISATION"
-            val organisationMatchingRole = "ROLE_$authority"
-            keycloakClientFake.createAccount(
-                Identity(
-                    id = UserId(userId),
-                    username = "service-account@somewhere.com",
-                    roles = listOf(organisationMatchingRole),
-                    createdAt = ZonedDateTime.now()
-                )
-            )
-            val organisation = saveApiIntegration(
-                role = organisationMatchingRole
-            )
-
-            mvc.perform(
-                get("/v1/users/$userId/access-rules").asUserWithRoles(userId, UserRoles.VIEW_ACCESS_RULES, authority)
-            )
-                .andExpect(status().isOk)
-
-            val importedUser = userRepository.findById(UserId(userId))
-
-            assertThat(importedUser).isNotNull
-            assertThat(importedUser!!.organisationId).isEqualTo(organisation.id)
-        }
-
-        @Test
-        fun `returns an empty list of access rules when user does not belong to an organisation`() {
-            val user = saveUser(UserFactory.sample())
-
-            mvc.perform(
-                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(
-                    user.id.value,
-                    UserRoles.VIEW_ACCESS_RULES
-                )
-            )
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(0)))
-        }
-
-        @Test
-        fun `returns a 403 response when caller does not have VIEW_ACCESS_RULES role`() {
-            val user = saveUser(UserFactory.sample())
-
-            mvc.perform(
-                get("/v1/users/${user.id.value}/access-rules").asUser(user.id.value)
-            )
-                .andExpect(status().isForbidden)
-        }
-    }
-
-    @Nested
     inner class ContentPackages {
         @Test
         fun `returns forbidden status when lacking correct role`() {
@@ -729,7 +607,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 get("/v1/users/user-123/content-package").asUserWithRoles("bad-user")
             ).andExpect(status().isForbidden)
         }
-
 
         @Test
         fun `can get the content package assigned to a user`() {
@@ -756,7 +633,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val contentPackage = ContentPackage(
                 name = "Package 1",
                 id = contentPackageId,
-                accessRules = listOf(collectionsAccessRule.id, videosAccessRule.id)
+                accessRuleIds = listOf(collectionsAccessRule.id, videosAccessRule.id)
             )
 
             saveContentPackage(contentPackage)
@@ -800,6 +677,55 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     )
                 )
                 .andExpect(jsonPath("$._links.self.href", endsWith("/v1/content-packages/${contentPackageId.value}")))
+        }
+
+        @Test
+        fun `returns a 404 when user does not belong to an organisation`() {
+            val user = saveUser(UserFactory.sample())
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}/content-package").asUserWithRoles(
+                    user.id.value,
+                    UserRoles.VIEW_CONTENT_PACKAGES
+                )
+            )
+                .andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `assigns a new user a content package based on a keycloak role`() {
+            val userId = "709f86bf-3292-4c96-9c84-5c89a255a07c"
+            val authority = "TEST_ORGANISATION"
+            val organisationMatchingRole = "ROLE_$authority"
+            keycloakClientFake.createAccount(
+                Identity(
+                    id = UserId(userId),
+                    username = "service-account@somewhere.com",
+                    roles = listOf(organisationMatchingRole),
+                    createdAt = ZonedDateTime.now()
+                )
+            )
+
+            val contentPackage = saveContentPackage(ContentPackageFactory.sampleContentPackage())
+
+            val organisation = saveApiIntegration(
+                contentPackageId = contentPackage.id,
+                role = organisationMatchingRole
+            )
+
+            mvc.perform(
+                get("/v1/users/$userId/content-package").asUserWithRoles(
+                    userId,
+                    UserRoles.VIEW_CONTENT_PACKAGES,
+                    authority
+                )
+            )
+                .andExpect(status().isOk)
+
+            val importedUser = userRepository.findById(UserId(userId))
+
+            assertThat(importedUser).isNotNull
+            assertThat(importedUser!!.organisationId).isEqualTo(organisation.id)
         }
     }
 

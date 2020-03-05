@@ -7,6 +7,7 @@ import com.boclips.users.client.implementation.api.hateoas.links.LinksResource;
 import com.boclips.users.client.model.Organisation;
 import com.boclips.users.client.model.User;
 import com.boclips.users.client.model.accessrule.AccessRule;
+import com.boclips.users.client.model.accessrule.ContentPackage;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -39,6 +40,16 @@ public class ApiUserServiceClient implements UserServiceClient {
                 .getForObject(getLinks().getAccessRules().getHref(), AccessRulesHateoasWrapper.class, userId)
                 .get_embedded()
                 .getAccessRules();
+    }
+
+    @Override
+    public ContentPackage getContentPackage(String userId) {
+        try {
+            return restTemplate
+                    .getForObject(getLinks().getContentPackage().getHref(), ContentPackage.class, userId);
+        } catch (HttpClientErrorException.NotFound ex) {
+            return null;
+        }
     }
 
     @Override

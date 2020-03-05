@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationType
@@ -16,7 +15,6 @@ class OrganisationDocumentConverterTest {
     @Test
     fun `independent school`() {
         val organisationDocument = OrganisationDocumentFactory.sample(
-            accessRuleIds = listOf("A", "B"),
             name = "amazing school",
             type = OrganisationType.SCHOOL,
             externalId = "external-id",
@@ -29,7 +27,6 @@ class OrganisationDocumentConverterTest {
 
         assertThat(organisationAccount.id.value).isEqualTo(organisationDocument.id!!)
         assertThat(organisationAccount.type).isEqualTo(DealType.STANDARD)
-        assertThat(organisationAccount.accessRuleIds).containsExactly(AccessRuleId("A"), AccessRuleId("B"))
         assertThat(organisationAccount.details).isInstanceOf(School::class.java)
 
         val independentSchool = organisationAccount.details as School
@@ -46,7 +43,6 @@ class OrganisationDocumentConverterTest {
     @Test
     fun `school with district`() {
         val organisationDocument = OrganisationDocumentFactory.sample(
-            accessRuleIds = listOf("A", "B"),
             name = "amazing school",
             type = OrganisationType.SCHOOL,
             dealType = null,

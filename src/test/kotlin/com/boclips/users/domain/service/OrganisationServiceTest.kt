@@ -11,11 +11,11 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
     @Test
     fun `when school and district already exists delegates on DB`() {
         val district = organisationRepository.save(
-            OrganisationFactory.sample(organisation = OrganisationDetailsFactory.district())
+            OrganisationFactory.sample(details = OrganisationDetailsFactory.district())
         )
 
         val originalSchool = OrganisationDetailsFactory.school(externalId = "external-school-id", district = district)
-        organisationRepository.save(OrganisationFactory.sample(organisation = originalSchool))
+        organisationRepository.save(OrganisationFactory.sample(details = originalSchool))
 
         val school = organisationService.findOrCreateSchooldiggerSchool("external-school-id")
 
@@ -26,7 +26,7 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
     @Test
     fun `existing district new school searches them first time only and links both`() {
         val district = OrganisationDetailsFactory.district(externalId = "external-district-id")
-        val districtAccount = organisationRepository.save(OrganisationFactory.sample(organisation = district))
+        val districtAccount = organisationRepository.save(OrganisationFactory.sample(details = district))
         val expectedSchool = OrganisationDetailsFactory.school(
             externalId = "external-school-id",
             district = districtAccount

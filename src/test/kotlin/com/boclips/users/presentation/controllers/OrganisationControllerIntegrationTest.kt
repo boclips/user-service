@@ -1,15 +1,14 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -41,7 +40,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             val district = organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.district(
+                    details = OrganisationDetailsFactory.district(
                         name = "my district",
                         externalId = "123",
                         state = State(id = "FL", name = "Florida")
@@ -52,7 +51,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.school(
+                    details = OrganisationDetailsFactory.school(
                         name = "my district school",
                         countryName = "USA",
                         state = State(id = "FL", name = "Florida"),
@@ -62,7 +61,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
             organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.school(
+                    details = OrganisationDetailsFactory.school(
                         name = "my independent school",
                         countryName = "USA",
                         state = State(id = "FL", name = "Florida"),
@@ -98,7 +97,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `fetches all independent organisations when no countryCode is provided`() {
             val district = organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.district(
+                    details = OrganisationDetailsFactory.district(
                         name = "my district",
                         externalId = "123",
                         state = State(id = "FL", name = "Florida")
@@ -107,7 +106,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
             val school = organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.school(
+                    details = OrganisationDetailsFactory.school(
                         name = "my school",
                         country = Country.fromCode("GBR")
                     )
@@ -142,7 +141,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             val district = organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.district(
+                    details = OrganisationDetailsFactory.district(
                         name = "my district",
                         externalId = "123",
                         state = State(id = "FL", name = "Florida")
@@ -170,7 +169,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `bad request when date is invalid`() {
             val district = organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.district(
+                    details = OrganisationDetailsFactory.district(
                         name = "my district",
                         externalId = "123",
                         state = State(id = "FL", name = "Florida")
@@ -213,7 +212,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `returns forbidden when caller is not allowed to update organisations`() {
             val district = organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.district(
+                    details = OrganisationDetailsFactory.district(
                         name = "my district",
                         externalId = "123",
                         state = State(id = "FL", name = "Florida")
@@ -239,14 +238,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `retrieves an api integration organisation by id`() {
             val organisationName = "Test Org"
+            val contentPackage = saveContentPackage(ContentPackageFactory.sampleContentPackage())
             val organisation = organisationRepository.save(
                 OrganisationFactory.sample(
-                    organisation = OrganisationDetailsFactory.apiIntegration(
+                    details = OrganisationDetailsFactory.apiIntegration(
                         name = organisationName,
                         allowsOverridingUserIds = true
                     ),
-                    accessRuleIds = listOf(AccessRuleId("A"), AccessRuleId("B"), AccessRuleId("C")),
-                    role = "ROLE_TEST_ORG"
+                    role = "ROLE_TEST_ORG",
+                    contentPackageId = contentPackage.id
                 )
             )
 
@@ -255,7 +255,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
                 .andExpect(MockMvcResultMatchers.status().isOk)
-                .andExpect(jsonPath("$.accessRuleIds", containsInAnyOrder("A", "B", "C")))
+                .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.organisationDetails.allowsOverridingUserIds", equalTo(true)))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))

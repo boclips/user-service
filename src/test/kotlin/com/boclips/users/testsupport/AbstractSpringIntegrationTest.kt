@@ -173,57 +173,34 @@ abstract class AbstractSpringIntegrationTest {
         return user.id.value
     }
 
-    fun saveOrganisationWithAccessRuleDetails(
+    fun saveOrganisationWithContentPackage(
         organisationName: String = "Boclips for Teachers",
-        accessRuleIds: List<AccessRule> = emptyList(),
+        contentPackageId: ContentPackageId? = null,
         allowsOverridingUserIds: Boolean = false
     ): Organisation<*> {
-        val organisationAccessRules = mutableListOf<AccessRule>()
-        accessRuleIds.map {
-            when (it) {
-                is AccessRule.SelectedCollections -> {
-                    organisationAccessRules.add(
-                        selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
-                            it.name,
-                            it.collectionIds
-                        )
-                    )
-                }
-                is AccessRule.SelectedVideos -> {
-                    organisationAccessRules.add(
-                        selectedContentAccessRuleRepository.saveSelectedVideosAccessRule(
-                            it.name,
-                            it.videoIds
-                        )
-                    )
-                }
-            }
-        }
-
         return saveApiIntegration(
-            organisation = OrganisationDetailsFactory.apiIntegration(
+            details = OrganisationDetailsFactory.apiIntegration(
                 name = organisationName,
                 allowsOverridingUserIds = allowsOverridingUserIds
             ),
-            accessRuleIds = organisationAccessRules.map { it.id })
+            contentPackageId = contentPackageId
+        )
     }
 
     fun saveContentPackage(
         contentPackage: ContentPackage
-    ) {
-        contentPackageRepository.save(contentPackage)
+    ): ContentPackage {
+        return contentPackageRepository.save(contentPackage)
     }
 
     fun saveApiIntegration(
-        accessRuleIds: List<AccessRuleId> = emptyList(),
         contentPackageId: ContentPackageId? = null,
         role: String = "ROLE_VIEWSONIC",
-        organisation: ApiIntegration = OrganisationDetailsFactory.apiIntegration(allowsOverridingUserIds = false)
+        details: ApiIntegration = OrganisationDetailsFactory.apiIntegration(allowsOverridingUserIds = false)
     ): Organisation<ApiIntegration> {
         return organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = organisation,
-                accessRuleIds = accessRuleIds,
+                details = details,
                 role = role,
                 contentPackageId = contentPackageId
             )
@@ -235,7 +212,7 @@ abstract class AbstractSpringIntegrationTest {
     ): Organisation<District> {
         return organisationRepository.save(
             OrganisationFactory.sample(
-                organisation = district
+                details = district
             )
         )
     }
@@ -243,7 +220,7 @@ abstract class AbstractSpringIntegrationTest {
     fun saveSchool(
         school: School = OrganisationDetailsFactory.school()
     ): Organisation<School> {
-        return organisationRepository.save(OrganisationFactory.sample(organisation = school))
+        return organisationRepository.save(OrganisationFactory.sample(details = school))
     }
 
     fun saveSelectedCollectionsAccessRule(

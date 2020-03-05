@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
@@ -49,7 +48,6 @@ object OrganisationDocumentConverter {
             id = OrganisationId(organisationDocument.id!!),
             type = organisationDocument.dealType ?: organisationDocument.parentOrganisation?.dealType
             ?: DealType.STANDARD,
-            accessRuleIds = organisationDocument.accessRuleIds.map { AccessRuleId(it) },
             details = organisation,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
             role = organisationDocument.role,
@@ -62,7 +60,6 @@ object OrganisationDocumentConverter {
         dealType = organisation.type,
         name = organisation.details.name,
         role = organisation.role,
-        accessRuleIds = organisation.accessRuleIds.map { it.value },
         externalId = when (organisation.details) {
             is School -> organisation.details.externalId
             is District -> organisation.details.externalId
