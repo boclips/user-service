@@ -3,15 +3,15 @@ package com.boclips.users.client.implementation;
 import com.boclips.users.client.UserServiceClient;
 import com.boclips.users.client.model.Organisation;
 import com.boclips.users.client.model.User;
+import com.boclips.users.client.model.accessrule.AccessRule;
 import com.boclips.users.client.model.accessrule.ContentPackage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 public class FakeUserServiceClient implements UserServiceClient {
     private User user = null;
     private Organisation organisation = null;
-    private List<ContentPackage> contentPackages = new ArrayList<>();
+    private ContentPackage contentPackage = null;
 
     @Override
     public User findUser(String userId) {
@@ -25,12 +25,7 @@ public class FakeUserServiceClient implements UserServiceClient {
 
     @Override
     public ContentPackage getContentPackage(String userId) {
-        String cpId = this.organisation.getContentPackageId();
-
-        return this.contentPackages.stream()
-                .filter(contentPackage -> contentPackage.getId().equals(cpId))
-                .findFirst()
-                .orElse(null);
+        return contentPackage;
     }
 
     @Override
@@ -54,7 +49,15 @@ public class FakeUserServiceClient implements UserServiceClient {
     }
 
     public void addContentPackage(ContentPackage contentPackage) {
-        this.contentPackages.add(contentPackage);
+        this.contentPackage = contentPackage;
+    }
+
+    public void addAccessRules(AccessRule accessRule) {
+        if (contentPackage == null) {
+            this.contentPackage = new ContentPackage("content-package-id", "the content package", Collections.emptyList());
+        }
+
+        this.contentPackage.getAccessRules().add(accessRule);
     }
 
     public void clearUser() {
@@ -66,6 +69,6 @@ public class FakeUserServiceClient implements UserServiceClient {
     }
 
     public void clearContentPackage() {
-        this.contentPackages.clear();
+        this.contentPackage = null;
     }
 }
