@@ -7,6 +7,7 @@ import com.boclips.users.client.model.accessrule.AccessRule;
 import com.boclips.users.client.model.accessrule.ContentPackage;
 
 import java.util.Collections;
+import java.util.List;
 
 public class FakeUserServiceClient implements UserServiceClient {
     private User user = null;
@@ -52,12 +53,13 @@ public class FakeUserServiceClient implements UserServiceClient {
         this.contentPackage = contentPackage;
     }
 
-    public void addAccessRules(AccessRule accessRule) {
+    public void addAccessRule(AccessRule accessRule) {
         if (contentPackage == null) {
             this.contentPackage = new ContentPackage("content-package-id", "the content package", Collections.emptyList());
         }
-
-        this.contentPackage.getAccessRules().add(accessRule);
+        List<AccessRule> newAccessRules = this.contentPackage.getAccessRules();
+        newAccessRules.add(accessRule);
+        this.contentPackage.setAccessRules(newAccessRules);
     }
 
     public void clearUser() {
