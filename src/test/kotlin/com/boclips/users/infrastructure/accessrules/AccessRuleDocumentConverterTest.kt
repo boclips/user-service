@@ -31,7 +31,7 @@ class AccessRuleDocumentConverterTest {
 
         @Test
         fun `converts domain object to document`() {
-            val accessRule = AccessRuleFactory.sampleSelectedCollectionsAccessRule()
+            val accessRule = AccessRuleFactory.sampleIncludedCollectionsAccessRule()
 
             val document = converter.toDocument(accessRule) as AccessRuleDocument.IncludedCollections
 
@@ -62,7 +62,7 @@ class AccessRuleDocumentConverterTest {
 
         @Test
         fun `converts domain object to document`() {
-            val accessRule = AccessRuleFactory.sampleSelectedVideosAccessRule()
+            val accessRule = AccessRuleFactory.sampleIncludedVideosAccessRule()
 
             val document = converter.toDocument(accessRule) as AccessRuleDocument.IncludedVideos
 

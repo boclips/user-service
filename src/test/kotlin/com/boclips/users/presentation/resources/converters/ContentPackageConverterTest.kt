@@ -16,7 +16,7 @@ class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can convert to a resource`() {
         val packageId = ObjectId.get().toHexString()
-        val collectionAccessRule = AccessRuleFactory.sampleSelectedCollectionsAccessRule(
+        val collectionAccessRule = AccessRuleFactory.sampleIncludedCollectionsAccessRule(
             collectionIds = listOf(CollectionId("hello"), CollectionId("collection")),
             name = "name of the accessRule"
         )

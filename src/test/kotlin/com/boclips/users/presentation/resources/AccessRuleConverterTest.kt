@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 class AccessRuleConverterTest {
     @Test
     fun `converts selected collections access rule`() {
-        val accessRule = AccessRuleFactory.sampleSelectedCollectionsAccessRule(
+        val accessRule = AccessRuleFactory.sampleIncludedCollectionsAccessRule(
             collectionIds = listOf(CollectionId("A"), CollectionId("B"))
         )
 
@@ -24,7 +24,7 @@ class AccessRuleConverterTest {
 
     @Test
     fun `converts selected videos access rule`() {
-        val accessRule = AccessRuleFactory.sampleSelectedVideosAccessRule(
+        val accessRule = AccessRuleFactory.sampleIncludedVideosAccessRule(
             videoIds = listOf(VideoId("A"), VideoId("B"))
         )
 

@@ -6,9 +6,15 @@ import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccessRuleFactory
+import com.mongodb.MongoClient
 import org.assertj.core.api.Assertions.assertThat
+import org.bson.Document
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestTemplate
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mongodb.core.MongoTemplate
 
 class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     @Nested
@@ -95,25 +101,44 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
         }
     }
 
+    @Autowired
+    lateinit var mongoTemplate: MongoTemplate
+
     @Nested
     inner class WorkingWithNewAndLegacyDocuments {
+
         @Test
         fun `can read both video documents into domain instances`() {
-            accessRuleRepository.save(AccessRuleFactory.sampleSelectedVideosAccessRule())
+            mongoTemplate.getCollection("contracts").insertOne(
+                Document()
+                    .append("_id", ObjectId().toHexString())
+                    .append("_class", "SelectedVideos")
+                    .append("name", "an-access-rule")
+                    .append("videoIds", emptyList<String>())
+            )
+
             accessRuleRepository.save(AccessRuleFactory.sampleIncludedVideosAccessRule())
 
             val allAccessRules = accessRuleRepository.findAll()
 
+            assertThat(allAccessRules).hasSize(2)
             allAccessRules.map { assertThat(it is AccessRule.IncludedVideos).isTrue() }
         }
 
         @Test
         fun `can read both collection documents into domain instances`() {
-            accessRuleRepository.save(AccessRuleFactory.sampleSelectedCollectionsAccessRule())
+            mongoTemplate.getCollection("contracts").insertOne(
+                Document()
+                    .append("_id", ObjectId().toHexString())
+                    .append("_class", "SelectedCollections")
+                    .append("name", "an-collection-access-rule")
+                    .append("collectionIds", emptyList<String>())
+            )
             accessRuleRepository.save(AccessRuleFactory.sampleIncludedCollectionsAccessRule())
 
             val allAccessRules = accessRuleRepository.findAll()
 
+            assertThat(allAccessRules).hasSize(2)
             allAccessRules.map { assertThat(it is AccessRule.IncludedCollections).isTrue() }
         }
     }

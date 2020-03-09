@@ -15,9 +15,9 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountCon
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
-import com.boclips.users.infrastructure.organisation.SpringDataMongoOrganisationRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.organisation.RoleBasedOrganisationIdResolver
+import com.boclips.users.infrastructure.organisation.SpringDataMongoOrganisationRepository
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.schooldigger.SchoolDiggerClient

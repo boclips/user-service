@@ -613,7 +613,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val collectionsAccessRuleName = "Test collections contract"
             val collectionId = "test-collection-id"
 
-            val collectionsAccessRule = AccessRule.SelectedCollections(
+            val collectionsAccessRule = AccessRule.IncludedCollections(
                 name = collectionsAccessRuleName,
                 collectionIds = listOf(CollectionId((collectionId))),
                 id = AccessRuleId(ObjectId.get().toHexString())
@@ -622,7 +622,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             val videosAccessRuleName = "Test videos contract"
             val videoId = "test-video-id"
-            val videosAccessRule = AccessRule.SelectedVideos(
+            val videosAccessRule = AccessRule.IncludedVideos(
                 name = videosAccessRuleName,
                 videoIds = listOf(VideoId(videoId)),
                 id = AccessRuleId(ObjectId.get().toHexString())

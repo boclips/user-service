@@ -36,20 +36,10 @@ class AccessRuleDocumentConverter {
 
     fun toDocument(accessRule: AccessRule): AccessRuleDocument {
         return when (accessRule) {
-            is AccessRule.SelectedCollections -> AccessRuleDocument.IncludedCollections().apply {
-                id = ObjectId(accessRule.id.value)
-                name = accessRule.name
-                collectionIds = accessRule.collectionIds.map { it.value }
-            }
             is AccessRule.IncludedCollections -> AccessRuleDocument.IncludedCollections().apply {
                 id = ObjectId(accessRule.id.value)
                 name = accessRule.name
                 collectionIds = accessRule.collectionIds.map { it.value }
-            }
-            is AccessRule.SelectedVideos -> AccessRuleDocument.IncludedVideos().apply {
-                id = ObjectId(accessRule.id.value)
-                name = accessRule.name
-                videoIds = accessRule.videoIds.map { it.value }
             }
             is AccessRule.IncludedVideos -> AccessRuleDocument.IncludedVideos().apply {
                 id = ObjectId(accessRule.id.value)
