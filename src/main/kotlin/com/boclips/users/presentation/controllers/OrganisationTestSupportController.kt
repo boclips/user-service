@@ -25,7 +25,7 @@ import javax.validation.constraints.NotBlank
 @Validated
 @RestController
 @RequestMapping("/v1", "/v1/")
-class AccountTestSupportController(
+class OrganisationTestSupportController(
     private val organisationLinkBuilder: OrganisationLinkBuilder,
     private val createApiIntegration: CreateApiIntegration,
     private val getApiIntegrationByName: GetApiIntegrationByName,
