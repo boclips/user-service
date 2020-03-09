@@ -225,8 +225,8 @@ abstract class AbstractSpringIntegrationTest {
     fun saveSelectedCollectionsAccessRule(
         name: String,
         collectionIds: List<CollectionId>
-    ): AccessRule.SelectedCollections {
-        return selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(name, collectionIds)
+    ): AccessRule.IncludedCollections {
+        return selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(name, collectionIds)
     }
 
     fun saveSelectedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {

@@ -10,7 +10,7 @@ class MongoIncludedContentAccessRuleRepositoryTest : AbstractSpringIntegrationTe
     @Test
     fun `saves a selected collections access rule`() {
         val accessRuleName = "Test selected content contract"
-        val persistedAccessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+        val persistedAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
             name = accessRuleName,
             collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
         )

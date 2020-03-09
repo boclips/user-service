@@ -18,7 +18,7 @@ class AccessRuleDocumentConverterTest {
                 collectionIds = listOf("A", "B", "C")
             )
 
-            val accessRule = converter.fromDocument(document) as AccessRule.SelectedCollections
+            val accessRule = converter.fromDocument(document) as AccessRule.IncludedCollections
 
             assertThat(accessRule.id.value).isEqualTo(document.id.toHexString())
             assertThat(accessRule.name).isEqualTo(document.name)
@@ -33,7 +33,7 @@ class AccessRuleDocumentConverterTest {
         fun `converts domain object to document`() {
             val accessRule = AccessRuleFactory.sampleSelectedCollectionsAccessRule()
 
-            val document = converter.toDocument(accessRule) as AccessRuleDocument.SelectedCollections
+            val document = converter.toDocument(accessRule) as AccessRuleDocument.IncludedCollections
 
             assertThat(document.id.toHexString()).isEqualTo(accessRule.id.value)
             assertThat(document.name).isEqualTo(accessRule.name)

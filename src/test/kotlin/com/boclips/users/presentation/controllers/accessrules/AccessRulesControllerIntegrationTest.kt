@@ -30,7 +30,7 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns given access rule on the list when the name matches`() {
             val accessRuleName = "Super contract"
-            val accessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val accessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 accessRuleName,
                 listOf(CollectionId("A"))
             )
@@ -76,7 +76,7 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns an empty list when access rule is not found by name`() {
-            selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 "Super contract",
                 listOf(CollectionId("A"))
             )
@@ -97,7 +97,7 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns an empty list when lookup is done with a blank parameter`() {
-            selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 "Super contract",
                 listOf(CollectionId("A"))
             )
@@ -119,13 +119,13 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns all access rules in the system when name query parameter is not provided`() {
             val firstAccessRuleName = "first"
-            val firstAccessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val firstAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 firstAccessRuleName,
                 listOf(CollectionId("A"))
             )
 
             val secondAccessRuleName = "second"
-            val secondAccessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val secondAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 secondAccessRuleName,
                 listOf(CollectionId("B"))
             )

@@ -29,7 +29,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
 
         @Test
         fun `adds the collection to the contract`() {
-            val accessRuleId = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val accessRuleId = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 "Some test contract",
                 emptyList()
             ).id
@@ -44,7 +44,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             )
                 .andExpect(status().isNoContent)
 
-            val updatedAccessRule = accessRuleRepository.findById(accessRuleId) as AccessRule.SelectedCollections
+            val updatedAccessRule = accessRuleRepository.findById(accessRuleId) as AccessRule.IncludedCollections
 
             assertThat(updatedAccessRule.collectionIds).contains(CollectionId(collectionId))
         }
@@ -78,7 +78,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `removes provided collection from a contract`() {
             val collectionId = "test-collection-id"
-            val accessRuleId = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val accessRuleId = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 "Some test contract",
                 listOf(CollectionId(collectionId))
             ).id
@@ -92,7 +92,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             )
                 .andExpect(status().isNoContent)
 
-            val updatedAccessRule = accessRuleRepository.findById(accessRuleId) as AccessRule.SelectedCollections
+            val updatedAccessRule = accessRuleRepository.findById(accessRuleId) as AccessRule.IncludedCollections
 
             assertThat(updatedAccessRule.collectionIds).isEmpty()
         }

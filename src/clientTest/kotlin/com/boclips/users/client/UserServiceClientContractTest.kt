@@ -193,7 +193,11 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
         name: String,
         accessRules: List<AccessRule>
     ): ContentPackageId {
-        return saveContentPackage(ContentPackageFactory.sampleContentPackage(name = name, accessRuleIds = accessRules.map { it.id })).id
+        return saveContentPackage(
+            ContentPackageFactory.sampleContentPackage(
+                name = name,
+                accessRuleIds = accessRules.map { it.id })
+        ).id
     }
 
     override fun insertTestUser(organisationId: String, subjectId: String, shareCode: String): User {
@@ -252,6 +256,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                 .accessRules(accessRules.map {
                     when (it) {
                         is AccessRule.SelectedCollections -> SelectedCollectionsAccessRule(it.collectionIds.map { id -> id.value })
+                        is AccessRule.IncludedCollections -> SelectedCollectionsAccessRule(it.collectionIds.map { id -> id.value })
                         is AccessRule.SelectedVideos -> SelectedVideosAccessRule(it.videoIds.map { id -> id.value })
                         is AccessRule.IncludedVideos -> SelectedVideosAccessRule(it.videoIds.map { id -> id.value })
                     }

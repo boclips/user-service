@@ -7,6 +7,12 @@ sealed class AccessRule {
         val collectionIds: List<CollectionId>
     ) : AccessRule()
 
+    data class IncludedCollections(
+        override val id: AccessRuleId,
+        override val name: String,
+        val collectionIds: List<CollectionId>
+    ) : AccessRule()
+
     data class SelectedVideos(
         override val id: AccessRuleId,
         override val name: String,

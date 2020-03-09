@@ -17,14 +17,14 @@ class RemoveCollectionFromAccessRuleIntegrationTest : AbstractSpringIntegrationT
     @Test
     fun `can remove a collection from a access rule`() {
         val existingId = CollectionId("some-existing-id")
-        val accessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+        val accessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
             "whatever",
             listOf(existingId)
         )
 
         removeCollectionFromAccessRule(accessRuleId = accessRule.id, collectionId = existingId)
 
-        val updatedAccessRule = accessRuleRepository.findById(accessRule.id) as AccessRule.SelectedCollections
+        val updatedAccessRule = accessRuleRepository.findById(accessRule.id) as AccessRule.IncludedCollections
 
         assertThat(updatedAccessRule.collectionIds).isEmpty()
     }
@@ -41,14 +41,14 @@ class RemoveCollectionFromAccessRuleIntegrationTest : AbstractSpringIntegrationT
 
     @Test
     fun `does not fail when collection to remove is missing (is idempotent)`() {
-        val accessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+        val accessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
             "whatever",
             emptyList()
         )
 
         removeCollectionFromAccessRule(accessRuleId = accessRule.id, collectionId = CollectionId("some-id"))
 
-        val updatedAccessRule = accessRuleRepository.findById(accessRule.id) as AccessRule.SelectedCollections
+        val updatedAccessRule = accessRuleRepository.findById(accessRule.id) as AccessRule.IncludedCollections
 
         assertThat(updatedAccessRule.collectionIds).isEmpty()
     }

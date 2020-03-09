@@ -15,7 +15,7 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindById {
         @Test
         fun `fetches a collection access rule by id and deserializes it to a correct class`() {
-            val persistedAccessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val persistedAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 name = "Test selected content contract",
                 collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
             )
@@ -48,7 +48,7 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `looks up access rules by name and deserializes them to a correct class`() {
             val accessRuleName = "Name Test"
-            val persistedAccessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val persistedAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 name = accessRuleName,
                 collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
             )
@@ -68,11 +68,11 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindAll {
         @Test
         fun `returns all access rules`() {
-            val firstCollectionAccessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val firstCollectionAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 name = "Hey",
                 collectionIds = emptyList()
             )
-            val secondCollectionAccessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val secondCollectionAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 name = "Ho",
                 collectionIds = emptyList()
             )
@@ -99,16 +99,22 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     inner class WorkingWithNewAndLegacyDocuments {
         @Test
         fun `can read both video documents into domain instances`() {
-            accessRuleRepository.save(AccessRuleFactory.sampleSelectedVideosAccessRule(
-                name = "LegacyVideoDocument"
-            ))
-            accessRuleRepository.save(AccessRuleFactory.sampleIncludedVideosAccessRule(
-                name = "VideoDocument"
-            ))
+            accessRuleRepository.save(AccessRuleFactory.sampleSelectedVideosAccessRule())
+            accessRuleRepository.save(AccessRuleFactory.sampleIncludedVideosAccessRule())
 
             val allAccessRules = accessRuleRepository.findAll()
 
             allAccessRules.map { assertThat(it is AccessRule.IncludedVideos).isTrue() }
+        }
+
+        @Test
+        fun `can read both collection documents into domain instances`() {
+            accessRuleRepository.save(AccessRuleFactory.sampleSelectedCollectionsAccessRule())
+            accessRuleRepository.save(AccessRuleFactory.sampleIncludedCollectionsAccessRule())
+
+            val allAccessRules = accessRuleRepository.findAll()
+
+            allAccessRules.map { assertThat(it is AccessRule.IncludedCollections).isTrue() }
         }
     }
 }

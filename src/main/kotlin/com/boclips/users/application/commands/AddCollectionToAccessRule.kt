@@ -15,7 +15,7 @@ class AddCollectionToAccessRule(
         accessRuleRepository
             .findById(accessRuleId)
             ?.let {
-                if (it is AccessRule.SelectedCollections) {
+                if (it is AccessRule.IncludedCollections) {
                     val updatedAccessRule = it.copy(
                         collectionIds = it.collectionIds.toMutableSet().apply { add(collectionId) }.toList()
                     )

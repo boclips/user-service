@@ -111,7 +111,7 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns a 409 response when a access rule with given name already exists`() {
             val accessRule = "Super contract"
-            selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 accessRule,
                 listOf(CollectionId("A"))
             )
@@ -147,7 +147,7 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns requested access rule`() {
             val accessRuleName = "Super contract"
-            val accessRule = selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            val accessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 accessRuleName,
                 listOf(CollectionId("A"))
             )

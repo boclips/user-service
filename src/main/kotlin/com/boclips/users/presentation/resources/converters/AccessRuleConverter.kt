@@ -22,6 +22,15 @@ class AccessRuleConverter(
                     accessRuleLinkBuilder.self(accessRule.id)
                 ).map { it.rel.value() to it }.toMap()
             )
+            is AccessRule.IncludedCollections -> AccessRuleResource.SelectedCollections(
+                name = accessRule.name,
+                collectionIds = accessRule.collectionIds.map { it.value },
+                _links = listOfNotNull(
+                    selectedAccessRuleLinkBuilder.addCollection(accessRuleId = accessRule.id.value),
+                    selectedAccessRuleLinkBuilder.removeCollection(accessRuleId = accessRule.id.value),
+                    accessRuleLinkBuilder.self(accessRule.id)
+                ).map { it.rel.value() to it }.toMap()
+            )
             is AccessRule.SelectedVideos -> AccessRuleResource.SelectedVideos(
                 name = accessRule.name,
                 videoIds = accessRule.videoIds.map { it.value },

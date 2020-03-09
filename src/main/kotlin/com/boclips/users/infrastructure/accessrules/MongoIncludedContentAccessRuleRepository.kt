@@ -13,10 +13,10 @@ class MongoIncludedContentAccessRuleRepository(
     private val selectedVideosAccessRuleDocumentMongoRepository: SelectedVideosAccessRuleDocumentMongoRepository,
     private val accessRuleDocumentConverter: AccessRuleDocumentConverter
 ) : SelectedContentAccessRuleRepository {
-    override fun saveSelectedCollectionsAccessRule(
+    override fun saveIncludedCollectionsAccessRule(
         name: String,
         collectionIds: List<CollectionId>
-    ): AccessRule.SelectedCollections {
+    ): AccessRule.IncludedCollections {
         return accessRuleDocumentConverter.fromDocument(
             selectedCollectionsAccessRuleDocumentMongoRepository.save(
                 AccessRuleDocument.SelectedCollections().apply {
@@ -25,7 +25,7 @@ class MongoIncludedContentAccessRuleRepository(
                     this.collectionIds = collectionIds.map { it.value }
                 }
             )
-        ) as AccessRule.SelectedCollections
+        ) as AccessRule.IncludedCollections
     }
 
     override fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {

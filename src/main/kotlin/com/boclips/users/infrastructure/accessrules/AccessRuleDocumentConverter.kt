@@ -11,7 +11,12 @@ import org.springframework.stereotype.Service
 class AccessRuleDocumentConverter {
     fun fromDocument(document: AccessRuleDocument): AccessRule {
         return when (document) {
-            is AccessRuleDocument.SelectedCollections -> AccessRule.SelectedCollections(
+            is AccessRuleDocument.SelectedCollections -> AccessRule.IncludedCollections(
+                id = AccessRuleId(document.id.toHexString()),
+                name = document.name,
+                collectionIds = document.collectionIds.map { CollectionId(it) }
+            )
+            is AccessRuleDocument.IncludedCollections -> AccessRule.IncludedCollections(
                 id = AccessRuleId(document.id.toHexString()),
                 name = document.name,
                 collectionIds = document.collectionIds.map { CollectionId(it) }
@@ -31,7 +36,12 @@ class AccessRuleDocumentConverter {
 
     fun toDocument(accessRule: AccessRule): AccessRuleDocument {
         return when (accessRule) {
-            is AccessRule.SelectedCollections -> AccessRuleDocument.SelectedCollections().apply {
+            is AccessRule.SelectedCollections -> AccessRuleDocument.IncludedCollections().apply {
+                id = ObjectId(accessRule.id.value)
+                name = accessRule.name
+                collectionIds = accessRule.collectionIds.map { it.value }
+            }
+            is AccessRule.IncludedCollections -> AccessRuleDocument.IncludedCollections().apply {
                 id = ObjectId(accessRule.id.value)
                 name = accessRule.name
                 collectionIds = accessRule.collectionIds.map { it.value }
@@ -41,7 +51,7 @@ class AccessRuleDocumentConverter {
                 name = accessRule.name
                 videoIds = accessRule.videoIds.map { it.value }
             }
-            is AccessRule.IncludedVideos  -> AccessRuleDocument.IncludedVideos().apply {
+            is AccessRule.IncludedVideos -> AccessRuleDocument.IncludedVideos().apply {
                 id = ObjectId(accessRule.id.value)
                 name = accessRule.name
                 videoIds = accessRule.videoIds.map { it.value }

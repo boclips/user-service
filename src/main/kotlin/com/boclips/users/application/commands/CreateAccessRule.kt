@@ -20,7 +20,7 @@ class CreateAccessRule(
         }
 
         return when (request) {
-            is CreateAccessRuleRequest.SelectedCollections -> selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(
+            is CreateAccessRuleRequest.SelectedCollections -> selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 request.name!!,
                 request.collectionIds!!.map { CollectionId(it) }
             )
