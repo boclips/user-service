@@ -4,5 +4,5 @@
 ktlint --apply-to-idea-project
 
 pushd src/test/resources
-    ./setup-accessRule-test
+    ./setup-contract-test
 popd
