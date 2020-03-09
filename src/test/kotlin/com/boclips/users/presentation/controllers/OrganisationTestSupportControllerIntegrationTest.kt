@@ -5,9 +5,9 @@ import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Nested
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
@@ -35,7 +34,9 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         }
 
         @Test
-        fun `inserts an organisation and returns its id in Location header`() {
+        fun `inserts an organisation`() {
+            val contentPackage = saveContentPackage(ContentPackageFactory.sampleContentPackage())
+
             mvc.perform(
                 post("/v1/api-integrations")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -44,14 +45,23 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                         {
                             "name": "Test Organisation",
                             "role": "ROLE_TEST_ORGANISATION",
-                            "accessRuleIds": ["A", "B", "C"]
+                            "contentPackageId": "${contentPackage.id.value}"
                         }
                     """.trimIndent()
                     )
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
             )
                 .andExpect(status().isCreated)
-                .andExpect(header().string("Location", containsString("/organisations/")))
+                .andDo { result ->
+                    mvc.perform(
+                        get(result.response.getHeaderValue("location") as String).asUserWithRoles(
+                            "has-role@test.com",
+                            UserRoles.VIEW_ORGANISATIONS
+                        )
+                    )
+                        .andExpect(status().isOk)
+                        .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
+                }
         }
 
         @Test

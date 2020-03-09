@@ -7,5 +7,5 @@ class CreateOrganisationRequest {
     var name: String? = null
     @field:NotEmpty
     var role: String? = null
-    var accessRuleIds: List<String>? = null
+    var contentPackageId: String? = null
 }

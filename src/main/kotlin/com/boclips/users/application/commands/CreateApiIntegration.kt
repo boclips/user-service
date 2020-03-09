@@ -1,8 +1,6 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.OrganisationAlreadyExistsException
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
@@ -11,7 +9,6 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.ContentPackageRepository
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.presentation.requests.CreateOrganisationRequest
-import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
 @Service
@@ -22,22 +19,15 @@ class CreateApiIntegration(
     operator fun invoke(request: CreateOrganisationRequest): Organisation<ApiIntegration> {
         assertNewApiIntegrationDoesNotCollide(request)
 
-        // TODO this is a quick fix for setting up e2e fixtures,
-        //  We should really create a POST on the content package resource
         val name = request.name ?: throw IllegalStateException("Name cannot be null")
-        val contentPackage = ContentPackage(
-            id = ContentPackageId(value = ObjectId.get().toHexString()),
-            name = "$name - content package",
-            accessRuleIds = request.accessRuleIds?.map { AccessRuleId(it) } ?: emptyList())
-
-        contentPackageRepository.save(contentPackage)
+        val contentPackage = request.contentPackageId?.let { contentPackageRepository.findById(ContentPackageId(it)) }
 
         val organisation = Organisation(
             id = OrganisationId.create(),
             details = ApiIntegration(
                 name = name
             ),
-            contentPackageId = contentPackage.id,
+            contentPackageId = contentPackage?.id,
             type = DealType.STANDARD,
             role = request.role,
             accessExpiresOn = null
