@@ -30,7 +30,13 @@ import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
 import com.boclips.videos.api.httpclient.SubjectsClient
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.mongodb.MongoClient
+import com.mongodb.MongoClientOptions
+import com.mongodb.MongoClientURI
+import io.opentracing.Tracer
 import org.keycloak.admin.client.Keycloak
+import org.litote.kmongo.KMongo
+import org.springframework.boot.autoconfigure.mongo.MongoProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -39,7 +45,8 @@ import org.springframework.web.client.RestTemplate
 @Configuration
 class InfrastructureConfiguration(
     private val objectMapper: ObjectMapper,
-    private val springDataMongoOrganisationRepository: SpringDataMongoOrganisationRepository
+    private val springDataMongoOrganisationRepository: SpringDataMongoOrganisationRepository,
+    private val mongoProperties: MongoProperties
 ) {
 
     @Profile("!test")
@@ -143,4 +150,13 @@ class InfrastructureConfiguration(
             repository = springDataMongoOrganisationRepository
         )
     }
+
+    // @Bean
+    // fun mongoClient(): MongoClient {
+    //     return KMongo.createClient(
+    //         MongoClientURI(
+    //             mongoProperties.determineUri()
+    //         )
+    //     )
+    // }
 }

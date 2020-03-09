@@ -5,10 +5,16 @@ import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccessRuleDocumentFactory
 import com.boclips.users.testsupport.factories.AccessRuleFactory
+import com.mongodb.MongoClient
+import com.mongodb.MongoClientURI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.litote.kmongo.KMongo
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.mongo.MongoProperties
 
 class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     @Nested
@@ -95,11 +101,38 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
         }
     }
 
+    // @Autowired
+    // lateinit var mongoClient: MongoClient
+
+    @Autowired
+    lateinit var mongoProperties: MongoProperties
+
     @Nested
     inner class WorkingWithNewAndLegacyDocuments {
+
         @Test
         fun `can read both video documents into domain instances`() {
-            accessRuleRepository.save(AccessRuleFactory.sampleSelectedVideosAccessRule())
+            // mongoClient.getDatabase("user-service-db").getCollection("contracts", String::class.java).insertOne("""
+            //     {
+            //         "_id": "${ObjectId().toHexString()}",
+            //         "name": "Test Name",
+            //         "collectionIds": []
+            //     }
+            // """.trimIndent())
+
+            val mongoClient = KMongo.createClient(
+                MongoClientURI(
+                    mongoProperties.determineUri()
+                )
+            )
+
+            mongoClient.getDatabase("user-service-db").getCollection("contracts", AccessRuleDocument::class.java)
+                .insertOne(AccessRuleDocumentFactory.sampleSelectedVideosAccessRuleDocument())
+
+
+
+            // mongoTemplate.db.getCollection("contracts", AccessRuleDocument.SelectedVideos::class.java)
+            //     .insertOne(AccessRuleDocumentFactory.sampleSelectedVideosAccessRuleDocument())
             accessRuleRepository.save(AccessRuleFactory.sampleIncludedVideosAccessRule())
 
             val allAccessRules = accessRuleRepository.findAll()
@@ -109,7 +142,8 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `can read both collection documents into domain instances`() {
-            accessRuleRepository.save(AccessRuleFactory.sampleSelectedCollectionsAccessRule())
+            // mongoTemplate.db.getCollection("contracts", AccessRuleDocument::class.java)
+            //     .insertOne(AccessRuleDocumentFactory.sampleSelectedCollectionsAccessRuleDocument())
             accessRuleRepository.save(AccessRuleFactory.sampleIncludedCollectionsAccessRule())
 
             val allAccessRules = accessRuleRepository.findAll()

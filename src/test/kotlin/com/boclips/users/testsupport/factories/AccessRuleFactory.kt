@@ -8,23 +8,11 @@ import org.bson.types.ObjectId
 
 class AccessRuleFactory {
     companion object {
-        fun sampleSelectedCollectionsAccessRule(
-            id: AccessRuleId = AccessRuleId(ObjectId().toHexString()),
-            name: String = "Tailored collections list",
-            collectionIds: List<CollectionId> = emptyList()
-        ) = AccessRule.SelectedCollections(id, name, collectionIds)
-
         fun sampleIncludedCollectionsAccessRule(
             id: AccessRuleId = AccessRuleId(ObjectId().toHexString()),
             name: String = "Tailored collections list",
             collectionIds: List<CollectionId> = emptyList()
         ) = AccessRule.IncludedCollections(id, name, collectionIds)
-
-        fun sampleSelectedVideosAccessRule(
-            id: AccessRuleId = AccessRuleId(ObjectId().toHexString()),
-            name: String = "Tailored videos list",
-            videoIds: List<VideoId> = emptyList()
-        ) = AccessRule.SelectedVideos(id, name, videoIds)
 
         fun sampleIncludedVideosAccessRule(
             id: AccessRuleId = AccessRuleId(ObjectId().toHexString()),
