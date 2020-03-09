@@ -1,9 +1,11 @@
 package com.boclips.users.infrastructure.accessrules
 
+import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccessRuleFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -25,7 +27,7 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `fetches a video access rule by id and deserializes it to the correct class`() {
-            val persistedAccessRule = selectedContentAccessRuleRepository.saveSelectedVideosAccessRule(
+            val persistedAccessRule = selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(
                 name = "Test selected content contract",
                 videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
             )
@@ -75,7 +77,7 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
                 collectionIds = emptyList()
             )
             val firstVideoAccessRule =
-                selectedContentAccessRuleRepository.saveSelectedVideosAccessRule(name = "Yo", videoIds = emptyList())
+                selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(name = "Yo", videoIds = emptyList())
 
             val allAccessRules = accessRuleRepository.findAll()
 
@@ -90,6 +92,23 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns an empty list if no access rules are found`() {
             assertThat(accessRuleRepository.findAll()).isEmpty()
+        }
+    }
+
+    @Nested
+    inner class WorkingWithNewAndLegacyDocuments {
+        @Test
+        fun `can read both video documents into domain instances`() {
+            accessRuleRepository.save(AccessRuleFactory.sampleSelectedVideosAccessRule(
+                name = "LegacyVideoDocument"
+            ))
+            accessRuleRepository.save(AccessRuleFactory.sampleIncludedVideosAccessRule(
+                name = "VideoDocument"
+            ))
+
+            val allAccessRules = accessRuleRepository.findAll()
+
+            allAccessRules.map { assertThat(it is AccessRule.IncludedVideos).isTrue() }
         }
     }
 }

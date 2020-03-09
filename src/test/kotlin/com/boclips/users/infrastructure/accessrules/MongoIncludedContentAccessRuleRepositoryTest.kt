@@ -6,7 +6,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class MongoSelectedContentAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
+class MongoIncludedContentAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `saves a selected collections access rule`() {
         val accessRuleName = "Test selected content contract"
@@ -27,7 +27,7 @@ class MongoSelectedContentAccessRuleRepositoryTest : AbstractSpringIntegrationTe
     @Test
     fun `saves a selected videos access rule`() {
         val accessRuleName = "Test selected content contract"
-        val persistedAccessRule = selectedContentAccessRuleRepository.saveSelectedVideosAccessRule(
+        val persistedAccessRule = selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(
             name = accessRuleName,
             videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
         )

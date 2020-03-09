@@ -11,12 +11,17 @@ import org.springframework.stereotype.Service
 class AccessRuleDocumentConverter {
     fun fromDocument(document: AccessRuleDocument): AccessRule {
         return when (document) {
-            is AccessRuleDocument.SelectedCollections ->  AccessRule.SelectedCollections(
+            is AccessRuleDocument.SelectedCollections -> AccessRule.SelectedCollections(
                 id = AccessRuleId(document.id.toHexString()),
                 name = document.name,
                 collectionIds = document.collectionIds.map { CollectionId(it) }
             )
-            is AccessRuleDocument.SelectedVideos -> AccessRule.SelectedVideos(
+            is AccessRuleDocument.SelectedVideos -> AccessRule.IncludedVideos(
+                id = AccessRuleId(document.id.toHexString()),
+                name = document.name,
+                videoIds = document.videoIds.map { VideoId(it) }
+            )
+            is AccessRuleDocument.IncludedVideos -> AccessRule.IncludedVideos(
                 id = AccessRuleId(document.id.toHexString()),
                 name = document.name,
                 videoIds = document.videoIds.map { VideoId(it) }
@@ -31,7 +36,12 @@ class AccessRuleDocumentConverter {
                 name = accessRule.name
                 collectionIds = accessRule.collectionIds.map { it.value }
             }
-            is AccessRule.SelectedVideos -> AccessRuleDocument.SelectedVideos().apply {
+            is AccessRule.SelectedVideos -> AccessRuleDocument.IncludedVideos().apply {
+                id = ObjectId(accessRule.id.value)
+                name = accessRule.name
+                videoIds = accessRule.videoIds.map { it.value }
+            }
+            is AccessRule.IncludedVideos  -> AccessRuleDocument.IncludedVideos().apply {
                 id = ObjectId(accessRule.id.value)
                 name = accessRule.name
                 videoIds = accessRule.videoIds.map { it.value }

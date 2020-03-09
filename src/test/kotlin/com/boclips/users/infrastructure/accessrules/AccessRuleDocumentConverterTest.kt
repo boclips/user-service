@@ -49,7 +49,7 @@ class AccessRuleDocumentConverterTest {
                 videoIds = listOf("A", "B", "C")
             )
 
-            val accessRule = converter.fromDocument(document) as AccessRule.SelectedVideos
+            val accessRule = converter.fromDocument(document) as AccessRule.IncludedVideos
 
             assertThat(accessRule.id.value).isEqualTo(document.id.toHexString())
             assertThat(accessRule.name).isEqualTo(document.name)
@@ -64,7 +64,7 @@ class AccessRuleDocumentConverterTest {
         fun `converts domain object to document`() {
             val accessRule = AccessRuleFactory.sampleSelectedVideosAccessRule()
 
-            val document = converter.toDocument(accessRule) as AccessRuleDocument.SelectedVideos
+            val document = converter.toDocument(accessRule) as AccessRuleDocument.IncludedVideos
 
             assertThat(document.id.toHexString()).isEqualTo(accessRule.id.value)
             assertThat(document.name).isEqualTo(accessRule.name)

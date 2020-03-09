@@ -8,5 +8,5 @@ import com.boclips.users.domain.model.contentpackage.VideoId
 // in a more generic manner. Can be revisited once we introduce API endpoints for creating contracts.
 interface SelectedContentAccessRuleRepository {
     fun saveSelectedCollectionsAccessRule(name: String, collectionIds: List<CollectionId>): AccessRule.SelectedCollections
-    fun saveSelectedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.SelectedVideos
+    fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos
 }

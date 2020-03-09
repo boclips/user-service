@@ -16,6 +16,11 @@ sealed class AccessRuleDocument {
         lateinit var videoIds: List<String>
     }
 
+    @TypeAlias("IncludedVideos")
+    class IncludedVideos : AccessRuleDocument() {
+        lateinit var videoIds: List<String>
+    }
+
     lateinit var id: ObjectId
     lateinit var name: String
 }

@@ -8,7 +8,7 @@ import org.bson.types.ObjectId
 import org.springframework.stereotype.Repository
 
 @Repository
-class MongoSelectedContentAccessRuleRepository(
+class MongoIncludedContentAccessRuleRepository(
     private val selectedCollectionsAccessRuleDocumentMongoRepository: SelectedCollectionsAccessRuleDocumentMongoRepository,
     private val selectedVideosAccessRuleDocumentMongoRepository: SelectedVideosAccessRuleDocumentMongoRepository,
     private val accessRuleDocumentConverter: AccessRuleDocumentConverter
@@ -28,7 +28,7 @@ class MongoSelectedContentAccessRuleRepository(
         ) as AccessRule.SelectedCollections
     }
 
-    override fun saveSelectedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.SelectedVideos {
+    override fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
         return accessRuleDocumentConverter.fromDocument(
             selectedVideosAccessRuleDocumentMongoRepository.save(
                 AccessRuleDocument.SelectedVideos().apply {
@@ -37,6 +37,6 @@ class MongoSelectedContentAccessRuleRepository(
                     this.videoIds = videoIds.map { it.value }
                 }
             )
-        ) as AccessRule.SelectedVideos
+        ) as AccessRule.IncludedVideos
     }
 }

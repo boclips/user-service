@@ -13,6 +13,12 @@ sealed class AccessRule {
         val videoIds: List<VideoId>
     ) : AccessRule()
 
+    data class IncludedVideos(
+        override val id: AccessRuleId,
+        override val name: String,
+        val videoIds: List<VideoId>
+    ) : AccessRule()
+
     abstract val id: AccessRuleId
     abstract val name: String
 }

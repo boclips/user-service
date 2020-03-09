@@ -24,7 +24,7 @@ class CreateAccessRule(
                 request.name!!,
                 request.collectionIds!!.map { CollectionId(it) }
             )
-            is CreateAccessRuleRequest.SelectedVideos -> selectedContentAccessRuleRepository.saveSelectedVideosAccessRule(
+            is CreateAccessRuleRequest.SelectedVideos -> selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(
                 request.name!!,
                 request.videoIds!!.map { VideoId(it) }
             )

@@ -253,6 +253,7 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                     when (it) {
                         is AccessRule.SelectedCollections -> SelectedCollectionsAccessRule(it.collectionIds.map { id -> id.value })
                         is AccessRule.SelectedVideos -> SelectedVideosAccessRule(it.videoIds.map { id -> id.value })
+                        is AccessRule.IncludedVideos -> SelectedVideosAccessRule(it.videoIds.map { id -> id.value })
                     }
                 }).build()
         )

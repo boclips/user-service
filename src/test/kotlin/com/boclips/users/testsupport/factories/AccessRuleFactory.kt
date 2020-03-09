@@ -19,5 +19,11 @@ class AccessRuleFactory {
             name: String = "Tailored videos list",
             videoIds: List<VideoId> = emptyList()
         ) = AccessRule.SelectedVideos(id, name, videoIds)
+
+        fun sampleIncludedVideosAccessRule(
+            id: AccessRuleId = AccessRuleId(ObjectId().toHexString()),
+            name: String = "Tailored videos list",
+            videoIds: List<VideoId> = emptyList()
+        ) = AccessRule.IncludedVideos(id, name, videoIds)
     }
 }

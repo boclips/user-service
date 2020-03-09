@@ -11,7 +11,6 @@ import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.AccessRule
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
@@ -230,8 +229,8 @@ abstract class AbstractSpringIntegrationTest {
         return selectedContentAccessRuleRepository.saveSelectedCollectionsAccessRule(name, collectionIds)
     }
 
-    fun saveSelectedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.SelectedVideos {
-        return selectedContentAccessRuleRepository.saveSelectedVideosAccessRule(name, videoIds)
+    fun saveSelectedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
+        return selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(name, videoIds)
     }
 
     fun ResultActions.andExpectApiErrorPayload(): ResultActions {
