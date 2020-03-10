@@ -25,8 +25,12 @@ class MongoAccessRuleRepository(
         return accessRuleDocumentMongoRepository.findByName(name).map(accessRuleDocumentConverter::fromDocument)
     }
 
-    override fun save(accessRule: AccessRule): AccessRuleDocument {
-        return accessRuleDocumentMongoRepository.save(accessRuleDocumentConverter.toDocument(accessRule))
+    override fun save(accessRule: AccessRule): AccessRule {
+        return accessRuleDocumentConverter.fromDocument(
+            accessRuleDocumentMongoRepository.save(
+                accessRuleDocumentConverter.toDocument(accessRule)
+            )
+        )
     }
 
     private fun asNullable(potentialDocument: Optional<AccessRuleDocument>): AccessRuleDocument? {

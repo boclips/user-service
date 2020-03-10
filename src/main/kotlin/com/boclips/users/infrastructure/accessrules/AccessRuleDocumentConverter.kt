@@ -21,6 +21,11 @@ class AccessRuleDocumentConverter {
                 name = document.name,
                 videoIds = document.videoIds.map { VideoId(it) }
             )
+            is AccessRuleDocument.ExcludedVideos -> AccessRule.ExcludedVideos(
+                id = AccessRuleId(document.id.toHexString()),
+                name = document.name,
+                videoIds = document.videoIds.map { VideoId(it) }
+            )
         }
     }
 
@@ -32,6 +37,11 @@ class AccessRuleDocumentConverter {
                 collectionIds = accessRule.collectionIds.map { it.value }
             }
             is AccessRule.IncludedVideos -> AccessRuleDocument.IncludedVideos().apply {
+                id = ObjectId(accessRule.id.value)
+                name = accessRule.name
+                videoIds = accessRule.videoIds.map { it.value }
+            }
+            is AccessRule.ExcludedVideos -> AccessRuleDocument.ExcludedVideos().apply {
                 id = ObjectId(accessRule.id.value)
                 name = accessRule.name
                 videoIds = accessRule.videoIds.map { it.value }

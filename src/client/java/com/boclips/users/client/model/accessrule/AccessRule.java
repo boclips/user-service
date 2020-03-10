@@ -7,7 +7,8 @@ import lombok.Data;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = IncludedCollectionsAccessRule.class, name = "IncludedCollections"),
-        @JsonSubTypes.Type(value = IncludedVideosAccessRule.class, name = "IncludedVideos")
+        @JsonSubTypes.Type(value = IncludedVideosAccessRule.class, name = "IncludedVideos"),
+        @JsonSubTypes.Type(value = ExcludedVideosAccessRule.class, name = "ExcludedVideos")
 })
 @Data
 public abstract class AccessRule {

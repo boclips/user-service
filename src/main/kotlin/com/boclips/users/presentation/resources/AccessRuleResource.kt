@@ -8,7 +8,8 @@ import org.springframework.hateoas.Link
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
     JsonSubTypes.Type(value = AccessRuleResource.IncludedCollections::class, name = "IncludedCollections"),
-    JsonSubTypes.Type(value = AccessRuleResource.IncludedVideos::class, name = "IncludedVideos")
+    JsonSubTypes.Type(value = AccessRuleResource.IncludedVideos::class, name = "IncludedVideos"),
+    JsonSubTypes.Type(value = AccessRuleResource.ExcludedVideos::class, name = "ExcludedVideos")
 )
 sealed class AccessRuleResource {
     data class IncludedCollections(
@@ -19,6 +20,13 @@ sealed class AccessRuleResource {
     ) : AccessRuleResource()
 
     data class IncludedVideos(
+        override val name: String,
+        val videoIds: List<String>,
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        override val _links: Map<String, Link> = emptyMap()
+    ) : AccessRuleResource()
+
+    data class ExcludedVideos(
         override val name: String,
         val videoIds: List<String>,
         @JsonInclude(JsonInclude.Include.NON_NULL)

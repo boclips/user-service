@@ -8,6 +8,7 @@ import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
 import com.boclips.users.client.model.accessrule.ContentPackage
+import com.boclips.users.client.model.accessrule.ExcludedVideosAccessRule
 import com.boclips.users.client.model.accessrule.IncludedCollectionsAccessRule
 import com.boclips.users.client.model.accessrule.IncludedVideosAccessRule
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
@@ -19,6 +20,7 @@ import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
@@ -99,12 +101,23 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
                 collectionIds = listOf(CollectionId("A"), CollectionId("B"))
             )
 
-            val accessRuleVideos = saveIncludedVideosAccessRule(
+            val accessRuleIncludedVideos = saveIncludedVideosAccessRule(
                 name = "Second",
                 videoIds = listOf(VideoId("C"), VideoId("D"))
             )
+
+            val accessRuleExcludedVideos = accessRuleRepository.save(
+                AccessRuleFactory.sampleExcludedVideosAccessRule(
+                    name = "Super Bad Videos",
+                    videoIds = listOf(VideoId("E"), VideoId("F"))
+                )
+            )
+
             val contentPackageId =
-                insertContentPackage("My content package", listOf(accessRuleCollections, accessRuleVideos))
+                insertContentPackage(
+                    "My content package",
+                    listOf(accessRuleCollections, accessRuleIncludedVideos, accessRuleExcludedVideos)
+                )
 
             val organisation = insertTestOrganisation(
                 "test-organisation-id", contentPackageId
@@ -118,6 +131,8 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
                 .extracting("name")
                 .contains("My content package")
 
+            assertThat(contentPackage.accessRules).hasSize(3)
+
             val includedCollectionsAccessRules =
                 contentPackage.accessRules.filterIsInstance<IncludedCollectionsAccessRule>()
             assertThat(includedCollectionsAccessRules)
@@ -128,6 +143,11 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
             assertThat(includedVideosAccessRules)
                 .flatExtracting("videoIds")
                 .containsExactlyInAnyOrder("C", "D")
+
+            val excludedVideosAccessRules = contentPackage.accessRules.filterIsInstance<ExcludedVideosAccessRule>()
+            assertThat(excludedVideosAccessRules)
+                .flatExtracting("videoIds")
+                .containsExactlyInAnyOrder("E", "F")
         }
     }
 
@@ -256,9 +276,14 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                 .accessRules(accessRules.map {
                     when (it) {
                         is AccessRule.IncludedCollections -> IncludedCollectionsAccessRule(
-                            it.collectionIds.map { id -> id.value })
+                            it.collectionIds.map { id -> id.value }
+                        )
                         is AccessRule.IncludedVideos -> IncludedVideosAccessRule(
-                            it.videoIds.map { id -> id.value })
+                            it.videoIds.map { id -> id.value }
+                        )
+                        is AccessRule.ExcludedVideos -> ExcludedVideosAccessRule(
+                            it.videoIds.map { id -> id.value }
+                        )
                     }
                 }).build()
         )
