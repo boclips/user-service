@@ -11,24 +11,24 @@ import org.junit.jupiter.api.Test
 
 class AccessRuleConverterTest {
     @Test
-    fun `converts selected collections access rule`() {
+    fun `converts included collections access rule`() {
         val accessRule = AccessRuleFactory.sampleIncludedCollectionsAccessRule(
             collectionIds = listOf(CollectionId("A"), CollectionId("B"))
         )
 
-        val resource = converter.toResource(accessRule) as AccessRuleResource.SelectedCollections
+        val resource = converter.toResource(accessRule) as AccessRuleResource.IncludedCollections
 
         assertThat(resource.name).isEqualTo(accessRule.name)
         assertThat(resource.collectionIds).containsExactlyInAnyOrder("A", "B")
     }
 
     @Test
-    fun `converts selected videos access rule`() {
+    fun `converts included videos access rule`() {
         val accessRule = AccessRuleFactory.sampleIncludedVideosAccessRule(
             videoIds = listOf(VideoId("A"), VideoId("B"))
         )
 
-        val resource = converter.toResource(accessRule) as AccessRuleResource.SelectedVideos
+        val resource = converter.toResource(accessRule) as AccessRuleResource.IncludedVideos
 
         assertThat(resource.name).isEqualTo(accessRule.name)
         assertThat(resource.videoIds).containsExactlyInAnyOrder("A", "B")

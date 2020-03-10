@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class SelectedCollectionsAccessRule extends AccessRule {
+public class IncludedCollectionsAccessRule extends AccessRule {
     private List<String> collectionIds;
 }

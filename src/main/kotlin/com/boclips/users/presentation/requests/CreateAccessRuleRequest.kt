@@ -6,16 +6,16 @@ import javax.validation.constraints.NotEmpty
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
-    JsonSubTypes.Type(value = CreateAccessRuleRequest.SelectedCollections::class, name = "SelectedCollections"),
-    JsonSubTypes.Type(value = CreateAccessRuleRequest.SelectedVideos::class, name = "SelectedVideos")
+    JsonSubTypes.Type(value = CreateAccessRuleRequest.IncludedCollections::class, name = "IncludedCollections"),
+    JsonSubTypes.Type(value = CreateAccessRuleRequest.IncludedVideos::class, name = "IncludedVideos")
 )
 sealed class CreateAccessRuleRequest {
-    class SelectedCollections : CreateAccessRuleRequest() {
+    class IncludedCollections : CreateAccessRuleRequest() {
         @field:NotEmpty
         var collectionIds: List<String>? = null
     }
 
-    class SelectedVideos : CreateAccessRuleRequest() {
+    class IncludedVideos : CreateAccessRuleRequest() {
         @field:NotEmpty
         var videoIds: List<String>? = null
     }

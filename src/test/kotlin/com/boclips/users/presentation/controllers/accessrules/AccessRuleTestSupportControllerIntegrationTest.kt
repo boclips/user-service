@@ -33,14 +33,14 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         }
 
         @Test
-        fun `creates a SelectedCollections access rule and returns it's location`() {
+        fun `creates a IncludedCollections access rule and returns it's location`() {
             mvc.perform(
                 post("/v1/access-rules")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
                         {
-                            "type": "SelectedCollections",
+                            "type": "IncludedCollections",
                             "name": "Collections contract creation test",
                             "collectionIds": ["A", "B", "C"]
                         }
@@ -53,14 +53,14 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         }
 
         @Test
-        fun `creates a SelectedVideos access rule and returns it's location`() {
+        fun `creates a IncludedVideos access rule and returns it's location`() {
             mvc.perform(
                 post("/v1/access-rules")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
                         {
-                            "type": "SelectedVideos",
+                            "type": "IncludedVideos",
                             "name": "Videos contract creation test",
                             "videoIds": ["A", "B", "C"]
                         }
@@ -73,14 +73,14 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         }
 
         @Test
-        fun `returns a 400 response when SelectedCollections payload is invalid`() {
+        fun `returns a 400 response when IncludedCollections payload is invalid`() {
             mvc.perform(
                 post("/v1/access-rules")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
                         {
-                            "type": "SelectedCollections"
+                            "type": "IncludedCollections"
                         }
                     """.trimIndent()
                     )
@@ -122,7 +122,7 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
                     .content(
                         """
                         {
-                            "type": "SelectedCollections",
+                            "type": "IncludedCollections",
                             "name": "$accessRule",
                             "collectionIds": ["A"]
                         }
@@ -157,7 +157,7 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
                     .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
             )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$.type", equalTo("SelectedCollections")))
+                .andExpect(jsonPath("$.type", equalTo("IncludedCollections")))
                 .andExpect(jsonPath("$.name", equalTo(accessRuleName)))
                 .andExpect(jsonPath("$.collectionIds", hasSize<Int>(1)))
                 .andExpect(jsonPath("$.collectionIds[0]", equalTo("A")))

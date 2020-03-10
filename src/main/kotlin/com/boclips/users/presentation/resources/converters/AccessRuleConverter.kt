@@ -13,7 +13,7 @@ class AccessRuleConverter(
 ) {
     fun toResource(accessRule: AccessRule): AccessRuleResource {
         return when (accessRule) {
-            is AccessRule.IncludedCollections -> AccessRuleResource.SelectedCollections(
+            is AccessRule.IncludedCollections -> AccessRuleResource.IncludedCollections(
                 name = accessRule.name,
                 collectionIds = accessRule.collectionIds.map { it.value },
                 _links = listOfNotNull(
@@ -22,7 +22,7 @@ class AccessRuleConverter(
                     accessRuleLinkBuilder.self(accessRule.id)
                 ).map { it.rel.value() to it }.toMap()
             )
-            is AccessRule.IncludedVideos -> AccessRuleResource.SelectedVideos(
+            is AccessRule.IncludedVideos -> AccessRuleResource.IncludedVideos(
                 name = accessRule.name,
                 videoIds = accessRule.videoIds.map { it.value },
                 _links = listOfNotNull(accessRuleLinkBuilder.self(accessRule.id)).map { it.rel.value() to it }.toMap()

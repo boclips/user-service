@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class SelectedVideosAccessRule extends AccessRule {
+public class IncludedVideosAccessRule extends AccessRule {
     private List<String> videoIds;
 }

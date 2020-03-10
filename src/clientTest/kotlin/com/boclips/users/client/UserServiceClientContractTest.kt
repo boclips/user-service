@@ -8,8 +8,8 @@ import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
 import com.boclips.users.client.model.accessrule.ContentPackage
-import com.boclips.users.client.model.accessrule.SelectedCollectionsAccessRule
-import com.boclips.users.client.model.accessrule.SelectedVideosAccessRule
+import com.boclips.users.client.model.accessrule.IncludedCollectionsAccessRule
+import com.boclips.users.client.model.accessrule.IncludedVideosAccessRule
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testUser
@@ -118,14 +118,14 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
                 .extracting("name")
                 .contains("My content package")
 
-            val selectedCollectionsAccessRules =
-                contentPackage.accessRules.filterIsInstance<SelectedCollectionsAccessRule>()
-            assertThat(selectedCollectionsAccessRules)
+            val includedCollectionsAccessRules =
+                contentPackage.accessRules.filterIsInstance<IncludedCollectionsAccessRule>()
+            assertThat(includedCollectionsAccessRules)
                 .flatExtracting("collectionIds")
                 .containsExactlyInAnyOrder("A", "B")
 
-            val selectedVideosAccessRules = contentPackage.accessRules.filterIsInstance<SelectedVideosAccessRule>()
-            assertThat(selectedVideosAccessRules)
+            val includedVideosAccessRules = contentPackage.accessRules.filterIsInstance<IncludedVideosAccessRule>()
+            assertThat(includedVideosAccessRules)
                 .flatExtracting("videoIds")
                 .containsExactlyInAnyOrder("C", "D")
         }
@@ -255,8 +255,10 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                 .name(name)
                 .accessRules(accessRules.map {
                     when (it) {
-                        is AccessRule.IncludedCollections -> SelectedCollectionsAccessRule(it.collectionIds.map { id -> id.value })
-                        is AccessRule.IncludedVideos -> SelectedVideosAccessRule(it.videoIds.map { id -> id.value })
+                        is AccessRule.IncludedCollections -> IncludedCollectionsAccessRule(
+                            it.collectionIds.map { id -> id.value })
+                        is AccessRule.IncludedVideos -> IncludedVideosAccessRule(
+                            it.videoIds.map { id -> id.value })
                     }
                 }).build()
         )

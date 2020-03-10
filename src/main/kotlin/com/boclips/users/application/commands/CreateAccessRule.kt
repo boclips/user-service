@@ -20,11 +20,11 @@ class CreateAccessRule(
         }
 
         return when (request) {
-            is CreateAccessRuleRequest.SelectedCollections -> includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+            is CreateAccessRuleRequest.IncludedCollections -> includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 request.name!!,
                 request.collectionIds!!.map { CollectionId(it) }
             )
-            is CreateAccessRuleRequest.SelectedVideos -> includedContentAccessRuleRepository.saveIncludedVideosAccessRule(
+            is CreateAccessRuleRequest.IncludedVideos -> includedContentAccessRuleRepository.saveIncludedVideosAccessRule(
                 request.name!!,
                 request.videoIds!!.map { VideoId(it) }
             )

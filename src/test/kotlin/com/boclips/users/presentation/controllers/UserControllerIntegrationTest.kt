@@ -660,7 +660,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(
                     jsonPath(
                         "$.accessRules[*].type",
-                        containsInAnyOrder("SelectedCollections", "SelectedVideos")
+                        containsInAnyOrder("IncludedCollections", "IncludedVideos")
                     )
                 )
                 .andExpect(
