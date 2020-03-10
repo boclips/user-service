@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test
 
 class AccessRuleDocumentConverterTest {
     @Nested
-    inner class ConvertingSelectedCollections {
+    inner class ConvertingIncludedCollections {
         @Test
         fun `converts document to domain object`() {
-            val document = AccessRuleDocumentFactory.sampleSelectedCollectionsAccessRuleDocument(
+            val document = AccessRuleDocumentFactory.sampleIncludedCollectionsAccessRuleDocument(
                 collectionIds = listOf("A", "B", "C")
             )
 
@@ -42,10 +42,10 @@ class AccessRuleDocumentConverterTest {
     }
 
     @Nested
-    inner class ConvertingSelectedVideos {
+    inner class ConvertingIncludedVideos {
         @Test
         fun `converts document to domain object`() {
-            val document = AccessRuleDocumentFactory.sampleSelectedVideosAccessRuleDocument(
+            val document = AccessRuleDocumentFactory.sampleIncludedVideosAccessRuleDocument(
                 videoIds = listOf("A", "B", "C")
             )
 

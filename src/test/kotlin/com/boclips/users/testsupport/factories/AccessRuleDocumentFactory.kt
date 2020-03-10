@@ -5,19 +5,19 @@ import org.bson.types.ObjectId
 
 class AccessRuleDocumentFactory {
     companion object {
-        fun sampleSelectedCollectionsAccessRuleDocument(
-            name: String = "Test selected collections access rule",
+        fun sampleIncludedCollectionsAccessRuleDocument(
+            name: String = "Test included collections access rule",
             collectionIds: List<String> = emptyList()
-        ) = AccessRuleDocument.SelectedCollections().apply {
+        ) = AccessRuleDocument.IncludedCollections().apply {
             this.id = ObjectId()
             this.name = name
             this.collectionIds = collectionIds
         }
 
-        fun sampleSelectedVideosAccessRuleDocument(
-            name: String = "Test selected videos access rule",
+        fun sampleIncludedVideosAccessRuleDocument(
+            name: String = "Test included videos access rule",
             videoIds: List<String> = emptyList()
-        ) = AccessRuleDocument.SelectedVideos().apply {
+        ) = AccessRuleDocument.IncludedVideos().apply {
             this.id = ObjectId()
             this.name = name
             this.videoIds = videoIds

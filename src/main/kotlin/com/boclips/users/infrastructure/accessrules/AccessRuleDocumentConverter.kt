@@ -11,20 +11,10 @@ import org.springframework.stereotype.Service
 class AccessRuleDocumentConverter {
     fun fromDocument(document: AccessRuleDocument): AccessRule {
         return when (document) {
-            is AccessRuleDocument.SelectedCollections -> AccessRule.IncludedCollections(
-                id = AccessRuleId(document.id.toHexString()),
-                name = document.name,
-                collectionIds = document.collectionIds.map { CollectionId(it) }
-            )
             is AccessRuleDocument.IncludedCollections -> AccessRule.IncludedCollections(
                 id = AccessRuleId(document.id.toHexString()),
                 name = document.name,
                 collectionIds = document.collectionIds.map { CollectionId(it) }
-            )
-            is AccessRuleDocument.SelectedVideos -> AccessRule.IncludedVideos(
-                id = AccessRuleId(document.id.toHexString()),
-                name = document.name,
-                videoIds = document.videoIds.map { VideoId(it) }
             )
             is AccessRuleDocument.IncludedVideos -> AccessRule.IncludedVideos(
                 id = AccessRuleId(document.id.toHexString()),
