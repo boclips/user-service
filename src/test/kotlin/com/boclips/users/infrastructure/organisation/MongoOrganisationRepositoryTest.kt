@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
+import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.Organisation
@@ -23,10 +24,10 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     fun `persists an organisation`() {
         val organisationName = "Persist Organisation"
 
-        val accessRuleIds = listOf(AccessRuleId("Contract A"), AccessRuleId("Contract B"))
 
         val organisation: Organisation<ApiIntegration> = OrganisationFactory.sample(
             type = DealType.STANDARD,
+            contentPackageId = ContentPackageId(value = "123"),
             details = OrganisationDetailsFactory.apiIntegration(
                 name = organisationName,
                 allowsOverridingUserIds = true
@@ -39,6 +40,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(retrievedOrganisation.type).isEqualTo(DealType.STANDARD)
         assertThat(retrievedOrganisation.details.name).isEqualTo(organisationName)
         assertThat(retrievedOrganisation.details.allowsOverridingUserIds).isTrue()
+        assertThat(retrievedOrganisation.contentPackageId?.value).isEqualTo("123")
     }
 
     @Test

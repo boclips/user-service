@@ -618,7 +618,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 collectionIds = listOf(CollectionId((collectionId))),
                 id = AccessRuleId(ObjectId.get().toHexString())
             )
-            val savedCollectionAccessDoc = accessRuleRepository.save(collectionsAccessRule)
+
+            accessRuleRepository.save(collectionsAccessRule)
 
             val videosAccessRuleName = "Test videos contract"
             val videoId = "test-video-id"
@@ -627,7 +628,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 videoIds = listOf(VideoId(videoId)),
                 id = AccessRuleId(ObjectId.get().toHexString())
             )
-            val savedVideoAccessDoc = accessRuleRepository.save(videosAccessRule)
+
+            accessRuleRepository.save(videosAccessRule)
 
             val contentPackageId = ContentPackageId(ObjectId.get().toHexString())
             val contentPackage = ContentPackage(
