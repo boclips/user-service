@@ -29,7 +29,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
 
         @Test
         fun `adds the collection to the contract`() {
-            val accessRuleId = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+            val accessRuleId = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 "Some test contract",
                 emptyList()
             ).id
@@ -78,7 +78,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `removes provided collection from a contract`() {
             val collectionId = "test-collection-id"
-            val accessRuleId = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+            val accessRuleId = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 "Some test contract",
                 listOf(CollectionId(collectionId))
             ).id

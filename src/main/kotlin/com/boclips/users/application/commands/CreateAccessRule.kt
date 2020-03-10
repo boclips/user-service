@@ -5,13 +5,13 @@ import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.service.AccessRuleRepository
-import com.boclips.users.domain.service.SelectedContentAccessRuleRepository
+import com.boclips.users.domain.service.IncludedContentAccessRuleRepository
 import com.boclips.users.presentation.requests.CreateAccessRuleRequest
 import org.springframework.stereotype.Service
 
 @Service
 class CreateAccessRule(
-    private val selectedContentAccessRuleRepository: SelectedContentAccessRuleRepository,
+    private val includedContentAccessRuleRepository: IncludedContentAccessRuleRepository,
     private val accessRuleRepository: AccessRuleRepository
 ) {
     operator fun invoke(request: CreateAccessRuleRequest): AccessRule {
@@ -20,11 +20,11 @@ class CreateAccessRule(
         }
 
         return when (request) {
-            is CreateAccessRuleRequest.SelectedCollections -> selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+            is CreateAccessRuleRequest.SelectedCollections -> includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 request.name!!,
                 request.collectionIds!!.map { CollectionId(it) }
             )
-            is CreateAccessRuleRequest.SelectedVideos -> selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(
+            is CreateAccessRuleRequest.SelectedVideos -> includedContentAccessRuleRepository.saveIncludedVideosAccessRule(
                 request.name!!,
                 request.videoIds!!.map { VideoId(it) }
             )

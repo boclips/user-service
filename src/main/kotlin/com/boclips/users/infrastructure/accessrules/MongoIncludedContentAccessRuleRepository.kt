@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.accessrules
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
-import com.boclips.users.domain.service.SelectedContentAccessRuleRepository
+import com.boclips.users.domain.service.IncludedContentAccessRuleRepository
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Repository
 
@@ -12,7 +12,7 @@ class MongoIncludedContentAccessRuleRepository(
     private val selectedCollectionsAccessRuleDocumentMongoRepository: SelectedCollectionsAccessRuleDocumentMongoRepository,
     private val selectedVideosAccessRuleDocumentMongoRepository: SelectedVideosAccessRuleDocumentMongoRepository,
     private val accessRuleDocumentConverter: AccessRuleDocumentConverter
-) : SelectedContentAccessRuleRepository {
+) : IncludedContentAccessRuleRepository {
     override fun saveIncludedCollectionsAccessRule(
         name: String,
         collectionIds: List<CollectionId>

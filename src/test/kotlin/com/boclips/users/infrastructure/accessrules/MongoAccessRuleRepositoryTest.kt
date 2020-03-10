@@ -6,13 +6,11 @@ import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccessRuleFactory
-import com.mongodb.MongoClient
 import org.assertj.core.api.Assertions.assertThat
 import org.bson.Document
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 
@@ -21,7 +19,7 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindById {
         @Test
         fun `fetches a collection access rule by id and deserializes it to a correct class`() {
-            val persistedAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+            val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 name = "Test selected content contract",
                 collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
             )
@@ -33,7 +31,7 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `fetches a video access rule by id and deserializes it to the correct class`() {
-            val persistedAccessRule = selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(
+            val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedVideosAccessRule(
                 name = "Test selected content contract",
                 videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
             )
@@ -54,7 +52,7 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `looks up access rules by name and deserializes them to a correct class`() {
             val accessRuleName = "Name Test"
-            val persistedAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+            val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 name = accessRuleName,
                 collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
             )
@@ -74,16 +72,16 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindAll {
         @Test
         fun `returns all access rules`() {
-            val firstCollectionAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+            val firstCollectionAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 name = "Hey",
                 collectionIds = emptyList()
             )
-            val secondCollectionAccessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+            val secondCollectionAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
                 name = "Ho",
                 collectionIds = emptyList()
             )
             val firstVideoAccessRule =
-                selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(name = "Yo", videoIds = emptyList())
+                includedContentAccessRuleRepository.saveIncludedVideosAccessRule(name = "Yo", videoIds = emptyList())
 
             val allAccessRules = accessRuleRepository.findAll()
 

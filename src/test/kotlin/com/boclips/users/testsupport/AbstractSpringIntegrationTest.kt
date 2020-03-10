@@ -22,7 +22,7 @@ import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.ContentPackageRepository
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.SelectedContentAccessRuleRepository
+import com.boclips.users.domain.service.IncludedContentAccessRuleRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
@@ -106,7 +106,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var organisationIdResolver: OrganisationIdResolver
 
     @Autowired
-    lateinit var selectedContentAccessRuleRepository: SelectedContentAccessRuleRepository
+    lateinit var includedContentAccessRuleRepository: IncludedContentAccessRuleRepository
 
     @Autowired
     lateinit var accessRuleRepository: AccessRuleRepository
@@ -226,11 +226,11 @@ abstract class AbstractSpringIntegrationTest {
         name: String,
         collectionIds: List<CollectionId>
     ): AccessRule.IncludedCollections {
-        return selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(name, collectionIds)
+        return includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(name, collectionIds)
     }
 
     fun saveSelectedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
-        return selectedContentAccessRuleRepository.saveIncludedVideosAccessRule(name, videoIds)
+        return includedContentAccessRuleRepository.saveIncludedVideosAccessRule(name, videoIds)
     }
 
     fun ResultActions.andExpectApiErrorPayload(): ResultActions {

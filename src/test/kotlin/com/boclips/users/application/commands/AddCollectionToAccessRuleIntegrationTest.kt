@@ -13,7 +13,7 @@ class AddCollectionToAccessRuleIntegrationTest : AbstractSpringIntegrationTest()
     @Test
     fun `adds collection to access rule and is idempotent`() {
         val existingId = CollectionId("some-existing-id")
-        val accessRule = selectedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+        val accessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
             "whatever",
             listOf(existingId)
         )
