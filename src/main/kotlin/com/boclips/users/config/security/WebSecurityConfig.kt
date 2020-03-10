@@ -39,8 +39,8 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.GET, "/v1/access-rules").hasRole(UserRoles.VIEW_ACCESS_RULES)
             .antMatchers(HttpMethod.GET, "/v1/access-rules/*").hasRole(UserRoles.VIEW_ACCESS_RULES)
 
-            .antMatchers(HttpMethod.PUT, "/v1/selected-content-access-rules/**").hasRole(UserRoles.UPDATE_ACCESS_RULES)
-            .antMatchers(HttpMethod.DELETE, "/v1/selected-content-access-rules/**").hasRole(UserRoles.UPDATE_ACCESS_RULES)
+            .antMatchers(HttpMethod.PUT, "/v1/included-content-access-rules/**").hasRole(UserRoles.UPDATE_ACCESS_RULES)
+            .antMatchers(HttpMethod.DELETE, "/v1/included-content-access-rules/**").hasRole(UserRoles.UPDATE_ACCESS_RULES)
 
             .antMatchers(HttpMethod.POST, "/v1/api-integrations").hasRole(UserRoles.INSERT_ORGANISATIONS)
             .antMatchers(HttpMethod.GET, "/v1/api-integrations").hasRole(UserRoles.VIEW_ORGANISATIONS)

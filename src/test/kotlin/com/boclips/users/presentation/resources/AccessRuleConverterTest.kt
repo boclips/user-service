@@ -3,7 +3,7 @@ package com.boclips.users.presentation.resources
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
-import com.boclips.users.presentation.hateoas.SelectedAccessRuleLinkBuilder
+import com.boclips.users.presentation.hateoas.IncludedAccessRuleLinkBuilder
 import com.boclips.users.presentation.resources.converters.AccessRuleConverter
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -36,6 +36,6 @@ class AccessRuleConverterTest {
 
     private val converter = AccessRuleConverter(
         AccessRuleLinkBuilder(),
-        SelectedAccessRuleLinkBuilder()
+        IncludedAccessRuleLinkBuilder()
     )
 }

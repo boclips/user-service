@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delet
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegrationTest() {
+class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
     inner class AddingCollections {
         @Test
@@ -22,7 +22,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             val collectionId = "test-collection-id"
 
             mvc.perform(
-                put("/v1/selected-content-access-rules/$accessRuleId/collections/$collectionId").asUser("no-roles@doh.com")
+                put("/v1/included-content-access-rules/$accessRuleId/collections/$collectionId").asUser("no-roles@doh.com")
             )
                 .andExpect(status().isForbidden)
         }
@@ -36,7 +36,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             val collectionId = "test-collection-id"
 
             mvc.perform(
-                put("/v1/selected-content-access-rules/${accessRuleId.value}/collections/$collectionId")
+                put("/v1/included-content-access-rules/${accessRuleId.value}/collections/$collectionId")
                     .asUserWithRoles(
                         "test@user.com",
                         UserRoles.UPDATE_ACCESS_RULES
@@ -52,7 +52,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `returns a 404 response if access rule is not found`() {
             mvc.perform(
-                put("/v1/selected-content-access-rules/does-not-exist/collections/collection-id")
+                put("/v1/included-content-access-rules/does-not-exist/collections/collection-id")
                     .asUserWithRoles(
                         "test@user.com",
                         UserRoles.UPDATE_ACCESS_RULES
@@ -70,7 +70,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             val collectionId = "test-collection-id"
 
             mvc.perform(
-                delete("/v1/selected-content-access-rules/$accessRuleId/collections/$collectionId").asUser("no-roles@doh.com")
+                delete("/v1/included-content-access-rules/$accessRuleId/collections/$collectionId").asUser("no-roles@doh.com")
             )
                 .andExpect(status().isForbidden)
         }
@@ -84,7 +84,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             ).id
 
             mvc.perform(
-                delete("/v1/selected-content-access-rules/${accessRuleId.value}/collections/$collectionId")
+                delete("/v1/included-content-access-rules/${accessRuleId.value}/collections/$collectionId")
                     .asUserWithRoles(
                         "test@user.com",
                         UserRoles.UPDATE_ACCESS_RULES
@@ -100,7 +100,7 @@ class SelectedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `returns 404 when access rule does not exist`() {
             mvc.perform(
-                delete("/v1/selected-content-access-rules/does-not-exist/collections/collection-id")
+                delete("/v1/included-content-access-rules/does-not-exist/collections/collection-id")
                     .asUserWithRoles(
                         "test@user.com",
                         UserRoles.UPDATE_ACCESS_RULES

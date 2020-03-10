@@ -54,14 +54,14 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[0]._links.addCollection.href",
-                        endsWith("/v1/selected-content-access-rules/${accessRule.id.value}/collections/{collectionId}")
+                        endsWith("/v1/included-content-access-rules/${accessRule.id.value}/collections/{collectionId}")
                     )
                 )
                 .andExpect(jsonPath("$._embedded.accessRules[0]._links.addCollection.templated", equalTo(true)))
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[0]._links.removeCollection.href",
-                        endsWith("/v1/selected-content-access-rules/${accessRule.id.value}/collections/{collectionId}")
+                        endsWith("/v1/included-content-access-rules/${accessRule.id.value}/collections/{collectionId}")
                     )
                 )
                 .andExpect(jsonPath("$._embedded.accessRules[0]._links.removeCollection.templated", equalTo(true)))

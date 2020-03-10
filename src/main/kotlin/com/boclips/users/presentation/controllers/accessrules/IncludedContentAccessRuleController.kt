@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/v1/selected-content-access-rules")
-class SelectedContentAccessRuleController(
+@RequestMapping("/v1/included-content-access-rules")
+class IncludedContentAccessRuleController(
     private val addCollectionToAccessRule: AddCollectionToAccessRule,
     private val removeCollectionFromAccessRule: RemoveCollectionFromAccessRule
 ) {
