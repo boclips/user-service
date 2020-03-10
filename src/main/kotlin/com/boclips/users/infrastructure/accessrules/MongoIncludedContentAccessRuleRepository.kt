@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MongoIncludedContentAccessRuleRepository(
-    private val selectedCollectionsAccessRuleDocumentMongoRepository: SelectedCollectionsAccessRuleDocumentMongoRepository,
-    private val selectedVideosAccessRuleDocumentMongoRepository: SelectedVideosAccessRuleDocumentMongoRepository,
+    private val includedCollectionsAccessRuleDocumentMongoRepository: IncludedCollectionsAccessRuleDocumentMongoRepository,
+    private val includedVideosAccessRuleDocumentMongoRepository: IncludedVideosAccessRuleDocumentMongoRepository,
     private val accessRuleDocumentConverter: AccessRuleDocumentConverter
 ) : IncludedContentAccessRuleRepository {
     override fun saveIncludedCollectionsAccessRule(
@@ -18,8 +18,8 @@ class MongoIncludedContentAccessRuleRepository(
         collectionIds: List<CollectionId>
     ): AccessRule.IncludedCollections {
         return accessRuleDocumentConverter.fromDocument(
-            selectedCollectionsAccessRuleDocumentMongoRepository.save(
-                AccessRuleDocument.SelectedCollections().apply {
+            includedCollectionsAccessRuleDocumentMongoRepository.save(
+                AccessRuleDocument.IncludedCollections().apply {
                     this.id = ObjectId()
                     this.name = name
                     this.collectionIds = collectionIds.map { it.value }
@@ -30,8 +30,8 @@ class MongoIncludedContentAccessRuleRepository(
 
     override fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
         return accessRuleDocumentConverter.fromDocument(
-            selectedVideosAccessRuleDocumentMongoRepository.save(
-                AccessRuleDocument.SelectedVideos().apply {
+            includedVideosAccessRuleDocumentMongoRepository.save(
+                AccessRuleDocument.IncludedVideos().apply {
                     this.id = ObjectId()
                     this.name = name
                     this.videoIds = videoIds.map { it.value }

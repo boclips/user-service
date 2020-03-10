@@ -94,12 +94,12 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
 
         @Test
         fun `returns a package of a user's permitted access rules`() {
-            val accessRuleCollections = saveSelectedCollectionsAccessRule(
+            val accessRuleCollections = saveIncludedCollectionsAccessRule(
                 name = "First",
                 collectionIds = listOf(CollectionId("A"), CollectionId("B"))
             )
 
-            val accessRuleVideos = saveSelectedVideosAccessRule(
+            val accessRuleVideos = saveIncludedVideosAccessRule(
                 name = "Second",
                 videoIds = listOf(VideoId("C"), VideoId("D"))
             )

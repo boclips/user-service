@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can create a content package`() {
-        val accessRule = saveSelectedVideosAccessRule(name = "video-access-rule", videoIds = listOf(VideoId("video-1")))
+        val accessRule = saveIncludedVideosAccessRule(name = "video-access-rule", videoIds = listOf(VideoId("video-1")))
 
         val userId = "operator@boclips.com"
         mvc.perform(
@@ -50,7 +50,7 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
 
     @Test
     fun `cannot create a content package without correct roles`() {
-        val accessRule = saveSelectedVideosAccessRule(name = "video-access-rule", videoIds = listOf(VideoId("video-1")))
+        val accessRule = saveIncludedVideosAccessRule(name = "video-access-rule", videoIds = listOf(VideoId("video-1")))
         mvc.perform(
             post("/v1/content-packages").content(
                 """

@@ -222,14 +222,14 @@ abstract class AbstractSpringIntegrationTest {
         return organisationRepository.save(OrganisationFactory.sample(details = school))
     }
 
-    fun saveSelectedCollectionsAccessRule(
+    fun saveIncludedCollectionsAccessRule(
         name: String,
         collectionIds: List<CollectionId>
     ): AccessRule.IncludedCollections {
         return includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(name, collectionIds)
     }
 
-    fun saveSelectedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
+    fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
         return includedContentAccessRuleRepository.saveIncludedVideosAccessRule(name, videoIds)
     }
 

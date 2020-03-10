@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test
 
 class MongoIncludedContentAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
-    fun `saves a selected collections access rule`() {
-        val accessRuleName = "Test selected content contract"
+    fun `saves an included collections access rule`() {
+        val accessRuleName = "Test included content contract"
         val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
             name = accessRuleName,
             collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
@@ -25,8 +25,8 @@ class MongoIncludedContentAccessRuleRepositoryTest : AbstractSpringIntegrationTe
     }
 
     @Test
-    fun `saves a selected videos access rule`() {
-        val accessRuleName = "Test selected content contract"
+    fun `saves an included videos access rule`() {
+        val accessRuleName = "Test included content contract"
         val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedVideosAccessRule(
             name = accessRuleName,
             videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
