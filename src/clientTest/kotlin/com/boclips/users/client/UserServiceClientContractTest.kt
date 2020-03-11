@@ -8,6 +8,7 @@ import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
 import com.boclips.users.client.model.accessrule.ContentPackage
+import com.boclips.users.client.model.accessrule.ExcludedContentPartnersAccessRule
 import com.boclips.users.client.model.accessrule.ExcludedVideoTypesAccessRule
 import com.boclips.users.client.model.accessrule.ExcludedVideosAccessRule
 import com.boclips.users.client.model.accessrule.IncludedCollectionsAccessRule
@@ -19,6 +20,7 @@ import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.contentpackage.ContentPartnerId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.contentpackage.VideoType
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -122,10 +124,23 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
                 )
             )
 
+            val excludedContentPartners = accessRuleRepository.save(
+                AccessRuleFactory.sampleExcludedContentPartnersAccessRule(
+                    name = "Bad CPS",
+                    contentPartnerIds = listOf(ContentPartnerId("CP-A"))
+                )
+            )
+
             val contentPackageId =
                 insertContentPackage(
                     "My content package",
-                    listOf(includedCollections, includedVideos, excludedVideos, excludedVideoTypes)
+                    listOf(
+                        includedCollections,
+                        includedVideos,
+                        excludedVideos,
+                        excludedVideoTypes,
+                        excludedContentPartners
+                    )
                 )
 
             val organisation = insertTestOrganisation(
@@ -139,7 +154,6 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
             assertThat(contentPackage)
                 .extracting("name")
                 .contains("My content package")
-
 
             val includedCollectionsAccessRules =
                 contentPackage.accessRules.filterIsInstance<IncludedCollectionsAccessRule>()
@@ -162,6 +176,12 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
             assertThat(excludedVideoTypesAccessRule)
                 .flatExtracting("videoTypes")
                 .containsExactlyInAnyOrder("STOCK")
+
+            val excludedContentPartnersAccessRules =
+                contentPackage.accessRules.filterIsInstance<ExcludedContentPartnersAccessRule>()
+            assertThat(excludedContentPartnersAccessRules)
+                .flatExtracting("contentPartnerIds")
+                .containsExactlyInAnyOrder("CP-A")
         }
     }
 
@@ -300,6 +320,9 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                         )
                         is AccessRule.ExcludedVideoTypes -> ExcludedVideoTypesAccessRule(
                             it.videoTypes.map { videoType -> videoType.name }
+                        )
+                        is AccessRule.ExcludedContentPartners -> ExcludedContentPartnersAccessRule(
+                            it.contentPartnerIds.map { id -> id.value }
                         )
                     }
                 }).build()

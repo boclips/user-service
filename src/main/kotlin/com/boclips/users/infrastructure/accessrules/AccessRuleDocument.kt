@@ -26,6 +26,11 @@ sealed class AccessRuleDocument {
         lateinit var videoTypes: List<VideoTypeDocument>
     }
 
+    @TypeAlias("ExcludedContentPartners")
+    class ExcludedContentPartners : AccessRuleDocument() {
+        lateinit var contentPartnerIds: List<String>
+    }
+
     lateinit var id: ObjectId
     lateinit var name: String
 }

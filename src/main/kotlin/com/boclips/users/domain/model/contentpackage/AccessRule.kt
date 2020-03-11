@@ -25,6 +25,12 @@ sealed class AccessRule {
         val videoTypes: List<VideoType>
     ) : AccessRule()
 
+    data class ExcludedContentPartners(
+        override val id: AccessRuleId,
+        override val name: String,
+        val contentPartnerIds: List<ContentPartnerId>
+    ) : AccessRule()
+
     abstract val id: AccessRuleId
     abstract val name: String
 }

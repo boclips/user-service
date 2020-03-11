@@ -37,6 +37,11 @@ class AccessRuleConverter(
                 videoTypes = accessRule.videoTypes.map { it.name },
                 _links = listOfNotNull(accessRuleLinkBuilder.self(accessRule.id)).map { it.rel.value() to it }.toMap()
             )
+            is AccessRule.ExcludedContentPartners -> AccessRuleResource.ExcludedContentPartners(
+                name = accessRule.name,
+                contentPartnerIds = accessRule.contentPartnerIds.map { it.value },
+                _links = listOfNotNull(accessRuleLinkBuilder.self(accessRule.id)).map { it.rel.value() to it }.toMap()
+            )
         }
     }
 }

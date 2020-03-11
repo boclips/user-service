@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.accessrules
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.ContentPartnerId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.contentpackage.VideoType
 import org.bson.types.ObjectId
@@ -38,6 +39,11 @@ class AccessRuleDocumentConverter {
                     }
                 }
             )
+            is AccessRuleDocument.ExcludedContentPartners -> AccessRule.ExcludedContentPartners(
+                id = AccessRuleId(document.id.toHexString()),
+                name = document.name,
+                contentPartnerIds = document.contentPartnerIds.map { ContentPartnerId(it) }
+            )
         }
     }
 
@@ -68,6 +74,11 @@ class AccessRuleDocumentConverter {
                         VideoType.STOCK -> VideoTypeDocument.STOCK
                     }
                 }
+            }
+            is AccessRule.ExcludedContentPartners -> AccessRuleDocument.ExcludedContentPartners().apply {
+                id = ObjectId(accessRule.id.value)
+                name = accessRule.name
+                contentPartnerIds = accessRule.contentPartnerIds.map { it.value }
             }
         }
     }
