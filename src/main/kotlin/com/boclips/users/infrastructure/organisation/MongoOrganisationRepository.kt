@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.organisation.OrganisationDetails
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.service.OrganisationDomainOnUpdate
 import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationTypeUpdate
@@ -51,6 +52,7 @@ class MongoOrganisationRepository(
         val updatedDocument = when (update) {
             is OrganisationTypeUpdate -> document.copy(dealType = update.type)
             is OrganisationExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
+            is OrganisationDomainOnUpdate -> document.copy(domain = update.domain)
         }
 
         return fromDocument(repository.save(updatedDocument))

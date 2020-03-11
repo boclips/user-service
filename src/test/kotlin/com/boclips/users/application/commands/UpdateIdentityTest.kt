@@ -62,7 +62,7 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
         assertThrows<InvalidDateException> {
             updateOrganisation(
                 id = "organisation-id",
-                request = UpdateOrganisationRequest("invalid-date")
+                request = UpdateOrganisationRequest(accessExpiresOn = "invalid-date")
             )
         }
     }

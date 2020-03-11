@@ -7,6 +7,7 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.service.OrganisationDomainOnUpdate
 import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
@@ -22,14 +23,28 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
             throw PermissionDeniedException()
         }
 
-        val convertedDate = convertToZonedDateTime(request?.accessExpiresOn)
+        request?.accessExpiresOn?.let { accessExpiryOn ->
+            val convertedDate = convertToZonedDateTime(accessExpiryOn)
 
-        return organisationRepository.update(
-            OrganisationExpiresOnUpdate(
-                OrganisationId(id),
-                convertedDate
-            )
-        ) ?: throw OrganisationNotFoundException(id)
+            organisationRepository.update(
+                OrganisationExpiresOnUpdate(
+                    OrganisationId(id),
+                    convertedDate
+                )
+            ) ?: throw OrganisationNotFoundException(id)
+        }
+
+        request?.domain?.let { domain ->
+            organisationRepository.update(
+                OrganisationDomainOnUpdate(
+                    OrganisationId(id),
+                    domain
+                )
+            ) ?: throw OrganisationNotFoundException(id)
+        }
+
+        return organisationRepository.findOrganisationById(OrganisationId(value = id))
+            ?: throw OrganisationNotFoundException(id)
     }
 
     private fun convertToZonedDateTime(date: String?): ZonedDateTime {

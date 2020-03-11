@@ -11,3 +11,6 @@ class OrganisationTypeUpdate(id: OrganisationId, val type: DealType) :
 
 class OrganisationExpiresOnUpdate(id: OrganisationId, val accessExpiresOn: ZonedDateTime) :
     OrganisationUpdate(id)
+
+class OrganisationDomainOnUpdate(id: OrganisationId, val domain: String) :
+    OrganisationUpdate(id)

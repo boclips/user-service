@@ -72,9 +72,7 @@ class UpdateUser(
     ): List<UserUpdateCommand> = userUpdatesCommandFactory.buildCommands(updateUserRequest, school) +
         listOfNotNull(
             takeIf { user.teacherPlatformAttributes?.shareCode == null }?.let {
-                UserUpdateCommand.ReplaceShareCode(
-                    generateShareCode()
-                )
+                UserUpdateCommand.ReplaceShareCode(generateShareCode())
             },
             takeIf { shouldSetAccessExpiresOn(user) }?.let {
                 val accessExpiry =

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import java.time.ZonedDateTime
@@ -163,6 +164,34 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${district.id.value}")))
                 .andExpect(jsonPath("$.id", equalTo(district.id.value)))
                 .andExpect(jsonPath("$.accessExpiresOn", equalTo(expiryTimeToString)))
+        }
+
+        @Test
+        fun `update organization domain`() {
+            val givenDomain = "my-district.pl"
+            val district = organisationRepository.save(
+                OrganisationFactory.sample(
+                    details = OrganisationDetailsFactory.district(
+                        name = "my district",
+                        externalId = "123",
+                        state = State(id = "FL", name = "Florida")
+                    )
+                )
+            )
+
+            mvc.perform(
+                    post("/v1/organisations/${district.id.value}").asUserWithRoles(
+                            "some-boclipper",
+                            UserRoles.UPDATE_ORGANISATIONS
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """ {"domain": "$givenDomain"} """.trimIndent()
+                        )
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(jsonPath("$.id", equalTo(district.id.value)))
+                .andExpect(jsonPath("$.organisationDetails.domain", equalTo(givenDomain)))
         }
 
         @Test

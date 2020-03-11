@@ -28,7 +28,7 @@ class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriCompon
 
     fun edit(id: OrganisationId): Link {
         return WebMvcLinkBuilder.linkTo(
-            WebMvcLinkBuilder.methodOn(OrganisationController::class.java).update(id.value, null)
+            WebMvcLinkBuilder.methodOn(OrganisationController::class.java).updateProperty(id.value, null)
         ).withRel("edit")
     }
 
