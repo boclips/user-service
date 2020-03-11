@@ -16,9 +16,9 @@ import java.time.ZonedDateTime
 object OrganisationDocumentConverter {
     fun fromDocument(organisationDocument: OrganisationDocument): Organisation<*> {
         val organisation = when (organisationDocument.type) {
-
             OrganisationType.API -> ApiIntegration(
                 name = organisationDocument.name,
+                domain = organisationDocument.domain,
                 country = organisationDocument.country?.let { Country.fromCode(it.code) },
                 state = organisationDocument.state?.let { State.fromCode(it.code) },
                 allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false
@@ -26,6 +26,7 @@ object OrganisationDocumentConverter {
 
             OrganisationType.SCHOOL -> School(
                 name = organisationDocument.name,
+                domain = organisationDocument.domain,
                 country = organisationDocument.country?.let { Country.fromCode(it.code) }
                     ?: throw IllegalStateException("School ${organisationDocument.id} must have a country"),
                 state = organisationDocument.state?.let { State.fromCode(it.code) },
@@ -36,6 +37,7 @@ object OrganisationDocumentConverter {
 
             OrganisationType.DISTRICT -> District(
                 name = organisationDocument.name,
+                domain = organisationDocument.domain,
                 state = organisationDocument.state?.let { State.fromCode(it.code) }
                     ?: throw IllegalStateException("District ${organisationDocument.id} must have a state"),
                 externalId = organisationDocument.externalId
@@ -59,6 +61,7 @@ object OrganisationDocumentConverter {
         id = organisation.id.value,
         dealType = organisation.type,
         name = organisation.details.name,
+        domain = organisation.details.domain,
         role = organisation.role,
         externalId = when (organisation.details) {
             is School -> organisation.details.externalId

@@ -74,11 +74,13 @@ class OrganisationDetailsFactory {
 
         fun district(
             name: String = "Amazing Organisation",
+            domain: String? = null,
             externalId: String = "externalId",
             state: State = State.fromCode("IL")
         ): District {
             return District(
                 name = name,
+                domain = domain,
                 externalId = externalId,
                 state = state
             )

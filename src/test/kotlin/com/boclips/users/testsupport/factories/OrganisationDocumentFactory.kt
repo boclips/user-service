@@ -11,6 +11,7 @@ class OrganisationDocumentFactory {
     companion object {
         fun sample(
             name: String = "The Best Organisation",
+            domain: String? = null,
             role: String? = null,
             type: OrganisationType = OrganisationType.SCHOOL,
             dealType: DealType? = null,
@@ -25,6 +26,7 @@ class OrganisationDocumentFactory {
             id = ObjectId().toHexString(),
             dealType = dealType,
             name = name,
+            domain = domain,
             role = role,
             externalId = externalId,
             type = type,

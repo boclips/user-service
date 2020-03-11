@@ -13,6 +13,7 @@ data class OrganisationDocument(
         val id: String?,
         val name: String,
         val role: String?,
+        val domain: String?,
         val externalId: String?,
         val type: OrganisationType,
         val dealType: DealType?,

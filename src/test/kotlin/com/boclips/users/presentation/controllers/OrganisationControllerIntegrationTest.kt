@@ -28,9 +28,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a forbidden response when caller is not allowed to view organisations`() {
             mvc.perform(
-                get("/v1/organisations?countryCode=USA")
-                    .asUser("has-role@test.com")
-            )
+                    get("/v1/organisations?countryCode=USA")
+                        .asUser("has-role@test.com")
+                )
                 .andExpect(MockMvcResultMatchers.status().isForbidden)
         }
 
@@ -72,11 +72,11 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/organisations?countryCode=USA&page=0&size=1").asUserWithRoles(
-                    "some-boclipper",
-                    UserRoles.VIEW_ORGANISATIONS
+                    get("/v1/organisations?countryCode=USA&page=0&size=1").asUserWithRoles(
+                        "some-boclipper",
+                        UserRoles.VIEW_ORGANISATIONS
+                    )
                 )
-            )
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name").exists())
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.type").exists())
@@ -114,8 +114,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/organisations").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
-            )
+                    get("/v1/organisations").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
+                )
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(2)))
                 .andExpect(
                     jsonPath(
@@ -150,15 +150,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                patch("/v1/organisations/${district.id.value}").asUserWithRoles(
-                    "some-boclipper",
-                    UserRoles.UPDATE_ORGANISATIONS
+                    patch("/v1/organisations/${district.id.value}").asUserWithRoles(
+                            "some-boclipper",
+                            UserRoles.UPDATE_ORGANISATIONS
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
+                        )
                 )
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
-                    )
-            )
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${district.id.value}")))
                 .andExpect(jsonPath("$.id", equalTo(district.id.value)))
@@ -178,15 +178,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                patch("/v1/organisations/${district.id.value}").asUserWithRoles(
-                    "some-boclipper",
-                    UserRoles.UPDATE_ORGANISATIONS
+                    patch("/v1/organisations/${district.id.value}").asUserWithRoles(
+                            "some-boclipper",
+                            UserRoles.UPDATE_ORGANISATIONS
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """{"accessExpiresOn": "not a time"}""".trimIndent()
+                        )
                 )
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """{"accessExpiresOn": "not a time"}""".trimIndent()
-                    )
-            )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
         }
 
@@ -196,15 +196,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
             mvc.perform(
-                patch("/v1/organisations/not-an-organisation").asUserWithRoles(
-                    "some-boclipper",
-                    UserRoles.UPDATE_ORGANISATIONS
+                    patch("/v1/organisations/not-an-organisation").asUserWithRoles(
+                            "some-boclipper",
+                            UserRoles.UPDATE_ORGANISATIONS
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
+                        )
                 )
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
-                    )
-            )
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
         }
 
@@ -223,12 +223,12 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTime = ZonedDateTime.now()
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
             mvc.perform(
-                patch("/v1/organisations/${district.id.value}").asUser("an-outsider")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
-                    )
-            )
+                    patch("/v1/organisations/${district.id.value}").asUser("an-outsider")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
+                        )
+                )
                 .andExpect(MockMvcResultMatchers.status().isForbidden)
         }
     }
@@ -251,9 +251,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/organisations/${organisation.id.value}")
-                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
-            )
+                    get("/v1/organisations/${organisation.id.value}")
+                        .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
+                )
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
@@ -265,18 +265,18 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a forbidden response when caller does not have view organisations role`() {
             mvc.perform(
-                get("/v1/organisations/some-org")
-                    .asUser("has-role@test.com")
-            )
+                    get("/v1/organisations/some-org")
+                        .asUser("has-role@test.com")
+                )
                 .andExpect(MockMvcResultMatchers.status().isForbidden)
         }
 
         @Test
         fun `returns a 404 response when organisation is not found by id`() {
             mvc.perform(
-                get("/v1/organisations/this-does-not-exist")
-                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
-            )
+                    get("/v1/organisations/this-does-not-exist")
+                        .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
+                )
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
         }
     }
@@ -285,17 +285,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class GettingOrganisations {
         @Test
         fun `gets a page of all organisations when filters are empty`() {
-            saveDistrict(district = OrganisationDetailsFactory.district(name = "district 1"))
+            saveDistrict(district = OrganisationDetailsFactory.district(name = "district 1", domain = "district.com"))
             saveDistrict(district = OrganisationDetailsFactory.district(name = "district 2"))
             saveSchool(school = OrganisationDetailsFactory.school(name = "school 1"))
 
-            mvc.perform(
-                get("/v1/organisations").asUserWithRoles(
-                    "some-boclipper",
-                    UserRoles.VIEW_ORGANISATIONS
-                )
-            ).andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(3)))
+            mvc
+                .perform(get("/v1/organisations").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS))
+                .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(3)))
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name", equalTo("district 1")))
+                .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.domain", equalTo("district.com")))
                 .andExpect(jsonPath("$._embedded.organisations[1].organisationDetails.name", equalTo("district 2")))
                 .andExpect(jsonPath("$._embedded.organisations[2].organisationDetails.name", equalTo("school 1")))
         }

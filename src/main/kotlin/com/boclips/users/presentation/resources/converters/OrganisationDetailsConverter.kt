@@ -12,6 +12,7 @@ class OrganisationDetailsConverter {
     fun toResource(organisationDetails: OrganisationDetails): OrganisationDetailsResource {
         return OrganisationDetailsResource(
             name = organisationDetails.name,
+            domain = organisationDetails.domain,
             type = organisationDetails.type().toString(),
             state = organisationDetails.state?.let {
                 StateResource(
