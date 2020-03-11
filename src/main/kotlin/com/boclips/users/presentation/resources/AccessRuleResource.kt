@@ -1,37 +1,36 @@
 package com.boclips.users.presentation.resources
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
 import org.springframework.hateoas.Link
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes(
-    JsonSubTypes.Type(value = AccessRuleResource.IncludedCollections::class, name = "IncludedCollections"),
-    JsonSubTypes.Type(value = AccessRuleResource.IncludedVideos::class, name = "IncludedVideos"),
-    JsonSubTypes.Type(value = AccessRuleResource.ExcludedVideos::class, name = "ExcludedVideos")
-)
-sealed class AccessRuleResource {
+sealed class AccessRuleResource(val type: String) {
     data class IncludedCollections(
         override val name: String,
         val collectionIds: List<String>,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         override val _links: Map<String, Link> = emptyMap()
-    ) : AccessRuleResource()
+    ) : AccessRuleResource(type = "IncludedCollections")
 
     data class IncludedVideos(
         override val name: String,
         val videoIds: List<String>,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         override val _links: Map<String, Link> = emptyMap()
-    ) : AccessRuleResource()
+    ) : AccessRuleResource(type = "IncludedVideos")
 
     data class ExcludedVideos(
         override val name: String,
         val videoIds: List<String>,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         override val _links: Map<String, Link> = emptyMap()
-    ) : AccessRuleResource()
+    ) : AccessRuleResource(type = "ExcludedVideos")
+
+    data class ExcludedVideoTypes(
+        override val name: String,
+        val videoTypes: List<String>,
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        override val _links: Map<String, Link> = emptyMap()
+    ) : AccessRuleResource(type = "ExcludedVideoTypes")
 
     abstract val name: String
     abstract val _links: Map<String, Link>

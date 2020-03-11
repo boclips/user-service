@@ -8,6 +8,7 @@ import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
 import com.boclips.users.client.model.accessrule.ContentPackage
+import com.boclips.users.client.model.accessrule.ExcludedVideoTypesAccessRule
 import com.boclips.users.client.model.accessrule.ExcludedVideosAccessRule
 import com.boclips.users.client.model.accessrule.IncludedCollectionsAccessRule
 import com.boclips.users.client.model.accessrule.IncludedVideosAccessRule
@@ -19,6 +20,7 @@ import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.contentpackage.VideoType
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
@@ -96,27 +98,34 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
 
         @Test
         fun `returns a package of a user's permitted access rules`() {
-            val accessRuleCollections = saveIncludedCollectionsAccessRule(
+            val includedCollections = saveIncludedCollectionsAccessRule(
                 name = "First",
                 collectionIds = listOf(CollectionId("A"), CollectionId("B"))
             )
 
-            val accessRuleIncludedVideos = saveIncludedVideosAccessRule(
+            val includedVideos = saveIncludedVideosAccessRule(
                 name = "Second",
                 videoIds = listOf(VideoId("C"), VideoId("D"))
             )
 
-            val accessRuleExcludedVideos = accessRuleRepository.save(
+            val excludedVideos = accessRuleRepository.save(
                 AccessRuleFactory.sampleExcludedVideosAccessRule(
                     name = "Super Bad Videos",
                     videoIds = listOf(VideoId("E"), VideoId("F"))
                 )
             )
 
+            val excludedVideoTypes = accessRuleRepository.save(
+                AccessRuleFactory.sampleExcludedVideoTypesAccessRule(
+                    name = "Bad Types",
+                    videoTypes = listOf(VideoType.STOCK)
+                )
+            )
+
             val contentPackageId =
                 insertContentPackage(
                     "My content package",
-                    listOf(accessRuleCollections, accessRuleIncludedVideos, accessRuleExcludedVideos)
+                    listOf(includedCollections, includedVideos, excludedVideos, excludedVideoTypes)
                 )
 
             val organisation = insertTestOrganisation(
@@ -131,7 +140,6 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
                 .extracting("name")
                 .contains("My content package")
 
-            assertThat(contentPackage.accessRules).hasSize(3)
 
             val includedCollectionsAccessRules =
                 contentPackage.accessRules.filterIsInstance<IncludedCollectionsAccessRule>()
@@ -148,6 +156,12 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
             assertThat(excludedVideosAccessRules)
                 .flatExtracting("videoIds")
                 .containsExactlyInAnyOrder("E", "F")
+
+            val excludedVideoTypesAccessRule =
+                contentPackage.accessRules.filterIsInstance<ExcludedVideoTypesAccessRule>()
+            assertThat(excludedVideoTypesAccessRule)
+                .flatExtracting("videoTypes")
+                .containsExactlyInAnyOrder("STOCK")
         }
     }
 
@@ -283,6 +297,9 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                         )
                         is AccessRule.ExcludedVideos -> ExcludedVideosAccessRule(
                             it.videoIds.map { id -> id.value }
+                        )
+                        is AccessRule.ExcludedVideoTypes -> ExcludedVideoTypesAccessRule(
+                            it.videoTypes.map { videoType -> videoType.name }
                         )
                     }
                 }).build()

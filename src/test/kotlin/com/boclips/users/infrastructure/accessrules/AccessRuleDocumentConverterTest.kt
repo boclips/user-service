@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.accessrules
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.contentpackage.VideoType
 import com.boclips.users.testsupport.factories.AccessRuleDocumentFactory
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -69,6 +70,32 @@ class AccessRuleDocumentConverterTest {
             assertThat(document.id.toHexString()).isEqualTo(accessRule.id.value)
             assertThat(document.name).isEqualTo(accessRule.name)
             assertThat(document.videoIds.map { VideoId(it) }).isEqualTo(accessRule.videoIds)
+        }
+    }
+
+    @Nested
+    inner class ConvertingExcludedVideos {
+        @Test
+        fun `symmetrical conversion to domain`() {
+            val accessRule = AccessRuleFactory.sampleExcludedVideosAccessRule()
+
+            val document = converter.toDocument(accessRule)
+            val convertedRule = converter.fromDocument(document)
+
+            assertThat(accessRule).isEqualTo(convertedRule)
+        }
+    }
+
+    @Nested
+    inner class ConvertingExcludedVideoTypes {
+        @Test
+        fun `symmetrical conversion to domain`() {
+            val accessRule = AccessRuleFactory.sampleExcludedVideoTypesAccessRule(videoTypes = listOf(VideoType.NEWS))
+
+            val document = converter.toDocument(accessRule)
+            val convertedRule = converter.fromDocument(document)
+
+            assertThat(accessRule).isEqualTo(convertedRule)
         }
     }
 

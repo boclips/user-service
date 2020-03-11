@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.contentpackage.VideoType
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
@@ -26,6 +27,17 @@ class AccessRuleDocumentConverter {
                 name = document.name,
                 videoIds = document.videoIds.map { VideoId(it) }
             )
+            is AccessRuleDocument.ExcludedVideoTypes -> AccessRule.ExcludedVideoTypes(
+                id = AccessRuleId(document.id.toHexString()),
+                name = document.name,
+                videoTypes = document.videoTypes.map {
+                    when (it) {
+                        VideoTypeDocument.INSTRUCTIONAL -> VideoType.INSTRUCTIONAL
+                        VideoTypeDocument.NEWS -> VideoType.NEWS
+                        VideoTypeDocument.STOCK -> VideoType.STOCK
+                    }
+                }
+            )
         }
     }
 
@@ -45,6 +57,17 @@ class AccessRuleDocumentConverter {
                 id = ObjectId(accessRule.id.value)
                 name = accessRule.name
                 videoIds = accessRule.videoIds.map { it.value }
+            }
+            is AccessRule.ExcludedVideoTypes -> AccessRuleDocument.ExcludedVideoTypes().apply {
+                id = ObjectId(accessRule.id.value)
+                name = accessRule.name
+                videoTypes = accessRule.videoTypes.map {
+                    when (it) {
+                        VideoType.INSTRUCTIONAL -> VideoTypeDocument.INSTRUCTIONAL
+                        VideoType.NEWS -> VideoTypeDocument.NEWS
+                        VideoType.STOCK -> VideoTypeDocument.STOCK
+                    }
+                }
             }
         }
     }
