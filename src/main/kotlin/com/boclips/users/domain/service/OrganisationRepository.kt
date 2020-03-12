@@ -12,7 +12,8 @@ import org.springframework.data.domain.Page
 interface OrganisationRepository {
     fun <T: OrganisationDetails> save(organisation: Organisation<T>): Organisation<T>
 
-    fun update(update: OrganisationUpdate): Organisation<*>?
+    fun updateOne(update: OrganisationUpdate): Organisation<*>?
+    fun updateOne(id: OrganisationId, updates: List<OrganisationUpdate>): Organisation<*>?
 
     fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation<*>>
     fun findOrganisationById(id: OrganisationId): Organisation<*>?

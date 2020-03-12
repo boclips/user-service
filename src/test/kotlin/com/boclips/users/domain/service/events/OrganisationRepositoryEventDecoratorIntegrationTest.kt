@@ -24,7 +24,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
         saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u2")))
         saveUser(UserFactory.sample(organisationId = null, identity = IdentityFactory.sample("u3")))
 
-        repository.update(
+        repository.updateOne(
             OrganisationTypeUpdate(
                 district.id,
                 DealType.DESIGN_PARTNER
@@ -42,7 +42,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
         saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u2")))
         saveUser(UserFactory.sample(organisationId = null, identity = IdentityFactory.sample("u3")))
 
-        repository.update(
+        repository.updateOne(
             OrganisationTypeUpdate(
                 school.id,
                 DealType.DESIGN_PARTNER

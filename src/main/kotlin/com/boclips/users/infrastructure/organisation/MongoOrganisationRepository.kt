@@ -46,7 +46,7 @@ class MongoOrganisationRepository(
         }
     }
 
-    override fun update(update: OrganisationUpdate): Organisation<*>? {
+    override fun updateOne(update: OrganisationUpdate): Organisation<*>? {
         val document = repository.findByIdOrNull(update.id.value) ?: return null
 
         val updatedDocument = when (update) {
@@ -54,6 +54,20 @@ class MongoOrganisationRepository(
             is OrganisationExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
             is OrganisationDomainOnUpdate -> document.copy(domain = update.domain)
         }
+
+        return fromDocument(repository.save(updatedDocument))
+    }
+
+    override fun updateOne(id: OrganisationId, updates: List<OrganisationUpdate>): Organisation<*>? {
+        val document = repository.findByIdOrNull(id.value) ?: return null
+
+        val updatedDocument = updates.fold(document, { accumulator: OrganisationDocument, update: OrganisationUpdate ->
+            return@fold when (update) {
+                is OrganisationTypeUpdate -> accumulator.copy(dealType = update.type)
+                is OrganisationExpiresOnUpdate -> accumulator.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
+                is OrganisationDomainOnUpdate -> accumulator.copy(domain = update.domain)
+            }
+        })
 
         return fromDocument(repository.save(updatedDocument))
     }
@@ -88,9 +102,7 @@ class MongoOrganisationRepository(
             }
     }
 
-    override fun findOrganisations(
-        countryCode: String?, types: List<OrganisationType>?, page: Int, size: Int
-    ): Page<Organisation<*>>? {
+    override fun findOrganisations(countryCode: String?, types: List<OrganisationType>?, page: Int, size: Int): Page<Organisation<*>>? {
         val results =
             repository.findOrganisations(
                 OrganisationSearchRequest(

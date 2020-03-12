@@ -14,8 +14,8 @@ class OrganisationRepositoryEventDecorator(
     private val eventBus: EventBus
 ) : OrganisationRepository by repository {
 
-    override fun update(update: OrganisationUpdate): Organisation<*>? {
-        val updatedOrganisation = repository.update(update) ?: return null
+    override fun updateOne(update: OrganisationUpdate): Organisation<*>? {
+        val updatedOrganisation = repository.updateOne(update) ?: return null
 
         val childOrganisations = repository.findOrganisationsByParentId(update.id) + updatedOrganisation
 

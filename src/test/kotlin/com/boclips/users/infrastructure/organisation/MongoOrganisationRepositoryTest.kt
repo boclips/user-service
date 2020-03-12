@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
@@ -8,6 +7,7 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.service.OrganisationDomainOnUpdate
 import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -23,7 +23,6 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `persists an organisation`() {
         val organisationName = "Persist Organisation"
-
 
         val organisation: Organisation<ApiIntegration> = OrganisationFactory.sample(
             type = DealType.STANDARD,
@@ -213,7 +212,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisation.type).isEqualTo(DealType.STANDARD)
 
-        val updatedOrganisation = organisationRepository.update(
+        val updatedOrganisation = organisationRepository.updateOne(
             OrganisationTypeUpdate(
                 id = organisation.id,
                 type = DealType.DESIGN_PARTNER
@@ -238,7 +237,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val updatedOrganisation = organisationRepository.update(
+        val updatedOrganisation = organisationRepository.updateOne(
             OrganisationExpiresOnUpdate(
                 id = organisation.id,
                 accessExpiresOn = newExpiry
@@ -249,8 +248,24 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `update multiple properties`() {
+        val organisation = organisationRepository.save(OrganisationFactory.school())
+
+        val accessExpiresOn = ZonedDateTime.parse("2012-08-08T00:00:00Z")
+        val updatedOrganisation = organisationRepository.updateOne(
+            organisation.id, listOf(
+                OrganisationDomainOnUpdate(organisation.id, "some-domain"),
+                OrganisationExpiresOnUpdate(organisation.id, accessExpiresOn)
+            )
+        )
+
+        assertThat(updatedOrganisation?.details?.domain).isEqualTo("some-domain")
+        assertThat(updatedOrganisation?.accessExpiresOn).isEqualTo(accessExpiresOn)
+    }
+
+    @Test
     fun `update returns null when organisation not found`() {
-        val updatedOrganisation = organisationRepository.update(
+        val updatedOrganisation = organisationRepository.updateOne(
             OrganisationTypeUpdate(
                 id = OrganisationId("doesnotexist"),
                 type = DealType.DESIGN_PARTNER

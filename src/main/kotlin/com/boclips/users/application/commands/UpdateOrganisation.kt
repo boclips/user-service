@@ -23,27 +23,20 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
             throw PermissionDeniedException()
         }
 
-        request?.accessExpiresOn?.let { accessExpiryOn ->
+        val organisationId = OrganisationId(value = id)
+
+        val expiryUpdate = request?.accessExpiresOn?.let { accessExpiryOn ->
             val convertedDate = convertToZonedDateTime(accessExpiryOn)
-
-            organisationRepository.update(
-                OrganisationExpiresOnUpdate(
-                    OrganisationId(id),
-                    convertedDate
-                )
-            ) ?: throw OrganisationNotFoundException(id)
+            OrganisationExpiresOnUpdate(organisationId, convertedDate)
         }
 
-        request?.domain?.let { domain ->
-            organisationRepository.update(
-                OrganisationDomainOnUpdate(
-                    OrganisationId(id),
-                    domain
-                )
-            ) ?: throw OrganisationNotFoundException(id)
+        val domainUpdate = request?.domain?.let { domain ->
+            OrganisationDomainOnUpdate(organisationId, domain)
         }
 
-        return organisationRepository.findOrganisationById(OrganisationId(value = id))
+        organisationRepository.updateOne(organisationId, listOfNotNull(expiryUpdate, domainUpdate)) ?: throw OrganisationNotFoundException(id)
+
+        return organisationRepository.findOrganisationById(organisationId)
             ?: throw OrganisationNotFoundException(id)
     }
 
