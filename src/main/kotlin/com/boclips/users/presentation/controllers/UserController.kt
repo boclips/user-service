@@ -54,8 +54,7 @@ class UserController(
     }
 
     @PutMapping("/{id}")
-    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest)
-        : ResponseEntity<MappingJacksonValue> {
+    fun updateAUser(@PathVariable id: String, @Valid @RequestBody updateUserRequest: UpdateUserRequest): ResponseEntity<MappingJacksonValue> {
         updateUser(id, updateUserRequest)
         return getAUser(id)
     }

@@ -66,6 +66,11 @@ class MongoUserRepository(
         return userDocumentMongoRepository.findAll().map { document -> userDocumentConverter.convertToUser(document) }
     }
 
+    override fun findOrphans(domain: String, organisationId: OrganisationId): List<User> {
+        return userDocumentMongoRepository.findByEmailContainsAndOrganisationIdIsNot(domain = "@$domain", organisationId = organisationId.value)
+            .map { document -> userDocumentConverter.convertToUser(document) }
+    }
+
     override fun findAllByOrganisationId(id: OrganisationId): List<User> {
         return userDocumentMongoRepository.findByOrganisationId(id.value)
             .map { document -> userDocumentConverter.convertToUser(document) }

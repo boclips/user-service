@@ -2,8 +2,8 @@ package com.boclips.users.infrastructure.user
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -52,7 +52,6 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(fetchedUser!!.id).isEqualTo(user.id)
         assertThat(fetchedUser.referralCode).isEqualTo(user.referralCode)
-
     }
 
     @Test
@@ -249,5 +248,18 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         val usersInOrg = userRepository.findAllByOrganisationId(OrganisationId("org-id-1"))
 
         assertThat(usersInOrg).hasSize(1)
+    }
+
+    @Test
+    fun `find users matching domain and not being part of organisation`() {
+        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-1", username = "user1@me.com"), organisationId = OrganisationId("org-id-1")))
+        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-2", username = "user1@me.com"), organisationId = OrganisationId("org-id-2")))
+        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-3", username = "user1@meme.com"), organisationId = OrganisationId("org-id-1")))
+
+        val matches = userRepository.findOrphans(domain = "me.com", organisationId = OrganisationId("org-id-2"))
+
+        assertThat(matches).hasSize(1)
+        assertThat(matches.first().id.value).isEqualTo("user-1")
+        assertThat(matches.first().organisationId?.value).isEqualTo("org-id-1")
     }
 }
