@@ -35,6 +35,7 @@ class OrganisationController(
     }
 
     @PatchMapping("/organisations/{id}")
+    @Deprecated("Use the post mapping of this endpoint instead")
     fun updateProperty(
         @PathVariable id: String,
         @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?
