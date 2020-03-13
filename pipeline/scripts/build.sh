@@ -4,7 +4,7 @@ set -eu
 
 export GRADLE_USER_HOME=".gradle"
 
-version=$(cat version/version)
+version=$(cat version/tag)
 
 (
 cd source
