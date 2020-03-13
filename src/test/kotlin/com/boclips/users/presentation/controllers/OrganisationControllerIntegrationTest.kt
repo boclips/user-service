@@ -7,8 +7,10 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.ContentPackageFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -258,6 +260,30 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                             """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
                         )
                 )
+                .andExpect(MockMvcResultMatchers.status().isForbidden)
+        }
+    }
+
+    @Nested
+    inner class AssociatingUsersWithOrganisation {
+        @Test
+        fun `associates users which should be in a given district to that district`() {
+            userRepository.create(user = UserFactory.sample(identity = IdentityFactory.sample(username = "rebecca@district-domain.com")))
+            val district =
+                organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
+
+            mvc.perform(
+                    post("/v1/organisations/${district.id.value}/sync").asUserWithRoles(UserRoles.UPDATE_ORGANISATIONS)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(jsonPath("$._embedded.users", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.users[0].email", equalTo("rebecca@district-domain.com")))
+                .andExpect(jsonPath("$._embedded.users[0].organisationAccountId", equalTo(district.id.value)))
+        }
+
+        @Test
+        fun `associates users requires permissions to do so`() {
+            mvc.perform(post("/v1/organisations/org-id/sync"))
                 .andExpect(MockMvcResultMatchers.status().isForbidden)
         }
     }

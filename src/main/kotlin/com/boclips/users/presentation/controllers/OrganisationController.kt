@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.controllers
 
+import com.boclips.users.application.commands.AssignUsersByOrganisationDomain
 import com.boclips.users.application.commands.GetOrganisationById
 import com.boclips.users.application.commands.GetOrganisations
 import com.boclips.users.application.commands.UpdateOrganisation
@@ -7,9 +8,13 @@ import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.presentation.requests.OrganisationFilterRequest
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
 import com.boclips.users.presentation.resources.OrganisationResource
+import com.boclips.users.presentation.resources.UserResourceWrapper
+import com.boclips.users.presentation.resources.UsersResource
 import com.boclips.users.presentation.resources.converters.OrganisationConverter
+import com.boclips.users.presentation.resources.converters.UserConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.PagedModel
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,8 +29,10 @@ import javax.validation.Valid
 class OrganisationController(
     private val getOrganisationById: GetOrganisationById,
     private val organisationConverter: OrganisationConverter,
+    private val userConverter: UserConverter,
     private val updateOrganisation: UpdateOrganisation,
-    private val getOrganisations: GetOrganisations
+    private val getOrganisations: GetOrganisations,
+    private val assignUsersByOrganisationDomain: AssignUsersByOrganisationDomain
 ) {
 
     @GetMapping("/organisations/{id}")
@@ -49,6 +56,13 @@ class OrganisationController(
         @Valid @RequestBody updateOrganisationRequest: UpdateOrganisationRequest?
     ): EntityModel<OrganisationResource> {
         return organisationConverter.toResource(updateOrganisation(id, updateOrganisationRequest))
+    }
+
+    @PostMapping("/organisations/{id}/sync")
+    fun assignUsers(@PathVariable id: String): ResponseEntity<UsersResource> {
+        val organisation = getOrganisationById(id)
+        val resources = assignUsersByOrganisationDomain(id).map { (userConverter.toUserResource(it, organisation)) }
+        return ResponseEntity.ok(UsersResource(_embedded = UserResourceWrapper(resources)))
     }
 
     @GetMapping("/organisations")

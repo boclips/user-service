@@ -26,8 +26,8 @@ class EventConverter(
 
     private fun toEventOrganisation(user: User): Organisation? {
         val organisationId = user.organisationId ?: return null
-        val account = organisationRepository.findOrganisationById(organisationId) ?: return null
-        return toEventOrganisation(account)
+        val organisation = organisationRepository.findOrganisationById(organisationId) ?: return null
+        return toEventOrganisation(organisation)
     }
 
     private fun toEventOrganisation(organisation: com.boclips.users.domain.model.organisation.Organisation<*>): Organisation {
