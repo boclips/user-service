@@ -1,5 +1,7 @@
 package com.boclips.users.presentation.resources
 
+import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -16,6 +18,8 @@ import java.time.ZonedDateTime
 class OrganisationConverterTest {
     @Test
     fun toResource() {
+        setSecurityContext("org-viewer", UserRoles.UPDATE_ORGANISATIONS)
+
         val originalOrganisation = OrganisationFactory.sample(
             id = OrganisationId("organisation-account-id"),
             accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
@@ -34,7 +38,6 @@ class OrganisationConverterTest {
         assertThat(organisationResource.content!!.organisationDetails.country?.name).isEqualTo(originalOrganisation.details.country?.name)
         assertThat(organisationResource.content!!.organisationDetails.state?.name).isEqualTo(originalOrganisation.details.state.name)
         assertThat(organisationResource.content!!.organisationDetails.type).isEqualTo(originalOrganisation.details.type().toString())
-        assertThat(organisationResource.links.map { it.rel.value() })
-            .containsExactlyInAnyOrder("self", "edit")
+        assertThat(organisationResource.links.map { it.rel.value() }).containsExactlyInAnyOrder("self", "edit", "associateUsers")
     }
 }

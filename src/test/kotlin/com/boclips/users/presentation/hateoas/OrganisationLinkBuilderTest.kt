@@ -25,10 +25,20 @@ internal class OrganisationLinkBuilderTest {
     @Test
     fun `edit link for organisation`() {
         val organisationId = "test-id"
-        val organisationLink = organisationLinkBuilder.edit(OrganisationId(organisationId))
+        val organisationLink = organisationLinkBuilder.editOrganisation(OrganisationId(organisationId))
 
         assertThat(organisationLink.rel.value()).isEqualTo("edit")
         assertThat(organisationLink.href).endsWith("/organisations/$organisationId")
+    }
+
+    @Test
+    fun `associate users to organisation link for users with correct permissions`() {
+        setSecurityContext("org-viewer", UserRoles.UPDATE_ORGANISATIONS)
+        val organisationId = "test-id"
+        val organisationLink = organisationLinkBuilder.associateUsersToOrganisation(OrganisationId(organisationId))!!
+
+        assertThat(organisationLink.rel.value()).isEqualTo("associateUsers")
+        assertThat(organisationLink.href).endsWith("/organisations/$organisationId/associate")
     }
 
     @Test

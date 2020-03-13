@@ -26,10 +26,20 @@ class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriCompon
         }
     }
 
-    fun edit(id: OrganisationId): Link {
+    fun editOrganisation(id: OrganisationId): Link {
         return WebMvcLinkBuilder.linkTo(
             WebMvcLinkBuilder.methodOn(OrganisationController::class.java).updateProperty(id.value, null)
         ).withRel("edit")
+    }
+
+    fun associateUsersToOrganisation(id: OrganisationId): Link? {
+        return if (UserExtractor.currentUserHasAnyRole(UserRoles.UPDATE_ORGANISATIONS)) {
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(OrganisationController::class.java).assignUsers(id.value)
+            ).withRel("associateUsers")
+        } else {
+            null
+        }
     }
 
     fun getOrganisationsLink(): Link? {

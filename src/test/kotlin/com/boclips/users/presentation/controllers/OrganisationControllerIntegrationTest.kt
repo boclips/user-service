@@ -20,6 +20,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import java.time.ZonedDateTime
@@ -273,7 +274,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
 
             mvc.perform(
-                    post("/v1/organisations/${district.id.value}/sync").asUserWithRoles(UserRoles.UPDATE_ORGANISATIONS)
+                    post("/v1/organisations/${district.id.value}/associate").asUserWithRoles(UserRoles.UPDATE_ORGANISATIONS)
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(jsonPath("$._embedded.users", hasSize<Int>(1)))
