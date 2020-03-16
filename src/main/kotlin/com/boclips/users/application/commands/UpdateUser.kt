@@ -116,9 +116,9 @@ class UpdateUser(
         countryCode: String
     ): Organisation<School>? {
         return organisationRepository.lookupSchools(
-            schoolName,
-            countryCode
-        ).firstOrNull { it.name == schoolName }
+                schoolName,
+                countryCode
+            ).firstOrNull { it.name == schoolName }
             ?.let { organisationRepository.findSchoolById(OrganisationId(it.id)) }
     }
 

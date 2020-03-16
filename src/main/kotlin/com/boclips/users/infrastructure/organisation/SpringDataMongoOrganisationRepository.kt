@@ -3,7 +3,8 @@ package com.boclips.users.infrastructure.organisation
 import com.boclips.users.domain.model.organisation.OrganisationType
 import org.springframework.data.mongodb.repository.MongoRepository
 
-interface SpringDataMongoOrganisationRepository : MongoRepository<OrganisationDocument, String>, CustomizedOrganisationRepository {
+interface SpringDataMongoOrganisationRepository : MongoRepository<OrganisationDocument, String>,
+    CustomizedOrganisationRepository {
     fun findByNameAndType(name: String, type: OrganisationType): OrganisationDocument?
     fun findByRoleAndType(role: String, type: OrganisationType): OrganisationDocument?
     fun findByTypeAndCountryCodeAndNameContainsIgnoreCase(

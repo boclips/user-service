@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 
 @Service
-class AccessService(val organisationRepository: OrganisationRepository) {
+class AccessExpiryService(val organisationRepository: OrganisationRepository) {
     fun userHasAccess(user: User): Boolean {
         val userAccessExpiry = user.accessExpiresOn ?: return true
 

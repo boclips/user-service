@@ -22,8 +22,8 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             val collectionId = "test-collection-id"
 
             mvc.perform(
-                put("/v1/included-content-access-rules/$accessRuleId/collections/$collectionId").asUser("no-roles@doh.com")
-            )
+                    put("/v1/included-content-access-rules/$accessRuleId/collections/$collectionId").asUser("no-roles@doh.com")
+                )
                 .andExpect(status().isForbidden)
         }
 
@@ -36,12 +36,12 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             val collectionId = "test-collection-id"
 
             mvc.perform(
-                put("/v1/included-content-access-rules/${accessRuleId.value}/collections/$collectionId")
-                    .asUserWithRoles(
-                        "test@user.com",
-                        UserRoles.UPDATE_ACCESS_RULES
-                    )
-            )
+                    put("/v1/included-content-access-rules/${accessRuleId.value}/collections/$collectionId")
+                        .asUserWithRoles(
+                            "test@user.com",
+                            UserRoles.UPDATE_ACCESS_RULES
+                        )
+                )
                 .andExpect(status().isNoContent)
 
             val updatedAccessRule = accessRuleRepository.findById(accessRuleId) as AccessRule.IncludedCollections
@@ -52,12 +52,12 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `returns a 404 response if access rule is not found`() {
             mvc.perform(
-                put("/v1/included-content-access-rules/does-not-exist/collections/collection-id")
-                    .asUserWithRoles(
-                        "test@user.com",
-                        UserRoles.UPDATE_ACCESS_RULES
-                    )
-            )
+                    put("/v1/included-content-access-rules/does-not-exist/collections/collection-id")
+                        .asUserWithRoles(
+                            "test@user.com",
+                            UserRoles.UPDATE_ACCESS_RULES
+                        )
+                )
                 .andExpect(status().isNotFound)
         }
     }
@@ -70,8 +70,8 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             val collectionId = "test-collection-id"
 
             mvc.perform(
-                delete("/v1/included-content-access-rules/$accessRuleId/collections/$collectionId").asUser("no-roles@doh.com")
-            )
+                    delete("/v1/included-content-access-rules/$accessRuleId/collections/$collectionId").asUser("no-roles@doh.com")
+                )
                 .andExpect(status().isForbidden)
         }
 
@@ -84,12 +84,12 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
             ).id
 
             mvc.perform(
-                delete("/v1/included-content-access-rules/${accessRuleId.value}/collections/$collectionId")
-                    .asUserWithRoles(
-                        "test@user.com",
-                        UserRoles.UPDATE_ACCESS_RULES
-                    )
-            )
+                    delete("/v1/included-content-access-rules/${accessRuleId.value}/collections/$collectionId")
+                        .asUserWithRoles(
+                            "test@user.com",
+                            UserRoles.UPDATE_ACCESS_RULES
+                        )
+                )
                 .andExpect(status().isNoContent)
 
             val updatedAccessRule = accessRuleRepository.findById(accessRuleId) as AccessRule.IncludedCollections
@@ -100,12 +100,12 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `returns 404 when access rule does not exist`() {
             mvc.perform(
-                delete("/v1/included-content-access-rules/does-not-exist/collections/collection-id")
-                    .asUserWithRoles(
-                        "test@user.com",
-                        UserRoles.UPDATE_ACCESS_RULES
-                    )
-            )
+                    delete("/v1/included-content-access-rules/does-not-exist/collections/collection-id")
+                        .asUserWithRoles(
+                            "test@user.com",
+                            UserRoles.UPDATE_ACCESS_RULES
+                        )
+                )
                 .andExpect(status().isNotFound)
         }
     }

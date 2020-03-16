@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component
 @Component
 class SearchSchools(
     private val organisationRepository: OrganisationRepository,
-    private val americanSchoolsProvider: AmericanSchoolsProvider) {
+    private val americanSchoolsProvider: AmericanSchoolsProvider
+) {
     operator fun invoke(schoolName: String?, countryCode: String?, state: String?): List<LookupEntry> {
         if (schoolName.isNullOrBlank() || countryCode.isNullOrBlank()) {
             throw RuntimeException("You must provide a school name and country code")

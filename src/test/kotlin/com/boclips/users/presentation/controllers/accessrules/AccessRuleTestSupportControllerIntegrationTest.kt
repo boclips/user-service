@@ -24,30 +24,30 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns a 403 response when user does not have an INSERT_ACCESS_RULES role`() {
             mvc.perform(
-                post("/v1/access-rules")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{ }")
-                    .asUser("cant-create-contracts@hacker.com")
-            )
+                    post("/v1/access-rules")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ }")
+                        .asUser("cant-create-contracts@hacker.com")
+                )
                 .andExpect(status().isForbidden)
         }
 
         @Test
         fun `creates a IncludedCollections access rule and returns it's location`() {
             mvc.perform(
-                post("/v1/access-rules")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+                    post("/v1/access-rules")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """
                         {
                             "type": "IncludedCollections",
                             "name": "Collections contract creation test",
                             "collectionIds": ["A", "B", "C"]
                         }
                     """.trimIndent()
-                    )
-                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
-            )
+                        )
+                        .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
+                )
                 .andExpect(status().isCreated)
                 .andExpect(header().string("Location", containsString("/v1/access-rules/")))
         }
@@ -55,19 +55,19 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `creates a IncludedVideos access rule and returns it's location`() {
             mvc.perform(
-                post("/v1/access-rules")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+                    post("/v1/access-rules")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """
                         {
                             "type": "IncludedVideos",
                             "name": "Videos contract creation test",
                             "videoIds": ["A", "B", "C"]
                         }
                     """.trimIndent()
-                    )
-                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
-            )
+                        )
+                        .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
+                )
                 .andExpect(status().isCreated)
                 .andExpect(header().string("Location", containsString("/v1/access-rules/")))
         }
@@ -75,17 +75,17 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns a 400 response when IncludedCollections payload is invalid`() {
             mvc.perform(
-                post("/v1/access-rules")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+                    post("/v1/access-rules")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """
                         {
                             "type": "IncludedCollections"
                         }
                     """.trimIndent()
-                    )
-                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
-            )
+                        )
+                        .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
+                )
                 .andExpect(status().isBadRequest)
                 .andExpectApiErrorPayload()
         }
@@ -93,18 +93,18 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns a 400 response when access rule type is not provided`() {
             mvc.perform(
-                post("/v1/access-rules")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+                    post("/v1/access-rules")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """
                         {
                             "name": "Contract type is not there...",
                             "collectionIds": ["A", "B", "C"]
                         }
                     """.trimIndent()
-                    )
-                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
-            )
+                        )
+                        .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
+                )
                 .andExpect(status().isBadRequest)
         }
 
@@ -117,19 +117,19 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
             )
 
             mvc.perform(
-                post("/v1/access-rules")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+                    post("/v1/access-rules")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """
                         {
                             "type": "IncludedCollections",
                             "name": "$accessRule",
                             "collectionIds": ["A"]
                         }
                     """.trimIndent()
-                    )
-                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
-            )
+                        )
+                        .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
+                )
                 .andExpect(status().isConflict)
         }
     }
@@ -139,8 +139,8 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns a 403 response when caller does not have a VIEW_ACCESS_RULES role`() {
             mvc.perform(
-                get("/v1/access-rules/some-contract-id").asUser("cant-view-contracts@hacker.com")
-            )
+                    get("/v1/access-rules/some-contract-id").asUser("cant-view-contracts@hacker.com")
+                )
                 .andExpect(status().isForbidden)
         }
 
@@ -153,9 +153,9 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
             )
 
             mvc.perform(
-                get("/v1/access-rules/${accessRule.id.value}")
-                    .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
+                    get("/v1/access-rules/${accessRule.id.value}")
+                        .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+                )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.type", equalTo("IncludedCollections")))
                 .andExpect(jsonPath("$.name", equalTo(accessRuleName)))
@@ -167,9 +167,9 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns a 404 response when given access rule is not found`() {
             mvc.perform(
-                get("/v1/access-rules/this-does-not-exist")
-                    .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
+                    get("/v1/access-rules/this-does-not-exist")
+                        .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+                )
                 .andExpect(status().isNotFound)
         }
     }

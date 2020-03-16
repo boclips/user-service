@@ -19,6 +19,7 @@ sealed class UserUpdateCommand {
         val utmContent: String?,
         val utmTerm: String?
     ) : UserUpdateCommand()
+
     data class ReplaceAccessExpiresOn(val accessExpiresOn: ZonedDateTime) : UserUpdateCommand()
     data class ReplaceHasLifetimeAccess(val hasLifetimeAccess: Boolean) : UserUpdateCommand()
     data class ReplaceShareCode(val shareCode: String) : UserUpdateCommand()

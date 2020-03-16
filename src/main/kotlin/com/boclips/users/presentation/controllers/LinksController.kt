@@ -2,7 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.service.AccessService
+import com.boclips.users.domain.service.AccessExpiryService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1", "/v1/")
 class LinksController(
     private val userRepository: UserRepository,
-    private val accessService: AccessService,
+    private val accessExpiryService: AccessExpiryService,
     private val userLinkBuilder: UserLinkBuilder,
     private val countryLinkBuilder: CountryLinkBuilder,
     private val accessRuleLinkBuilder: AccessRuleLinkBuilder,
@@ -38,12 +38,12 @@ class LinksController(
                 user?.let {
                     userLinkBuilder.reportAccessExpiredLink(
                         userRepository.findById(it.id),
-                        accessService.userHasAccess(it)
+                        accessExpiryService.userHasAccess(it)
                     )
                 },
                 userLinkBuilder.profileLink(user?.id),
                 userLinkBuilder.userLink(),
-                userLinkBuilder.contentPackageLink(),
+                userLinkBuilder.accessRulesLink(),
                 countryLinkBuilder.getCountriesLink(),
                 accessRuleLinkBuilder.searchAccessRules(),
                 eventLinkBuilder.logPageRenderedEventLink(),

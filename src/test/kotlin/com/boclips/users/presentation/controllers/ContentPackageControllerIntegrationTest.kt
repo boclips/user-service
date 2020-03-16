@@ -13,13 +13,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class ContentPackageControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can fetch a content package by id`() {
-        val contentPackage = ContentPackageFactory.sampleContentPackage(name = "content-package")
+        val contentPackage = ContentPackageFactory.sample(name = "content-package")
         saveContentPackage(contentPackage)
 
         mvc.perform(
-            MockMvcRequestBuilders.get("/v1/content-packages/${contentPackage.id.value}")
-                .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTENT_PACKAGES)
-        )
+                MockMvcRequestBuilders.get("/v1/content-packages/${contentPackage.id.value}")
+                    .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTENT_PACKAGES)
+            )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.name", Matchers.equalTo("content-package")))
             .andExpect(

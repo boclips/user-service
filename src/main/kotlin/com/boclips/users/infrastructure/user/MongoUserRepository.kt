@@ -67,7 +67,10 @@ class MongoUserRepository(
     }
 
     override fun findOrphans(domain: String, organisationId: OrganisationId): List<User> {
-        return userDocumentMongoRepository.findByEmailContainsAndOrganisationIdIsNot(domain = "@$domain", organisationId = organisationId.value)
+        return userDocumentMongoRepository.findByEmailContainsAndOrganisationIdIsNot(
+                domain = "@$domain",
+                organisationId = organisationId.value
+            )
             .map { document -> userDocumentConverter.convertToUser(document) }
     }
 

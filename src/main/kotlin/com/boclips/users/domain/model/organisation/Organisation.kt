@@ -1,8 +1,6 @@
 package com.boclips.users.domain.model.organisation
 
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
-import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.model.school.State
 import java.time.ZonedDateTime
 
 data class Organisation<T : OrganisationDetails>(

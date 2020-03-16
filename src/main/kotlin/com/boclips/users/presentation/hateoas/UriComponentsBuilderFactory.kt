@@ -1,4 +1,5 @@
 package com.boclips.users.presentation.hateoas
+
 import org.springframework.context.annotation.Scope
 import org.springframework.context.annotation.ScopedProxyMode
 import org.springframework.http.server.ServletServerHttpRequest

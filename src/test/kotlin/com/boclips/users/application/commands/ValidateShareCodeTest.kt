@@ -22,24 +22,28 @@ class ValidateShareCodeTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `valid share code`() {
-        val user = saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CODE")))
+        val user =
+            saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CODE")))
         assertTrue(validateShareCode(user.id.value, "CODE"))
     }
+
     @Test
     fun `valid share code - case insensitive`() {
-        val user = saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CASE")))
+        val user =
+            saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CASE")))
         assertTrue(validateShareCode(user.id.value, "cAsE"))
     }
 
     @Test
     fun `invalid share code`() {
-        val user = saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CODE")))
+        val user =
+            saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CODE")))
         assertFalse(validateShareCode(user.id.value, "BADCODE"))
     }
 
     @Test
     fun `user doesn't exist`() {
-        assertThrows<UserNotFoundException>{validateShareCode("non-existent-user", "CODE")}
+        assertThrows<UserNotFoundException> { validateShareCode("non-existent-user", "CODE") }
     }
 
     @Test
@@ -53,14 +57,16 @@ class ValidateShareCodeTest : AbstractSpringIntegrationTest() {
                 teacherPlatformAttributes = null,
                 marketingTracking = MarketingTrackingFactory.sample(),
                 organisationId = null,
-                accessExpiresOn = null)
+                accessExpiresOn = null
+            )
         )
-        assertThrows<ShareCodeNotFoundException>{validateShareCode(user.id.value, "CODE")}
+        assertThrows<ShareCodeNotFoundException> { validateShareCode(user.id.value, "CODE") }
     }
 
     @Test
     fun `user does not have a share code`() {
-        val user = saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null)))
-        assertThrows<ShareCodeNotFoundException>{validateShareCode(user.id.value, "CODE")}
+        val user =
+            saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null)))
+        assertThrows<ShareCodeNotFoundException> { validateShareCode(user.id.value, "CODE") }
     }
 }

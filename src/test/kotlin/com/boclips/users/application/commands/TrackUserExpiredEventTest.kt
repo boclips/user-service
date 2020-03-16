@@ -29,18 +29,20 @@ class TrackUserExpiredEventTest : AbstractSpringIntegrationTest() {
         trackUserExpiredEvent = TrackUserExpiredEvent(
             getOrImportUser = getOrImportUser,
             eventService = mockEventService,
-            accessService = accessService
+            accessExpiryService = accessExpiryService
         )
     }
 
     @Test
     fun `it emits a UserExpired event if the user has expired`() {
-        val user = saveUser(UserFactory.sample(
-            identity = IdentityFactory.sample(
-                id = "user-id"
-            ),
-            accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
-        ))
+        val user = saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(
+                    id = "user-id"
+                ),
+                accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
+            )
+        )
 
         setSecurityContext(user.id.value)
 
@@ -53,12 +55,14 @@ class TrackUserExpiredEventTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it does not emit a UserExpired event if the user has not expired`() {
-        val user = saveUser(UserFactory.sample(
-            identity = IdentityFactory.sample(
-                id = "user-id"
-            ),
-            accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).plusDays(1)
-        ))
+        val user = saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(
+                    id = "user-id"
+                ),
+                accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).plusDays(1)
+            )
+        )
 
         setSecurityContext(user.id.value)
 

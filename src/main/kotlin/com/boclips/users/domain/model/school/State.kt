@@ -13,7 +13,7 @@ data class State(
             } ?: throw IllegalStateException("Could not find US state $stateCode")
         }
 
-        fun states() : List<State> = statesAsMap().keys.map(::fromCode)
+        fun states(): List<State> = statesAsMap().keys.map(::fromCode)
 
         private fun statesAsMap(): Map<String, String> {
             val states = TreeMap<String, String>()

@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1", "/v1/")
 class CountryController(
-        private val getCountries: GetCountries,
-        private val getUsStates: GetUsStates,
-        private val countryConverter: CountryConverter,
-        private val stateConverter: StateConverter,
-        private val countryLinkBuilder: CountryLinkBuilder
+    private val getCountries: GetCountries,
+    private val getUsStates: GetUsStates,
+    private val countryConverter: CountryConverter,
+    private val stateConverter: StateConverter,
+    private val countryLinkBuilder: CountryLinkBuilder
 ) {
     @GetMapping("/countries")
     fun getAllCountries(): CollectionModel<EntityModel<CountryResource>> {

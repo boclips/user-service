@@ -10,7 +10,7 @@ import com.boclips.users.domain.model.organisation.School
 import org.springframework.data.domain.Page
 
 interface OrganisationRepository {
-    fun <T: OrganisationDetails> save(organisation: Organisation<T>): Organisation<T>
+    fun <T : OrganisationDetails> save(organisation: Organisation<T>): Organisation<T>
 
     fun updateOne(update: OrganisationUpdate): Organisation<*>?
     fun updateOne(id: OrganisationId, updates: List<OrganisationUpdate>): Organisation<*>?
@@ -29,7 +29,7 @@ interface OrganisationRepository {
     fun findApiIntegrationByRole(role: String): Organisation<ApiIntegration>?
     fun findApiIntegrationByName(name: String): Organisation<ApiIntegration>?
 
-    fun lookupSchools(schoolName: String, countryCode: String) : List<LookupEntry>
+    fun lookupSchools(schoolName: String, countryCode: String): List<LookupEntry>
     fun findSchoolById(id: OrganisationId): Organisation<School>?
     fun findSchools(): List<Organisation<School>>
 }

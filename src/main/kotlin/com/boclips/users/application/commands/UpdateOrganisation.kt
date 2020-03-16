@@ -34,7 +34,8 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
             OrganisationDomainOnUpdate(organisationId, domain)
         }
 
-        organisationRepository.updateOne(organisationId, listOfNotNull(expiryUpdate, domainUpdate)) ?: throw OrganisationNotFoundException(id)
+        organisationRepository.updateOne(organisationId, listOfNotNull(expiryUpdate, domainUpdate))
+            ?: throw OrganisationNotFoundException(id)
 
         return organisationRepository.findOrganisationById(organisationId)
             ?: throw OrganisationNotFoundException(id)

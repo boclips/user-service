@@ -1,7 +1,6 @@
 package com.boclips.users.application.commands
 
 import org.assertj.core.api.AssertionsForInterfaceTypes
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class UsaStateValidatorTest {

@@ -21,7 +21,7 @@ data class User(
         return isActivated()
     }
 
-    fun isActivated() : Boolean {
+    fun isActivated(): Boolean {
         return profile?.firstName?.isNotEmpty() ?: false
     }
 

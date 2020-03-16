@@ -23,7 +23,7 @@ class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
         accessRuleRepository.save(collectionAccessRule)
 
         val contentPackage =
-            ContentPackageFactory.sampleContentPackage(
+            ContentPackageFactory.sample(
                 name = "package",
                 id = packageId,
                 accessRuleIds = listOf(collectionAccessRule.id)

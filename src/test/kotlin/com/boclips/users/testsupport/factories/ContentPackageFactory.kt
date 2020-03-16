@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import org.bson.types.ObjectId
 
 object ContentPackageFactory {
-    fun sampleContentPackage(
+    fun sample(
         id: String = ObjectId.get().toHexString(),
         name: String = "A Content Package",
         accessRuleIds: List<AccessRuleId> = emptyList()

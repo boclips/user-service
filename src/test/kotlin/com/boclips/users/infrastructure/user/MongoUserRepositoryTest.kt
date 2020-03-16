@@ -118,14 +118,18 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updating user subjects`() {
-        val maths = subjectService.addSubject(Subject(
-            id = SubjectId(value = "1"),
-            name = "Maths"
-        ))
-        val physics = subjectService.addSubject(Subject(
-            id = SubjectId(value = "2"),
-            name = "Physics"
-        ))
+        val maths = subjectService.addSubject(
+            Subject(
+                id = SubjectId(value = "1"),
+                name = "Maths"
+            )
+        )
+        val physics = subjectService.addSubject(
+            Subject(
+                id = SubjectId(value = "2"),
+                name = "Physics"
+            )
+        )
 
         val user = userRepository.create(
             UserFactory.sample(
@@ -242,8 +246,18 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `find users by organisation id`() {
-        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-1"), organisationId = OrganisationId("org-id-1")))
-        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-2"), organisationId = OrganisationId("org-id-2")))
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "user-1"),
+                organisationId = OrganisationId("org-id-1")
+            )
+        )
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "user-2"),
+                organisationId = OrganisationId("org-id-2")
+            )
+        )
 
         val usersInOrg = userRepository.findAllByOrganisationId(OrganisationId("org-id-1"))
 
@@ -252,9 +266,30 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `find users matching domain and not being part of organisation`() {
-        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-1", username = "user1@me.com"), organisationId = OrganisationId("org-id-1")))
-        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-2", username = "user1@me.com"), organisationId = OrganisationId("org-id-2")))
-        userRepository.create(UserFactory.sample(identity = IdentityFactory.sample(id = "user-3", username = "user1@meme.com"), organisationId = OrganisationId("org-id-1")))
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(
+                    id = "user-1",
+                    username = "user1@me.com"
+                ), organisationId = OrganisationId("org-id-1")
+            )
+        )
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(
+                    id = "user-2",
+                    username = "user1@me.com"
+                ), organisationId = OrganisationId("org-id-2")
+            )
+        )
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(
+                    id = "user-3",
+                    username = "user1@meme.com"
+                ), organisationId = OrganisationId("org-id-1")
+            )
+        )
 
         val matches = userRepository.findOrphans(domain = "me.com", organisationId = OrganisationId("org-id-2"))
 

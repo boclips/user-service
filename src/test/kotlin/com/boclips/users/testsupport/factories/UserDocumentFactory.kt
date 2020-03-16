@@ -26,7 +26,7 @@ class UserDocumentFactory {
                 utmTerm = null,
                 utmContent = null
             ),
-            organisationId: String? =  "some-org-id",
+            organisationId: String? = "some-org-id",
             accessExpiresOn: Instant? = null,
             createdAt: Instant = Instant.now(),
             hasLifetimeAccess: Boolean = false

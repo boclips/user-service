@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.core.context.SecurityContextHolder
 
-class EventLinkBuilderTest: AbstractSpringIntegrationTest() {
+class EventLinkBuilderTest : AbstractSpringIntegrationTest() {
 
     private lateinit var eventLinkBuilder: EventLinkBuilder
 

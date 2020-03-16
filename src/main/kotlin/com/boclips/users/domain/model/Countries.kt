@@ -23,7 +23,7 @@ object Countries {
                 val locale = Locale("en", country)
                 val code = locale.isO3Country
                 val displayName = locale.displayCountry
-                val states = if(code == "USA") State.states() else null
+                val states = if (code == "USA") State.states() else null
 
                 code to Country(id = code, name = displayName, states = states)
             }

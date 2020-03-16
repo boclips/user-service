@@ -22,7 +22,8 @@ class CountryConverterTest {
             Country(id = "USA", name = "United States")
         )
 
-        val countryResources = CountryConverter(mock(), countryLinkBuilder, stateConverter).toCountriesResource(countries)
+        val countryResources =
+            CountryConverter(mock(), countryLinkBuilder, stateConverter).toCountriesResource(countries)
 
         assertThat(countryResources).isNotNull
         assertThat(countryResources).hasSize(1)

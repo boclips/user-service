@@ -4,9 +4,9 @@ import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.OrganisationId
 import java.time.ZonedDateTime
 
 class UserFactory {
@@ -30,7 +30,8 @@ class UserFactory {
             teacherPlatformAttributes = teacherPlatformAttributes,
             marketingTracking = marketing,
             organisationId = organisationId,
-            accessExpiresOn = accessExpiresOn)
+            accessExpiresOn = accessExpiresOn
+        )
 
         fun sample(
             id: String

@@ -26,9 +26,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a 403 response when caller does not have a VIEW_ACCESS_RULES role`() {
             mvc.perform(
-                get("/v1/access-rules?name=Super+Contract")
-                    .asUser("cant-view-access-rules@hacker.com")
-            )
+                    get("/v1/access-rules?name=Super+Contract")
+                        .asUser("cant-view-access-rules@hacker.com")
+                )
                 .andExpect(status().isForbidden)
         }
 
@@ -41,14 +41,14 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get(
-                    UriComponentsBuilder.fromUriString("/v1/access-rules")
-                        .queryParam("name", accessRuleName)
-                        .build()
-                        .toUri()
+                    get(
+                        UriComponentsBuilder.fromUriString("/v1/access-rules")
+                            .queryParam("name", accessRuleName)
+                            .build()
+                            .toUri()
+                    )
+                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
                 )
-                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("IncludedCollections")))
@@ -87,14 +87,14 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get(
-                    UriComponentsBuilder.fromUriString("/v1/access-rules")
-                        .queryParam("name", "this does not exist")
-                        .build()
-                        .toUri()
+                    get(
+                        UriComponentsBuilder.fromUriString("/v1/access-rules")
+                            .queryParam("name", "this does not exist")
+                            .build()
+                            .toUri()
+                    )
+                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
                 )
-                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(0)))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules?name=this%20does%20not%20exist")))
@@ -108,14 +108,14 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get(
-                    UriComponentsBuilder.fromUriString("/v1/access-rules")
-                        .queryParam("name", "")
-                        .build()
-                        .toUri()
+                    get(
+                        UriComponentsBuilder.fromUriString("/v1/access-rules")
+                            .queryParam("name", "")
+                            .build()
+                            .toUri()
+                    )
+                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
                 )
-                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(0)))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules?name=")))
@@ -136,9 +136,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/access-rules")
-                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
+                    get("/v1/access-rules")
+                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+                )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(2)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("IncludedCollections")))
@@ -174,9 +174,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/access-rules")
-                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
+                    get("/v1/access-rules")
+                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+                )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedVideos")))
@@ -202,9 +202,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/access-rules")
-                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
+                    get("/v1/access-rules")
+                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+                )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedVideoTypes")))
@@ -230,9 +230,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                get("/v1/access-rules")
-                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-            )
+                    get("/v1/access-rules")
+                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+                )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedContentPartners")))

@@ -66,14 +66,14 @@ class UserLinkBuilder :
         }
     }
 
-    fun contentPackageLink(userId: UserId? = null): Link? {
-        return if (currentUserHasAnyRole(UserRoles.VIEW_CONTENT_PACKAGES)) {
+    fun accessRulesLink(userId: UserId? = null): Link? {
+        return if (currentUserHasAnyRole(UserRoles.VIEW_ACCESS_RULES)) {
             WebMvcLinkBuilder.linkTo(
-                WebMvcLinkBuilder.methodOn(UserController::class.java).getContentPackageResourceOfUser(
-                    userId?.value
+                    WebMvcLinkBuilder.methodOn(UserController::class.java).fetchAccessRulesOfUser(
+                        userId?.value
+                    )
                 )
-            )
-                .withRel("contentPackage")
+                .withRel("accessRules")
         } else {
             null
         }
@@ -85,8 +85,8 @@ class UserLinkBuilder :
                 null
             } else {
                 WebMvcLinkBuilder.linkTo(
-                    WebMvcLinkBuilder.methodOn(EventController::class.java).trackUserExpiredEvent()
-                )
+                        WebMvcLinkBuilder.methodOn(EventController::class.java).trackUserExpiredEvent()
+                    )
                     .withRel("reportAccessExpired")
             }
         }

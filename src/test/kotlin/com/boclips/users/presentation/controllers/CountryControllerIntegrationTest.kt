@@ -29,7 +29,12 @@ class CountryControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$.${USA}.states[0].id", contains(equalTo("AK"))))
             .andExpect(jsonPath("$.${USA}.states[0].name", contains(equalTo("Alaska"))))
             .andExpect(jsonPath("$.${USA}._links.states.href", contains(endsWith("/countries/USA/states"))))
-            .andExpect(jsonPath("$.${USA}._links.schools.href", contains(endsWith("/schools?countryCode=USA{&query,state}"))))
+            .andExpect(
+                jsonPath(
+                    "$.${USA}._links.schools.href",
+                    contains(endsWith("/schools?countryCode=USA{&query,state}"))
+                )
+            )
             .andExpect(jsonPath("$._links.self.href", endsWith("/countries")))
     }
 

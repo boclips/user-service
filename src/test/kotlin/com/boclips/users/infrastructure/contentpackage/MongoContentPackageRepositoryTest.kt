@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 class MongoContentPackageRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can find a content package by id`() {
-        val contentPackage = ContentPackageFactory.sampleContentPackage()
+        val contentPackage = ContentPackageFactory.sample()
         contentPackageRepository.save(contentPackage)
         val retrievedContentPackage = contentPackageRepository.findById(contentPackage.id)
         assertThat(contentPackage).isEqualTo(retrievedContentPackage)

@@ -9,22 +9,22 @@ import java.time.Instant
 
 @Document(collection = "organisations")
 data class OrganisationDocument(
-        @Id
-        val id: String?,
-        val name: String,
-        val role: String?,
-        val domain: String?,
-        val externalId: String?,
-        val type: OrganisationType,
-        val dealType: DealType?,
-        val country: LocationDocument?,
-        val state: LocationDocument?,
-        val postcode: String?,
-        val allowsOverridingUserIds: Boolean?,
-        @DBRef
-        val parentOrganisation: OrganisationDocument? = null,
-        val accessExpiresOn: Instant? = null,
-        val contentPackageId: String? = null
+    @Id
+    val id: String?,
+    val name: String,
+    val role: String?,
+    val domain: String?,
+    val externalId: String?,
+    val type: OrganisationType,
+    val dealType: DealType?,
+    val country: LocationDocument?,
+    val state: LocationDocument?,
+    val postcode: String?,
+    val allowsOverridingUserIds: Boolean?,
+    @DBRef
+    val parentOrganisation: OrganisationDocument? = null,
+    val accessExpiresOn: Instant? = null,
+    val contentPackageId: String? = null
 )
 
 data class LocationDocument(

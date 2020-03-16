@@ -2,10 +2,10 @@ package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.domain.Subject
 import com.boclips.eventbus.domain.SubjectId
+import com.boclips.eventbus.domain.user.Organisation
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.eventbus.domain.user.Organisation
 
 class EventConverter(
     private val organisationRepository: OrganisationRepository
@@ -17,7 +17,9 @@ class EventConverter(
             .email(user.identity.email)
             .firstName(user.profile?.firstName)
             .lastName(user.profile?.lastName)
-            .subjects(user.profile?.subjects?.map { subject -> Subject.builder().id(SubjectId(subject.id.value)).name(subject.name).build() }.orEmpty())
+            .subjects(user.profile?.subjects?.map { subject ->
+                Subject.builder().id(SubjectId(subject.id.value)).name(subject.name).build()
+            }.orEmpty())
             .ages(user.profile?.ages?.toMutableList().orEmpty())
             .isBoclipsEmployee(user.identity.isBoclipsEmployee())
             .organisation(toEventOrganisation(user))
@@ -48,5 +50,4 @@ class EventConverter(
             else -> null
         }
     }
-
 }

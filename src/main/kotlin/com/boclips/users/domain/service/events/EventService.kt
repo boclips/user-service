@@ -12,10 +12,12 @@ class EventService(
     val eventConverter: EventConverter
 ) {
     fun publishPageRendered(userId: String, url: String) {
-        eventBus.publish(PageRendered.builder()
-            .userId(userId)
-            .url(url)
-            .build())
+        eventBus.publish(
+            PageRendered.builder()
+                .userId(userId)
+                .url(url)
+                .build()
+        )
     }
 
     fun publishUserExpired(user: User) {

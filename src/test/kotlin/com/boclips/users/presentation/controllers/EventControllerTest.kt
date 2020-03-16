@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
-class EventControllerTest : AbstractSpringIntegrationTest(){
+class EventControllerTest : AbstractSpringIntegrationTest() {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -29,7 +29,12 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
         setSecurityContext(userId)
 
         val organisationAccount = saveSchool()
-        saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = userId), organisationId = organisationAccount.id))
+        saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = userId),
+                organisationId = organisationAccount.id
+            )
+        )
 
         val path = "/v1/events/page-render"
         val content = """{
@@ -54,10 +59,12 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
         val userId = "test-user-id"
         setSecurityContext(userId)
 
-        saveUser(UserFactory.sample(
-            identity = IdentityFactory.sample(id = userId),
-            profile = null
-        ))
+        saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = userId),
+                profile = null
+            )
+        )
 
         val path = "/v1/events/page-render"
         val content = """{
@@ -82,10 +89,12 @@ class EventControllerTest : AbstractSpringIntegrationTest(){
         val userId = "expired-user-id"
         setSecurityContext(userId)
 
-        saveUser(UserFactory.sample(
-            identity = IdentityFactory.sample(id = userId),
-            accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
-        ))
+        saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = userId),
+                accessExpiresOn = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1)
+            )
+        )
 
         val path = "/v1/events/expired-user-access"
 

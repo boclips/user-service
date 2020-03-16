@@ -49,7 +49,6 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
         userUpdatesConverter =
             UserUpdatesCommandFactory(VideoServiceSubjectsClient(CacheableSubjectsClient(fakeClient)))
 
-
         val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(subjects = listOf(subjectId)))
 
         assertThat(commands).hasSize(1)

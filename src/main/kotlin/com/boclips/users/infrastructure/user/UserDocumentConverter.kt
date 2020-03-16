@@ -27,11 +27,12 @@ data class UserDocumentConverter(
                 firstName = userDocument.firstName.orEmpty(),
                 lastName = userDocument.lastName.orEmpty(),
                 hasOptedIntoMarketing = userDocument.hasOptedIntoMarketing ?: false,
-                subjects = userDocument.subjectIds.orEmpty().map { SubjectId(value = it) }.takeIf { it.isNotEmpty() }?.let {
-                    subjectService.getSubjectsById(
-                        it
-                    )
-                } ?: emptyList(),
+                subjects = userDocument.subjectIds.orEmpty().map { SubjectId(value = it) }.takeIf { it.isNotEmpty() }
+                    ?.let {
+                        subjectService.getSubjectsById(
+                            it
+                        )
+                    } ?: emptyList(),
                 ages = userDocument.ageRange.orEmpty()
             ),
             teacherPlatformAttributes = convertTeacherPlatformAttributes(userDocument),
@@ -45,7 +46,7 @@ data class UserDocumentConverter(
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
             organisationId = userDocument.organisationId?.let { OrganisationId(it) },
-            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC)}
+            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
         )
     }
 

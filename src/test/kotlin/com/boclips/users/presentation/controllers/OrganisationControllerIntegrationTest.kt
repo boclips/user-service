@@ -20,7 +20,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -272,7 +271,13 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `associates users which should be in a given district to that district`() {
             userRepository.create(user = UserFactory.sample(identity = IdentityFactory.sample(username = "rebecca@district-domain.com")))
             val district =
-                organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
+                organisationRepository.save(
+                    OrganisationFactory.sample(
+                        details = OrganisationDetailsFactory.district(
+                            domain = "district-domain.com"
+                        )
+                    )
+                )
 
             mvc.perform(
                     post("/v1/organisations/${district.id.value}/associate").asUserWithRoles(UserRoles.UPDATE_ORGANISATIONS)
@@ -295,7 +300,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `retrieves an api integration organisation by id`() {
             val organisationName = "Test Org"
-            val contentPackage = saveContentPackage(ContentPackageFactory.sampleContentPackage())
+            val contentPackage = saveContentPackage(ContentPackageFactory.sample())
             val organisation = organisationRepository.save(
                 OrganisationFactory.sample(
                     details = OrganisationDetailsFactory.apiIntegration(
@@ -361,11 +366,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             saveDistrict(district = OrganisationDetailsFactory.district(name = "pamdale"))
 
             mvc
-                .perform(get("/v1/organisations?name=pamdale").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS))
+                .perform(
+                    get("/v1/organisations?name=pamdale").asUserWithRoles(
+                        "some-boclipper",
+                        UserRoles.VIEW_ORGANISATIONS
+                    )
+                )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name", equalTo("pamdale")))
         }
-
     }
 }

@@ -64,7 +64,8 @@ class UserConverterTest {
     fun `converts teachers platform specific fields`() {
         val user = UserFactory.sample(
             teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "TRWN"),
-            organisationId = OrganisationId("1234"))
+            organisationId = OrganisationId("1234")
+        )
 
         val organisationAccount = OrganisationFactory.sample(
             id = OrganisationId("1234"),

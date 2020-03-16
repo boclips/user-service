@@ -10,6 +10,7 @@ class EventLinkBuilder {
     fun logPageRenderedEventLink(): Link? {
         return WebMvcLinkBuilder.linkTo(
             WebMvcLinkBuilder.methodOn(EventController::class.java)
-                .logPageRenderedEvent(null)).withRel("trackPageRendered")
+                .logPageRenderedEvent(null)
+        ).withRel("trackPageRendered")
     }
 }

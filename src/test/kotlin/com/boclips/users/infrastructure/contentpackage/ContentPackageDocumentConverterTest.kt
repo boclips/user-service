@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class ContentPackageDocumentConverterTest {
     @Test
     fun `document conversion is symmetrical`() {
-        val contentPackage = ContentPackageFactory.sampleContentPackage();
+        val contentPackage = ContentPackageFactory.sample();
         val convertedDocument = ContentPackageDocumentConverter.toDocument(contentPackage)
         val convertedPackage = ContentPackageDocumentConverter.fromDocument(convertedDocument)
 

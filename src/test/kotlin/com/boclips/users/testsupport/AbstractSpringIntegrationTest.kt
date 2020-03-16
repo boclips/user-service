@@ -6,23 +6,23 @@ import com.boclips.users.application.commands.AddCollectionToAccessRule
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.service.AccessService
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.OrganisationService
+import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.service.AccessExpiryService
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.ContentPackageRepository
 import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.IncludedContentAccessRuleRepository
+import com.boclips.users.domain.service.MarketingService
+import com.boclips.users.domain.service.OrganisationRepository
+import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
@@ -88,7 +88,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var identityProvider: IdentityProvider
 
     @Autowired
-    lateinit var accessService: AccessService
+    lateinit var accessExpiryService: AccessExpiryService
 
     @Autowired
     lateinit var repositories: Collection<CrudRepository<*, *>>

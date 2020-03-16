@@ -7,9 +7,9 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.assertj.core.api.Assertions.assertThat
 
 class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTest() {
 

@@ -14,7 +14,8 @@ class AssignUsersByOrganisationDomain(
     private val userRepository: UserRepository
 ) {
     operator fun invoke(id: String): List<User> {
-        val organisation = organisationRepository.findOrganisationById(OrganisationId(id)) ?: throw OrganisationNotFoundException(id)
+        val organisation =
+            organisationRepository.findOrganisationById(OrganisationId(id)) ?: throw OrganisationNotFoundException(id)
         val domain = organisation.details.domain
 
         val orphanUsers = domain?.let { userRepository.findOrphans(it, organisation.id) } ?: emptyList()

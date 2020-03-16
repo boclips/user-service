@@ -1,14 +1,17 @@
 package com.boclips.users.client.implementation;
 
 import com.boclips.users.client.UserServiceClient;
+import com.boclips.users.client.implementation.api.hateoas.accessrules.AccessRulesHateoasWrapper;
 import com.boclips.users.client.implementation.api.hateoas.links.Links;
 import com.boclips.users.client.implementation.api.hateoas.links.LinksResource;
 import com.boclips.users.client.model.Organisation;
 import com.boclips.users.client.model.User;
-import com.boclips.users.client.model.accessrule.ContentPackage;
+import com.boclips.users.client.model.accessrule.AccessRule;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 public class ApiUserServiceClient implements UserServiceClient {
     private final String baseUrl;
@@ -31,13 +34,11 @@ public class ApiUserServiceClient implements UserServiceClient {
     }
 
     @Override
-    public ContentPackage getContentPackage(String userId) {
-        try {
-            return restTemplate
-                    .getForObject(getLinks().getContentPackage().getHref(), ContentPackage.class, userId);
-        } catch (HttpClientErrorException.NotFound ex) {
-            return null;
-        }
+    public List<AccessRule> getAccessRules(String userId) {
+        return restTemplate
+                .getForObject(getLinks().getAccessRules().getHref(), AccessRulesHateoasWrapper.class, userId)
+                .get_embedded()
+                .getAccessRules();
     }
 
     @Override

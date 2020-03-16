@@ -8,14 +8,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
-class AccessServiceTest : AbstractSpringIntegrationTest() {
+class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it allows a user with lifetime access`() {
         val user = UserFactory.sample(
             accessExpiresOn = null
         )
-        assertThat(accessService.userHasAccess(user)).isEqualTo(true)
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(true)
     }
 
     @Test
@@ -23,7 +23,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
         val user = UserFactory.sample(
             accessExpiresOn = ZonedDateTime.now().plusDays(1)
         )
-        assertThat(accessService.userHasAccess(user)).isEqualTo(true)
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(true)
     }
 
     @Test
@@ -31,7 +31,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
         val user = UserFactory.sample(
             accessExpiresOn = ZonedDateTime.now().minusDays(1)
         )
-        assertThat(accessService.userHasAccess(user)).isEqualTo(false)
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(false)
     }
 
     @Test
@@ -50,7 +50,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
             organisationId = schoolAccount.id
         )
 
-        assertThat(accessService.userHasAccess(user)).isEqualTo(true)
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(true)
     }
 
     @Test
@@ -70,7 +70,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
             accessExpiresOn = ZonedDateTime.now().plusDays(10)
         )
 
-        assertThat(accessService.userHasAccess(user)).isEqualTo(true)
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(true)
     }
 
     @Test
@@ -89,7 +89,7 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
             accessExpiresOn = null
         )
 
-        assertThat(accessService.userHasAccess(user)).isEqualTo(true)
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(true)
     }
 
     @Test
@@ -108,6 +108,6 @@ class AccessServiceTest : AbstractSpringIntegrationTest() {
             accessExpiresOn = ZonedDateTime.now().minusMonths(10)
         )
 
-        assertThat(accessService.userHasAccess(user)).isEqualTo(false)
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(false)
     }
 }

@@ -290,7 +290,13 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school(name = "cool school")))
             organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school(name = "bad school")))
 
-            val organisations = organisationRepository.findOrganisations(name = "cool school", countryCode = null, types = null, page = 0, size = 10)
+            val organisations = organisationRepository.findOrganisations(
+                name = "cool school",
+                countryCode = null,
+                types = null,
+                page = 0,
+                size = 10
+            )
 
             assertThat(organisations).hasSize(1)
             assertThat(organisations?.first()?.details?.name).isEqualTo("cool school")

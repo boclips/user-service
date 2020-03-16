@@ -1,8 +1,8 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.application.exceptions.InvalidDateException
+import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.requests.UpdateOrganisationRequest
@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter
 
 class UpdateIdentityTest : AbstractSpringIntegrationTest() {
     lateinit var updateOrganisation: UpdateOrganisation
+
     @BeforeEach
     fun setup() {
         setSecurityContext("user-that-can-update-orgs", UserRoles.UPDATE_ORGANISATIONS)

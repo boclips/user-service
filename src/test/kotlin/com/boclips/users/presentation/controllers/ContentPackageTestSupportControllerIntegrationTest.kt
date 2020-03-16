@@ -21,27 +21,27 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
 
         val userId = "operator@boclips.com"
         mvc.perform(
-            post("/v1/content-packages").content(
-                """
+                post("/v1/content-packages").content(
+                    """
                     {
                         "name": "content-package-name",
                         "accessRuleIds": ["${accessRule.id.value}"]
                     }
                     """.trimIndent()
-            ).asUserWithRoles(
-                userId,
-                UserRoles.INSERT_CONTENT_PACKAGES
+                ).asUserWithRoles(
+                    userId,
+                    UserRoles.INSERT_CONTENT_PACKAGES
+                )
             )
-        )
             .andExpect(status().isCreated)
             .andDo { result ->
                 val location = result.response.getHeaderValue("location")
                 mvc.perform(
-                    get(location.toString()).asUserWithRoles(
-                        userId,
-                        UserRoles.VIEW_CONTENT_PACKAGES
+                        get(location.toString()).asUserWithRoles(
+                            userId,
+                            UserRoles.VIEW_CONTENT_PACKAGES
+                        )
                     )
-                )
                     .andExpect(status().isOk)
                     .andExpect(jsonPath("$.name", equalTo("content-package-name")))
                     .andExpect(jsonPath("$.accessRules", not(empty<Any>())))
@@ -66,18 +66,18 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
     @Test
     fun `returns a 400 response when non-existent access rule is specified`() {
         mvc.perform(
-            post("/v1/content-packages").content(
-                """
+                post("/v1/content-packages").content(
+                    """
                     {
                         "name": "content-package-name",
                         "accessRuleIds": ["yolo"]
                     }
                     """.trimIndent()
-            ).asUserWithRoles(
-                "test-user@boclips.com",
-                UserRoles.INSERT_CONTENT_PACKAGES
+                ).asUserWithRoles(
+                    "test-user@boclips.com",
+                    UserRoles.INSERT_CONTENT_PACKAGES
+                )
             )
-        )
             .andExpect(status().isBadRequest)
             .andExpectApiErrorPayload()
     }

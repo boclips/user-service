@@ -56,7 +56,7 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.identity.createdAt).isNotNull()
         assertThat(convertedUser.profile!!.firstName).isEqualTo("Bob")
         assertThat(convertedUser.profile!!.lastName).isEqualTo("Gog")
-        assertThat(convertedUser.profile!!.ages).containsExactly(1,2)
+        assertThat(convertedUser.profile!!.ages).containsExactly(1, 2)
         assertThat(convertedUser.profile!!.subjects).hasSize(1)
         assertThat(convertedUser.profile!!.subjects[0].name).isEqualTo("maths")
         assertThat(convertedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)

@@ -14,9 +14,9 @@ import org.springframework.context.annotation.Primary
 
 @Configuration
 class DomainConfiguration(
-        private val eventBus: EventBus,
-        private val mongoUserRepository: MongoUserRepository,
-        private val mongoOrganisationRepository: MongoOrganisationRepository
+    private val eventBus: EventBus,
+    private val mongoUserRepository: MongoUserRepository,
+    private val mongoOrganisationRepository: MongoOrganisationRepository
 ) {
     @Primary
     @Bean

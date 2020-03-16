@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 import org.springframework.beans.factory.annotation.Autowired
 
-class TrackPageRenderedEventIntegrationTest: AbstractSpringIntegrationTest() {
+class TrackPageRenderedEventIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Autowired
     lateinit var trackPageRenderedEvent: TrackPageRenderedEvent
@@ -17,7 +17,6 @@ class TrackPageRenderedEventIntegrationTest: AbstractSpringIntegrationTest() {
     fun `page rendered event is published`() {
         val pageUrl = "http://test.com/test/data?key=value"
         trackPageRenderedEvent.invoke(PageRenderedEventRequest(pageUrl))
-
 
         val event = eventBus.getEventOfType(PageRendered::class.java)
         Assertions.assertThat(event.url).isEqualTo(pageUrl)

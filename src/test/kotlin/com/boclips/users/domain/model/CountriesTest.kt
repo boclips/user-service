@@ -18,6 +18,12 @@ class CountriesTest {
 
     @Test
     fun `includes states for USA`() {
-        assertThat(Countries.getByCode("USA")).isEqualTo(Country(id = "USA", name = "United States", states = State.states()))
+        assertThat(Countries.getByCode("USA")).isEqualTo(
+            Country(
+                id = "USA",
+                name = "United States",
+                states = State.states()
+            )
+        )
     }
 }

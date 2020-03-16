@@ -37,7 +37,13 @@ class OrganisationConverterTest {
         assertThat(organisationResource.content!!.organisationDetails.name).isEqualTo(originalOrganisation.details.name)
         assertThat(organisationResource.content!!.organisationDetails.country?.name).isEqualTo(originalOrganisation.details.country?.name)
         assertThat(organisationResource.content!!.organisationDetails.state?.name).isEqualTo(originalOrganisation.details.state.name)
-        assertThat(organisationResource.content!!.organisationDetails.type).isEqualTo(originalOrganisation.details.type().toString())
-        assertThat(organisationResource.links.map { it.rel.value() }).containsExactlyInAnyOrder("self", "edit", "associateUsers")
+        assertThat(organisationResource.content!!.organisationDetails.type).isEqualTo(
+            originalOrganisation.details.type().toString()
+        )
+        assertThat(organisationResource.links.map { it.rel.value() }).containsExactlyInAnyOrder(
+            "self",
+            "edit",
+            "associateUsers"
+        )
     }
 }

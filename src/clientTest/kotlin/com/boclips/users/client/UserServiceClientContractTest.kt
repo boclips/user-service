@@ -7,7 +7,6 @@ import com.boclips.users.client.model.OrganisationDetails
 import com.boclips.users.client.model.Subject
 import com.boclips.users.client.model.TeacherPlatformAttributes
 import com.boclips.users.client.model.User
-import com.boclips.users.client.model.accessrule.ContentPackage
 import com.boclips.users.client.model.accessrule.ExcludedContentPartnersAccessRule
 import com.boclips.users.client.model.accessrule.ExcludedVideoTypesAccessRule
 import com.boclips.users.client.model.accessrule.ExcludedVideosAccessRule
@@ -89,13 +88,13 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
     }
 
     @Nested
-    inner class GetContentPackageOfUser {
+    inner class GetAccessRulesOfUser {
         @Test
-        fun `returns a package of an empty list of access rules when user has no permitted access rules`() {
+        fun `returns an empty list of access rules when user is not permitted to access rules`() {
             val organisation = insertTestOrganisation("test-organisation-id", null)
             val user = insertTestUser(organisation)
 
-            assertThat(client.getContentPackage(user.id)).isNull()
+            assertThat(client.getAccessRules(user.id)).isEmpty()
         }
 
         @Test
@@ -132,7 +131,7 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
             )
 
             val contentPackageId =
-                insertContentPackage(
+                insertAccessRules(
                     "My content package",
                     listOf(
                         includedCollections,
@@ -149,36 +148,30 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
             )
             val user = insertTestUser(organisation)
 
-            val contentPackage = client.getContentPackage(user.id)
-
-            assertThat(contentPackage)
-                .extracting("name")
-                .contains("My content package")
+            val accessRules = client.getAccessRules(user.id)
 
             val includedCollectionsAccessRules =
-                contentPackage.accessRules.filterIsInstance<IncludedCollectionsAccessRule>()
+                accessRules.filterIsInstance<IncludedCollectionsAccessRule>()
             assertThat(includedCollectionsAccessRules)
                 .flatExtracting("collectionIds")
                 .containsExactlyInAnyOrder("A", "B")
 
-            val includedVideosAccessRules = contentPackage.accessRules.filterIsInstance<IncludedVideosAccessRule>()
+            val includedVideosAccessRules = accessRules.filterIsInstance<IncludedVideosAccessRule>()
             assertThat(includedVideosAccessRules)
                 .flatExtracting("videoIds")
                 .containsExactlyInAnyOrder("C", "D")
 
-            val excludedVideosAccessRules = contentPackage.accessRules.filterIsInstance<ExcludedVideosAccessRule>()
+            val excludedVideosAccessRules = accessRules.filterIsInstance<ExcludedVideosAccessRule>()
             assertThat(excludedVideosAccessRules)
                 .flatExtracting("videoIds")
                 .containsExactlyInAnyOrder("E", "F")
 
-            val excludedVideoTypesAccessRule =
-                contentPackage.accessRules.filterIsInstance<ExcludedVideoTypesAccessRule>()
+            val excludedVideoTypesAccessRule = accessRules.filterIsInstance<ExcludedVideoTypesAccessRule>()
             assertThat(excludedVideoTypesAccessRule)
                 .flatExtracting("videoTypes")
                 .containsExactlyInAnyOrder("STOCK")
 
-            val excludedContentPartnersAccessRules =
-                contentPackage.accessRules.filterIsInstance<ExcludedContentPartnersAccessRule>()
+            val excludedContentPartnersAccessRules = accessRules.filterIsInstance<ExcludedContentPartnersAccessRule>()
             assertThat(excludedContentPartnersAccessRules)
                 .flatExtracting("contentPartnerIds")
                 .containsExactlyInAnyOrder("CP-A")
@@ -208,7 +201,7 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
         allowsOverridingUserIds: Boolean = false
     ): String
 
-    abstract fun insertContentPackage(name: String, accessRules: List<AccessRule>): ContentPackageId
+    abstract fun insertAccessRules(name: String, accessRules: List<AccessRule>): ContentPackageId
 
     abstract fun insertTestUser(
         organisationId: String,
@@ -243,12 +236,12 @@ class ApiUserServiceClientContractTest : UserServiceClientContractTest() {
         ).id.value
     }
 
-    override fun insertContentPackage(
+    override fun insertAccessRules(
         name: String,
         accessRules: List<AccessRule>
     ): ContentPackageId {
         return saveContentPackage(
-            ContentPackageFactory.sampleContentPackage(
+            ContentPackageFactory.sample(
                 name = name,
                 accessRuleIds = accessRules.map { it.id })
         ).id
@@ -301,32 +294,34 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
         return organisation.id
     }
 
-    override fun insertContentPackage(name: String, accessRules: List<AccessRule>): ContentPackageId {
+    override fun insertAccessRules(name: String, accessRules: List<AccessRule>): ContentPackageId {
         val id = ObjectId.get().toHexString()
-        (client as FakeUserServiceClient).addContentPackage(
-            ContentPackage.builder()
-                .id(id)
-                .name(name)
-                .accessRules(accessRules.map {
-                    when (it) {
-                        is AccessRule.IncludedCollections -> IncludedCollectionsAccessRule(
-                            it.collectionIds.map { id -> id.value }
-                        )
-                        is AccessRule.IncludedVideos -> IncludedVideosAccessRule(
-                            it.videoIds.map { id -> id.value }
-                        )
-                        is AccessRule.ExcludedVideos -> ExcludedVideosAccessRule(
-                            it.videoIds.map { id -> id.value }
-                        )
-                        is AccessRule.ExcludedVideoTypes -> ExcludedVideoTypesAccessRule(
-                            it.videoTypes.map { videoType -> videoType.name }
-                        )
-                        is AccessRule.ExcludedContentPartners -> ExcludedContentPartnersAccessRule(
-                            it.contentPartnerIds.map { id -> id.value }
-                        )
-                    }
-                }).build()
-        )
+        accessRules.map { domainAccessRule ->
+            when (domainAccessRule) {
+                is AccessRule.IncludedCollections -> IncludedCollectionsAccessRule().apply {
+                    this.name = domainAccessRule.name
+                    this.collectionIds = domainAccessRule.collectionIds.map { it.value }
+                }
+                is AccessRule.IncludedVideos -> IncludedVideosAccessRule().apply {
+                    this.name = domainAccessRule.name
+                    this.videoIds = domainAccessRule.videoIds.map { it.value }
+                }
+                is AccessRule.ExcludedVideos -> ExcludedVideosAccessRule().apply {
+                    this.name = domainAccessRule.name
+                    this.videoIds = domainAccessRule.videoIds.map { it.value }
+                }
+                is AccessRule.ExcludedVideoTypes -> ExcludedVideoTypesAccessRule().apply {
+                    this.name = domainAccessRule.name
+                    this.videoTypes = domainAccessRule.videoTypes.map { it.name }
+                }
+                is AccessRule.ExcludedContentPartners -> ExcludedContentPartnersAccessRule().apply {
+                    this.name = domainAccessRule.name
+                    this.contentPartnerIds = domainAccessRule.contentPartnerIds.map { it.value }
+                }
+            }
+        }.forEach { convertedContract ->
+            (client as FakeUserServiceClient).addAccessRule(convertedContract)
+        }
 
         return ContentPackageId(value = id)
     }

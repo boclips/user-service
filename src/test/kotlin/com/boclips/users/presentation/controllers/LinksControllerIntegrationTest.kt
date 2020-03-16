@@ -201,10 +201,10 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `user with VIEW_CONTENT_PACKAGES role`() {
-        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_CONTENT_PACKAGES))
+        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ACCESS_RULES))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.contentPackage.href", endsWith("/users/{id}/content-package")))
-            .andExpect(jsonPath("$._links.contentPackage.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.accessRules.href", endsWith("/users/{id}/access-rules")))
+            .andExpect(jsonPath("$._links.accessRules.templated", equalTo(true)))
     }
 
     @Test

@@ -25,40 +25,40 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns a 403 response when user does not have an INSERT_ORGANISATIONS role`() {
             mvc.perform(
-                post("/v1/api-integrations")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{ }")
-                    .asUser("dont-have-roles@test.com")
-            )
+                    post("/v1/api-integrations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ }")
+                        .asUser("dont-have-roles@test.com")
+                )
                 .andExpect(status().isForbidden)
         }
 
         @Test
         fun `inserts an organisation`() {
-            val contentPackage = saveContentPackage(ContentPackageFactory.sampleContentPackage())
+            val contentPackage = saveContentPackage(ContentPackageFactory.sample())
 
             mvc.perform(
-                post("/v1/api-integrations")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+                    post("/v1/api-integrations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """
                         {
                             "name": "Test Organisation",
                             "role": "ROLE_TEST_ORGANISATION",
                             "contentPackageId": "${contentPackage.id.value}"
                         }
                     """.trimIndent()
-                    )
-                    .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
-            )
+                        )
+                        .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
+                )
                 .andExpect(status().isCreated)
                 .andDo { result ->
                     mvc.perform(
-                        get(result.response.getHeaderValue("location") as String).asUserWithRoles(
-                            "has-role@test.com",
-                            UserRoles.VIEW_ORGANISATIONS
+                            get(result.response.getHeaderValue("location") as String).asUserWithRoles(
+                                "has-role@test.com",
+                                UserRoles.VIEW_ORGANISATIONS
+                            )
                         )
-                    )
                         .andExpect(status().isOk)
                         .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
                 }
@@ -75,19 +75,19 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
             )
 
             mvc.perform(
-                post("/v1/api-integrations")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+                    post("/v1/api-integrations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """
                         {
                             "name": "$organisationName",
                             "role": "ROLE_ANOTHER",
                             "accessRuleIds": []
                         }
                     """.trimIndent()
-                    )
-                    .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
-            )
+                        )
+                        .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
+                )
                 .andExpect(status().isConflict)
         }
 
@@ -102,30 +102,30 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
             )
 
             mvc.perform(
-                post("/v1/api-integrations")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+                    post("/v1/api-integrations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """
                         {
                             "name": "Some other name",
                             "role": "$role",
                             "accessRuleIds": []
                         }
                     """.trimIndent()
-                    )
-                    .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
-            )
+                        )
+                        .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
+                )
                 .andExpect(status().isConflict)
         }
 
         @Test
         fun `returns a 400 response when request data is invalid`() {
             mvc.perform(
-                post("/v1/api-integrations")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{ }")
-                    .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
-            )
+                    post("/v1/api-integrations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ }")
+                        .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
+                )
                 .andExpect(status().isBadRequest)
                 .andExpectApiErrorPayload()
         }
@@ -136,14 +136,14 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns a 403 response when caller does not have a VIEW_ORGANISATIONS role`() {
             mvc.perform(
-                get(
-                    UriComponentsBuilder.fromUriString("/v1/api-integrations")
-                        .queryParam("name", "Some org that does not exist")
-                        .build()
-                        .toUri()
+                    get(
+                        UriComponentsBuilder.fromUriString("/v1/api-integrations")
+                            .queryParam("name", "Some org that does not exist")
+                            .build()
+                            .toUri()
+                    )
+                        .asUser("has-role@test.com")
                 )
-                    .asUser("has-role@test.com")
-            )
                 .andExpect(status().isForbidden)
         }
 
@@ -159,14 +159,14 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
             )
 
             mvc.perform(
-                get(
-                    UriComponentsBuilder.fromUriString("/v1/api-integrations")
-                        .queryParam("name", organisationName)
-                        .build()
-                        .toUri()
+                    get(
+                        UriComponentsBuilder.fromUriString("/v1/api-integrations")
+                            .queryParam("name", organisationName)
+                            .build()
+                            .toUri()
+                    )
+                        .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
                 )
-                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
-            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.contentPackageId", equalTo("content-package-id")))
@@ -177,23 +177,23 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
         @Test
         fun `returns a 404 response when organisation is not found by name`() {
             mvc.perform(
-                get(
-                    UriComponentsBuilder.fromUriString("/v1/api-integrations")
-                        .queryParam("name", "Some org that does not exist")
-                        .build()
-                        .toUri()
+                    get(
+                        UriComponentsBuilder.fromUriString("/v1/api-integrations")
+                            .queryParam("name", "Some org that does not exist")
+                            .build()
+                            .toUri()
+                    )
+                        .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
                 )
-                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
-            )
                 .andExpect(status().isNotFound)
         }
 
         @Test
         fun `returns a 400 response when query parameter is not provided`() {
             mvc.perform(
-                get("/v1/api-integrations")
-                    .asUserWithRoles("viewer@hacker.com", UserRoles.VIEW_ORGANISATIONS)
-            )
+                    get("/v1/api-integrations")
+                        .asUserWithRoles("viewer@hacker.com", UserRoles.VIEW_ORGANISATIONS)
+                )
                 .andExpect(status().isBadRequest)
         }
     }

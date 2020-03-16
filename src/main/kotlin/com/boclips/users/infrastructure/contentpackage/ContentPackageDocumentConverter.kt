@@ -9,7 +9,8 @@ object ContentPackageDocumentConverter {
     fun fromDocument(document: ContentPackageDocument): ContentPackage {
         return ContentPackage(
             id = ContentPackageId(document.id.toHexString()),
-            accessRuleIds = document.accessRuleIds.map { AccessRuleId(it)
+            accessRuleIds = document.accessRuleIds.map {
+                AccessRuleId(it)
             },
             name = document.name
         )

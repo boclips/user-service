@@ -40,11 +40,11 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
     fun `it maps a User to a CRM Profile`() {
         val expiryDate = ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1)
         val user = UserFactory.sample(
-            identity = IdentityFactory.sample(id = "lovely-user-id",username = "lovely-user@boclips.com"),
+            identity = IdentityFactory.sample(id = "lovely-user-id", username = "lovely-user@boclips.com"),
             profile = ProfileFactory.sample(
                 firstName = "First",
                 lastName = "Last",
-                ages = listOf(1,2,3,4),
+                ages = listOf(1, 2, 3, 4),
                 subjects = listOf(Subject(id = SubjectId("subject-id"), name = "Subject Name")),
                 hasOptedIntoMarketing = true
             ),
@@ -66,7 +66,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
         assertThat(crmProfile.email).isEqualTo("lovely-user@boclips.com")
         assertThat(crmProfile.activated).isTrue()
         assertThat(crmProfile.hasOptedIntoMarketing).isTrue()
-        assertThat(crmProfile.ageRange).containsExactly(1,2,3,4)
+        assertThat(crmProfile.ageRange).containsExactly(1, 2, 3, 4)
         assertThat(crmProfile.subjects).hasSize(1)
         assertThat(crmProfile.subjects.first().name).isEqualTo("Subject Name")
         assertThat(crmProfile.subjects.first().id).isEqualTo(SubjectId("subject-id"))

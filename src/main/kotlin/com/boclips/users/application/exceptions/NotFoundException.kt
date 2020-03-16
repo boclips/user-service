@@ -9,4 +9,5 @@ open class NotFoundException(message: String) : BoclipsApiException(
         error = HttpStatus.NOT_FOUND.reasonPhrase,
         message = message,
         status = HttpStatus.NOT_FOUND
-))
+    )
+)
