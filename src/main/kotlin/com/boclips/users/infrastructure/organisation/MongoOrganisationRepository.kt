@@ -102,10 +102,17 @@ class MongoOrganisationRepository(
             }
     }
 
-    override fun findOrganisations(countryCode: String?, types: List<OrganisationType>?, page: Int, size: Int): Page<Organisation<*>>? {
+    override fun findOrganisations(
+        name: String?,
+        countryCode: String?,
+        types: List<OrganisationType>?,
+        page: Int,
+        size: Int
+    ): Page<Organisation<*>>? {
         val results =
             repository.findOrganisations(
                 OrganisationSearchRequest(
+                    name = name,
                     countryCode = countryCode,
                     organisationTypes = types,
                     parentOnly = true,

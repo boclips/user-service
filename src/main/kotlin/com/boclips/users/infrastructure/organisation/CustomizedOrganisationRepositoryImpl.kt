@@ -15,16 +15,29 @@ class CustomizedOrganisationRepositoryImpl(private val mongoTemplate: MongoTempl
         val pageSize = searchRequest.size
 
         val totalElements =
-            mongoTemplate.count(countQuery(searchRequest = searchRequest), OrganisationDocument::class.java)
+            mongoTemplate.count(query(searchRequest = searchRequest), OrganisationDocument::class.java)
 
         val results = mongoTemplate.find(findQuery(searchRequest = searchRequest), OrganisationDocument::class.java)
 
         return PageImpl(results, PageRequest.of(page, pageSize), totalElements)
     }
 
-    private fun countQuery(searchRequest: OrganisationSearchRequest): Query {
+    private fun findQuery(searchRequest: OrganisationSearchRequest): Query {
+        val offset = searchRequest.page * searchRequest.size
+
+        val query = query(searchRequest)
+        query.limit(searchRequest.size)
+        query.skip(offset.toLong())
+
+        return query
+    }
+
+    private fun query(searchRequest: OrganisationSearchRequest): Query {
         val query = Query()
 
+        searchRequest.name?.let {
+            query.addCriteria(Criteria.where("name").`in`(it))
+        }
         searchRequest.countryCode?.let {
             query.addCriteria(Criteria.where("country.code").`is`(it))
         }
@@ -36,16 +49,6 @@ class CustomizedOrganisationRepositoryImpl(private val mongoTemplate: MongoTempl
         }
 
         query.with(Sort.by(Sort.Direction.DESC, "accessExpiresOn").and(Sort.by(Sort.Direction.ASC, "name")))
-        return query
-    }
-
-    private fun findQuery(searchRequest: OrganisationSearchRequest): Query {
-        val query = countQuery(searchRequest)
-
-        val offset = searchRequest.page * searchRequest.size
-        query.limit(searchRequest.size)
-        query.skip(offset.toLong())
-
         return query
     }
 }

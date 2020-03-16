@@ -19,6 +19,7 @@ interface OrganisationRepository {
     fun findOrganisationById(id: OrganisationId): Organisation<*>?
     fun findOrganisationByExternalId(id: String): Organisation<*>?
     fun findOrganisations(
+        name: String? = null,
         countryCode: String?,
         types: List<OrganisationType>?,
         page: Int,

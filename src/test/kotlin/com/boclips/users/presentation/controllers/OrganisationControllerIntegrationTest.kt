@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -353,5 +354,18 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.organisations[1].organisationDetails.name", equalTo("district 2")))
                 .andExpect(jsonPath("$._embedded.organisations[2].organisationDetails.name", equalTo("school 1")))
         }
+
+        @Test
+        fun `gets a page of all organisations matching name`() {
+            saveDistrict(district = OrganisationDetailsFactory.district(name = "putname"))
+            saveDistrict(district = OrganisationDetailsFactory.district(name = "pamdale"))
+
+            mvc
+                .perform(get("/v1/organisations?name=pamdale").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name", equalTo("pamdale")))
+        }
+
     }
 }

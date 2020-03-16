@@ -48,7 +48,7 @@ internal class OrganisationLinkBuilderTest {
         val organisationsLink = organisationLinkBuilder.getOrganisationsLink()!!
 
         assertThat(organisationsLink.rel.value()).isEqualTo("organisations")
-        assertThat(organisationsLink.href).endsWith("/organisations{?countryCode,page,size}")
+        assertThat(organisationsLink.href).endsWith("/organisations{?name,countryCode,page,size}")
     }
 
     @Test

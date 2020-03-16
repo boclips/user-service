@@ -69,6 +69,7 @@ class OrganisationController(
     @GetMapping("/organisations")
     fun fetchAll(organisationFilterRequest: OrganisationFilterRequest?): PagedModel<EntityModel<OrganisationResource>> {
         val filter = OrganisationFilter(
+            name = organisationFilterRequest?.name,
             countryCode = organisationFilterRequest?.countryCode,
             page = organisationFilterRequest?.page ?: 0,
             size = organisationFilterRequest?.size ?: 30

@@ -35,6 +35,7 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
 
         val results = repositorySpringDataMongo.findOrganisations(
             OrganisationSearchRequest(
+                name = null,
                 countryCode = "USA",
                 organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
                 page = 0,
@@ -55,12 +56,15 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
         )
         repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "aaa"))
 
-        val results = repositorySpringDataMongo.findOrganisations(OrganisationSearchRequest(
-            countryCode = "GBR",
-            organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
-            page = 0,
-            size = 6
-        ))
+        val results = repositorySpringDataMongo.findOrganisations(
+            OrganisationSearchRequest(
+                name = null,
+                countryCode = "GBR",
+                organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
+                page = 0,
+                size = 6
+            )
+        )
 
         assertThat(results.get().map { it.name }).containsExactly("second")
     }
@@ -72,6 +76,7 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
 
         val results = repositorySpringDataMongo.findOrganisations(
             OrganisationSearchRequest(
+                name = null,
                 countryCode = "USA",
                 organisationTypes = listOf(OrganisationType.SCHOOL),
                 page = 0,
@@ -89,6 +94,7 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
 
         val results = repositorySpringDataMongo.findOrganisations(
             OrganisationSearchRequest(
+                name = null,
                 countryCode = "USA",
                 organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
                 page = 0,
@@ -107,13 +113,15 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
         repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "xyz", accessExpiresOn = now.minusDays(1)))
         repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "def", accessExpiresOn = now))
 
-        val results = repositorySpringDataMongo.findOrganisations(OrganisationSearchRequest(
-            countryCode = "USA",
-            organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
-            page = 1,
-            parentOnly = true,
-            size = 2
-        )
+        val results = repositorySpringDataMongo.findOrganisations(
+            OrganisationSearchRequest(
+                name = null,
+                countryCode = "USA",
+                organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
+                page = 1,
+                parentOnly = true,
+                size = 2
+            )
         )
 
         assertThat(results.get().map { it.name }).containsExactly("xyz")

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component
 class GetOrganisations(private val organisationRepository: OrganisationRepository) {
     operator fun invoke(filter: OrganisationFilter): Page<Organisation<*>> {
         return organisationRepository.findOrganisations(
+            name = filter.name,
             countryCode = filter.countryCode,
             types = filter.organisationTypes,
             size = filter.size,

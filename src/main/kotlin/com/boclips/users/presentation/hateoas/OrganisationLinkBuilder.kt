@@ -48,7 +48,7 @@ class OrganisationLinkBuilder(private val uriComponentsBuilderFactory: UriCompon
                 uriComponentsBuilderFactory.getInstance()
                     .replacePath("/v1/organisations")
                     .replaceQueryParams(null)
-                    .toUriString() + "{?countryCode,page,size}",
+                    .toUriString() + "{?name,countryCode,page,size}",
                 "organisations"
             )
         } else {
