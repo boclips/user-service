@@ -10,7 +10,19 @@ class MongoContentPackageRepositoryTest : AbstractSpringIntegrationTest() {
     fun `can find a content package by id`() {
         val contentPackage = ContentPackageFactory.sample()
         contentPackageRepository.save(contentPackage)
+
         val retrievedContentPackage = contentPackageRepository.findById(contentPackage.id)
+
+        assertThat(contentPackage).isEqualTo(retrievedContentPackage)
+    }
+
+    @Test
+    fun `can find a content package by name`() {
+        val contentPackage = ContentPackageFactory.sample(name = "a cp")
+        contentPackageRepository.save(contentPackage)
+
+        val retrievedContentPackage = contentPackageRepository.findByName("a cp")
+
         assertThat(contentPackage).isEqualTo(retrievedContentPackage)
     }
 }

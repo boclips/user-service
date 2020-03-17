@@ -6,4 +6,5 @@ import com.boclips.users.domain.model.contentpackage.ContentPackageId
 interface ContentPackageRepository {
     fun save(contentPackage: ContentPackage): ContentPackage
     fun findById(id: ContentPackageId): ContentPackage?
+    fun findByName(name: String): ContentPackage?
 }
