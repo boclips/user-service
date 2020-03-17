@@ -34,6 +34,6 @@ class AccessRuleService(
     }
 
     private fun lookupAccessRules(contentPackage: ContentPackage): List<AccessRule> {
-        return contentPackage.accessRuleIds.mapNotNull { rule -> accessRuleRepository.findById(rule) }
+        return accessRuleRepository.findByIds(contentPackage.accessRuleIds)
     }
 }

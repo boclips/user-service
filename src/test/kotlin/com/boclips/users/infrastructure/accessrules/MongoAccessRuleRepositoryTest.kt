@@ -92,4 +92,28 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
             assertThat(accessRuleRepository.findAll()).isEmpty()
         }
     }
+
+    @Nested
+    inner class FindByIds {
+        @Test
+        fun `returns all access rules matching ids`() {
+            val firstCollectionAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+                name = "Hey",
+                collectionIds = emptyList()
+            )
+
+            val secondCollectionAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+                name = "Ho",
+                collectionIds = emptyList()
+            )
+
+            includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
+                name = "Hola",
+                collectionIds = emptyList()
+            )
+
+            val accessRules = accessRuleRepository.findByIds(listOf(firstCollectionAccessRule.id, secondCollectionAccessRule.id))
+            assertThat(accessRules).containsExactlyInAnyOrder(firstCollectionAccessRule, secondCollectionAccessRule)
+        }
+    }
 }

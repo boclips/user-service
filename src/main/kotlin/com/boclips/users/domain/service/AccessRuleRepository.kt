@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.contentpackage.AccessRuleId
 
 interface AccessRuleRepository {
     fun findById(id: AccessRuleId): AccessRule?
+    fun findByIds(accessRuleIds: List<AccessRuleId>): List<AccessRule>
     fun findAll(): List<AccessRule>
     fun findAllByName(name: String): List<AccessRule>
     fun save(accessRule: AccessRule): AccessRule

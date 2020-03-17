@@ -17,6 +17,11 @@ class MongoAccessRuleRepository(
         }
     }
 
+    override fun findByIds(accessRuleIds: List<AccessRuleId>): List<AccessRule> {
+        val accessRuleDocuments = accessRuleDocumentMongoRepository.findAllById(accessRuleIds.map { it.value })
+        return accessRuleDocuments.map(accessRuleDocumentConverter::fromDocument)
+    }
+
     override fun findAll(): List<AccessRule> {
         return accessRuleDocumentMongoRepository.findAll().map(accessRuleDocumentConverter::fromDocument)
     }

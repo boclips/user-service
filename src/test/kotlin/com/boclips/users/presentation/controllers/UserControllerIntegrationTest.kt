@@ -610,25 +610,18 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `can get the access rules assigned to a user`() {
-            val collectionsAccessRuleName = "Test collections contract"
-            val collectionId = "test-collection-id"
-
             val collectionsAccessRule = AccessRule.IncludedCollections(
-                name = collectionsAccessRuleName,
-                collectionIds = listOf(CollectionId((collectionId))),
+                name = "Test collections contract",
+                collectionIds = listOf(CollectionId(("test-collection-id"))),
                 id = AccessRuleId(ObjectId.get().toHexString())
             )
-
             accessRuleRepository.save(collectionsAccessRule)
 
-            val videosAccessRuleName = "Test videos contract"
-            val videoId = "test-video-id"
             val videosAccessRule = AccessRule.IncludedVideos(
-                name = videosAccessRuleName,
-                videoIds = listOf(VideoId(videoId)),
+                name = "Test videos contract",
+                videoIds = listOf(VideoId("test-video-id")),
                 id = AccessRuleId(ObjectId.get().toHexString())
             )
-
             accessRuleRepository.save(videosAccessRule)
 
             val contentPackageId = ContentPackageId(ObjectId.get().toHexString())
@@ -639,9 +632,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             saveContentPackage(contentPackage)
-
             val organisation = saveApiIntegration(contentPackageId = contentPackage.id)
-
             val user = saveUser(UserFactory.sample(organisationId = organisation.id))
 
             mvc.perform(
@@ -662,7 +653,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[*].name",
-                        containsInAnyOrder(collectionsAccessRuleName, videosAccessRuleName)
+                        containsInAnyOrder("Test collections contract", "Test videos contract")
                     )
                 )
                 .andExpect(
