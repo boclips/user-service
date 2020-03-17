@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPartnerId
+import com.boclips.users.domain.model.contentpackage.DistributionMethod
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.contentpackage.VideoType
 import org.bson.types.ObjectId
@@ -39,5 +40,12 @@ class AccessRuleFactory {
             name: String = "Excluded Content Partners",
             contentPartnerIds: List<ContentPartnerId> = emptyList()
         ) = AccessRule.ExcludedContentPartners(id, name, contentPartnerIds)
+
+        fun sampleIncludedDistributionMethodAccessRule(
+            id: AccessRuleId = AccessRuleId(ObjectId().toHexString()),
+            name: String = "Included Distribution Methods",
+            distributionMethods: Set<DistributionMethod>
+        ): AccessRule.IncludedDistributionMethods =
+            AccessRule.IncludedDistributionMethods(id, name, distributionMethods)
     }
 }

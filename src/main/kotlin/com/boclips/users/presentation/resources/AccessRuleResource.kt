@@ -18,6 +18,14 @@ sealed class AccessRuleResource(val type: String) {
         override val _links: Map<String, Link> = emptyMap()
     ) : AccessRuleResource(type = "IncludedVideos")
 
+
+    data class IncludedDistributionMethod(
+        override val name: String,
+        val distributionMethods: List<String>,
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        override val _links: Map<String, Link> = emptyMap()
+    ) : AccessRuleResource(type = "IncludedDistributionMethods")
+
     data class ExcludedVideos(
         override val name: String,
         val videoIds: List<String>,

@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.accessrules
 
+import com.boclips.users.domain.model.contentpackage.DistributionMethodDocument
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.mapping.Document
@@ -29,6 +30,11 @@ sealed class AccessRuleDocument {
     @TypeAlias("ExcludedContentPartners")
     class ExcludedContentPartners : AccessRuleDocument() {
         lateinit var contentPartnerIds: List<String>
+    }
+
+    @TypeAlias("IncludedDistributionMethods")
+    class IncludedDistributionMethods : AccessRuleDocument() {
+        lateinit var distributionMethods: List<DistributionMethodDocument>
     }
 
     lateinit var id: ObjectId

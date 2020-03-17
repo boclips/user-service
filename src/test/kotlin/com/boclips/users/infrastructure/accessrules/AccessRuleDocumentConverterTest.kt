@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.accessrules
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPartnerId
+import com.boclips.users.domain.model.contentpackage.DistributionMethod
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.contentpackage.VideoType
 import com.boclips.users.testsupport.factories.AccessRuleDocumentFactory
@@ -108,6 +109,21 @@ class AccessRuleDocumentConverterTest {
                 contentPartnerIds = listOf(
                     ContentPartnerId(value = "A")
                 )
+            )
+
+            val document = converter.toDocument(accessRule)
+            val convertedRule = converter.fromDocument(document)
+
+            assertThat(accessRule).isEqualTo(convertedRule)
+        }
+    }
+
+    @Nested
+    inner class ConvertingIncludedDistributionMethods {
+        @Test
+        fun `symmetrical conversion to domain`() {
+            val accessRule = AccessRuleFactory.sampleIncludedDistributionMethodAccessRule(
+               distributionMethods = setOf(DistributionMethod.STREAM, DistributionMethod.DOWNLOAD)
             )
 
             val document = converter.toDocument(accessRule)

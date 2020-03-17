@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers.accessrules
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPartnerId
+import com.boclips.users.domain.model.contentpackage.DistributionMethod
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.contentpackage.VideoType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -239,6 +240,34 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].contentPartnerIds", hasSize<Int>(2)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].contentPartnerIds[*]", containsInAnyOrder("A", "B")))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.accessRules[0]._links.self.href",
+                        endsWith("/v1/access-rules/${accessRule.id.value}")
+                    )
+                )
+                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules{?name}")))
+        }
+
+        @Test
+        fun `can fetch IncludedDistributionMethods access rules`() {
+            val accessRule = accessRuleRepository.save(
+                AccessRuleFactory.sampleIncludedDistributionMethodAccessRule(
+                    name = "Stream only",
+                    distributionMethods = setOf(DistributionMethod.STREAM)
+                )
+            )
+
+            mvc.perform(
+                    get("/v1/access-rules")
+                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+                )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("IncludedDistributionMethods")))
+                .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].distributionMethods", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].distributionMethods[*]", containsInAnyOrder("STREAM")))
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[0]._links.self.href",

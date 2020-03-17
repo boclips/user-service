@@ -11,6 +11,7 @@ import com.boclips.users.client.model.accessrule.ExcludedContentPartnersAccessRu
 import com.boclips.users.client.model.accessrule.ExcludedVideoTypesAccessRule
 import com.boclips.users.client.model.accessrule.ExcludedVideosAccessRule
 import com.boclips.users.client.model.accessrule.IncludedCollectionsAccessRule
+import com.boclips.users.client.model.accessrule.IncludedDistributionMethodsAccessRule
 import com.boclips.users.client.model.accessrule.IncludedVideosAccessRule
 import com.boclips.users.client.testsupport.AbstractClientIntegrationTest
 import com.boclips.users.client.testsupport.config.ContractTestSecurityConfig.Companion.testPassword
@@ -20,6 +21,7 @@ import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.ContentPartnerId
+import com.boclips.users.domain.model.contentpackage.DistributionMethod
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.contentpackage.VideoType
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -130,6 +132,13 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
                 )
             )
 
+            val includedDistributionMethods = accessRuleRepository.save(
+                AccessRuleFactory.sampleIncludedDistributionMethodAccessRule(
+                    name = "Bad CPS",
+                    distributionMethods = setOf(DistributionMethod.STREAM, DistributionMethod.DOWNLOAD)
+                )
+            )
+
             val contentPackageId =
                 insertAccessRules(
                     "My content package",
@@ -138,7 +147,8 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
                         includedVideos,
                         excludedVideos,
                         excludedVideoTypes,
-                        excludedContentPartners
+                        excludedContentPartners,
+                        includedDistributionMethods
                     )
                 )
 
@@ -175,6 +185,11 @@ abstract class UserServiceClientContractTest : AbstractClientIntegrationTest() {
             assertThat(excludedContentPartnersAccessRules)
                 .flatExtracting("contentPartnerIds")
                 .containsExactlyInAnyOrder("CP-A")
+
+            val includedDistributionMethodsAccessRules =
+                accessRules.filterIsInstance<IncludedDistributionMethodsAccessRule>()
+            assertThat(includedDistributionMethodsAccessRules).flatExtracting("distributionMethods")
+                .containsExactlyInAnyOrder("STREAM", "DOWNLOAD")
         }
     }
 
@@ -317,6 +332,10 @@ class FakeUserServiceClientContractTest : UserServiceClientContractTest() {
                 is AccessRule.ExcludedContentPartners -> ExcludedContentPartnersAccessRule().apply {
                     this.name = domainAccessRule.name
                     this.contentPartnerIds = domainAccessRule.contentPartnerIds.map { it.value }
+                }
+                is AccessRule.IncludedDistributionMethods -> IncludedDistributionMethodsAccessRule().apply {
+                    this.name = domainAccessRule.name
+                    this.distributionMethods = domainAccessRule.distributionMethods.map { it.name }
                 }
             }
         }.forEach { convertedContract ->

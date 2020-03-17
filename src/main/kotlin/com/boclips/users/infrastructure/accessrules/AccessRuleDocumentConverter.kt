@@ -4,6 +4,8 @@ import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPartnerId
+import com.boclips.users.domain.model.contentpackage.DistributionMethod
+import com.boclips.users.domain.model.contentpackage.DistributionMethodDocument
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.contentpackage.VideoType
 import org.bson.types.ObjectId
@@ -44,6 +46,16 @@ class AccessRuleDocumentConverter {
                 name = document.name,
                 contentPartnerIds = document.contentPartnerIds.map { ContentPartnerId(it) }
             )
+            is AccessRuleDocument.IncludedDistributionMethods -> AccessRule.IncludedDistributionMethods(
+                id = AccessRuleId(document.id.toHexString()),
+                name = document.name,
+                distributionMethods = document.distributionMethods.map {
+                    when (it) {
+                        DistributionMethodDocument.DOWNLOAD -> DistributionMethod.DOWNLOAD
+                        DistributionMethodDocument.STREAM -> DistributionMethod.STREAM
+                    }
+                }.toSet()
+            )
         }
     }
 
@@ -79,6 +91,16 @@ class AccessRuleDocumentConverter {
                 id = ObjectId(accessRule.id.value)
                 name = accessRule.name
                 contentPartnerIds = accessRule.contentPartnerIds.map { it.value }
+            }
+            is AccessRule.IncludedDistributionMethods -> AccessRuleDocument.IncludedDistributionMethods().apply {
+                id = ObjectId(accessRule.id.value)
+                name = accessRule.name
+                distributionMethods = accessRule.distributionMethods.map {
+                    when (it) {
+                        DistributionMethod.DOWNLOAD -> DistributionMethodDocument.DOWNLOAD
+                        DistributionMethod.STREAM -> DistributionMethodDocument.STREAM
+                    }
+                }
             }
         }
     }

@@ -42,6 +42,11 @@ class AccessRuleConverter(
                 contentPartnerIds = accessRule.contentPartnerIds.map { it.value },
                 _links = listOfNotNull(accessRuleLinkBuilder.self(accessRule.id)).map { it.rel.value() to it }.toMap()
             )
+            is AccessRule.IncludedDistributionMethods -> AccessRuleResource.IncludedDistributionMethod(
+                name = accessRule.name,
+                distributionMethods = accessRule.distributionMethods.map { it.name },
+                _links = listOfNotNull(accessRuleLinkBuilder.self(accessRule.id)).map { it.rel.value() to it }.toMap()
+            )
         }
     }
 }
