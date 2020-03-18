@@ -291,7 +291,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school(name = "bad school")))
 
             val organisations = organisationRepository.findOrganisations(
-                name = "cool school",
+                name = "cOol",
                 countryCode = null,
                 types = null,
                 page = 0,

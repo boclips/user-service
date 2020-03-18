@@ -36,7 +36,7 @@ class CustomizedOrganisationRepositoryImpl(private val mongoTemplate: MongoTempl
         val query = Query()
 
         searchRequest.name?.let {
-            query.addCriteria(Criteria.where("name").`in`(it))
+            query.addCriteria(Criteria.where("name").regex(".*$it.*", "i"))
         }
         searchRequest.countryCode?.let {
             query.addCriteria(Criteria.where("country.code").`is`(it))
