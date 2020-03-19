@@ -17,7 +17,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
     lateinit var assignUsersByOrganisationDomain: AssignUsersByOrganisationDomain
 
     @Test
-    fun `assigns users linked to the wrong organisation`() {
+    fun `assigns users that have the same domain but are not linked directly or indirectly to the organisation`() {
         val user = createUser(organisationId = "other-org-id", username = "rebecca@district-domain.com")
 
         val district =
@@ -31,7 +31,29 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `assigns users linked to a "unknown" organisation`() {
+    fun `does not update users that already belongs to an organisation indirectly (being a sub organisation)`() {
+        val district =
+            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
+
+        val school =
+            organisationRepository.save(
+                OrganisationFactory.sample(
+                    details = OrganisationDetailsFactory.school(
+                        name = "a school",
+                        district = district
+                    )
+                )
+            )
+
+        createUser(organisationId = school.id.value, username = "rebecca@district-domain.com")
+
+        val changedUsers = assignUsersByOrganisationDomain(district.id.value)
+
+        assertThat(changedUsers.size).isEqualTo(0)
+    }
+
+    @Test
+    fun `assigns users that share the domain of an organisation but are not linked to that organisation`() {
         val user = createUser(username = "rebecca@district-domain.com")
 
         val district =
@@ -46,7 +68,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `do not change users of different domains`() {
-        val user = createUser(username = "rebecca@other.com")
+        val user = createUser(username = "rebecca@another-domain.com")
 
         val district =
             organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
