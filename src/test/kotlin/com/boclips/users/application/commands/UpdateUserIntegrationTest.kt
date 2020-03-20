@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -359,46 +360,62 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
     }
 
-    @Test
-    fun `it sets accessExpiresOn for a new user during onboarding`() {
-        setSecurityContext("new-user-id")
+    @Nested
+    @DisplayName("Access expiry")
+    inner class accessExpiry {
 
-        val newUserDocument =
-            UserDocumentFactory.sample(
-                id = "new-user-id",
-                firstName = null,
-                createdAt = Instant.parse("2020-10-10T00:00:00Z"),
-                organisationId = null
-            )
+        // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-06-30
+        @Test
+        fun `accessExpiresOn logic starts after 30th June 2020`() {
+            setSecurityContext("new-user-id")
+            val defaultExpectedExpiryDate = ZonedDateTime.now().plusDays(
+                UpdateUser.DEFAULT_TRIAL_DAYS_LENGTH + 1
+            ).truncatedTo(ChronoUnit.DAYS)
+            val extendedTrialEndDate = Instant.parse("2020-06-30T00:00:00Z").atZone(ZoneId.systemDefault())
 
-        userDocumentMongoRepository.save(newUserDocument)
+            val expectedExpiryDate = if (defaultExpectedExpiryDate.isBefore(extendedTrialEndDate)) {
+                extendedTrialEndDate
+            } else {
+                defaultExpectedExpiryDate
+            }
 
-        val updatedUser = updateUser("new-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
 
-        assertThat(updatedUser.accessExpiresOn).isNotNull()
+            val newUserDocument =
+                UserDocumentFactory.sample(
+                    id = "new-user-id",
+                    firstName = null,
+                    createdAt = Instant.parse("2020-10-10T00:00:00Z"),
+                    organisationId = null
+                )
 
-        val accessExpiresOn = updatedUser.accessExpiresOn
+            userDocumentMongoRepository.save(newUserDocument)
 
-        val expectedExpiryDate = ZonedDateTime.now().plusDays(11).truncatedTo(ChronoUnit.DAYS)
-        assertThat(accessExpiresOn).isEqualTo(expectedExpiryDate)
-    }
+            val updatedUser = updateUser("new-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
 
-    @Test
-    fun `it does not set accessExpiresOn for a lifetime user`() {
-        setSecurityContext("lifetime-user-id")
+            assertThat(updatedUser.accessExpiresOn).isNotNull()
 
-        val lifetimeUserDocument =
-            UserDocumentFactory.sample(
-                id = "lifetime-user-id",
-                firstName = "Joe",
-                organisationId = null,
-                hasLifetimeAccess = true
-            )
+            val accessExpiresOn = updatedUser.accessExpiresOn
 
-        userDocumentMongoRepository.save(lifetimeUserDocument)
+            assertThat(accessExpiresOn).isEqualTo(expectedExpiryDate)
+        }
 
-        val updatedUser = updateUser("lifetime-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
+        @Test
+        fun `it does not set accessExpiresOn for a lifetime user`() {
+            setSecurityContext("lifetime-user-id")
 
-        assertThat(updatedUser.accessExpiresOn).isNull()
+            val lifetimeUserDocument =
+                UserDocumentFactory.sample(
+                    id = "lifetime-user-id",
+                    firstName = "Joe",
+                    organisationId = null,
+                    hasLifetimeAccess = true
+                )
+
+            userDocumentMongoRepository.save(lifetimeUserDocument)
+
+            val updatedUser = updateUser("lifetime-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
+
+            assertThat(updatedUser.accessExpiresOn).isNull()
+        }
     }
 }

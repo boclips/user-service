@@ -25,6 +25,7 @@ import com.boclips.users.presentation.requests.UpdateUserRequest
 import mu.KLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -42,6 +43,8 @@ class UpdateUser(
 ) {
     companion object : KLogging() {
         const val DEFAULT_TRIAL_DAYS_LENGTH = 10L
+        // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-06-30
+        const val EXTENDED_TRIAL_END_DATE = "2020-06-30T00:00:00Z"
     }
 
     operator fun invoke(userId: String, updateUserRequest: UpdateUserRequest): User {
@@ -75,14 +78,22 @@ class UpdateUser(
                 UserUpdateCommand.ReplaceShareCode(generateShareCode())
             },
             takeIf { shouldSetAccessExpiresOn(user) }?.let {
-                val accessExpiry =
-                    ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
+                val accessExpiry = calculateAccessExpiryDate()
                 UserUpdateCommand.ReplaceAccessExpiresOn(accessExpiresOn = accessExpiry)
             }
         )
 
     private fun shouldSetAccessExpiresOn(user: User): Boolean {
         return (user.teacherPlatformAttributes == null || !user.teacherPlatformAttributes.hasLifetimeAccess) && !user.hasOnboarded()
+    }
+
+    private fun calculateAccessExpiryDate(): ZonedDateTime {
+        val defaultAccessExpiry =
+            ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
+
+        val extendedTrialEndDate = Instant.parse(EXTENDED_TRIAL_END_DATE).atZone(ZoneId.systemDefault())
+
+        return if (defaultAccessExpiry.isBefore(extendedTrialEndDate)) extendedTrialEndDate else defaultAccessExpiry
     }
 
     private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): Organisation<School>? {
@@ -116,9 +127,9 @@ class UpdateUser(
         countryCode: String
     ): Organisation<School>? {
         return organisationRepository.lookupSchools(
-                schoolName,
-                countryCode
-            ).firstOrNull { it.name == schoolName }
+            schoolName,
+            countryCode
+        ).firstOrNull { it.name == schoolName }
             ?.let { organisationRepository.findSchoolById(OrganisationId(it.id)) }
     }
 
