@@ -53,7 +53,7 @@ class UpdateUser(
 
         val updateUserId = UserId(userId)
 
-        logger.info { "User $updateUserId has schoolId ${updateUserRequest.schoolId} and schoolName ${updateUserRequest.schoolName}" }
+        logger.info { "Updating user $userId" }
 
         val school = findOrCreateSchool(updateUserRequest)
 
@@ -139,7 +139,5 @@ class UpdateUser(
         convertUserToCrmProfile(user, UserSessions(Instant.now()))?.let {
             marketingService.updateProfile(listOf(it))
         }
-
-        logger.info { "User $user has updated their information" }
     }
 }

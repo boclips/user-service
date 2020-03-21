@@ -67,7 +67,7 @@ class UserService(
 
     fun findUserById(userId: UserId): User {
         val retrievedUser = userRepository.findById(UserId(userId.value))
-
+        logger.info { "Retrieved user ${userId.value}" }
         return retrievedUser ?: throw UserNotFoundException(userId)
     }
 }
