@@ -8,7 +8,12 @@ version=$(cat version/tag)
 
 (
 cd source
-./gradlew -Pversion="$version" clean build --rerun-tasks --no-daemon
+./gradlew -Pversion="$version" \
+    user-service:clean \
+    user-service:build \
+    --rerun-tasks \
+    --no-daemon \
+    --info
 )
 
-cp -a source/* dist/
+cp -a source/user-service/* dist/
