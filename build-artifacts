@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-gradleArtifactVersion="1.0-SNAPSHOT"
-
-./gradlew buildClient sourcesJarClient
-
-mvn install:install-file -Dfile=./build/libs/user-service-client-${gradleArtifactVersion}.jar -DgroupId=${GROUP} -DartifactId=${ARTIFACT} -Dversion=${VERSION} -Dpackaging=jar

@@ -3,6 +3,6 @@
 set -e
 
 git pull -r
-./src/test/resources/setup-contract-test
-./gradlew build
+./user-service/src/test/resources/setup-contract-test
+./gradlew build --info
 git push

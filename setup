@@ -3,6 +3,6 @@
 # This assumes you have provisioned the machine
 ktlint --apply-to-idea-project
 
-pushd src/test/resources
+pushd user-service/src/test/resources
     ./setup-contract-test
 popd
