@@ -86,20 +86,6 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
 
             assertThrows<FeignException> { usersClient.getShareCode(user.id.value, "invalid") }
         }
-
-        @Test
-        fun `can fetch a share code`() {
-            val user = saveUser(
-                UserFactory.sample(
-                    identity = IdentityFactory.sample(id = "123"),
-                    profile = Profile(firstName = "Mona", lastName = "The Vampire"),
-                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "123")
-                )
-            )
-
-            val shareCode = usersClient.getShareCode(user.id.value, "123")
-            assertThat(shareCode).isNotNull()
-        }
     }
 
     @Nested

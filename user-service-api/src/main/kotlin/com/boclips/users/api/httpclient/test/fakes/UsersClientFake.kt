@@ -16,8 +16,7 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
         return accessRulesDatabase[id] ?: throw FakeClient.notFoundException("User not found")
     }
 
-    override fun getShareCode(id: String, shareCode: String): String? {
-        return shareCode
+    override fun getShareCode(id: String, shareCode: String) {
     }
 
     override fun add(element: UserResource): UserResource {

@@ -98,9 +98,9 @@ class UserController(
     }
 
     @GetMapping("/{id}/shareCode/{shareCode}")
-    fun getShareCode(@PathVariable id: String?, @PathVariable shareCode: String?): ResponseEntity<String> =
+    fun getShareCode(@PathVariable id: String?, @PathVariable shareCode: String?): ResponseEntity<Any> =
         if (validateShareCode(id!!, shareCode!!)) {
-            ResponseEntity.status(HttpStatus.OK).body(shareCode)
+            ResponseEntity.status(HttpStatus.OK).build()
         } else {
             ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }

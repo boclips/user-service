@@ -23,7 +23,7 @@ interface UsersClient {
     fun getAccessRulesOfUser(@Param("id") id: String): AccessRulesResource
 
     @RequestLine("GET /v1/users/{id}/shareCode/{shareCode}")
-    fun getShareCode(@Param("id") id: String, @Param("shareCode") shareCode: String): String?
+    fun getShareCode(@Param("id") id: String, @Param("shareCode") shareCode: String)
 
     companion object {
         @JvmStatic
