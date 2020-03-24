@@ -1,18 +1,18 @@
 package com.boclips.users.presentation.resources.converters
 
+import com.boclips.users.api.response.SubjectResource
+import com.boclips.users.api.response.TeacherPlatformAttributesResource
+import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
-import com.boclips.users.api.response.SubjectResource
-import com.boclips.users.api.response.TeacherPlatformAttributesResource
-import com.boclips.users.api.response.user.UserResource
 import org.springframework.stereotype.Component
 
 @Component
 class UserConverter(
-    private val userLinkBuilder: UserLinkBuilder,
-    private val organisationDetailsConverter: OrganisationDetailsConverter) {
+    private val userLinkBuilder: UserLinkBuilder
+) {
     fun toUserResource(user: User, organisation: Organisation<*>?): UserResource {
         return UserResource(
             id = user.id.value,
@@ -29,7 +29,7 @@ class UserConverter(
             organisationAccountId = user.organisationId?.value,
             organisation = user.organisationId?.let {
                 organisation?.let { orgAccount ->
-                    organisationDetailsConverter.toResource(orgAccount.details)
+                    OrganisationDetailsConverter().toResource(orgAccount.details)
                 }
             },
             teacherPlatformAttributes = user.teacherPlatformAttributes?.let {

@@ -8,34 +8,23 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
-import com.boclips.users.presentation.resources.converters.OrganisationDetailsConverter
 import com.boclips.users.presentation.resources.converters.UserConverter
-import com.boclips.users.presentation.resources.school.CountryConverter
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
-import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class UserConverterTest {
-    private lateinit var organisationDetailsConverter: OrganisationDetailsConverter
     private lateinit var userConverter: UserConverter
 
     @BeforeEach()
     fun setUp() {
-        organisationDetailsConverter = OrganisationDetailsConverter(
-            CountryConverter(
-                mock(),
-                mock(),
-                mock()
-            )
-        )
-        userConverter = UserConverter(UserLinkBuilder(), organisationDetailsConverter)
+        userConverter = UserConverter(UserLinkBuilder())
     }
 
     @Test

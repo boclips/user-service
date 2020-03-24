@@ -1,14 +1,14 @@
 package com.boclips.users.presentation.resources.converters
 
+import com.boclips.users.api.response.country.CountryResource
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.state.StateResource
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.OrganisationDetails
-import com.boclips.users.presentation.resources.school.CountryConverter
 import org.springframework.stereotype.Component
 
 @Component
-class OrganisationDetailsConverter(private val countryConverter: CountryConverter) {
+class OrganisationDetailsConverter {
     fun toResource(organisationDetails: OrganisationDetails): OrganisationDetailsResource {
         return OrganisationDetailsResource(
             name = organisationDetails.name,
@@ -21,7 +21,12 @@ class OrganisationDetailsConverter(private val countryConverter: CountryConverte
                 )
             },
             country = organisationDetails.country?.let {
-                countryConverter.toCountryResource(it)
+                CountryResource(
+                    name = it.name,
+                    id = it.id,
+                    states = null,
+                    _links = null
+                )
             },
             allowsOverridingUserIds = when (organisationDetails) {
                 is ApiIntegration -> organisationDetails.allowsOverridingUserIds

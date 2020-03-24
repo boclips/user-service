@@ -9,7 +9,6 @@ import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.resources.converters.OrganisationConverter
 import com.boclips.users.presentation.resources.converters.OrganisationDetailsConverter
-import com.boclips.users.presentation.resources.school.CountryConverter
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -27,11 +26,9 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
     @BeforeEach
     fun setUp() {
         organisationLinkBuilder = OrganisationLinkBuilder(mock())
-        organisationDetailsConverter = OrganisationDetailsConverter(CountryConverter(mock(), mock(), mock()))
 
         organisationConverter = OrganisationConverter(
-            organisationLinkBuilder,
-            organisationDetailsConverter
+            organisationLinkBuilder
         )
     }
 

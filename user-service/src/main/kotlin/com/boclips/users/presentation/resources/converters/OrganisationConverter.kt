@@ -11,15 +11,14 @@ import org.springframework.stereotype.Component
 
 @Component
 class OrganisationConverter(
-    private val organisationLinkBuilder: OrganisationLinkBuilder,
-    private val organisationDetailsConverter: OrganisationDetailsConverter
+    private val organisationLinkBuilder: OrganisationLinkBuilder
 ) {
     fun toResource(organisation: Organisation<*>): OrganisationResource {
         return OrganisationResource(
             id = organisation.id.value,
             contentPackageId = organisation.contentPackageId?.value,
             accessExpiresOn = organisation.accessExpiresOn,
-            organisationDetails = organisationDetailsConverter.toResource(organisation.details),
+            organisationDetails = OrganisationDetailsConverter().toResource(organisation.details),
             _links = listOfNotNull(
                 organisationLinkBuilder.self(organisation.id),
                 organisationLinkBuilder.editOrganisation(organisation.id),
