@@ -2,6 +2,7 @@ package com.boclips.users.api.httpclient.test.fakes
 
 import com.boclips.users.api.httpclient.UsersClient
 import com.boclips.users.api.response.accessrule.AccessRulesResource
+import com.boclips.users.api.response.accessrule.AccessRulesWrapper
 import com.boclips.users.api.response.user.UserResource
 
 class UsersClientFake : UsersClient, FakeClient<UserResource> {
@@ -34,7 +35,17 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
     }
 
     fun addAccessRules(userId: String, accessRulesResource: AccessRulesResource): AccessRulesResource {
-        accessRulesDatabase[userId] = accessRulesResource
-        return accessRulesResource
+        val currentRules = accessRulesDatabase[userId]?._embedded?.accessRules ?: emptyList()
+
+        val mergedRules = currentRules.plus(accessRulesResource._embedded.accessRules)
+
+        val amendedResource = AccessRulesResource(
+            _embedded = AccessRulesWrapper(mergedRules),
+            _links = accessRulesResource._links
+        )
+
+        accessRulesDatabase[userId] = amendedResource
+
+        return amendedResource
     }
 }

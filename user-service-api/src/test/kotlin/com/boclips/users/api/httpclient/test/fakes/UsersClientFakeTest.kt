@@ -28,6 +28,33 @@ class UsersClientFakeTest {
     }
 
     @Test
+    fun `can add multiple access rules to the same user`() {
+        val fake = UsersClientFake()
+        fake.addAccessRules(
+            userId = "hello", accessRulesResource = AccessRulesResource(
+                _embedded = AccessRulesWrapper(
+                    listOf(
+                        AccessRuleResourceFactory.sampleIncludedCollections()
+                    )
+                )
+            )
+        )
+
+        fake.addAccessRules(
+            "hello", accessRulesResource = AccessRulesResource(
+                _embedded = AccessRulesWrapper(
+                    listOf(
+                        AccessRuleResourceFactory.sampleIncludedCollections()
+                    )
+                )
+            )
+        )
+
+        val accessRules = fake.getAccessRulesOfUser("hello")._embedded.accessRules
+        assertThat(accessRules).hasSize(2)
+    }
+
+    @Test
     fun `can fetch a user`() {
         val fake = UsersClientFake()
         val user = UserResourceFactory.sample(id = "1", firstName = "Baptiste")
