@@ -5,8 +5,10 @@ import com.boclips.users.api.factories.UserResourceFactory
 import com.boclips.users.api.response.accessrule.AccessRuleResource
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
+import feign.FeignException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class UsersClientFakeTest {
     @Test
@@ -61,5 +63,12 @@ class UsersClientFakeTest {
         fake.add(user)
         val userResource = fake.getUser("1")
         assertThat(userResource).isEqualTo(user)
+    }
+
+    @Test
+    fun `throws when invalid share code`() {
+        assertThrows<FeignException.Forbidden> {
+            UsersClientFake().getShareCode("wrong", "even more wrong")
+        }
     }
 }

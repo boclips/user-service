@@ -22,5 +22,18 @@ interface FakeClient<T> {
             ),
             null
         )
+
+        @JvmStatic
+        fun forbiddenException(message: String) = FeignException.Forbidden(
+            message,
+            Request.create(
+                Request.HttpMethod.GET,
+                "http://this.com/does/not/exist",
+                emptyMap(),
+                Request.Body.empty(),
+                RequestTemplate()
+            ),
+            null
+        )
     }
 }
