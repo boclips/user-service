@@ -20,7 +20,7 @@ import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
-import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
+import com.boclips.users.api.factories.UpdateUserRequestFactory
 import com.boclips.users.testsupport.factories.UserDocumentFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.argumentCaptor

@@ -1,6 +1,5 @@
-package com.boclips.users.api.request.uesr
+package com.boclips.users.api.request.user
 
-import com.boclips.users.api.request.user.UsaStateValidator
 import org.assertj.core.api.AssertionsForInterfaceTypes
 import org.junit.jupiter.api.Test
 

@@ -10,7 +10,7 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.OrganisationDomainOnUpdate
 import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.presentation.requests.UpdateOrganisationRequest
+import com.boclips.users.api.request.UpdateOrganisationRequest
 import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter

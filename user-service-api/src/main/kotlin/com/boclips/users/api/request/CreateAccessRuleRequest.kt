@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.requests
+package com.boclips.users.api.request
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo

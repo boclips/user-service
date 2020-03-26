@@ -3,7 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.commands.CreateContentPackage
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
-import com.boclips.users.presentation.requests.CreateContentPackageRequest
+import com.boclips.users.api.request.CreateContentPackageRequest
 import org.springframework.hateoas.EntityModel
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus

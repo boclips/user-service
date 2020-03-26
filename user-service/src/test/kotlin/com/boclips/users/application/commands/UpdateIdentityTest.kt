@@ -5,7 +5,7 @@ import com.boclips.users.application.exceptions.InvalidDateException
 import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.presentation.requests.UpdateOrganisationRequest
+import com.boclips.users.api.request.UpdateOrganisationRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -44,7 +44,8 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
 
         val updatedExpiryTime = oldExpiryTime.plusDays(10)
         val updatedExpiryTimeToString = updatedExpiryTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-        val request = UpdateOrganisationRequest(accessExpiresOn = updatedExpiryTimeToString)
+        val request =
+            UpdateOrganisationRequest(accessExpiresOn = updatedExpiryTimeToString)
         val updatedOrganisation = updateOrganisation(district.id.value, request)
 
         assertThat(updatedOrganisation.accessExpiresOn).isEqualTo(updatedExpiryTime)
@@ -54,7 +55,9 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
     fun `Throws an error when organisation to update cannot be found`() {
 
         assertThrows<OrganisationNotFoundException> {
-            updateOrganisation("non-existent-org", UpdateOrganisationRequest(accessExpiresOn = "2019-06-06T00:00:00Z"))
+            updateOrganisation("non-existent-org",
+                UpdateOrganisationRequest(accessExpiresOn = "2019-06-06T00:00:00Z")
+            )
         }
     }
 

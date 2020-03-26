@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.requests
+package com.boclips.users.api.request
 
 import com.boclips.users.api.factories.CreateUserRequestFactory
 import org.apache.commons.lang3.StringUtils

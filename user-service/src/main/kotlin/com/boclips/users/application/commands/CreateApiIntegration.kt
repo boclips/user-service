@@ -8,7 +8,7 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.ContentPackageRepository
 import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.presentation.requests.CreateOrganisationRequest
+import com.boclips.users.api.request.CreateOrganisationRequest
 import org.springframework.stereotype.Service
 
 @Service

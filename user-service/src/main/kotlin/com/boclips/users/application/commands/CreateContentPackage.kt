@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.ContentPackageRepository
-import com.boclips.users.presentation.requests.CreateContentPackageRequest
+import com.boclips.users.api.request.CreateContentPackageRequest
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 

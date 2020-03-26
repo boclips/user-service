@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.requests
+package com.boclips.users.api.request
 
 class CreateContentPackageRequest(
     var name: String,

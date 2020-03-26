@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.eventbus.events.page.PageRendered
-import com.boclips.users.presentation.requests.PageRenderedEventRequest
+import com.boclips.users.api.request.PageRenderedEventRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

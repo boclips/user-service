@@ -1,4 +1,4 @@
-package com.boclips.users.testsupport.factories
+package com.boclips.users.api.factories
 
 import com.boclips.users.api.request.user.MarketingTrackingRequest
 import com.boclips.users.api.request.user.UpdateUserRequest

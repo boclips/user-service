@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.requests
+package com.boclips.users.api.request
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

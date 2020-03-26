@@ -1,7 +1,7 @@
-package com.boclips.users.presentation.requests
+package com.boclips.users.api.request
 
+import com.boclips.users.api.factories.UpdateUserRequestFactory
 import com.boclips.users.api.request.user.MarketingTrackingRequest
-import com.boclips.users.testsupport.factories.UpdateUserRequestFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested

@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.IncludedContentAccessRuleRepository
-import com.boclips.users.presentation.requests.CreateAccessRuleRequest
+import com.boclips.users.api.request.CreateAccessRuleRequest
 import org.springframework.stereotype.Service
 
 @Service

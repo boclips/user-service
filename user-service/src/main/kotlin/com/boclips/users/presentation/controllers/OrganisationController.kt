@@ -7,8 +7,8 @@ import com.boclips.users.application.commands.GetOrganisationById
 import com.boclips.users.application.commands.GetOrganisations
 import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.application.model.OrganisationFilter
-import com.boclips.users.presentation.requests.OrganisationFilterRequest
-import com.boclips.users.presentation.requests.UpdateOrganisationRequest
+import com.boclips.users.api.request.OrganisationFilterRequest
+import com.boclips.users.api.request.UpdateOrganisationRequest
 import com.boclips.users.presentation.resources.UserResourceWrapper
 import com.boclips.users.presentation.resources.UsersResource
 import com.boclips.users.presentation.resources.converters.OrganisationConverter

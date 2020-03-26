@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.InvalidCreateContentPackageException
-import com.boclips.users.presentation.requests.CreateContentPackageRequest
+import com.boclips.users.api.request.CreateContentPackageRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

@@ -4,7 +4,7 @@ import com.boclips.security.utils.User
 import com.boclips.security.utils.UserExtractor
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.events.EventService
-import com.boclips.users.presentation.requests.PageRenderedEventRequest
+import com.boclips.users.api.request.PageRenderedEventRequest
 import org.springframework.stereotype.Component
 
 @Component

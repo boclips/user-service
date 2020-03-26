@@ -5,7 +5,7 @@ import com.boclips.users.application.commands.CreateAccessRule
 import com.boclips.users.application.commands.GetAccessRuleById
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
-import com.boclips.users.presentation.requests.CreateAccessRuleRequest
+import com.boclips.users.api.request.CreateAccessRuleRequest
 import com.boclips.users.presentation.resources.converters.AccessRuleConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.http.HttpHeaders
