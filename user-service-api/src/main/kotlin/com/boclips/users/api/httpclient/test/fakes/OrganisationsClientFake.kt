@@ -11,7 +11,7 @@ class OrganisationsClientFake : OrganisationsClient, FakeClient<OrganisationReso
     }
 
     override fun add(element: OrganisationResource): OrganisationResource {
-        database[element.id!!] = element
+        database[element.id] = element
         return element
     }
 
