@@ -1,7 +1,7 @@
 package com.boclips.users.api.factories
 
 import com.boclips.users.api.response.SubjectResource
-import com.boclips.users.api.response.TeacherPlatformAttributesResource
+import com.boclips.users.api.response.user.TeacherPlatformAttributesResource
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.user.UserResource
 

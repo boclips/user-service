@@ -1,7 +1,7 @@
-package com.boclips.users.presentation.resources.converters
+package com.boclips.users.presentation.converters
 
 import com.boclips.users.api.response.SubjectResource
-import com.boclips.users.api.response.TeacherPlatformAttributesResource
+import com.boclips.users.api.response.user.TeacherPlatformAttributesResource
 import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
@@ -29,7 +29,8 @@ class UserConverter(
             organisationAccountId = user.organisationId?.value,
             organisation = user.organisationId?.let {
                 organisation?.let { orgAccount ->
-                    OrganisationDetailsConverter().toResource(orgAccount.details)
+                    OrganisationDetailsConverter()
+                        .toResource(orgAccount.details)
                 }
             },
             teacherPlatformAttributes = user.teacherPlatformAttributes?.let {

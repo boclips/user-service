@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.resources.school
+package com.boclips.users.presentation.converters
 
 import com.boclips.users.api.response.state.StateResource
 import com.boclips.users.api.response.state.StatesResource

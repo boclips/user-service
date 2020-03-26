@@ -1,6 +1,4 @@
-package com.boclips.users.presentation.resources
-
-import com.boclips.users.api.response.user.UserResource
+package com.boclips.users.api.response.user
 
 data class UsersResource(
     val _embedded: UserResourceWrapper

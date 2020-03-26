@@ -1,9 +1,10 @@
-package com.boclips.users.presentation.resources.school
+package com.boclips.users.presentation.controllers
 
 import com.boclips.users.api.response.country.CountriesResource
 import com.boclips.users.api.response.country.CountriesWrapperResource
 import com.boclips.users.api.response.country.CountryResource
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.presentation.converters.StateConverter
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.boclips.users.presentation.hateoas.SchoolLinkBuilder
 import org.springframework.stereotype.Component

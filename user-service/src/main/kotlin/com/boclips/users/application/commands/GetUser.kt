@@ -9,7 +9,7 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.api.response.user.UserResource
-import com.boclips.users.presentation.resources.converters.UserConverter
+import com.boclips.users.presentation.converters.UserConverter
 import org.springframework.stereotype.Component
 
 @Component

@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.resources.converters
 
 import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.presentation.converters.ContentPackageConverter
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory

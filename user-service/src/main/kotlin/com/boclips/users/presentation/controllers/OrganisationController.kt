@@ -9,10 +9,10 @@ import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.api.request.OrganisationFilterRequest
 import com.boclips.users.api.request.UpdateOrganisationRequest
-import com.boclips.users.presentation.resources.UserResourceWrapper
-import com.boclips.users.presentation.resources.UsersResource
-import com.boclips.users.presentation.resources.converters.OrganisationConverter
-import com.boclips.users.presentation.resources.converters.UserConverter
+import com.boclips.users.api.response.user.UserResourceWrapper
+import com.boclips.users.api.response.user.UsersResource
+import com.boclips.users.presentation.converters.OrganisationConverter
+import com.boclips.users.presentation.converters.UserConverter
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -54,7 +54,13 @@ class OrganisationController(
     fun assignUsers(@PathVariable id: String): ResponseEntity<UsersResource> {
         val organisation = getOrganisationById(id)
         val resources = assignUsersByOrganisationDomain(id).map { (userConverter.toUserResource(it, organisation)) }
-        return ResponseEntity.ok(UsersResource(_embedded = UserResourceWrapper(resources)))
+        return ResponseEntity.ok(
+            UsersResource(
+                _embedded = UserResourceWrapper(
+                    resources
+                )
+            )
+        )
     }
 
     @PostMapping("/organisations/{id}")

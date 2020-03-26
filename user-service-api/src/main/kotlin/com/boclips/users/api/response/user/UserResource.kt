@@ -5,7 +5,6 @@ import com.boclips.users.api.TeacherProjection
 import com.boclips.users.api.UserProjection
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.SubjectResource
-import com.boclips.users.api.response.TeacherPlatformAttributesResource
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonView
 import org.springframework.hateoas.Link

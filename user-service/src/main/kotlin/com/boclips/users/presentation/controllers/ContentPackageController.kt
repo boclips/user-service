@@ -1,8 +1,8 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.application.commands.GetContentPackage
-import com.boclips.users.presentation.resources.ContentPackageResource
-import com.boclips.users.presentation.resources.converters.ContentPackageConverter
+import com.boclips.users.api.response.accessrule.ContentPackageResource
+import com.boclips.users.presentation.converters.ContentPackageConverter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping

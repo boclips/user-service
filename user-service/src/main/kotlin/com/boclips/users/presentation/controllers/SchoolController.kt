@@ -1,8 +1,9 @@
 package com.boclips.users.presentation.controllers
 
+import com.boclips.users.api.response.school.SchoolResource
+import com.boclips.users.api.response.school.SchoolsResource
+import com.boclips.users.api.response.school.SchoolsWrapperResource
 import com.boclips.users.application.commands.SearchSchools
-import com.boclips.users.presentation.resources.school.SchoolResource
-import org.springframework.hateoas.CollectionModel
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -16,10 +17,19 @@ class SchoolController(private val searchSchools: SearchSchools) {
         @RequestParam(required = false) query: String?,
         @RequestParam(required = false) state: String?,
         @RequestParam(required = true) countryCode: String?
-    ): CollectionModel<SchoolResource> {
+    ): SchoolsResource {
         val schools = searchSchools(schoolName = query, state = state, countryCode = countryCode)
 
-        return CollectionModel(
-            schools.map { SchoolResource(id = it.id, name = it.name) })
+        return SchoolsResource(
+            _embedded = SchoolsWrapperResource(
+                schools = schools.map {
+                    SchoolResource(
+                        id = it.id,
+                        name = it.name
+                    )
+                }
+            ),
+            _links = null
+        )
     }
 }

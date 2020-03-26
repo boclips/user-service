@@ -6,7 +6,7 @@ import com.boclips.users.application.commands.GetApiIntegrationByName
 import com.boclips.users.presentation.annotations.BoclipsE2ETestSupport
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.api.request.CreateOrganisationRequest
-import com.boclips.users.presentation.resources.converters.OrganisationConverter
+import com.boclips.users.presentation.converters.OrganisationConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus

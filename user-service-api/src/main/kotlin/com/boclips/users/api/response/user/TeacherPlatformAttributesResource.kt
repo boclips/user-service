@@ -1,4 +1,4 @@
-package com.boclips.users.api.response
+package com.boclips.users.api.response.user
 
 data class TeacherPlatformAttributesResource(
     val shareCode: String? = ""

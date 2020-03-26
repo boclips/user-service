@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.resources.converters
+package com.boclips.users.presentation.converters
 
 import com.boclips.users.api.response.accessrule.AccessRuleResource
 import com.boclips.users.domain.model.contentpackage.AccessRule

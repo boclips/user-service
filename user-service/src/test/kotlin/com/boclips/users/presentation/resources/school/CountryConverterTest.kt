@@ -4,6 +4,8 @@ import com.boclips.users.api.response.country.CountryResource
 import com.boclips.users.api.response.state.StatesResource
 import com.boclips.users.api.response.state.StatesWrapperResource
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.presentation.controllers.CountryConverter
+import com.boclips.users.presentation.converters.StateConverter
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
@@ -32,7 +34,11 @@ class CountryConverterTest {
         )
 
         val countryResources =
-            CountryConverter(mock(), countryLinkBuilder, stateConverter).toCountriesResource(countries)
+            CountryConverter(
+                mock(),
+                countryLinkBuilder,
+                stateConverter
+            ).toCountriesResource(countries)
 
         assertThat(countryResources._embedded.countries).isNotNull
         assertThat(countryResources._embedded.countries).hasSize(1)

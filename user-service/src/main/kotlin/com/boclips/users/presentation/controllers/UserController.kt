@@ -14,7 +14,7 @@ import com.boclips.users.application.commands.ValidateShareCode
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.projections.WithProjection
-import com.boclips.users.presentation.resources.converters.AccessRuleConverter
+import com.boclips.users.presentation.converters.AccessRuleConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.server.ExposesResourceFor
 import org.springframework.http.HttpHeaders

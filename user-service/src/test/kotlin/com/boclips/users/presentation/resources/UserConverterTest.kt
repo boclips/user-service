@@ -8,7 +8,7 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
-import com.boclips.users.presentation.resources.converters.UserConverter
+import com.boclips.users.presentation.converters.UserConverter
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -24,7 +24,8 @@ class UserConverterTest {
 
     @BeforeEach()
     fun setUp() {
-        userConverter = UserConverter(UserLinkBuilder())
+        userConverter =
+            UserConverter(UserLinkBuilder())
     }
 
     @Test

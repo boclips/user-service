@@ -1,4 +1,4 @@
-package com.boclips.users.presentation.resources.converters
+package com.boclips.users.presentation.converters
 
 import com.boclips.users.api.response.organisation.OrganisationResource
 import com.boclips.users.api.response.organisation.OrganisationsResource

@@ -6,7 +6,7 @@ import com.boclips.users.application.commands.GetAccessRules
 import com.boclips.users.application.model.AccessRuleFilter
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 
-import com.boclips.users.presentation.resources.converters.AccessRuleConverter
+import com.boclips.users.presentation.converters.AccessRuleConverter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam

@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.IncludedAccessRuleLinkBuilder
-import com.boclips.users.presentation.resources.converters.AccessRuleConverter
+import com.boclips.users.presentation.converters.AccessRuleConverter
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -35,8 +35,9 @@ class AccessRuleConverterTest {
         assertThat(resource.videoIds).containsExactlyInAnyOrder("A", "B")
     }
 
-    private val converter = AccessRuleConverter(
-        AccessRuleLinkBuilder(),
-        IncludedAccessRuleLinkBuilder()
-    )
+    private val converter =
+        AccessRuleConverter(
+            AccessRuleLinkBuilder(),
+            IncludedAccessRuleLinkBuilder()
+        )
 }
