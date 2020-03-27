@@ -34,6 +34,7 @@ open class UpdateUserRequest(
     var schoolName: String? = null,
     var schoolId: String? = null,
 
+    @field:Role
     var role: String? = null
 )
 

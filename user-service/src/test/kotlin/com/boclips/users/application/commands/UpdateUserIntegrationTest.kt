@@ -78,6 +78,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 ages = listOf(4, 5, 6),
                 country = "USA",
                 referralCode = "1234",
+                role = "TEACHER",
                 utm = MarketingTrackingRequest(
                     source = "test-source",
                     medium = "test-medium",
@@ -98,6 +99,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(profile.subjects).hasSize(1)
         assertThat(profile.subjects.first().name).isEqualTo("Maths")
         assertThat(profile.subjects.first().id).isEqualTo(SubjectId("subject-1"))
+        assertThat(profile.role).isEqualTo("TEACHER")
         assertThat(user.referralCode).isEqualTo("1234")
         assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")
         assertThat(user.marketingTracking.utmMedium).isEqualTo("test-medium")
@@ -349,7 +351,8 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             lastName = "fleck",
             hasOptedIntoMarketing = true,
             subjects = listOf(mySubject.id.value),
-            ages = listOf(4, 5, 6)
+            ages = listOf(4, 5, 6),
+            role = "PARENT"
         )
         )
 
@@ -358,6 +361,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.profile!!.subjects).containsExactly(mySubject)
         assertThat(persistedUser.profile!!.ages).isEqualTo(listOf(4, 5, 6))
         assertThat(persistedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
+        assertThat(persistedUser.profile!!.role).isEqualTo("PARENT")
     }
 
     @Nested

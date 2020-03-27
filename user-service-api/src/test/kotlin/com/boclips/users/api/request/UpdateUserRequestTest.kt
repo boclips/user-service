@@ -27,7 +27,7 @@ class UpdateUserRequestTest {
     }
 
     @Nested
-    inner class Names {
+    inner class Profile {
         @Test
         fun `validates first firstName for empty string`() {
             val violations = validator.validate(
@@ -72,6 +72,18 @@ class UpdateUserRequestTest {
                 )
             assertThat(violations).hasSize(1)
             assertThat(violations.first().message).isEqualTo("Last name must be between 1 and 200 characters")
+        }
+
+        @Test
+        fun `validates role for value`() {
+            val violations =
+                validator.validate(
+                    UpdateUserRequestFactory.sample(
+                        role = "INVALID"
+                    )
+                )
+            assertThat(violations).hasSize(1)
+            assertThat(violations.first().message).isEqualTo("Role must be TEACHER, PARENT, SCHOOLADMIN, or OTHER")
         }
     }
 
