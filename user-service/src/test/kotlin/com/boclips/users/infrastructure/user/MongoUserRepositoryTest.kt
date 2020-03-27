@@ -105,7 +105,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             UserUpdateCommand.ReplaceLastName("Earhart"),
             UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
             UserUpdateCommand.ReplaceReferralCode("1234"),
-            UserUpdateCommand.ReplaceOrganisationId(OrganisationId("my-id"))
+            UserUpdateCommand.ReplaceOrganisationId(OrganisationId("my-id")),
+            UserUpdateCommand.ReplaceRole(role = "TEACHER")
         )
 
         val updatedUser = userRepository.findById(user.id)!!
@@ -114,6 +115,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
         assertThat(updatedUser.referralCode).isEqualTo("1234")
         assertThat(updatedUser.organisationId).isEqualTo(OrganisationId("my-id"))
+        assertThat(updatedUser.profile!!.role).isEqualTo("TEACHER")
     }
 
     @Test

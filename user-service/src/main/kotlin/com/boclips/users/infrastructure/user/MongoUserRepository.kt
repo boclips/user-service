@@ -52,6 +52,9 @@ class MongoUserRepository(
                 is UserUpdateCommand.ReplaceShareCode -> userDocument.apply {
                     shareCode = updateCommand.shareCode
                 }
+                is UserUpdateCommand.ReplaceRole -> userDocument.apply {
+                    role = updateCommand.role
+                }
             }
         }
 

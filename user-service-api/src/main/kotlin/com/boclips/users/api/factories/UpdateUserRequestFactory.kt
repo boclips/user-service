@@ -22,7 +22,8 @@ class UpdateUserRequestFactory {
             schoolName: String? = "Sunnydale High School",
             schoolId: String? = null,
             state: String? = "CA",
-            country: String? = "USA"
+            country: String? = "USA",
+            role: String? = "TEACHER"
         ): UpdateUserRequest {
             return UpdateUserRequest(
                 firstName = firstName,
@@ -35,7 +36,8 @@ class UpdateUserRequestFactory {
                 schoolName = schoolName,
                 schoolId = schoolId,
                 state = state,
-                country = country
+                country = country,
+                role = role
             )
         }
     }

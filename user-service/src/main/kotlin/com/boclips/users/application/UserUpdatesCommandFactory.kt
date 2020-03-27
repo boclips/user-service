@@ -35,6 +35,7 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
                     utmSource = it.source
                 )
             },
+            updateUserRequest.role?.let { UserUpdateCommand.ReplaceRole(role = it)},
             organisation?.let { UserUpdateCommand.ReplaceOrganisationId(it.id) }
         )
     }

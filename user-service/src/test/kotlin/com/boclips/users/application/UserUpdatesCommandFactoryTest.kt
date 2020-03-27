@@ -123,4 +123,11 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(commands).hasSize(1)
     }
+
+    @Test
+    fun `converts user role change to a command`() {
+        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(role = "TEACHER"))
+
+        assertThat(commands).hasSize(1)
+    }
 }

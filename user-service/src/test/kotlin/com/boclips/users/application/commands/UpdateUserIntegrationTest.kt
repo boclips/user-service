@@ -69,8 +69,8 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext(userId)
 
         saveUser(UserFactory.sample(id = userId))
-        updateUser(
-            userId, UpdateUserRequest(
+        updateUser(userId,
+            UpdateUserRequest(
                 firstName = "josh",
                 lastName = "fleck",
                 hasOptedIntoMarketing = true,
@@ -116,21 +116,21 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = userId, username = "josh@fleck.com")))
         updateUser(
             userId, UpdateUserRequest(
-                firstName = "josh",
-                lastName = "fleck",
-                hasOptedIntoMarketing = true,
-                subjects = listOf("subject-1"),
-                ages = listOf(4, 5, 6),
-                country = "USA",
-                referralCode = "1234",
-                utm = MarketingTrackingRequest(
-                    source = "test-source",
-                    medium = "test-medium",
-                    campaign = "test-campaign",
-                    term = "test-term",
-                    content = "test-content"
-                )
+            firstName = "josh",
+            lastName = "fleck",
+            hasOptedIntoMarketing = true,
+            subjects = listOf("subject-1"),
+            ages = listOf(4, 5, 6),
+            country = "USA",
+            referralCode = "1234",
+            utm = MarketingTrackingRequest(
+                source = "test-source",
+                medium = "test-medium",
+                campaign = "test-campaign",
+                term = "test-term",
+                content = "test-content"
             )
+        )
         )
 
         argumentCaptor<List<CrmProfile>>().apply {
@@ -345,12 +345,12 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
         val persistedUser = updateUser(
             userId.value, UpdateUserRequest(
-                firstName = "josh",
-                lastName = "fleck",
-                hasOptedIntoMarketing = true,
-                subjects = listOf(mySubject.id.value),
-                ages = listOf(4, 5, 6)
-            )
+            firstName = "josh",
+            lastName = "fleck",
+            hasOptedIntoMarketing = true,
+            subjects = listOf(mySubject.id.value),
+            ages = listOf(4, 5, 6)
+        )
         )
 
         assertThat(persistedUser.profile!!.firstName).isEqualTo("josh")
