@@ -45,7 +45,8 @@ class UserDocumentConverterTest {
             ),
             organisationId = "new-org-id",
             accessExpiresOn = null,
-            createdAt = Instant.now()
+            createdAt = Instant.now(),
+            role = "TEACHER"
         )
 
         val convertedUser = userDocumentConverter.convertToUser(document)
@@ -67,6 +68,7 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.marketingTracking.utmCampaign).isEqualTo("utmCampaign")
         assertThat(convertedUser.organisationId!!.value).isEqualTo("new-org-id")
         assertThat(convertedUser.accessExpiresOn).isNull()
+        assertThat(convertedUser.profile!!.role).isEqualTo("TEACHER")
     }
 
     @Test

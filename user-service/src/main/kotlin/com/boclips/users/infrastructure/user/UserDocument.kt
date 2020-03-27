@@ -25,7 +25,8 @@ data class UserDocument(
     var organisationId: String?,
     var accessExpiresOn: Instant?,
     var createdAt: Instant,
-    var hasLifetimeAccess: Boolean
+    var hasLifetimeAccess: Boolean,
+    var role: String?
 ) {
 
     companion object {
@@ -52,7 +53,8 @@ data class UserDocument(
                 organisationId = user.organisationId?.value,
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
                 createdAt = user.identity.createdAt.toInstant(),
-                hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false
+                hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false,
+                role = user.profile?.role
             )
         }
 
@@ -73,7 +75,8 @@ data class UserDocument(
                 organisationId = organisationId?.value,
                 accessExpiresOn = null,
                 createdAt = identity.createdAt.toInstant(),
-                hasLifetimeAccess = false
+                hasLifetimeAccess = false,
+                role = null
             )
         }
     }

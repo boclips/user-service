@@ -33,7 +33,8 @@ data class UserDocumentConverter(
                             it
                         )
                     } ?: emptyList(),
-                ages = userDocument.ageRange.orEmpty()
+                ages = userDocument.ageRange.orEmpty(),
+                role = userDocument.role
             ),
             teacherPlatformAttributes = convertTeacherPlatformAttributes(userDocument),
             analyticsId = userDocument.analyticsId?.let { AnalyticsId(value = it) },
