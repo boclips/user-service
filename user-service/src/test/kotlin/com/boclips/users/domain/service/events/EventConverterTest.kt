@@ -5,6 +5,7 @@ import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions
 
@@ -30,5 +31,16 @@ internal class EventConverterTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(event.user.organisation.accountType).isEqualTo("STANDARD")
         Assertions.assertThat(event.user.organisation.name).isEqualTo("District 9")
         Assertions.assertThat(event.user.organisation.parent).isNull()
+    }
+
+    @Test
+    fun `convert role information if exists`() {
+        val user = userRepository.create(UserFactory.sample(profile = ProfileFactory.sample(role = null)))
+
+        userRepository.update(user, UserUpdateCommand.ReplaceRole("PARENT"))
+
+        val event = eventBus.getEventOfType(UserUpdated::class.java)
+        Assertions.assertThat(event.user.id).isEqualTo(user.id.value)
+        Assertions.assertThat(event.user.role).isEqualTo("PARENT")
     }
 }

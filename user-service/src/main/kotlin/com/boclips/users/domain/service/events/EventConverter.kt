@@ -23,6 +23,7 @@ class EventConverter(
             .ages(user.profile?.ages?.toMutableList().orEmpty())
             .isBoclipsEmployee(user.identity.isBoclipsEmployee())
             .organisation(toEventOrganisation(user))
+            .role(user.profile?.role)
             .build()
     }
 
