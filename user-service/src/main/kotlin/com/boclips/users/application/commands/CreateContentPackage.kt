@@ -1,12 +1,13 @@
 package com.boclips.users.application.commands
 
+import com.boclips.users.api.request.CreateContentPackageRequest
+import com.boclips.users.application.exceptions.DuplicateContentPackageException
 import com.boclips.users.application.exceptions.InvalidCreateContentPackageException
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.ContentPackageRepository
-import com.boclips.users.api.request.CreateContentPackageRequest
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
@@ -19,6 +20,10 @@ class CreateContentPackage(
         createContentPackageRequest.accessRuleIds.forEach {
             accessRuleRepository.findById(AccessRuleId(it))
                 ?: throw InvalidCreateContentPackageException("Access rule not found for $it")
+        }
+
+        contentPackageRepository.findByName(createContentPackageRequest.name)?.let {
+            throw DuplicateContentPackageException(it.name)
         }
 
         return contentPackageRepository.save(ContentPackage(

@@ -1,10 +1,12 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.ContentPackageFactory
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.empty
@@ -81,4 +83,27 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
             .andExpect(status().isBadRequest)
             .andExpectApiErrorPayload()
     }
+
+    @Test
+    fun `returns conflict when trying to create a pre-existing content package`() {
+        saveContentPackage(ContentPackageFactory.sample(name = "pre-existing content package"))
+        val accessRule = saveIncludedVideosAccessRule(name = "video-access-rule", videoIds = listOf(VideoId("video-1")))
+
+        val userId = "operator@boclips.com"
+        mvc.perform(
+            post("/v1/content-packages").content(
+                """
+                    {
+                        "name": "pre-existing content package",
+                        "accessRuleIds": ["${accessRule.id.value}"]
+                    }
+                    """.trimIndent()
+            ).asUserWithRoles(
+                userId,
+                UserRoles.INSERT_CONTENT_PACKAGES
+            )
+        ).andExpect(status().isConflict)
+
+    }
+
 }
