@@ -21,6 +21,8 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
             .antMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()
 
+            .antMatchers(HttpMethod.GET, "/faults/**").permitAll()
+
             .antMatchers(HttpMethod.OPTIONS, "/v1/**").permitAll()
 
             .antMatchers("/v1").permitAll()
