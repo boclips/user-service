@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.getAges
+import com.boclips.users.domain.model.getRole
 import com.boclips.users.domain.model.getSubjects
 import com.boclips.users.domain.model.marketing.CrmProfile
 
@@ -17,6 +18,7 @@ fun convertUserToCrmProfile(user: User, sessions: UserSessions): CrmProfile? {
             firstName = it.firstName,
             lastName = it.lastName,
             email = it.email,
+            role = user.profile.getRole(),
             hasOptedIntoMarketing = it.hasOptedIntoMarketing,
             lastLoggedIn = sessions.lastAccess,
             marketingTracking = user.marketingTracking,

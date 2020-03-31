@@ -12,6 +12,7 @@ class CrmProfile(
     val firstName: String,
     val lastName: String,
     val email: String,
+    val role: String,
     val hasOptedIntoMarketing: Boolean,
     val lastLoggedIn: Instant?,
     val marketingTracking: MarketingTracking,

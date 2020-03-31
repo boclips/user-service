@@ -6,7 +6,19 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class HubSpotContactConverter {
+
+    companion object {
+        val roleMap = mapOf(
+            "TEACHER" to "Teacher/Professor",
+            "OTHER" to "Other",
+            "PARENT" to "Parent",
+            "SCHOOLADMIN" to "School Administrator"
+        )
+    }
+
     fun convert(crmProfile: CrmProfile): HubSpotContact {
+        val role = convertRole(crmProfile.role)
+
         return HubSpotContact(
             email = crmProfile.email,
             properties = listOfNotNull(
@@ -16,6 +28,7 @@ class HubSpotContactConverter {
                 HubSpotProperty("b2t_is_activated", crmProfile.activated.toString()),
                 HubSpotProperty("subjects_taught", crmProfile.subjects.joinToString { it.name }),
                 HubSpotProperty("age_range", crmProfile.ageRange.joinToString()),
+                role?.let { HubSpotProperty("role", it) },
                 HubSpotProperty("b2t_utm_source", crmProfile.marketingTracking.utmSource),
                 HubSpotProperty("b2t_utm_term", crmProfile.marketingTracking.utmTerm),
                 HubSpotProperty("b2t_utm_content", crmProfile.marketingTracking.utmContent),
@@ -26,6 +39,8 @@ class HubSpotContactConverter {
             )
         )
     }
+
+    private fun convertRole(role: String): String? = roleMap[role]
 
     private fun convertToInstantAtMidnight(instant: Instant?): String {
         return instant?.let {

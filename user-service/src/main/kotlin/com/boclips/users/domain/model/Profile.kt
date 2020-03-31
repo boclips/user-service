@@ -11,3 +11,4 @@ data class Profile(
 
 fun Profile?.getSubjects() = this?.subjects ?: emptyList()
 fun Profile?.getAges() = this?.ages ?: emptyList()
+fun Profile?.getRole() = this?.role ?: ""

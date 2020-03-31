@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.testsupport.factories.CrmProfileFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
@@ -55,5 +56,55 @@ class HubSpotContactConverterTest {
 
         val lastLoggedIn = hubSpotContact.properties.first { it.property == "b2t_access_expiry" }
         assertThat(lastLoggedIn.value).isEqualTo("1514764800000")
+    }
+
+    @Nested
+    internal class UserRole {
+        @Test
+        fun `converting Teacher role`() = assertRoleConversion("TEACHER", "Teacher/Professor")
+
+        @Test
+        fun `converting Parent role`() = assertRoleConversion("PARENT", "Parent")
+
+        @Test
+        fun `converting School Administrator role`() = assertRoleConversion("SCHOOLADMIN", "School Administrator")
+
+        @Test
+        fun `converting Other role`() = assertRoleConversion("OTHER", "Other")
+
+        @Test
+        fun `empty role not sent`() {
+            val hubSpotContact = HubSpotContactConverter().convert(
+                CrmProfileFactory.sample(
+                    role = ""
+                )
+            )
+
+            val role = hubSpotContact.properties.firstOrNull { it.property == "role" }
+            assertThat(role).isNull()
+        }
+
+        @Test
+        fun `non-existing role not sent`() {
+            val hubSpotContact = HubSpotContactConverter().convert(
+                CrmProfileFactory.sample(
+                    role = "DIRECTOR"
+                )
+            )
+
+            val role = hubSpotContact.properties.firstOrNull { it.property == "role" }
+            assertThat(role).isNull()
+        }
+
+        private fun assertRoleConversion(originalRole: String, expectedConversion: String) {
+            val hubSpotContact = HubSpotContactConverter().convert(
+                CrmProfileFactory.sample(
+                    role = originalRole
+                )
+            )
+
+            val role = hubSpotContact.properties.first { it.property == "role" }
+            assertThat(role.value).isEqualTo(expectedConversion)
+        }
     }
 }
