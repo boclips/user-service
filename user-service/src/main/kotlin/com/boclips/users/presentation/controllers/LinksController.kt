@@ -47,6 +47,7 @@ class LinksController(
                 countryLinkBuilder.getCountriesLink(),
                 accessRuleLinkBuilder.searchAccessRules(),
                 eventLinkBuilder.logPageRenderedEventLink(),
+                eventLinkBuilder.trackPlatformInteractedWithEventLink(),
                 organisationLinkBuilder.getOrganisationsLink(),
                 organisationLinkBuilder.getOrganisationLink(),
                 userLinkBuilder.validateShareCodeLink()

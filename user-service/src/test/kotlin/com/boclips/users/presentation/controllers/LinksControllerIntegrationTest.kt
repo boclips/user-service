@@ -34,6 +34,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.countries").doesNotExist())
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
+            .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }
@@ -58,6 +59,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.accessRules").doesNotExist())
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
+            .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }

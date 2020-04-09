@@ -13,4 +13,11 @@ class EventLinkBuilder {
                 .logPageRenderedEvent(null)
         ).withRel("trackPageRendered")
     }
+
+    fun trackPlatformInteractedWithEventLink(): Link? {
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(EventController::class.java)
+                .trackPlatformInteractedWithEvent(null)
+        ).withRel("trackPlatformInteractedWith")
+    }
 }

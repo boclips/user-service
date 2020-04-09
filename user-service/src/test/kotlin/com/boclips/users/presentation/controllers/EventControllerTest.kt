@@ -1,12 +1,14 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.eventbus.events.page.PageRendered
+import com.boclips.eventbus.events.platform.PlatformInteractedWith
 import com.boclips.eventbus.events.user.UserExpired
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -106,5 +108,24 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
         val event = eventBus.getEventOfType(UserExpired::class.java)
 
         assertThat(event.user.id).isEqualTo("expired-user-id")
+    }
+
+
+    @Test
+    fun `platform interaction is tracked and sets url from referer`() {
+        saveUser(UserFactory.sample(id = "testUser"))
+
+        mvc.perform(
+            MockMvcRequestBuilders.post("/v1/events/platform-interaction?subtype=HELP_CLICKED").asUser("testUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Referer", "https://teachers.boclips.com")
+        )
+            .andExpect(MockMvcResultMatchers.status().isCreated)
+
+        val event = eventBus.getEventOfType(PlatformInteractedWith::class.java)
+
+        assertThat(event.url).isEqualTo("https://teachers.boclips.com")
+        assertThat(event.subtype).isEqualTo("HELP_CLICKED")
+        assertThat(event.userId).isEqualTo("testUser")
     }
 }

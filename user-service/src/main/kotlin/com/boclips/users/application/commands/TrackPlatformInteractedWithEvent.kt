@@ -1,17 +1,16 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.api.request.PageRenderedEventRequest
 import com.boclips.users.domain.service.events.EventService
 import org.springframework.stereotype.Component
 
 @Component
-class TrackPageRenderedEvent(
+class TrackPlatformInteractedWithEvent(
     val eventService: EventService,
     val getTrackableUserId: GetTrackableUserId
 ) {
 
-    operator fun invoke(request: PageRenderedEventRequest) {
+    operator fun invoke(subtype: String, url: String?) {
         val userId = getTrackableUserId()
-        eventService.publishPageRendered(userId = userId, url = request.url)
+        eventService.publishPlatformInteractedWith(userId = userId, subtype = subtype, url = url)
     }
 }
