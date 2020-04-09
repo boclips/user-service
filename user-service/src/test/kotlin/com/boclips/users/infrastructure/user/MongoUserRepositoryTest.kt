@@ -87,9 +87,6 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `updating multiple fields`() {
         val user = userRepository.create(
             UserFactory.sample(
-                identity = IdentityFactory.sample(
-                    id = "user-1"
-                ),
                 profile = ProfileFactory.sample(
                     firstName = "Ada",
                     lastName = "Lovelace",
@@ -100,12 +97,13 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
+        val newOrganisationId = OrganisationId()
         userRepository.update(
             user,
             UserUpdateCommand.ReplaceLastName("Earhart"),
             UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
             UserUpdateCommand.ReplaceReferralCode("1234"),
-            UserUpdateCommand.ReplaceOrganisationId(OrganisationId("my-id")),
+            UserUpdateCommand.ReplaceOrganisationId(newOrganisationId),
             UserUpdateCommand.ReplaceRole(role = "TEACHER")
         )
 
@@ -114,7 +112,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.lastName).isEqualTo("Earhart")
         assertThat(updatedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
         assertThat(updatedUser.referralCode).isEqualTo("1234")
-        assertThat(updatedUser.organisationId).isEqualTo(OrganisationId("my-id"))
+        assertThat(updatedUser.organisationId).isEqualTo(newOrganisationId)
         assertThat(updatedUser.profile!!.role).isEqualTo("TEACHER")
     }
 
@@ -248,32 +246,36 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `find users by organisation id`() {
+        val organisationId1 = OrganisationId()
+        val organisationId2 = OrganisationId()
+
         userRepository.create(
             UserFactory.sample(
-                identity = IdentityFactory.sample(id = "user-1"),
-                organisationId = OrganisationId("org-id-1")
+                organisationId = organisationId1
             )
         )
         userRepository.create(
             UserFactory.sample(
-                identity = IdentityFactory.sample(id = "user-2"),
-                organisationId = OrganisationId("org-id-2")
+                organisationId = organisationId2
             )
         )
 
-        val usersInOrg = userRepository.findAllByOrganisationId(OrganisationId("org-id-1"))
+        val usersInOrg = userRepository.findAllByOrganisationId(organisationId1)
 
         assertThat(usersInOrg).hasSize(1)
     }
 
     @Test
     fun `find users matching domain and not being part of organisation`() {
+        val organisationId1 = OrganisationId()
+        val organisationId2 = OrganisationId()
+
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(
                     id = "user-1",
                     username = "user1@me.com"
-                ), organisationId = OrganisationId("org-id-1")
+                ), organisationId = organisationId1
             )
         )
         userRepository.create(
@@ -281,7 +283,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 identity = IdentityFactory.sample(
                     id = "user-2",
                     username = "user1@me.com"
-                ), organisationId = OrganisationId("org-id-2")
+                ), organisationId = organisationId2
             )
         )
         userRepository.create(
@@ -289,14 +291,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 identity = IdentityFactory.sample(
                     id = "user-3",
                     username = "user1@meme.com"
-                ), organisationId = OrganisationId("org-id-1")
+                ), organisationId = organisationId1
             )
         )
 
-        val matches = userRepository.findOrphans(domain = "me.com", organisationId = OrganisationId("org-id-2"))
+        val matches = userRepository.findOrphans(domain = "me.com", organisationId = organisationId2)
 
         assertThat(matches).hasSize(1)
         assertThat(matches.first().id.value).isEqualTo("user-1")
-        assertThat(matches.first().organisationId?.value).isEqualTo("org-id-1")
+        assertThat(matches.first().organisationId).isEqualTo(organisationId1)
     }
 }

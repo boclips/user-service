@@ -32,7 +32,7 @@ class UserDocumentFactory {
             hasLifetimeAccess: Boolean = false,
             role: String = "TEACHER"
         ): UserDocument = UserDocument(
-            id = id,
+            _id = id,
             firstName = firstName,
             lastName = lastName,
             analyticsId = analyticsId,

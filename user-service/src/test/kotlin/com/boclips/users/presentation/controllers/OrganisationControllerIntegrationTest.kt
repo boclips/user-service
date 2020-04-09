@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -228,7 +229,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
             mvc.perform(
-                    patch("/v1/organisations/not-an-organisation").asUserWithRoles(
+                    patch("/v1/organisations/${UniqueId()}").asUserWithRoles(
                             "some-boclipper",
                             UserRoles.UPDATE_ORGANISATIONS
                         )
@@ -336,7 +337,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a 404 response when organisation is not found by id`() {
             mvc.perform(
-                    get("/v1/organisations/this-does-not-exist")
+                    get("/v1/organisations/${UniqueId()}")
                         .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
                 )
                 .andExpect(MockMvcResultMatchers.status().isNotFound)

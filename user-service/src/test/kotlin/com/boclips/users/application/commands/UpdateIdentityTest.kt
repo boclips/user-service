@@ -6,6 +6,7 @@ import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.api.request.UpdateOrganisationRequest
+import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -53,9 +54,10 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `Throws an error when organisation to update cannot be found`() {
-
+        val nonExistingOrgId = UniqueId()
         assertThrows<OrganisationNotFoundException> {
-            updateOrganisation("non-existent-org",
+            updateOrganisation(
+                nonExistingOrgId,
                 UpdateOrganisationRequest(accessExpiresOn = "2019-06-06T00:00:00Z")
             )
         }

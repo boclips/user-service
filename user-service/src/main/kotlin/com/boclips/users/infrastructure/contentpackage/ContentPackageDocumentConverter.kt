@@ -8,7 +8,7 @@ import org.bson.types.ObjectId
 object ContentPackageDocumentConverter {
     fun fromDocument(document: ContentPackageDocument): ContentPackage {
         return ContentPackage(
-            id = ContentPackageId(document.id.toHexString()),
+            id = ContentPackageId(document._id.toHexString()),
             accessRuleIds = document.accessRuleIds.map {
                 AccessRuleId(it)
             },
@@ -18,7 +18,7 @@ object ContentPackageDocumentConverter {
 
     fun toDocument(contentPackage: ContentPackage): ContentPackageDocument {
         return ContentPackageDocument(
-            id = ObjectId(contentPackage.id.value),
+            _id = ObjectId(contentPackage.id.value),
             name = contentPackage.name,
             accessRuleIds = contentPackage.accessRuleIds.map { it.value })
     }

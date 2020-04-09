@@ -23,7 +23,7 @@ class CreateApiIntegration(
         val contentPackage = request.contentPackageId?.let { contentPackageRepository.findById(ContentPackageId(it)) }
 
         val organisation = Organisation(
-            id = OrganisationId.create(),
+            id = OrganisationId(),
             details = ApiIntegration(
                 name = name
             ),

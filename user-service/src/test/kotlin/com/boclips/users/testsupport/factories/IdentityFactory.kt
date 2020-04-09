@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
 class IdentityFactory {
     companion object {
         fun sample(
-            id: String = "user-id",
+            id: String = UserId().value,
             username: String = "joe@dough.com",
             roles: List<String> = emptyList(),
             createdAt: ZonedDateTime = ZonedDateTime.now()

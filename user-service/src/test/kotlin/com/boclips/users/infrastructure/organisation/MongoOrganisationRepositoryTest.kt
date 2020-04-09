@@ -16,7 +16,7 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.springframework.data.domain.Page
+import com.boclips.users.domain.model.Page
 import java.time.ZonedDateTime
 
 class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
@@ -299,7 +299,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             )
 
             assertThat(organisations).hasSize(1)
-            assertThat(organisations?.first()?.details?.name).isEqualTo("cool school")
+            assertThat(organisations.first().details.name).isEqualTo("cool school")
         }
     }
 
@@ -367,7 +367,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         fun `update returns null when organisation not found`() {
             val updatedOrganisation = organisationRepository.updateOne(
                 OrganisationTypeUpdate(
-                    id = OrganisationId("doesnotexist"),
+                    id = OrganisationId(),
                     type = DealType.DESIGN_PARTNER
                 )
             )
@@ -530,10 +530,9 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                     types = listOf(OrganisationType.SCHOOL, OrganisationType.DISTRICT)
                 )
 
-            assertThat(independentOrganisations!!.content).containsExactly(schoolOne, schoolThree)
-            assertThat(independentOrganisations.size).isEqualTo(2)
-            assertThat(independentOrganisations.totalPages).isEqualTo(3)
-            assertThat(independentOrganisations.totalElements).isEqualTo(6)
+            assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree)
+            assertThat(independentOrganisations?.pageSize).isEqualTo(2)
+            assertThat(independentOrganisations?.totalElements).isEqualTo(6)
         }
     }
 }

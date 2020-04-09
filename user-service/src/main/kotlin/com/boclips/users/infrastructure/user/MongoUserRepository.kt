@@ -6,13 +6,34 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
+import com.mongodb.MongoClient
+import com.mongodb.client.MongoCollection
+import com.mongodb.client.model.Filters.and
+import mu.KLogging
+import org.litote.kmongo.`in`
+import org.litote.kmongo.eq
+import org.litote.kmongo.findOneById
+import org.litote.kmongo.getCollection
+import org.litote.kmongo.ne
+import org.litote.kmongo.regex
+import org.litote.kmongo.save
+import java.util.regex.Pattern
 
 class MongoUserRepository(
-    private val userDocumentMongoRepository: UserDocumentMongoRepository,
+    private val mongoClient: MongoClient,
     private val userDocumentConverter: UserDocumentConverter,
     private val organisationIdResolver: OrganisationIdResolver
 ) : UserRepository {
+
+    companion object : KLogging() {
+        const val collectionName = "users"
+    }
+
+    private fun getUsersCollection(): MongoCollection<UserDocument> {
+        return mongoClient.getDatabase(MongoDatabase.DB_NAME).getCollection<UserDocument>(collectionName)
+    }
 
     override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {
         val userDocument = UserDocument.from(user)
@@ -61,31 +82,34 @@ class MongoUserRepository(
         return saveUserDocument(userDocument)
     }
 
-    override fun findAll(ids: List<UserId>) = userDocumentMongoRepository
-        .findAllById(ids.map { it.value })
+    override fun findAll(ids: List<UserId>) = getUsersCollection()
+        .find(UserDocument::_id `in` ids.map { it.value })
         .mapNotNull { userDocumentConverter.convertToUser(it) }
 
     override fun findAll(): List<User> {
-        return userDocumentMongoRepository.findAll().map { document -> userDocumentConverter.convertToUser(document) }
+        return getUsersCollection().find().map { document -> userDocumentConverter.convertToUser(document) }.toList()
     }
 
     override fun findOrphans(domain: String, organisationId: OrganisationId): List<User> {
-        return userDocumentMongoRepository.findByEmailContainsAndOrganisationIdIsNot(
-                domain = "@$domain",
-                organisationId = organisationId.value
+        return getUsersCollection().find(
+            and(
+                UserDocument::email regex ".+@${Pattern.quote(domain)}$",
+                UserDocument::organisationId ne organisationId.value
             )
+        )
             .map { document -> userDocumentConverter.convertToUser(document) }
+            .toList()
     }
 
     override fun findAllByOrganisationId(id: OrganisationId): List<User> {
-        return userDocumentMongoRepository.findByOrganisationId(id.value)
+        return getUsersCollection().find(UserDocument::organisationId eq id.value)
             .map { document -> userDocumentConverter.convertToUser(document) }
+            .toList()
     }
 
     override fun findById(id: UserId): User? {
-        return userDocumentMongoRepository
-            .findById(id.value)
-            .orElse(null)
+        return getUsersCollection()
+            .findOneById(id.value)
             ?.let { userDocumentConverter.convertToUser(it) }
     }
 
@@ -102,7 +126,9 @@ class MongoUserRepository(
 
     override fun create(user: User) = saveUserDocument(UserDocument.from(user))
 
-    private fun saveUserDocument(document: UserDocument) =
-        userDocumentConverter.convertToUser(userDocumentMongoRepository.save(document))
+    private fun saveUserDocument(document: UserDocument): User {
+        getUsersCollection().save(document)
+        return findById(UserId(document._id)) ?: throw IllegalStateException("this should never happen")
+    }
 }
 

@@ -3,14 +3,10 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.OrganisationId
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
 
-@Document(collection = "users")
 data class UserDocument(
-    @Id
-    val id: String,
+    val _id: String,
     var firstName: String?,
     var lastName: String?,
     val email: String?,
@@ -32,7 +28,7 @@ data class UserDocument(
     companion object {
         fun from(user: User): UserDocument {
             return UserDocument(
-                id = user.id.value,
+                _id = user.id.value,
                 subjectIds = user.profile?.subjects?.map { it.id.value },
                 ageRange = user.profile?.ages,
                 analyticsId = user.analyticsId?.value,
@@ -60,7 +56,7 @@ data class UserDocument(
 
         fun from(identity: Identity, organisationId: OrganisationId?): UserDocument {
             return UserDocument(
-                id = identity.id.value,
+                _id = identity.id.value,
                 subjectIds = null,
                 ageRange = null,
                 analyticsId = null,

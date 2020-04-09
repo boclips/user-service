@@ -2,7 +2,9 @@ package com.boclips.users.presentation.controllers.accessrules
 
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -29,10 +31,7 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
 
         @Test
         fun `adds the collection to the contract`() {
-            val accessRuleId = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                "Some test contract",
-                emptyList()
-            ).id
+            val accessRuleId = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = "Some test contract", collectionIds = emptyList())).id
             val collectionId = "test-collection-id"
 
             mvc.perform(
@@ -52,7 +51,7 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `returns a 404 response if access rule is not found`() {
             mvc.perform(
-                    put("/v1/included-content-access-rules/does-not-exist/collections/collection-id")
+                    put("/v1/included-content-access-rules/${UniqueId()}/collections/collection-id")
                         .asUserWithRoles(
                             "test@user.com",
                             UserRoles.UPDATE_ACCESS_RULES
@@ -78,10 +77,7 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `removes provided collection from a contract`() {
             val collectionId = "test-collection-id"
-            val accessRuleId = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                "Some test contract",
-                listOf(CollectionId(collectionId))
-            ).id
+            val accessRuleId = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = "Some test contract", collectionIds = listOf(CollectionId(collectionId)))).id
 
             mvc.perform(
                     delete("/v1/included-content-access-rules/${accessRuleId.value}/collections/$collectionId")
@@ -100,7 +96,7 @@ class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegra
         @Test
         fun `returns 404 when access rule does not exist`() {
             mvc.perform(
-                    delete("/v1/included-content-access-rules/does-not-exist/collections/collection-id")
+                    delete("/v1/included-content-access-rules/${UniqueId()}/collections/collection-id")
                         .asUserWithRoles(
                             "test@user.com",
                             UserRoles.UPDATE_ACCESS_RULES

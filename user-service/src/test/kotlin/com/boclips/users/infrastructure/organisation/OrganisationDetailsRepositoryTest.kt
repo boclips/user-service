@@ -1,154 +1,161 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.LocationDocumentFactory
-import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import java.time.ZonedDateTime
 
 class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
-    @Autowired
-    lateinit var repositorySpringDataMongo: SpringDataMongoOrganisationRepository
 
     @Test
-    fun `parent organisations can be linked to children via a dbref`() {
-        val persistedParent = repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "parent"))
+    fun `retrieve a child org with parent`() {
+        val persistedParent = organisationRepository.save(OrganisationFactory.district())
 
         val persistedChild =
-            repositorySpringDataMongo.save(
-                OrganisationDocumentFactory.sample(
-                    name = "child",
-                    parentOrganisation = persistedParent
+            organisationRepository.save(
+                OrganisationFactory.sample(
+                    details = OrganisationDetailsFactory.school(
+                        district = persistedParent
+                    )
                 )
             )
 
-        assertThat(persistedChild.parentOrganisation).isEqualTo(persistedParent)
+        assertThat(persistedChild.details.district).isEqualTo(persistedParent)
 
-        val retrievedChild: OrganisationDocument = repositorySpringDataMongo.findById(persistedChild.id!!).get()
-        assertThat(retrievedChild.parentOrganisation).isEqualTo(persistedParent)
+        val retrievedChild = organisationRepository.findSchoolById(persistedChild.id)!!
+        assertThat(retrievedChild.details.district).isEqualTo(persistedParent)
     }
 
     @Test
-    fun `findParentOrganisations sorts by expiry date first then alphabetically`() {
+    fun `findOrganisations sorts by expiry date first then alphabetically`() {
         val NOW = ZonedDateTime.now()
-        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "second", accessExpiresOn = NOW))
-        repositorySpringDataMongo.save(
-            OrganisationDocumentFactory.sample(
-                name = "aaa",
+        organisationRepository.save(
+            OrganisationFactory.sample(
+                details = OrganisationDetailsFactory.school(name = "second"),
+                accessExpiresOn = NOW
+            )
+        )
+        organisationRepository.save(
+            OrganisationFactory.sample(
+                details = OrganisationDetailsFactory.school(name = "aaa"),
                 accessExpiresOn = NOW.minusDays(1)
             )
         )
-        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "first", accessExpiresOn = NOW))
-
-        val results = repositorySpringDataMongo.findOrganisations(
-            OrganisationSearchRequest(
-                name = null,
-                countryCode = "USA",
-                organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
-                page = 0,
-                size = 6
+        organisationRepository.save(
+            OrganisationFactory.sample(
+                details = OrganisationDetailsFactory.school(name = "first"),
+                accessExpiresOn = NOW
             )
         )
 
-        assertThat(results.get().map { it.name }).containsExactly("first", "second", "aaa")
+        val results = organisationRepository.findOrganisations(
+            name = null,
+            countryCode = "USA",
+            types = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
+            page = 0,
+            size = 6
+        )
+
+        assertThat(results.map { it.details.name }).containsExactly("first", "second", "aaa")
     }
 
     @Test
-    fun `findParentOrganisations filters by country code`() {
-        repositorySpringDataMongo.save(
-            OrganisationDocumentFactory.sample(
-                name = "second",
-                country = LocationDocumentFactory.country(code = "GBR")
+    fun `findOrganisations filters by country code`() {
+        organisationRepository.save(
+            OrganisationFactory.sample(
+                details = OrganisationDetailsFactory.school(
+                    name = "second",
+                    country = Country.fromCode(Country.GBR_ISO)
+                )
             )
         )
-        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "aaa"))
+        organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school(name = "aaa")))
 
-        val results = repositorySpringDataMongo.findOrganisations(
-            OrganisationSearchRequest(
-                name = null,
-                countryCode = "GBR",
-                organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
-                page = 0,
-                size = 6
-            )
+        val results = organisationRepository.findOrganisations(
+            name = null,
+            countryCode = "GBR",
+            types = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
+            page = 0,
+            size = 6
         )
 
-        assertThat(results.get().map { it.name }).containsExactly("second")
+        assertThat(results.map { it.details.name }).containsExactly("second")
     }
 
     @Test
-    fun `findParentOrganisations filters by organisation type`() {
-        repositorySpringDataMongo.save(
-            OrganisationDocumentFactory.sample(
-                name = "second",
-                type = OrganisationType.DISTRICT
-            )
-        )
-        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "aaa", type = OrganisationType.SCHOOL))
+    fun `findOrganisations filters by organisation type`() {
+        organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(name = "second")))
+        organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.school(name = "aaa")))
 
-        val results = repositorySpringDataMongo.findOrganisations(
-            OrganisationSearchRequest(
-                name = null,
-                countryCode = "USA",
-                organisationTypes = listOf(OrganisationType.SCHOOL),
-                page = 0,
-                size = 6
-            )
+        val results = organisationRepository.findOrganisations(
+            name = null,
+            countryCode = "USA",
+            types = listOf(OrganisationType.SCHOOL),
+            page = 0,
+            size = 6
         )
 
-        assertThat(results.get().map { it.name }).containsExactly("aaa")
+        assertThat(results.map { it.details.name }).containsExactly("aaa")
     }
 
     @Test
-    fun `findParentOrganisations retrieves parent organisations only`() {
-        val persistedParent = repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "parent"))
-        repositorySpringDataMongo.save(
-            OrganisationDocumentFactory.sample(
-                name = "child",
-                parentOrganisation = persistedParent
+    fun `findOrganisations retrieves parent organisations only`() {
+        val persistedParent =
+            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(name = "parent")))
+        organisationRepository.save(
+            OrganisationFactory.sample(
+                details = OrganisationDetailsFactory.school(
+                    name = "child",
+                    district = persistedParent
+                )
             )
         )
 
-        val results = repositorySpringDataMongo.findOrganisations(
-            OrganisationSearchRequest(
-                name = null,
-                countryCode = "USA",
-                organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
-                page = 0,
-                parentOnly = true,
-                size = 6
-            )
+        val results = organisationRepository.findOrganisations(
+            name = null,
+            countryCode = "USA",
+            types = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
+            page = 0,
+            size = 6
         )
 
-        assertThat(results.get().map { it.name }).containsExactly("parent")
+        assertThat(results.map { it.details.name }).containsExactly("parent")
     }
 
     @Test
     fun `findParentOrganisations retrieves appropriate page with page info`() {
         val now = ZonedDateTime.now()
-        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "abc", accessExpiresOn = now))
-        repositorySpringDataMongo.save(
-            OrganisationDocumentFactory.sample(
-                name = "xyz",
-                accessExpiresOn = now.minusDays(1)
+        organisationRepository.save(
+            OrganisationFactory.sample(
+                details = OrganisationDetailsFactory.school(name = "abc"),
+                accessExpiresOn = now
             )
         )
-        repositorySpringDataMongo.save(OrganisationDocumentFactory.sample(name = "def", accessExpiresOn = now))
-
-        val results = repositorySpringDataMongo.findOrganisations(
-            OrganisationSearchRequest(
-                name = null,
-                countryCode = "USA",
-                organisationTypes = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
-                page = 1,
-                parentOnly = true,
-                size = 2
+        organisationRepository.save(
+            OrganisationFactory.sample(
+                details = OrganisationDetailsFactory.school(name = "def"),
+                accessExpiresOn = now
+            )
+        )
+        organisationRepository.save(
+            OrganisationFactory.sample(
+                details = OrganisationDetailsFactory.school(name = "xyz"),
+                accessExpiresOn = now
             )
         )
 
-        assertThat(results.get().map { it.name }).containsExactly("xyz")
+        val results = organisationRepository.findOrganisations(
+            name = null,
+            countryCode = "USA",
+            types = listOf(OrganisationType.DISTRICT, OrganisationType.SCHOOL),
+            page = 1,
+            size = 2
+        )
+
+        assertThat(results.map { it.details.name }).containsExactly("xyz")
     }
 }

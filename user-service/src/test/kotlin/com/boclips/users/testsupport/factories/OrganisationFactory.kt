@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 class OrganisationFactory {
     companion object {
         fun <T : OrganisationDetails> sample(
-            id: OrganisationId = OrganisationId(value = ObjectId().toHexString()),
+            id: OrganisationId = OrganisationId(),
             type: DealType = DealType.STANDARD,
             details: T,
             accessExpiresOn: ZonedDateTime? = null,
@@ -33,8 +33,24 @@ class OrganisationFactory {
             )
         }
 
+        fun district(
+            id: OrganisationId = OrganisationId(),
+            type: DealType = DealType.STANDARD,
+            district: District = OrganisationDetailsFactory.district(),
+            accessExpiresOn: ZonedDateTime? = null,
+            role: String? = "SAMPLE_ROLE"
+        ): Organisation<District> {
+            return Organisation(
+                id = id,
+                type = type,
+                details = district,
+                accessExpiresOn = accessExpiresOn,
+                role = role
+            )
+        }
+
         fun school(
-            id: OrganisationId = OrganisationId(value = ObjectId().toHexString()),
+            id: OrganisationId = OrganisationId(),
             type: DealType = DealType.STANDARD,
             school: School = OrganisationDetailsFactory.school(),
             accessExpiresOn: ZonedDateTime? = null,

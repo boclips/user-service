@@ -9,33 +9,37 @@ import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.domain.model.contentpackage.VideoType
 import com.boclips.users.domain.service.AccessRuleRepository
-import com.boclips.users.domain.service.IncludedContentAccessRuleRepository
+import com.boclips.users.domain.service.UniqueId
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
 @Service
 class CreateAccessRule(
-    private val includedContentAccessRuleRepository: IncludedContentAccessRuleRepository,
     private val accessRuleRepository: AccessRuleRepository
 ) {
     operator fun invoke(request: CreateAccessRuleRequest): AccessRule {
-        if (accessRuleAlreadyExists(request)) {
-            throw AccessRuleExistsException(request.name!!)
+        val name = request.name!!
+        val id = AccessRuleId(UniqueId())
+
+        if (accessRuleAlreadyExists(name)) {
+            throw AccessRuleExistsException(name)
         }
 
         return when (request) {
-            is CreateAccessRuleRequest.IncludedCollections -> includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                request.name!!,
-                request.collectionIds!!.map { CollectionId(it) }
-            )
-            is CreateAccessRuleRequest.IncludedVideos -> includedContentAccessRuleRepository.saveIncludedVideosAccessRule(
-                request.name!!,
-                request.videoIds!!.map { VideoId(it) }
-            )
+            is CreateAccessRuleRequest.IncludedCollections -> accessRuleRepository.save(AccessRule.IncludedCollections(
+                id = id,
+                name = name,
+                collectionIds = request.collectionIds!!.map { CollectionId(it) }
+            ))
+            is CreateAccessRuleRequest.IncludedVideos -> accessRuleRepository.save(AccessRule.IncludedVideos(
+                id = id,
+                name = name,
+                videoIds = request.videoIds!!.map { VideoId(it) }
+            ))
             is CreateAccessRuleRequest.ExcludedVideoTypes -> accessRuleRepository.save(
                 AccessRule.ExcludedVideoTypes(
-                    id = AccessRuleId(ObjectId().toHexString()),
-                    name = request.name!!,
+                    id = id,
+                    name = name,
                     videoTypes = request.videoTypes!!.map {
                         when (it.toUpperCase()) {
                             "NEWS" -> VideoType.NEWS
@@ -49,7 +53,7 @@ class CreateAccessRule(
         }
     }
 
-    private fun accessRuleAlreadyExists(request: CreateAccessRuleRequest): Boolean {
-        return accessRuleRepository.findAllByName(request.name!!).isNotEmpty()
+    private fun accessRuleAlreadyExists(name: String): Boolean {
+        return accessRuleRepository.findAllByName(name).isNotEmpty()
     }
 }

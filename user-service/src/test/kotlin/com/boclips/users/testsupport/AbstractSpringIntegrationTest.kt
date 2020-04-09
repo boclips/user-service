@@ -7,7 +7,7 @@ import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.contentpackage.AccessRule
-import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
@@ -19,23 +19,27 @@ import com.boclips.users.domain.service.AccessExpiryService
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.ContentPackageRepository
 import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.IncludedContentAccessRuleRepository
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
+import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
+import com.boclips.users.presentation.converters.AccessRuleConverter
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
-import com.boclips.users.presentation.converters.AccessRuleConverter
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.mongodb.MongoClient
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
+import de.flapdoodle.embed.mongo.MongodProcess
+import mu.KLogging
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -44,7 +48,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
-import org.springframework.data.repository.CrudRepository
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
@@ -92,7 +95,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var accessExpiryService: AccessExpiryService
 
     @Autowired
-    lateinit var repositories: Collection<CrudRepository<*, *>>
+    lateinit var mongoClient: MongoClient
 
     @Autowired
     lateinit var captchaProvider: CaptchaProvider
@@ -105,9 +108,6 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var organisationIdResolver: OrganisationIdResolver
-
-    @Autowired
-    lateinit var includedContentAccessRuleRepository: IncludedContentAccessRuleRepository
 
     @Autowired
     lateinit var accessRuleRepository: AccessRuleRepository
@@ -136,9 +136,21 @@ abstract class AbstractSpringIntegrationTest {
     @LocalServerPort
     var randomServerPort: Int = 0
 
+    companion object : KLogging() {
+        private var mongoProcess: MongodProcess? = null
+
+        @BeforeAll
+        @JvmStatic
+        fun beforeAll() {
+            if (mongoProcess == null) {
+                mongoProcess = TestMongoProcess.process
+            }
+        }
+    }
+
     @BeforeEach
     fun resetState() {
-        repositories.forEach { it.deleteAll() }
+        mongoClient.getDatabase(MongoDatabase.DB_NAME).drop()
         keycloakClientFake.clear()
         wireMockServer.resetAll()
         subjectService.reset()
@@ -226,15 +238,9 @@ abstract class AbstractSpringIntegrationTest {
         return organisationRepository.save(OrganisationFactory.sample(details = school))
     }
 
-    fun saveIncludedCollectionsAccessRule(
-        name: String,
-        collectionIds: List<CollectionId>
-    ): AccessRule.IncludedCollections {
-        return includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(name, collectionIds)
-    }
-
     fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
-        return includedContentAccessRuleRepository.saveIncludedVideosAccessRule(name, videoIds)
+        return AccessRule.IncludedVideos(id = AccessRuleId(), name = name, videoIds = videoIds)
+            .let(accessRuleRepository::save)
     }
 
     fun ResultActions.andExpectApiErrorPayload(): ResultActions {

@@ -1,5 +1,7 @@
 package com.boclips.users.infrastructure.accessrules
 
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -10,9 +12,12 @@ class MongoIncludedContentAccessRuleRepositoryTest : AbstractSpringIntegrationTe
     @Test
     fun `saves an included collections access rule`() {
         val accessRuleName = "Test included content contract"
-        val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-            name = accessRuleName,
-            collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
+        val persistedAccessRule = accessRuleRepository.save(
+            AccessRule.IncludedCollections(
+                id = AccessRuleId(),
+                name = accessRuleName,
+                collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
+            )
         )
 
         assertThat(persistedAccessRule.id).isNotNull
@@ -27,9 +32,12 @@ class MongoIncludedContentAccessRuleRepositoryTest : AbstractSpringIntegrationTe
     @Test
     fun `saves an included videos access rule`() {
         val accessRuleName = "Test included content contract"
-        val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedVideosAccessRule(
-            name = accessRuleName,
-            videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
+        val persistedAccessRule = accessRuleRepository.save(
+            AccessRule.IncludedVideos(
+                id = AccessRuleId(),
+                name = accessRuleName,
+                videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
+            )
         )
 
         assertThat(persistedAccessRule.id).isNotNull

@@ -3,46 +3,53 @@ package com.boclips.users.infrastructure.accessrules
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.service.AccessRuleRepository
+import com.boclips.users.infrastructure.MongoDatabase
+import com.mongodb.MongoClient
+import com.mongodb.client.MongoCollection
+import org.bson.types.ObjectId
+import org.litote.kmongo.`in`
+import org.litote.kmongo.eq
+import org.litote.kmongo.findOneById
+import org.litote.kmongo.getCollection
+import org.litote.kmongo.save
 import org.springframework.stereotype.Repository
-import java.util.Optional
 
 @Repository
 class MongoAccessRuleRepository(
-    private val accessRuleDocumentMongoRepository: AccessRuleDocumentMongoRepository,
+    private val mongoClient: MongoClient,
     private val accessRuleDocumentConverter: AccessRuleDocumentConverter
 ) : AccessRuleRepository {
+
+    private fun collection(): MongoCollection<AccessRuleDocument> {
+        return mongoClient.getDatabase(MongoDatabase.DB_NAME).getCollection<AccessRuleDocument>("accessRules")
+    }
+
     override fun findById(id: AccessRuleId): AccessRule? {
-        return asNullable(accessRuleDocumentMongoRepository.findById(id.value))?.let {
-            return accessRuleDocumentConverter.fromDocument(it)
-        }
+        return collection().findOneById(ObjectId(id.value))?.let(accessRuleDocumentConverter::fromDocument)
     }
 
     override fun findByIds(accessRuleIds: List<AccessRuleId>): List<AccessRule> {
-        val accessRuleDocuments = accessRuleDocumentMongoRepository.findAllById(accessRuleIds.map { it.value })
-        return accessRuleDocuments.map(accessRuleDocumentConverter::fromDocument)
+        return collection()
+            .find(AccessRuleDocument::_id `in` accessRuleIds.map { ObjectId(it.value) })
+            .map(accessRuleDocumentConverter::fromDocument)
+            .toList()
     }
 
     override fun findAll(): List<AccessRule> {
-        return accessRuleDocumentMongoRepository.findAll().map(accessRuleDocumentConverter::fromDocument)
+        return collection().find().map(accessRuleDocumentConverter::fromDocument).toList()
     }
 
     override fun findAllByName(name: String): List<AccessRule> {
-        return accessRuleDocumentMongoRepository.findByName(name).map(accessRuleDocumentConverter::fromDocument)
+        return collection().find(AccessRuleDocument::name eq name)
+            .map(accessRuleDocumentConverter::fromDocument)
+            .toList()
     }
 
-    override fun save(accessRule: AccessRule): AccessRule {
-        return accessRuleDocumentConverter.fromDocument(
-            accessRuleDocumentMongoRepository.save(
-                accessRuleDocumentConverter.toDocument(accessRule)
-            )
+    override fun <T : AccessRule> save(accessRule: T): T {
+        collection().save(
+            accessRuleDocumentConverter.toDocument(accessRule)
         )
-    }
-
-    private fun asNullable(potentialDocument: Optional<AccessRuleDocument>): AccessRuleDocument? {
-        return if (potentialDocument.isPresent) {
-            potentialDocument.get()
-        } else {
-            null
-        }
+        @Suppress("UNCHECKED_CAST")
+        return findById(accessRule.id)!! as T
     }
 }

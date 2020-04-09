@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.accessrules
 
+import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.VideoId
@@ -13,9 +14,12 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindById {
         @Test
         fun `fetches a collection access rule by id and deserializes it to a correct class`() {
-            val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                name = "Test included content contract",
-                collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
+            val persistedAccessRule = accessRuleRepository.save(
+                AccessRule.IncludedCollections(
+                    id = AccessRuleId(),
+                    name = "Test included content contract",
+                    collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
+                )
             )
 
             val fetchedAccessRule = accessRuleRepository.findById(persistedAccessRule.id)
@@ -25,9 +29,12 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `fetches a video access rule by id and deserializes it to the correct class`() {
-            val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedVideosAccessRule(
-                name = "Test included content contract",
-                videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
+            val persistedAccessRule = accessRuleRepository.save(
+                AccessRule.IncludedVideos(
+                    id = AccessRuleId(),
+                    name = "Test included content contract",
+                    videoIds = listOf(VideoId("A"), VideoId("B"), VideoId("C"))
+                )
             )
 
             val fetchedAccessRule = accessRuleRepository.findById(persistedAccessRule.id)
@@ -37,7 +44,7 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns null if access rule is not found by id`() {
-            assertThat(accessRuleRepository.findById(AccessRuleId("this does not exist"))).isNull()
+            assertThat(accessRuleRepository.findById(AccessRuleId())).isNull()
         }
     }
 
@@ -46,9 +53,12 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `looks up access rules by name and deserializes them to a correct class`() {
             val accessRuleName = "Name Test"
-            val persistedAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                name = accessRuleName,
-                collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
+            val persistedAccessRule = accessRuleRepository.save(
+                AccessRule.IncludedCollections(
+                    id = AccessRuleId(),
+                    name = accessRuleName,
+                    collectionIds = listOf(CollectionId("A"), CollectionId("B"), CollectionId("C"))
+                )
             )
 
             val foundAccessRule = accessRuleRepository.findAllByName(accessRuleName)
@@ -66,16 +76,28 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindAll {
         @Test
         fun `returns all access rules`() {
-            val firstCollectionAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                name = "Hey",
-                collectionIds = emptyList()
+            val firstCollectionAccessRule = accessRuleRepository.save(
+                AccessRule.IncludedCollections(
+                    id = AccessRuleId(),
+                    name = "Hey",
+                    collectionIds = emptyList()
+                )
             )
-            val secondCollectionAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                name = "Ho",
-                collectionIds = emptyList()
+            val secondCollectionAccessRule = accessRuleRepository.save(
+                AccessRule.IncludedCollections(
+                    id = AccessRuleId(),
+                    name = "Ho",
+                    collectionIds = emptyList()
+                )
             )
             val firstVideoAccessRule =
-                includedContentAccessRuleRepository.saveIncludedVideosAccessRule(name = "Yo", videoIds = emptyList())
+                accessRuleRepository.save(
+                    AccessRule.IncludedVideos(
+                        id = AccessRuleId(),
+                        name = "Yo",
+                        videoIds = emptyList()
+                    )
+                )
 
             val allAccessRules = accessRuleRepository.findAll()
 
@@ -97,22 +119,32 @@ class MongoAccessRuleRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindByIds {
         @Test
         fun `returns all access rules matching ids`() {
-            val firstCollectionAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                name = "Hey",
-                collectionIds = emptyList()
+            val firstCollectionAccessRule = accessRuleRepository.save(
+                AccessRule.IncludedCollections(
+                    id = AccessRuleId(),
+                    name = "Hey",
+                    collectionIds = emptyList()
+                )
             )
 
-            val secondCollectionAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                name = "Ho",
-                collectionIds = emptyList()
+            val secondCollectionAccessRule = accessRuleRepository.save(
+                AccessRule.IncludedCollections(
+                    id = AccessRuleId(),
+                    name = "Ho",
+                    collectionIds = emptyList()
+                )
             )
 
-            includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                name = "Hola",
-                collectionIds = emptyList()
+            accessRuleRepository.save(
+                AccessRule.IncludedCollections(
+                    id = AccessRuleId(),
+                    name = "Hola",
+                    collectionIds = emptyList()
+                )
             )
 
-            val accessRules = accessRuleRepository.findByIds(listOf(firstCollectionAccessRule.id, secondCollectionAccessRule.id))
+            val accessRules =
+                accessRuleRepository.findByIds(listOf(firstCollectionAccessRule.id, secondCollectionAccessRule.id))
             assertThat(accessRules).containsExactlyInAnyOrder(firstCollectionAccessRule, secondCollectionAccessRule)
         }
     }

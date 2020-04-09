@@ -1,42 +1,26 @@
 package com.boclips.users.infrastructure.accessrules
-
-import com.boclips.users.domain.model.contentpackage.DistributionMethodDocument
 import org.bson.types.ObjectId
-import org.springframework.data.annotation.TypeAlias
-import org.springframework.data.mongodb.core.mapping.Document
 
-@Document(collection = "accessRules")
-sealed class AccessRuleDocument {
-    @TypeAlias("IncludedCollections")
-    class IncludedCollections : AccessRuleDocument() {
-        lateinit var collectionIds: List<String>
+data class AccessRuleDocument(
+    var _id: ObjectId,
+    var name: String,
+    var _class: String,
+    var collectionIds: List<String>? = null,
+    var videoIds: List<String>? = null,
+    var videoTypes: List<VideoTypeDocument>? = null,
+    var contentPartnerIds: List<String>? = null,
+    var distributionMethods: List<String>? = null
+) {
+
+    companion object {
+        const val TYPE_INCLUDED_COLLECTIONS = "IncludedCollections"
+        const val TYPE_INCLUDED_VIDEOS = "IncludedVideos"
+        const val TYPE_EXCLUDED_VIDEOS = "ExcludedVideos"
+        const val TYPE_EXCLUDED_VIDEO_TYPES = "ExcludedVideoTypes"
+        const val TYPE_EXCLUDED_CONTENT_PARTNERS = "ExcludedContentPartners"
+        const val TYPE_INCLUDED_DISTRIBUTION_METHODS = "IncludedDistributionMethods"
+
+        const val DISTRIBUTION_METHOD_STREAM = "STREAM"
+        const val DISTRIBUTION_METHOD_DOWNLOAD = "DOWNLOAD"
     }
-
-    @TypeAlias("IncludedVideos")
-    class IncludedVideos : AccessRuleDocument() {
-        lateinit var videoIds: List<String>
-    }
-
-    @TypeAlias("ExcludedVideos")
-    class ExcludedVideos : AccessRuleDocument() {
-        lateinit var videoIds: List<String>
-    }
-
-    @TypeAlias("ExcludedVideoTypes")
-    class ExcludedVideoTypes : AccessRuleDocument() {
-        lateinit var videoTypes: List<VideoTypeDocument>
-    }
-
-    @TypeAlias("ExcludedContentPartners")
-    class ExcludedContentPartners : AccessRuleDocument() {
-        lateinit var contentPartnerIds: List<String>
-    }
-
-    @TypeAlias("IncludedDistributionMethods")
-    class IncludedDistributionMethods : AccessRuleDocument() {
-        lateinit var distributionMethods: List<DistributionMethodDocument>
-    }
-
-    lateinit var id: ObjectId
-    lateinit var name: String
 }

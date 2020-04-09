@@ -68,7 +68,7 @@ dependencies {
 
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-hateoas')
-    implementation('org.springframework.boot:spring-boot-starter-data-mongodb')
+    implementation("org.litote.kmongo:kmongo:3.12.2")
     implementation('org.springframework.boot:spring-boot-starter-security')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.retry:spring-retry')
@@ -95,6 +95,7 @@ dependencies {
     implementation('io.micrometer:micrometer-core')
     implementation('io.micrometer:micrometer-registry-prometheus')
     implementation("io.opentracing.contrib:opentracing-spring-jaeger-web-starter:2.0.3")
+    implementation("io.opentracing.contrib:opentracing-mongo-driver:0.1.5")
     implementation('org.codehaus.janino:janino:3.1.0')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')

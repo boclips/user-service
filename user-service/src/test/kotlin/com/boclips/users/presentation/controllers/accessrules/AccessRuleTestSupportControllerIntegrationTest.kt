@@ -1,7 +1,10 @@
 package com.boclips.users.presentation.controllers.accessrules
 
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -151,10 +154,9 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns a 409 response when a access rule with given name already exists`() {
             val accessRule = "Super contract"
-            includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                accessRule,
-                listOf(CollectionId("A"))
-            )
+            accessRuleRepository.save(
+                AccessRule.IncludedCollections(id = AccessRuleId(), name = accessRule, collectionIds = listOf(CollectionId("A"))
+            ))
 
             mvc.perform(
                 post("/v1/access-rules")
@@ -187,10 +189,7 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns requested access rule`() {
             val accessRuleName = "Super contract"
-            val accessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                accessRuleName,
-                listOf(CollectionId("A"))
-            )
+            val accessRule = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = accessRuleName, collectionIds = listOf(CollectionId("A"))))
 
             mvc.perform(
                 get("/v1/access-rules/${accessRule.id.value}")
@@ -207,7 +206,7 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         @Test
         fun `returns a 404 response when given access rule is not found`() {
             mvc.perform(
-                get("/v1/access-rules/this-does-not-exist")
+                get("/v1/access-rules/${UniqueId()}")
                     .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
             )
                 .andExpect(status().isNotFound)

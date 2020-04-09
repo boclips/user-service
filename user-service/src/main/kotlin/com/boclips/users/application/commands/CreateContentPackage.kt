@@ -8,7 +8,7 @@ import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.ContentPackageRepository
-import org.bson.types.ObjectId
+import com.boclips.users.domain.service.UniqueId
 import org.springframework.stereotype.Service
 
 @Service
@@ -27,7 +27,7 @@ class CreateContentPackage(
         }
 
         return contentPackageRepository.save(ContentPackage(
-            id = ContentPackageId(ObjectId().toHexString()),
+            id = ContentPackageId(UniqueId()),
             name = createContentPackageRequest.name,
             accessRuleIds = createContentPackageRequest.accessRuleIds.map { AccessRuleId(it) }
         ))

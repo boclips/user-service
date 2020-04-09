@@ -12,13 +12,16 @@ import org.junit.jupiter.api.assertThrows
 class AddCollectionToAccessRuleIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `adds collection to access rule and is idempotent`() {
-        val existingId = CollectionId("some-existing-id")
-        val accessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-            "whatever",
-            listOf(existingId)
+        val existingId = CollectionId()
+        val accessRule = accessRuleRepository.save(
+            AccessRule.IncludedCollections(
+                id = AccessRuleId(),
+                name = "whatever",
+                collectionIds = listOf(existingId)
+            )
         )
 
-        val newId = CollectionId("another-id")
+        val newId = CollectionId()
         addCollectionToAccessRule(accessRuleId = accessRule.id, collectionId = newId)
         addCollectionToAccessRule(accessRuleId = accessRule.id, collectionId = newId)
 
@@ -31,8 +34,8 @@ class AddCollectionToAccessRuleIntegrationTest : AbstractSpringIntegrationTest()
     fun `throws AccessRuleNotFoundException when access rule is not found`() {
         assertThrows<AccessRuleNotFoundException> {
             addCollectionToAccessRule(
-                accessRuleId = AccessRuleId("does not exist"),
-                collectionId = CollectionId("another-id")
+                accessRuleId = AccessRuleId(),
+                collectionId = CollectionId()
             )
         }
     }

@@ -7,7 +7,7 @@ import com.boclips.users.domain.model.organisation.OrganisationDetails
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
-import org.springframework.data.domain.Page
+import com.boclips.users.domain.model.Page
 
 interface OrganisationRepository {
     fun <T : OrganisationDetails> save(organisation: Organisation<T>): Organisation<T>
@@ -24,7 +24,7 @@ interface OrganisationRepository {
         types: List<OrganisationType>?,
         page: Int,
         size: Int
-    ): Page<Organisation<*>>?
+    ): Page<Organisation<*>>
 
     fun findApiIntegrationByRole(role: String): Organisation<ApiIntegration>?
     fun findApiIntegrationByName(name: String): Organisation<ApiIntegration>?

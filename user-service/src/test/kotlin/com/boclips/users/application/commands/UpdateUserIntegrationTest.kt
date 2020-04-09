@@ -12,7 +12,6 @@ import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.api.request.user.MarketingTrackingRequest
 import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -21,6 +20,8 @@ import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.api.factories.UpdateUserRequestFactory
+import com.boclips.users.domain.model.TeacherPlatformAttributes
+import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserDocumentFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.argumentCaptor
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -42,9 +42,6 @@ import java.util.UUID
 class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var updateUser: UpdateUser
     lateinit var mockMarketingService: MarketingService
-
-    @Autowired
-    lateinit var userDocumentMongoRepository: UserDocumentMongoRepository
 
     @BeforeEach
     fun setup() {
@@ -383,39 +380,43 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 defaultExpectedExpiryDate
             }
 
-
-            val newUserDocument =
-                UserDocumentFactory.sample(
-                    id = "new-user-id",
-                    firstName = null,
-                    createdAt = Instant.parse("2020-10-10T00:00:00Z"),
+            val newUser =
+                UserFactory.sample(
+                    identity = IdentityFactory.sample(
+                        id = "new-user-id",
+                        createdAt = ZonedDateTime.parse("2020-10-10T00:00:00Z")
+                    ),
+                    profile = ProfileFactory.sample(
+                        firstName = ""
+                    ),
                     organisationId = null
                 )
 
-            userDocumentMongoRepository.save(newUserDocument)
+            userRepository.create(newUser)
 
             val updatedUser = updateUser("new-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
 
-            assertThat(updatedUser.accessExpiresOn).isNotNull()
-
-            val accessExpiresOn = updatedUser.accessExpiresOn
-
-            assertThat(accessExpiresOn).isEqualTo(expectedExpiryDate)
+            assertThat(updatedUser.accessExpiresOn).isEqualTo(expectedExpiryDate)
         }
 
         @Test
         fun `it does not set accessExpiresOn for a lifetime user`() {
             setSecurityContext("lifetime-user-id")
 
-            val lifetimeUserDocument =
-                UserDocumentFactory.sample(
-                    id = "lifetime-user-id",
-                    firstName = "Joe",
-                    organisationId = null,
-                    hasLifetimeAccess = true
+            val lifetimeUser =
+                UserFactory.sample(
+                    identity = IdentityFactory.sample(
+                        id = "lifetime-user-id"
+                    ),
+                    profile = ProfileFactory.sample(
+                        firstName = "Joe"
+                    ),
+                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(
+                        hasLifetimeAccess = true
+                    )
                 )
 
-            userDocumentMongoRepository.save(lifetimeUserDocument)
+            userRepository.create(lifetimeUser)
 
             val updatedUser = updateUser("lifetime-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
 

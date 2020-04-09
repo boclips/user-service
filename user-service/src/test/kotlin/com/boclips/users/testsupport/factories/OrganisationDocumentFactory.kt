@@ -4,12 +4,14 @@ import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
+import com.mongodb.DBRef
 import org.bson.types.ObjectId
 import java.time.ZonedDateTime
 
 class OrganisationDocumentFactory {
     companion object {
         fun sample(
+            id: ObjectId = ObjectId(),
             name: String = "The Best Organisation",
             domain: String? = null,
             role: String? = null,
@@ -20,10 +22,10 @@ class OrganisationDocumentFactory {
             state: LocationDocument? = LocationDocumentFactory.state(),
             postcode: String? = null,
             allowsOverridingUserIds: Boolean? = null,
-            parentOrganisation: OrganisationDocument? = null,
+            parentOrganisationId: ObjectId? = null,
             accessExpiresOn: ZonedDateTime? = null
         ) = OrganisationDocument(
-            id = ObjectId().toHexString(),
+            _id = id,
             dealType = dealType,
             name = name,
             domain = domain,
@@ -34,7 +36,11 @@ class OrganisationDocumentFactory {
             state = state,
             postcode = postcode,
             allowsOverridingUserIds = allowsOverridingUserIds,
-            parentOrganisation = parentOrganisation,
+            parentOrganisation = parentOrganisationId?.let {
+                DBRef(
+                "organisations", it
+                )
+            },
             accessExpiresOn = accessExpiresOn?.toInstant()
         )
     }

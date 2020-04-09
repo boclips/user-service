@@ -49,7 +49,7 @@ internal class GetOrganisationsTest : AbstractSpringIntegrationTest() {
         val organisations = getOrganisations(OrganisationFilter(countryCode = null, page = 0, size = 10))
 
         assertThat(organisations).hasSize(3)
-        val organisationNames = organisations.content.map { it.details.name }
+        val organisationNames = organisations.map { it.details.name }
         assertThat(organisationNames).contains("organisation 1")
         assertThat(organisationNames).contains("organisation 2")
         assertThat(organisationNames).contains("another one")

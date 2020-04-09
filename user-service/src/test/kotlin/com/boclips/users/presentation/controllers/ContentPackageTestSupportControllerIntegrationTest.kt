@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -67,12 +68,13 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
 
     @Test
     fun `returns a 400 response when non-existent access rule is specified`() {
+        val invalidId = UniqueId()
         mvc.perform(
                 post("/v1/content-packages").content(
                     """
                     {
                         "name": "content-package-name",
-                        "accessRuleIds": ["yolo"]
+                        "accessRuleIds": ["$invalidId"]
                     }
                     """.trimIndent()
                 ).asUserWithRoles(

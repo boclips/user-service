@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
@@ -20,13 +21,13 @@ class OrganisationDocumentConverterTest {
             type = OrganisationType.SCHOOL,
             externalId = "external-id",
             dealType = null,
-            parentOrganisation = null,
+            parentOrganisationId = null,
             accessExpiresOn = null
         )
 
-        val organisationAccount = OrganisationDocumentConverter.fromDocument(organisationDocument)
+        val organisationAccount = OrganisationDocumentConverter.fromDocument(organisationDocument, null)
 
-        assertThat(organisationAccount.id.value).isEqualTo(organisationDocument.id!!)
+        assertThat(organisationAccount.id.value).isEqualTo(organisationDocument._id!!.toHexString())
         assertThat(organisationAccount.type).isEqualTo(DealType.STANDARD)
         assertThat(organisationAccount.details).isInstanceOf(School::class.java)
 
@@ -44,21 +45,24 @@ class OrganisationDocumentConverterTest {
 
     @Test
     fun `school with district`() {
+        val parentOrganisationDocument = OrganisationDocumentFactory.sample(
+            id = ObjectId(),
+            name = "amazing district",
+            type = OrganisationType.DISTRICT,
+            dealType = null,
+            externalId = "external-district-id"
+        )
+
         val organisationDocument = OrganisationDocumentFactory.sample(
             name = "amazing school",
             domain = "school.com",
             type = OrganisationType.SCHOOL,
             dealType = null,
             externalId = "external-id",
-            parentOrganisation = OrganisationDocumentFactory.sample(
-                name = "amazing district",
-                type = OrganisationType.DISTRICT,
-                dealType = null,
-                externalId = "external-district-id"
-            )
+            parentOrganisationId = parentOrganisationDocument._id!!
         )
 
-        val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
+        val school = OrganisationDocumentConverter.fromDocument(organisationDocument, parentOrganisationDocument)
 
         assertThat(school.type).isEqualTo(DealType.STANDARD)
         assertThat(school.details).isInstanceOf(School::class.java)
@@ -71,18 +75,20 @@ class OrganisationDocumentConverterTest {
     fun `design partner school`() {
         val accessExpiresOn = ZonedDateTime.now().plusMonths(3)
 
+        val parentOrganisationDocument = OrganisationDocumentFactory.sample(
+            type = OrganisationType.DISTRICT,
+            dealType = DealType.DESIGN_PARTNER,
+            accessExpiresOn = accessExpiresOn
+        )
+
         val organisationDocument = OrganisationDocumentFactory.sample(
             type = OrganisationType.SCHOOL,
             dealType = null,
             domain = "design-partner.com",
-            parentOrganisation = OrganisationDocumentFactory.sample(
-                type = OrganisationType.DISTRICT,
-                dealType = DealType.DESIGN_PARTNER,
-                accessExpiresOn = accessExpiresOn
-            )
+            parentOrganisationId = parentOrganisationDocument._id
         )
 
-        val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
+        val school = OrganisationDocumentConverter.fromDocument(organisationDocument, parentOrganisationDocument)
 
         assertThat(school.type).isEqualTo(DealType.DESIGN_PARTNER)
         assertThat((school.details as School).district?.type).isEqualTo(DealType.DESIGN_PARTNER)
@@ -93,9 +99,9 @@ class OrganisationDocumentConverterTest {
     @Test
     fun `symmetrical conversion`() {
         val organisation = OrganisationFactory.school()
-        val organisationDocument = OrganisationDocumentConverter.toDocument(organisation)
+        val (organisationDocument, parentOrganisationDocument) = OrganisationDocumentConverter.toDocument(organisation)
         val convertedOrganisation =
-            OrganisationDocumentConverter.fromDocument(organisationDocument = organisationDocument)
+            OrganisationDocumentConverter.fromDocument(organisationDocument = organisationDocument, parentOrganisationDocument = parentOrganisationDocument)
 
         assertThat(organisation).isEqualTo(convertedOrganisation)
     }

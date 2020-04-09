@@ -26,7 +26,7 @@ class OrganisationService(
                 ?.copy(district = district?.let { getOrCreateDistrict(district) })
                 ?.let {
                     val organisation = Organisation(
-                        id = OrganisationId.create(),
+                        id = OrganisationId(),
                         details = it,
                         accessExpiresOn = null,
                         type = DealType.STANDARD,
@@ -49,7 +49,7 @@ class OrganisationService(
             }
             ?: organisationRepository.save(
                 Organisation(
-                    id = OrganisationId.create(),
+                    id = OrganisationId(),
                     details = district,
                     accessExpiresOn = null,
                     type = DealType.STANDARD,

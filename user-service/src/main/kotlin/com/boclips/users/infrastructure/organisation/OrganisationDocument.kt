@@ -2,15 +2,12 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.OrganisationType
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
-import org.springframework.data.mongodb.core.mapping.Document
+import com.mongodb.DBRef
+import org.bson.types.ObjectId
 import java.time.Instant
 
-@Document(collection = "organisations")
 data class OrganisationDocument(
-    @Id
-    val id: String?,
+    val _id: ObjectId?,
     val name: String,
     val role: String?,
     val domain: String?,
@@ -21,8 +18,7 @@ data class OrganisationDocument(
     val state: LocationDocument?,
     val postcode: String?,
     val allowsOverridingUserIds: Boolean?,
-    @DBRef
-    val parentOrganisation: OrganisationDocument? = null,
+    val parentOrganisation: DBRef? = null,
     val accessExpiresOn: Instant? = null,
     val contentPackageId: String? = null
 )

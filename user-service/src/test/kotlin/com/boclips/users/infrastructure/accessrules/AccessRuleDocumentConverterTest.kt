@@ -1,137 +1,69 @@
 package com.boclips.users.infrastructure.accessrules
 
 import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPartnerId
 import com.boclips.users.domain.model.contentpackage.DistributionMethod
 import com.boclips.users.domain.model.contentpackage.VideoId
-import com.boclips.users.domain.model.contentpackage.VideoType
-import com.boclips.users.testsupport.factories.AccessRuleDocumentFactory
-import com.boclips.users.testsupport.factories.AccessRuleFactory
+import com.boclips.users.domain.service.UniqueId
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.ArgumentsProvider
+import org.junit.jupiter.params.provider.ArgumentsSource
+import java.util.stream.Stream
 
 class AccessRuleDocumentConverterTest {
-    @Nested
-    inner class ConvertingIncludedCollections {
-        @Test
-        fun `converts document to domain object`() {
-            val document = AccessRuleDocumentFactory.sampleIncludedCollectionsAccessRuleDocument(
-                collectionIds = listOf("A", "B", "C")
-            )
-
-            val accessRule = converter.fromDocument(document) as AccessRule.IncludedCollections
-
-            assertThat(accessRule.id.value).isEqualTo(document.id.toHexString())
-            assertThat(accessRule.name).isEqualTo(document.name)
-            assertThat(accessRule.collectionIds).containsExactlyInAnyOrder(
-                CollectionId("A"),
-                CollectionId("B"),
-                CollectionId("C")
-            )
-        }
-
-        @Test
-        fun `converts domain object to document`() {
-            val accessRule = AccessRuleFactory.sampleIncludedCollectionsAccessRule()
-
-            val document = converter.toDocument(accessRule) as AccessRuleDocument.IncludedCollections
-
-            assertThat(document.id.toHexString()).isEqualTo(accessRule.id.value)
-            assertThat(document.name).isEqualTo(accessRule.name)
-            assertThat(document.collectionIds.map { CollectionId(it) }).isEqualTo(accessRule.collectionIds)
-        }
-    }
-
-    @Nested
-    inner class ConvertingIncludedVideos {
-        @Test
-        fun `converts document to domain object`() {
-            val document = AccessRuleDocumentFactory.sampleIncludedVideosAccessRuleDocument(
-                videoIds = listOf("A", "B", "C")
-            )
-
-            val accessRule = converter.fromDocument(document) as AccessRule.IncludedVideos
-
-            assertThat(accessRule.id.value).isEqualTo(document.id.toHexString())
-            assertThat(accessRule.name).isEqualTo(document.name)
-            assertThat(accessRule.videoIds).containsExactlyInAnyOrder(
-                VideoId("A"),
-                VideoId("B"),
-                VideoId("C")
-            )
-        }
-
-        @Test
-        fun `converts domain object to document`() {
-            val accessRule = AccessRuleFactory.sampleIncludedVideosAccessRule()
-
-            val document = converter.toDocument(accessRule) as AccessRuleDocument.IncludedVideos
-
-            assertThat(document.id.toHexString()).isEqualTo(accessRule.id.value)
-            assertThat(document.name).isEqualTo(accessRule.name)
-            assertThat(document.videoIds.map { VideoId(it) }).isEqualTo(accessRule.videoIds)
-        }
-    }
-
-    @Nested
-    inner class ConvertingExcludedVideos {
-        @Test
-        fun `symmetrical conversion to domain`() {
-            val accessRule = AccessRuleFactory.sampleExcludedVideosAccessRule()
-
-            val document = converter.toDocument(accessRule)
-            val convertedRule = converter.fromDocument(document)
-
-            assertThat(accessRule).isEqualTo(convertedRule)
-        }
-    }
-
-    @Nested
-    inner class ConvertingExcludedVideoTypes {
-        @Test
-        fun `symmetrical conversion to domain`() {
-            val accessRule = AccessRuleFactory.sampleExcludedVideoTypesAccessRule(videoTypes = listOf(VideoType.NEWS))
-
-            val document = converter.toDocument(accessRule)
-            val convertedRule = converter.fromDocument(document)
-
-            assertThat(accessRule).isEqualTo(convertedRule)
-        }
-    }
-
-    @Nested
-    inner class ConvertingExcludedContentPartners {
-        @Test
-        fun `symmetrical conversion to domain`() {
-            val accessRule = AccessRuleFactory.sampleExcludedContentPartnersAccessRule(
-                contentPartnerIds = listOf(
-                    ContentPartnerId(value = "A")
-                )
-            )
-
-            val document = converter.toDocument(accessRule)
-            val convertedRule = converter.fromDocument(document)
-
-            assertThat(accessRule).isEqualTo(convertedRule)
-        }
-    }
-
-    @Nested
-    inner class ConvertingIncludedDistributionMethods {
-        @Test
-        fun `symmetrical conversion to domain`() {
-            val accessRule = AccessRuleFactory.sampleIncludedDistributionMethodAccessRule(
-               distributionMethods = setOf(DistributionMethod.STREAM, DistributionMethod.DOWNLOAD)
-            )
-
-            val document = converter.toDocument(accessRule)
-            val convertedRule = converter.fromDocument(document)
-
-            assertThat(accessRule).isEqualTo(convertedRule)
-        }
-    }
 
     private val converter = AccessRuleDocumentConverter()
+
+    class AccessRuleProvider : ArgumentsProvider {
+        override fun provideArguments(context: ExtensionContext?) = Stream.of(
+            AccessRule.IncludedCollections(
+                id = AccessRuleId(UniqueId()),
+                name = "included cols",
+                collectionIds = listOf(
+                    CollectionId("collection-1")
+                )
+            ),
+            AccessRule.IncludedVideos(
+                id = AccessRuleId(UniqueId()),
+                name = "included vids",
+                videoIds = listOf(
+                    VideoId("video-1")
+                )
+            ),
+            AccessRule.ExcludedVideos(
+                id = AccessRuleId(UniqueId()),
+                name = "excluded vids",
+                videoIds = listOf(
+                    VideoId("video-1")
+                )
+            ),
+            AccessRule.ExcludedContentPartners(
+                id = AccessRuleId(UniqueId()),
+                name = "excluded CPs",
+                contentPartnerIds = listOf(
+                    ContentPartnerId("cp-1")
+                )
+            ),
+            AccessRule.IncludedDistributionMethods(
+                id = AccessRuleId(UniqueId()),
+                name = "included distr methods",
+                distributionMethods = setOf(DistributionMethod.DOWNLOAD, DistributionMethod.STREAM)
+            )
+        ).map { accessRule -> Arguments.of(accessRule) }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AccessRuleProvider::class)
+    fun `convert an access rule to document and back`(originalRule: AccessRule) {
+        val retrievedRule = originalRule
+            .let(converter::toDocument)
+            .let(converter::fromDocument)
+
+        assertThat(retrievedRule).isEqualTo(originalRule)
+    }
 }

@@ -106,7 +106,7 @@ class UpdateUser(
                 findSchoolByName(schoolName, updateUserRequest.country!!)
                     ?: organisationRepository.save(
                         organisation = Organisation(
-                            id = OrganisationId.create(),
+                            id = OrganisationId(),
                             details = School(
                                 name = schoolName,
                                 country = Country.fromCode(updateUserRequest.country!!),

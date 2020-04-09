@@ -1,6 +1,8 @@
 package com.boclips.users.presentation.controllers.accessrules
 
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPartnerId
 import com.boclips.users.domain.model.contentpackage.DistributionMethod
@@ -36,10 +38,7 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns given access rule on the list when the name matches`() {
             val accessRuleName = "Super contract"
-            val accessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                accessRuleName,
-                listOf(CollectionId("A"))
-            )
+            val accessRule = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = accessRuleName, collectionIds = listOf(CollectionId("A"))))
 
             mvc.perform(
                     get(
@@ -82,10 +81,7 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns an empty list when access rule is not found by name`() {
-            includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                "Super contract",
-                listOf(CollectionId("A"))
-            )
+            accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = "Super contract", collectionIds = listOf(CollectionId("A"))))
 
             mvc.perform(
                     get(
@@ -103,10 +99,7 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `returns an empty list when lookup is done with a blank parameter`() {
-            includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                "Super contract",
-                listOf(CollectionId("A"))
-            )
+            accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = "Super contract", collectionIds = listOf(CollectionId("A"))))
 
             mvc.perform(
                     get(
@@ -125,16 +118,10 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `can fetch all access rules in the system when name query parameter is not provided`() {
             val firstAccessRuleName = "first"
-            val firstAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                firstAccessRuleName,
-                listOf(CollectionId("A"))
-            )
+            val firstAccessRule = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = firstAccessRuleName, collectionIds = listOf(CollectionId("A"))))
 
             val secondAccessRuleName = "second"
-            val secondAccessRule = includedContentAccessRuleRepository.saveIncludedCollectionsAccessRule(
-                secondAccessRuleName,
-                listOf(CollectionId("B"))
-            )
+            val secondAccessRule = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = secondAccessRuleName, collectionIds = listOf(CollectionId("B"))))
 
             mvc.perform(
                     get("/v1/access-rules")

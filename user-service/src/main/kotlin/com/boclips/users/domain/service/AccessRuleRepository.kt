@@ -8,5 +8,5 @@ interface AccessRuleRepository {
     fun findByIds(accessRuleIds: List<AccessRuleId>): List<AccessRule>
     fun findAll(): List<AccessRule>
     fun findAllByName(name: String): List<AccessRule>
-    fun save(accessRule: AccessRule): AccessRule
+    fun <T : AccessRule> save(accessRule: T): T
 }

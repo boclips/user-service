@@ -17,7 +17,6 @@ import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
 import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
 import com.boclips.users.infrastructure.organisation.RoleBasedOrganisationIdResolver
-import com.boclips.users.infrastructure.organisation.SpringDataMongoOrganisationRepository
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.schooldigger.SchoolDiggerClient
@@ -26,11 +25,17 @@ import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.infrastructure.user.MongoUserRepository
 import com.boclips.users.infrastructure.user.UserDocumentConverter
-import com.boclips.users.infrastructure.user.UserDocumentMongoRepository
 import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
 import com.boclips.videos.api.httpclient.SubjectsClient
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.mongodb.MongoClient
+import com.mongodb.MongoClientOptions
+import com.mongodb.MongoClientURI
+import io.opentracing.Tracer
+import io.opentracing.contrib.mongo.common.TracingCommandListener
 import org.keycloak.admin.client.Keycloak
+import org.litote.kmongo.KMongo
+import org.springframework.boot.autoconfigure.mongo.MongoProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -39,7 +44,8 @@ import org.springframework.web.client.RestTemplate
 @Configuration
 class InfrastructureConfiguration(
     private val objectMapper: ObjectMapper,
-    private val springDataMongoOrganisationRepository: SpringDataMongoOrganisationRepository
+    val mongoProperties: MongoProperties,
+    val tracer: Tracer
 ) {
 
     @Profile("!test")
@@ -127,11 +133,10 @@ class InfrastructureConfiguration(
 
     @Bean
     fun mongoUserRepository(
-        userDocumentMongoRepository: UserDocumentMongoRepository,
         userDocumentConverter: UserDocumentConverter
     ): MongoUserRepository {
         return MongoUserRepository(
-            userDocumentMongoRepository,
+            mongoClient(),
             userDocumentConverter,
             roleBasedOrganisationIdResolver()
         )
@@ -139,8 +144,19 @@ class InfrastructureConfiguration(
 
     @Bean
     fun mongoOrganisationAccountRepository(): MongoOrganisationRepository {
-        return MongoOrganisationRepository(
-            repository = springDataMongoOrganisationRepository
+        return MongoOrganisationRepository(mongoClient())
+    }
+
+    @Bean
+    fun mongoClient(): MongoClient {
+        return KMongo.createClient(
+            MongoClientURI(
+                mongoProperties.determineUri(),
+                MongoClientOptions.builder()
+                    .maxWaitTime(10_000)
+                    .socketTimeout(10_000)
+                    .addCommandListener(TracingCommandListener.Builder(tracer).build())
+            )
         )
     }
 }

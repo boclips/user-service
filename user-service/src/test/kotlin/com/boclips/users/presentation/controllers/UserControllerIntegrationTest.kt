@@ -172,7 +172,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             mvc.perform(
-                    put("/v1/users/user-id").asTeacher(user.id.value)
+                    put("/v1/users/${user.id.value}").asTeacher(user.id.value)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                             """
@@ -188,7 +188,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         )
                 )
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
+                .andExpect(jsonPath("$._links.profile.href", endsWith("/users/${user.id.value}")))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.firstName", equalTo("jane")))
                 .andExpect(jsonPath("$.lastName", equalTo("doe")))

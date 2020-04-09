@@ -5,7 +5,7 @@ import com.boclips.users.api.response.organisation.OrganisationsResource
 import com.boclips.users.api.response.organisation.OrganisationsWrapper
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
-import org.springframework.data.domain.Page
+import com.boclips.users.domain.model.Page
 import org.springframework.hateoas.PagedModel
 import org.springframework.stereotype.Component
 
@@ -30,12 +30,12 @@ class OrganisationConverter(
     fun toResource(organisations: Page<Organisation<*>>): OrganisationsResource {
         return OrganisationsResource(
             _embedded = OrganisationsWrapper(
-                organisations = organisations.content.map {
+                organisations = organisations.items.map {
                     toResource(it)
                 }),
             page = PagedModel.PageMetadata(
-                organisations.pageable.pageSize.toLong(),
-                organisations.pageable.pageNumber.toLong(),
+                organisations.pageSize.toLong(),
+                organisations.pageNumber.toLong(),
                 organisations.totalElements
             ),
             _links = null

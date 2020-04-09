@@ -2,6 +2,7 @@ package com.boclips.users.application.commands
 
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
@@ -18,7 +19,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `assigns users that have the same domain but are not linked directly or indirectly to the organisation`() {
-        val user = createUser(organisationId = "other-org-id", username = "rebecca@district-domain.com")
+        val user = createUser(organisationId = UniqueId(), username = "rebecca@district-domain.com")
 
         val district =
             organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))

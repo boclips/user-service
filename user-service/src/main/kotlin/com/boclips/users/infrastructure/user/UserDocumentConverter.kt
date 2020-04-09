@@ -19,7 +19,7 @@ data class UserDocumentConverter(
     fun convertToUser(userDocument: UserDocument): User {
         return User(
             identity = Identity(
-                id = UserId(value = userDocument.id),
+                id = UserId(value = userDocument._id),
                 username = userDocument.username ?: userDocument.email.orEmpty(),
                 createdAt = ZonedDateTime.ofInstant(userDocument.createdAt, ZoneOffset.UTC)
             ),
