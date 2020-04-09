@@ -17,6 +17,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import com.boclips.users.domain.model.Page
+import com.boclips.users.domain.service.events.OrganisationRepositoryEventDecorator
+import org.bson.types.ObjectId
+import org.litote.kmongo.findOneById
 import java.time.ZonedDateTime
 
 class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
@@ -106,6 +109,29 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             assertThat(fetchedSchoolAccount?.type).isEqualTo(DealType.STANDARD)
             assertThat(fetchedSchoolAccount?.details?.postcode).isEqualTo("12345")
             assertThat(fetchedSchoolAccount?.details?.district?.accessExpiresOn).isEqualTo(accessExpiresOn)
+        }
+
+        @Test
+        fun `update a nested redundant copies of an organisation when it is changed`() {
+            val district = organisationRepository.save(
+                OrganisationFactory.district()
+            )
+            val school = organisationRepository.save(
+                OrganisationFactory.sample(
+                    details = OrganisationDetailsFactory.school(district = district, name = "school name")
+                )
+            )
+
+            organisationRepository.updateOne(district.id, listOf(OrganisationTypeUpdate(district.id, DealType.DESIGN_PARTNER)))
+
+            val eventDecorator = organisationRepository as OrganisationRepositoryEventDecorator
+            val mongoOrganisationRepository = eventDecorator.repository as MongoOrganisationRepository
+            val schoolAfterDistrictUpdate = mongoOrganisationRepository.collection().findOneById(
+                ObjectId(school.id.value)
+            )
+
+            assertThat(schoolAfterDistrictUpdate?.parent?.dealType).isEqualTo(DealType.DESIGN_PARTNER)
+            assertThat(schoolAfterDistrictUpdate?.name).isEqualTo("school name")
         }
     }
 

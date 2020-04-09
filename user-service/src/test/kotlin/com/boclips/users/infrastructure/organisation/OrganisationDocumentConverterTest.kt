@@ -2,8 +2,10 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -104,5 +106,21 @@ class OrganisationDocumentConverterTest {
             OrganisationDocumentConverter.fromDocument(organisationDocument = organisationDocument, parentOrganisationDocument = parentOrganisationDocument)
 
         assertThat(organisation).isEqualTo(convertedOrganisation)
+    }
+
+    @Test
+    fun `parent document gets written as nested object`() {
+        val districtId = OrganisationId()
+        val district = OrganisationFactory.district(id = districtId)
+        val school = OrganisationFactory.school(
+            school = OrganisationDetailsFactory.school(
+                district = district
+            )
+        )
+
+        val schoolDocument = OrganisationDocumentConverter.toDocument(school).organisation
+
+        assertThat(schoolDocument.parent).isNotNull
+        assertThat(schoolDocument.parent?._id?.toHexString()).isEqualTo(districtId.value)
     }
 }

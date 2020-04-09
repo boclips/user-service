@@ -90,6 +90,7 @@ object OrganisationDocumentConverter {
             parentOrganisation = district?.let {
                 DBRef("organisations", ObjectId(it.id.value))
             },
+            parent = district?.let { toDocument(it).organisation },
             accessExpiresOn = organisation.accessExpiresOn?.toInstant(),
             contentPackageId = organisation.contentPackageId?.value
         )

@@ -8,7 +8,7 @@ import com.boclips.users.domain.service.OrganisationUpdate
 import com.boclips.users.domain.service.UserRepository
 
 class OrganisationRepositoryEventDecorator(
-    private val repository: OrganisationRepository,
+    val repository: OrganisationRepository,
     private val userRepository: UserRepository,
     private val eventConverter: EventConverter,
     private val eventBus: EventBus

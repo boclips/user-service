@@ -30,13 +30,15 @@ import org.litote.kmongo.getCollection
 import org.litote.kmongo.orderBy
 import org.litote.kmongo.regex
 import org.litote.kmongo.save
+import org.litote.kmongo.setValue
+import org.litote.kmongo.util.idValue
 import java.util.regex.Pattern
 
 class MongoOrganisationRepository(
     private val mongoClient: MongoClient
 ) : OrganisationRepository {
 
-    private fun collection(): MongoCollection<OrganisationDocument> {
+    fun collection(): MongoCollection<OrganisationDocument> {
         return mongoClient.getDatabase(MongoDatabase.DB_NAME).getCollection<OrganisationDocument>(
             "organisations"
         )
@@ -73,6 +75,10 @@ class MongoOrganisationRepository(
 
     private fun save(organisationDocument: OrganisationDocument): Organisation<*> {
         collection().save(organisationDocument)
+        collection().updateMany(
+            OrganisationDocument::parent / OrganisationDocument::_id eq organisationDocument._id,
+            setValue(OrganisationDocument::parent, organisationDocument)
+        )
         return findOrganisationById(OrganisationId(organisationDocument._id!!.toHexString()))!!
     }
 

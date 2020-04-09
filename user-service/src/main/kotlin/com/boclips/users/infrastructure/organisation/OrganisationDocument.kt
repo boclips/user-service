@@ -19,6 +19,7 @@ data class OrganisationDocument(
     val postcode: String?,
     val allowsOverridingUserIds: Boolean?,
     val parentOrganisation: DBRef? = null,
+    val parent: OrganisationDocument? = null,
     val accessExpiresOn: Instant? = null,
     val contentPackageId: String? = null
 )
