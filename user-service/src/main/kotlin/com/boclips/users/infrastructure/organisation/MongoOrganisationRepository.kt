@@ -31,7 +31,6 @@ import org.litote.kmongo.orderBy
 import org.litote.kmongo.regex
 import org.litote.kmongo.save
 import org.litote.kmongo.setValue
-import org.litote.kmongo.util.idValue
 import java.util.regex.Pattern
 
 class MongoOrganisationRepository(
@@ -76,7 +75,7 @@ class MongoOrganisationRepository(
     private fun save(organisationDocument: OrganisationDocument): Organisation<*> {
         collection().save(organisationDocument)
         collection().updateMany(
-            OrganisationDocument::parent / OrganisationDocument::_id eq organisationDocument._id,
+            BasicDBObject().append("parentOrganisation.\$id", organisationDocument._id!!),
             setValue(OrganisationDocument::parent, organisationDocument)
         )
         return findOrganisationById(OrganisationId(organisationDocument._id!!.toHexString()))!!
