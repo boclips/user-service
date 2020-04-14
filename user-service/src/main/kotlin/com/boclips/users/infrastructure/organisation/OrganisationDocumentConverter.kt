@@ -10,13 +10,12 @@ import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.mongodb.DBRef
 import org.bson.types.ObjectId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 object OrganisationDocumentConverter {
-    fun fromDocument(organisationDocument: OrganisationDocument, parentOrganisationDocument: OrganisationDocument?): Organisation<*> {
+    fun fromDocument(organisationDocument: OrganisationDocument): Organisation<*> {
         val organisation = when (organisationDocument.type) {
             OrganisationType.API -> ApiIntegration(
                 name = organisationDocument.name,
@@ -33,7 +32,7 @@ object OrganisationDocumentConverter {
                     ?: throw IllegalStateException("School ${organisationDocument._id} must have a country"),
                 state = organisationDocument.state?.let { State.fromCode(it.code) },
                 postcode = organisationDocument.postcode,
-                district = parentOrganisationDocument?.let(this::mapSchoolDistrict),
+                district = organisationDocument.parent?.let(this::mapSchoolDistrict),
                 externalId = organisationDocument.externalId
             )
 
@@ -50,7 +49,7 @@ object OrganisationDocumentConverter {
 
         return Organisation(
             id = OrganisationId(organisationDocument._id!!.toHexString()),
-            type = organisationDocument.dealType ?: parentOrganisationDocument?.dealType ?: DealType.STANDARD,
+            type = organisationDocument.dealType ?: organisationDocument.parent?.dealType ?: DealType.STANDARD,
             details = organisation,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
             role = organisationDocument.role,
@@ -58,15 +57,12 @@ object OrganisationDocumentConverter {
         )
     }
 
-    fun toDocument(organisation: Organisation<*>): OrganisationDocuments {
+    fun toDocument(organisation: Organisation<*>): OrganisationDocument {
 
         val district = when (organisation.details) {
             is School -> organisation.details.district
             else -> null
         }
-
-        val parentOrganisationDocument = district
-            ?.let { d -> this.toDocument(d).organisation }
 
         val organisationDocument = OrganisationDocument(
             _id = ObjectId(organisation.id.value),
@@ -87,22 +83,18 @@ object OrganisationDocumentConverter {
                 is ApiIntegration -> organisation.details.allowsOverridingUserIds
                 else -> null
             },
-            parentOrganisation = district?.let {
-                DBRef("organisations", ObjectId(it.id.value))
-            },
-            parent = district?.let { toDocument(it).organisation },
+            parent = district?.let { toDocument(it) },
             accessExpiresOn = organisation.accessExpiresOn?.toInstant(),
             contentPackageId = organisation.contentPackageId?.value
         )
 
-        return OrganisationDocuments(organisationDocument, parentOrganisationDocument)
+        return organisationDocument
     }
 
     private fun mapSchoolDistrict(parentOrganisationDocument: OrganisationDocument): Organisation<District>? {
-        val organisation = fromDocument(parentOrganisationDocument, parentOrganisationDocument = null)
+        val organisation = fromDocument(parentOrganisationDocument)
         @Suppress("UNCHECKED_CAST")
         return if(organisation.details is District) organisation as Organisation<District> else null
     }
 }
 
-data class OrganisationDocuments(val organisation: OrganisationDocument, val parent: OrganisationDocument?)

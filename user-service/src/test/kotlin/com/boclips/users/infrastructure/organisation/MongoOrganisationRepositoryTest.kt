@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.Page
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
@@ -16,10 +17,6 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import com.boclips.users.domain.model.Page
-import com.boclips.users.domain.service.events.OrganisationRepositoryEventDecorator
-import org.bson.types.ObjectId
-import org.litote.kmongo.findOneById
 import java.time.ZonedDateTime
 
 class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
@@ -112,7 +109,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `update a nested redundant copies of an organisation when it is changed`() {
+        fun `update changes nested redundant copies of an organisation when it is changed`() {
             val district = organisationRepository.save(
                 OrganisationFactory.district()
             )
@@ -122,16 +119,15 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            organisationRepository.updateOne(district.id, listOf(OrganisationTypeUpdate(district.id, DealType.DESIGN_PARTNER)))
-
-            val eventDecorator = organisationRepository as OrganisationRepositoryEventDecorator
-            val mongoOrganisationRepository = eventDecorator.repository as MongoOrganisationRepository
-            val schoolAfterDistrictUpdate = mongoOrganisationRepository.collection().findOneById(
-                ObjectId(school.id.value)
+            organisationRepository.updateOne(
+                district.id,
+                listOf(OrganisationTypeUpdate(district.id, DealType.DESIGN_PARTNER))
             )
 
-            assertThat(schoolAfterDistrictUpdate?.parent?.dealType).isEqualTo(DealType.DESIGN_PARTNER)
-            assertThat(schoolAfterDistrictUpdate?.name).isEqualTo("school name")
+            val schoolAfterDistrictUpdate = organisationRepository.findSchoolById(school.id)
+
+            assertThat(schoolAfterDistrictUpdate?.details?.district?.type).isEqualTo(DealType.DESIGN_PARTNER)
+            assertThat(schoolAfterDistrictUpdate?.details?.name).isEqualTo("school name")
         }
     }
 

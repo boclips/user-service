@@ -31,13 +31,14 @@ import org.litote.kmongo.orderBy
 import org.litote.kmongo.regex
 import org.litote.kmongo.save
 import org.litote.kmongo.setValue
+import org.litote.kmongo.util.idValue
 import java.util.regex.Pattern
 
 class MongoOrganisationRepository(
     private val mongoClient: MongoClient
 ) : OrganisationRepository {
 
-    fun collection(): MongoCollection<OrganisationDocument> {
+    private fun collection(): MongoCollection<OrganisationDocument> {
         return mongoClient.getDatabase(MongoDatabase.DB_NAME).getCollection<OrganisationDocument>(
             "organisations"
         )
@@ -69,16 +70,16 @@ class MongoOrganisationRepository(
     }
 
     override fun <T : OrganisationDetails> save(organisation: Organisation<T>): Organisation<T> {
-        return save(OrganisationDocumentConverter.toDocument(organisation).organisation).cast()
+        return save(OrganisationDocumentConverter.toDocument(organisation)).cast()
     }
 
     private fun save(organisationDocument: OrganisationDocument): Organisation<*> {
         collection().save(organisationDocument)
         collection().updateMany(
-            BasicDBObject().append("parentOrganisation.\$id", organisationDocument._id!!),
+            OrganisationDocument::parent / OrganisationDocument::_id eq organisationDocument._id!!,
             setValue(OrganisationDocument::parent, organisationDocument)
         )
-        return findOrganisationById(OrganisationId(organisationDocument._id!!.toHexString()))!!
+        return findOrganisationById(OrganisationId(organisationDocument._id.toHexString()))!!
     }
 
     override fun updateOne(update: OrganisationUpdate): Organisation<*>? {
@@ -108,8 +109,8 @@ class MongoOrganisationRepository(
     }
 
     override fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation<*>> {
-        return collection().find(BasicDBObject().append("parentOrganisation.\$id", ObjectId(parentId.value)))
-            .fetchParentsAndConvert<OrganisationDetails>()
+        return collection().find(OrganisationDocument::parent / OrganisationDocument::_id eq ObjectId(parentId.value))
+            .convert<OrganisationDetails>()
     }
 
     override fun findOrganisationById(id: OrganisationId): Organisation<*>? {
@@ -123,7 +124,7 @@ class MongoOrganisationRepository(
     }
 
     override fun findSchools(): List<Organisation<School>> {
-        return collection().find(OrganisationDocument::type eq OrganisationType.SCHOOL).fetchParentsAndConvert()
+        return collection().find(OrganisationDocument::type eq OrganisationType.SCHOOL).convert()
     }
 
     override fun findOrganisations(
@@ -147,7 +148,7 @@ class MongoOrganisationRepository(
             .sort(sort())
             .skip(page * size)
             .limit(size)
-            .fetchParentsAndConvert<OrganisationDetails>()
+            .convert<OrganisationDetails>()
 
         return Page(
             items = results,
@@ -188,7 +189,7 @@ class MongoOrganisationRepository(
             types?.let {
                 OrganisationDocument::type `in` it
             },
-            OrganisationDocument::parentOrganisation eq null
+            OrganisationDocument::parent eq null
         ))
     }
 
@@ -201,29 +202,14 @@ class MongoOrganisationRepository(
         )
     }
 
-    private fun <T : OrganisationDetails> Iterable<OrganisationDocument>.fetchParentsAndConvert(): List<Organisation<T>> {
-
-        val existingDocumentById: Map<ObjectId, OrganisationDocument> = this.associateBy { it._id!! }
-        val allParentIds = this
-            .mapNotNull { it.parentOrganisation?.id as ObjectId? }
-        val idsOfParentsToFetch = allParentIds.toSet() - existingDocumentById.keys.toSet()
-
-        val fetchedDocumentById =
-            collection().find(OrganisationDocument::_id `in` idsOfParentsToFetch).associateBy { it._id!! }
-
-        val parentDocumentById = existingDocumentById + fetchedDocumentById
-
-        @Suppress("UNCHECKED_CAST")
+    private fun <T : OrganisationDetails> Iterable<OrganisationDocument>.convert(): List<Organisation<T>> {
         return this.map { document ->
-            fromDocument(
-                document,
-                document.parentOrganisation?.id?.let { parentId -> parentDocumentById[parentId] }
-            ) as Organisation<T>
+            fromDocument(document).cast<T>()
         }
     }
 
     private fun <T : OrganisationDetails> OrganisationDocument.fetchParentAndConvert(): Organisation<T> {
-        return listOf(this).fetchParentsAndConvert<T>().first()
+        return listOf(this).convert<T>().first()
     }
 
     private fun <T : OrganisationDetails> Organisation<*>.cast(): Organisation<T> {

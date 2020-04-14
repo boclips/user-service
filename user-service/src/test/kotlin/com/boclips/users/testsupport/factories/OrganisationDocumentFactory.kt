@@ -22,7 +22,7 @@ class OrganisationDocumentFactory {
             state: LocationDocument? = LocationDocumentFactory.state(),
             postcode: String? = null,
             allowsOverridingUserIds: Boolean? = null,
-            parentOrganisationId: ObjectId? = null,
+            parent: OrganisationDocument? = null,
             accessExpiresOn: ZonedDateTime? = null
         ) = OrganisationDocument(
             _id = id,
@@ -36,11 +36,7 @@ class OrganisationDocumentFactory {
             state = state,
             postcode = postcode,
             allowsOverridingUserIds = allowsOverridingUserIds,
-            parentOrganisation = parentOrganisationId?.let {
-                DBRef(
-                "organisations", it
-                )
-            },
+            parent = parent,
             accessExpiresOn = accessExpiresOn?.toInstant()
         )
     }
