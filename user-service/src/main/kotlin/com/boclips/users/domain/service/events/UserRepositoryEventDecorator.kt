@@ -3,10 +3,9 @@ package com.boclips.users.domain.service.events
 import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.domain.service.UserUpdate
 
 class UserRepositoryEventDecorator(
     private val userRepository: UserRepository,
@@ -18,8 +17,8 @@ class UserRepositoryEventDecorator(
         return userRepository.create(user).also(::publishUserCreated)
     }
 
-    override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {
-        return userRepository.update(user, *updateCommands).also(::publishUserUpdated)
+    override fun update(user: User, vararg updates: UserUpdate): User {
+        return userRepository.update(user, *updates).also(::publishUserUpdated)
     }
 
     private fun publishUserCreated(user: User) {

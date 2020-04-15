@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.SubjectService
-import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.api.request.user.UpdateUserRequest
 import org.springframework.stereotype.Component
 
@@ -14,20 +14,20 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
     fun buildCommands(
         updateUserRequest: UpdateUserRequest,
         organisation: Organisation<*>? = null
-    ): List<UserUpdateCommand> {
+    ): List<UserUpdate> {
         return listOfNotNull(
-            updateUserRequest.firstName?.let { UserUpdateCommand.ReplaceFirstName(firstName = it) },
-            updateUserRequest.lastName?.let { UserUpdateCommand.ReplaceLastName(lastName = it) },
-            updateUserRequest.subjects?.let { UserUpdateCommand.ReplaceSubjects(subjects = convertSubjects(it)) },
-            updateUserRequest.ages?.let { UserUpdateCommand.ReplaceAges(ages = it) },
+            updateUserRequest.firstName?.let { UserUpdate.ReplaceFirstName(firstName = it) },
+            updateUserRequest.lastName?.let { UserUpdate.ReplaceLastName(lastName = it) },
+            updateUserRequest.subjects?.let { UserUpdate.ReplaceSubjects(subjects = convertSubjects(it)) },
+            updateUserRequest.ages?.let { UserUpdate.ReplaceAges(ages = it) },
             updateUserRequest.hasOptedIntoMarketing?.let {
-                UserUpdateCommand.ReplaceHasOptedIntoMarketing(
+                UserUpdate.ReplaceHasOptedIntoMarketing(
                     hasOptedIntoMarketing = it
                 )
             },
-            updateUserRequest.referralCode?.let { UserUpdateCommand.ReplaceReferralCode(referralCode = it) },
+            updateUserRequest.referralCode?.let { UserUpdate.ReplaceReferralCode(referralCode = it) },
             updateUserRequest.utm?.let {
-                UserUpdateCommand.ReplaceMarketingTracking(
+                UserUpdate.ReplaceMarketingTracking(
                     utmCampaign = it.campaign,
                     utmTerm = it.term,
                     utmMedium = it.medium,
@@ -35,8 +35,8 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
                     utmSource = it.source
                 )
             },
-            updateUserRequest.role?.let { UserUpdateCommand.ReplaceRole(role = it)},
-            organisation?.let { UserUpdateCommand.ReplaceOrganisation(it) }
+            updateUserRequest.role?.let { UserUpdate.ReplaceRole(role = it)},
+            organisation?.let { UserUpdate.ReplaceOrganisation(it) }
         )
     }
 

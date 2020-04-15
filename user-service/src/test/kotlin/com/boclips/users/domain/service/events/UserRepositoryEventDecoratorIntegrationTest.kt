@@ -4,7 +4,7 @@ import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
@@ -66,7 +66,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
         )
         userRepository.update(
             user,
-            UserUpdateCommand.ReplaceOrganisation(school)
+            UserUpdate.ReplaceOrganisation(school)
         )
 
         val event = eventBus.getEventOfType(UserUpdated::class.java)

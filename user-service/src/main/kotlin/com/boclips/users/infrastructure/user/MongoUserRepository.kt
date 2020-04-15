@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import com.mongodb.MongoClient
@@ -28,24 +28,24 @@ class MongoUserRepository(
         return mongoClient.getDatabase(MongoDatabase.DB_NAME).getCollection<UserDocument>("users")
     }
 
-    override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {
+    override fun update(user: User, vararg updates: UserUpdate): User {
         val userDocument = UserDocument.from(user)
 
-        updateCommands.map { updateCommand ->
+        updates.map { updateCommand ->
             return@map when (updateCommand) {
-                is UserUpdateCommand.ReplaceFirstName -> userDocument.apply { firstName = updateCommand.firstName }
-                is UserUpdateCommand.ReplaceLastName -> userDocument.apply { lastName = updateCommand.lastName }
-                is UserUpdateCommand.ReplaceSubjects -> userDocument.apply {
+                is UserUpdate.ReplaceFirstName -> userDocument.apply { firstName = updateCommand.firstName }
+                is UserUpdate.ReplaceLastName -> userDocument.apply { lastName = updateCommand.lastName }
+                is UserUpdate.ReplaceSubjects -> userDocument.apply {
                     subjectIds = updateCommand.subjects.map { it.id.value }
                 }
-                is UserUpdateCommand.ReplaceAges -> userDocument.apply { ageRange = updateCommand.ages }
-                is UserUpdateCommand.ReplaceHasOptedIntoMarketing -> userDocument.apply {
+                is UserUpdate.ReplaceAges -> userDocument.apply { ageRange = updateCommand.ages }
+                is UserUpdate.ReplaceHasOptedIntoMarketing -> userDocument.apply {
                     hasOptedIntoMarketing = updateCommand.hasOptedIntoMarketing
                 }
-                is UserUpdateCommand.ReplaceReferralCode -> userDocument.apply {
+                is UserUpdate.ReplaceReferralCode -> userDocument.apply {
                     referralCode = updateCommand.referralCode
                 }
-                is UserUpdateCommand.ReplaceMarketingTracking -> userDocument.apply {
+                is UserUpdate.ReplaceMarketingTracking -> userDocument.apply {
                     marketing = MarketingTrackingDocument(
                         utmCampaign = updateCommand.utmCampaign,
                         utmSource = updateCommand.utmSource,
@@ -54,20 +54,20 @@ class MongoUserRepository(
                         utmTerm = updateCommand.utmTerm
                     )
                 }
-                is UserUpdateCommand.ReplaceOrganisation -> userDocument.apply {
+                is UserUpdate.ReplaceOrganisation -> userDocument.apply {
                     organisationId = updateCommand.organisation.id.value
                     organisation = OrganisationDocumentConverter.toDocument(updateCommand.organisation)
                 }
-                is UserUpdateCommand.ReplaceAccessExpiresOn -> userDocument.apply {
+                is UserUpdate.ReplaceAccessExpiresOn -> userDocument.apply {
                     accessExpiresOn = updateCommand.accessExpiresOn.toInstant()
                 }
-                is UserUpdateCommand.ReplaceHasLifetimeAccess -> userDocument.apply {
+                is UserUpdate.ReplaceHasLifetimeAccess -> userDocument.apply {
                     hasLifetimeAccess = updateCommand.hasLifetimeAccess
                 }
-                is UserUpdateCommand.ReplaceShareCode -> userDocument.apply {
+                is UserUpdate.ReplaceShareCode -> userDocument.apply {
                     shareCode = updateCommand.shareCode
                 }
-                is UserUpdateCommand.ReplaceRole -> userDocument.apply {
+                is UserUpdate.ReplaceRole -> userDocument.apply {
                     role = updateCommand.role
                 }
             }

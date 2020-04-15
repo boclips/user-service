@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
@@ -65,7 +65,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        userRepository.update(user, UserUpdateCommand.ReplaceFirstName("Amelia"))
+        userRepository.update(user, UserUpdate.ReplaceFirstName("Amelia"))
 
         val updatedUser = userRepository.findById(user.id)!!
 
@@ -89,10 +89,10 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         userRepository.update(
             user,
-            UserUpdateCommand.ReplaceLastName("Earhart"),
-            UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
-            UserUpdateCommand.ReplaceReferralCode("1234"),
-            UserUpdateCommand.ReplaceRole(role = "TEACHER")
+            UserUpdate.ReplaceLastName("Earhart"),
+            UserUpdate.ReplaceHasOptedIntoMarketing(true),
+            UserUpdate.ReplaceReferralCode("1234"),
+            UserUpdate.ReplaceRole(role = "TEACHER")
         )
 
         val updatedUser = userRepository.findById(user.id)!!
@@ -121,7 +121,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val updatedUser = userRepository.update(user, UserUpdateCommand.ReplaceOrganisation(newOrganisation))
+        val updatedUser = userRepository.update(user, UserUpdate.ReplaceOrganisation(newOrganisation))
 
         assertThat(updatedUser.organisation).isEqualTo(newOrganisation)
         assertThat(updatedUser.organisationId).isEqualTo(newOrganisation.id)
@@ -152,7 +152,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        userRepository.update(user, UserUpdateCommand.ReplaceSubjects(listOf(maths, physics)))
+        userRepository.update(user, UserUpdate.ReplaceSubjects(listOf(maths, physics)))
 
         val updatedUser = userRepository.findById(user.id)!!
 
@@ -170,7 +170,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        userRepository.update(user, UserUpdateCommand.ReplaceAges(listOf(6, 7, 8, 9)))
+        userRepository.update(user, UserUpdate.ReplaceAges(listOf(6, 7, 8, 9)))
 
         val updatedUser = userRepository.findById(user.id)!!
 
@@ -190,7 +190,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         userRepository.update(
             user,
-            UserUpdateCommand.ReplaceMarketingTracking(
+            UserUpdate.ReplaceMarketingTracking(
                 utmCampaign = "test-campaign",
                 utmSource = "test-source",
                 utmContent = "test-content",
@@ -220,7 +220,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         )
         val date = ZonedDateTime.now(ZoneOffset.UTC).plusWeeks(123)
 
-        userRepository.update(user, UserUpdateCommand.ReplaceAccessExpiresOn(date))
+        userRepository.update(user, UserUpdate.ReplaceAccessExpiresOn(date))
 
         val updatedUser = userRepository.findById(user.id)!!
 
@@ -235,7 +235,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        userRepository.update(user, UserUpdateCommand.ReplaceShareCode("1234"))
+        userRepository.update(user, UserUpdate.ReplaceShareCode("1234"))
 
         val updatedUser = userRepository.findById(user.id)!!
 
@@ -249,7 +249,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(hasLifetimeAccess = false)
             )
         )
-        userRepository.update(user, UserUpdateCommand.ReplaceHasLifetimeAccess(true))
+        userRepository.update(user, UserUpdate.ReplaceHasLifetimeAccess(true))
 
         val updatedUser = userRepository.findById(user.id)!!
 

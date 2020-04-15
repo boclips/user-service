@@ -101,7 +101,7 @@ class UserService(
             organisationRepository.findOrganisationById(OrganisationId(organisationUpdated.organisation.id))!!
 
         userRepository.findAllByOrganisationId(organisation.id).forEach { user ->
-            userRepository.update(user, UserUpdateCommand.ReplaceOrganisation(organisation))
+            userRepository.update(user, UserUpdate.ReplaceOrganisation(organisation))
         }
     }
 }

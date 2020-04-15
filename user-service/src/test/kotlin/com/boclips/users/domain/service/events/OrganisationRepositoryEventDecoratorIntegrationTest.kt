@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.organisation.OrganisationUpdated
-import com.boclips.users.domain.service.OrganisationDomainUpdate
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -17,7 +17,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
     fun `organisation updated event gets dispatched when organisation is updated`() {
         val organisation = saveSchool()
 
-        repository.updateOne(OrganisationDomainUpdate(id = organisation.id, domain = "newdomain.com"))
+        repository.update(organisation.id, ReplaceDomain("newdomain.com"))
 
         val events = eventBus.getEventsOfType(OrganisationUpdated::class.java)
         assertThat(events).hasSize(1)
@@ -28,7 +28,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
         val parent = saveDistrict()
         val child = saveSchool(school = OrganisationDetailsFactory.school(district = parent))
 
-        repository.updateOne(OrganisationDomainUpdate(id = parent.id, domain = "newdomain.com"))
+        repository.update(parent.id, ReplaceDomain("newdomain.com"))
 
         val events = eventBus.getEventsOfType(OrganisationUpdated::class.java)
         assertThat(events).hasSize(2)

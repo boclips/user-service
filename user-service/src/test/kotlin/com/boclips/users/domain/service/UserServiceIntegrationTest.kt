@@ -1,11 +1,11 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
@@ -129,7 +129,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(organisationId = organisation.id)
         )
 
-        organisationRepository.updateOne(OrganisationDomainUpdate(organisation.id, "newdomain.com"))
+        organisationRepository.update(organisation.id, ReplaceDomain("newdomain.com"))
 
         val updatedUser = userRepository.findById(user.id)
 

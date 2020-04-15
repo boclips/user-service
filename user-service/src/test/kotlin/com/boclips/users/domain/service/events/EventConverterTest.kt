@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -22,7 +22,7 @@ internal class EventConverterTest : AbstractSpringIntegrationTest() {
 
         val user = userRepository.create(UserFactory.sample())
 
-        userRepository.update(user, UserUpdateCommand.ReplaceOrganisation(district))
+        userRepository.update(user, UserUpdate.ReplaceOrganisation(district))
 
         val event = eventBus.getEventOfType(UserUpdated::class.java)
         Assertions.assertThat(event.user.id).isEqualTo(user.id.value)
@@ -37,7 +37,7 @@ internal class EventConverterTest : AbstractSpringIntegrationTest() {
     fun `convert role information if exists`() {
         val user = userRepository.create(UserFactory.sample(profile = ProfileFactory.sample(role = null)))
 
-        userRepository.update(user, UserUpdateCommand.ReplaceRole("PARENT"))
+        userRepository.update(user, UserUpdate.ReplaceRole("PARENT"))
 
         val event = eventBus.getEventOfType(UserUpdated::class.java)
         Assertions.assertThat(event.user.id).isEqualTo(user.id.value)

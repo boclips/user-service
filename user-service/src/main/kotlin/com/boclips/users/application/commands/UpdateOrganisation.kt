@@ -7,8 +7,8 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.service.OrganisationDomainUpdate
-import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.api.request.UpdateOrganisationRequest
 import org.springframework.stereotype.Component
@@ -27,14 +27,14 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
 
         val expiryUpdate = request?.accessExpiresOn?.let { accessExpiryOn ->
             val convertedDate = convertToZonedDateTime(accessExpiryOn)
-            OrganisationExpiresOnUpdate(organisationId, convertedDate)
+            ReplaceExpiryDate(convertedDate)
         }
 
         val domainUpdate = request?.domain?.let { domain ->
-            OrganisationDomainUpdate(organisationId, domain)
+            ReplaceDomain(domain)
         }
 
-        organisationRepository.updateOne(organisationId, listOfNotNull(expiryUpdate, domainUpdate))
+        organisationRepository.update(organisationId, *listOfNotNull(expiryUpdate, domainUpdate).toTypedArray())
             ?: throw OrganisationNotFoundException(id)
 
         return organisationRepository.findOrganisationById(organisationId)

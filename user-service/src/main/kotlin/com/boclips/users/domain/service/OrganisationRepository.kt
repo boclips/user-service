@@ -12,8 +12,7 @@ import com.boclips.users.domain.model.Page
 interface OrganisationRepository {
     fun <T : OrganisationDetails> save(organisation: Organisation<T>): Organisation<T>
 
-    fun updateOne(update: OrganisationUpdate): Organisation<*>?
-    fun updateOne(id: OrganisationId, updates: List<OrganisationUpdate>): Organisation<*>?
+    fun update(id: OrganisationId, vararg updates: OrganisationUpdate): Organisation<*>?
 
     fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation<*>>
     fun findOrganisationById(id: OrganisationId): Organisation<*>?

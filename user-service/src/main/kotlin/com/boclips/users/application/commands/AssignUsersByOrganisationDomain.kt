@@ -9,7 +9,7 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.domain.service.UserUpdate
 import mu.KLogging
 import org.springframework.stereotype.Component
 
@@ -32,7 +32,7 @@ class AssignUsersByOrganisationDomain(
 
         logger.info { "Identified ${orphanUsers.size} users not associate to organisation ${organisation.id} with domain ${organisation.details.domain}" }
 
-        return orphanUsers.map { userRepository.update(it, UserUpdateCommand.ReplaceOrganisation(organisation)) }
+        return orphanUsers.map { userRepository.update(it, UserUpdate.ReplaceOrganisation(organisation)) }
     }
 
     private fun handleFlatOrganisation(organisation: Organisation<*>): List<User> {

@@ -8,9 +8,9 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.service.OrganisationDomainUpdate
-import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
-import com.boclips.users.domain.service.OrganisationTypeUpdate
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceExpiryDate
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDealType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -119,9 +119,9 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            organisationRepository.updateOne(
+            organisationRepository.update(
                 district.id,
-                listOf(OrganisationTypeUpdate(district.id, DealType.DESIGN_PARTNER))
+                ReplaceDealType(DealType.DESIGN_PARTNER)
             )
 
             val schoolAfterDistrictUpdate = organisationRepository.findSchoolById(school.id)
@@ -334,11 +334,9 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
             assertThat(organisation.type).isEqualTo(DealType.STANDARD)
 
-            val updatedOrganisation = organisationRepository.updateOne(
-                OrganisationTypeUpdate(
-                    id = organisation.id,
-                    type = DealType.DESIGN_PARTNER
-                )
+            val updatedOrganisation = organisationRepository.update(
+                organisation.id,
+                ReplaceDealType(DealType.DESIGN_PARTNER)
             )
 
             assertThat(updatedOrganisation).isNotNull
@@ -359,11 +357,9 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val updatedOrganisation = organisationRepository.updateOne(
-                OrganisationExpiresOnUpdate(
-                    id = organisation.id,
-                    accessExpiresOn = newExpiry
-                )
+            val updatedOrganisation = organisationRepository.update(
+                organisation.id,
+                ReplaceExpiryDate(newExpiry)
             )
 
             assertThat(updatedOrganisation?.accessExpiresOn).isEqualTo(newExpiry)
@@ -374,11 +370,9 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             val organisation = organisationRepository.save(OrganisationFactory.school())
 
             val accessExpiresOn = ZonedDateTime.parse("2012-08-08T00:00:00Z")
-            val updatedOrganisation = organisationRepository.updateOne(
-                organisation.id, listOf(
-                    OrganisationDomainUpdate(organisation.id, "some-domain"),
-                    OrganisationExpiresOnUpdate(organisation.id, accessExpiresOn)
-                )
+            val updatedOrganisation = organisationRepository.update(organisation.id,
+                ReplaceDomain("some-domain"),
+                ReplaceExpiryDate(accessExpiresOn)
             )
 
             assertThat(updatedOrganisation?.details?.domain).isEqualTo("some-domain")
@@ -387,11 +381,9 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `update returns null when organisation not found`() {
-            val updatedOrganisation = organisationRepository.updateOne(
-                OrganisationTypeUpdate(
-                    id = OrganisationId(),
-                    type = DealType.DESIGN_PARTNER
-                )
+            val updatedOrganisation = organisationRepository.update(
+                OrganisationId(),
+                ReplaceDealType(DealType.DESIGN_PARTNER)
             )
             assertThat(updatedOrganisation).isNull()
         }

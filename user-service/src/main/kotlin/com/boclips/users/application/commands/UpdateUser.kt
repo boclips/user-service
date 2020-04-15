@@ -19,7 +19,7 @@ import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
-import com.boclips.users.domain.service.UserUpdateCommand
+import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.api.request.user.UpdateUserRequest
 import mu.KLogging
@@ -72,14 +72,14 @@ class UpdateUser(
         updateUserRequest: UpdateUserRequest,
         school: Organisation<School>?,
         user: User
-    ): List<UserUpdateCommand> = userUpdatesCommandFactory.buildCommands(updateUserRequest, school) +
+    ): List<UserUpdate> = userUpdatesCommandFactory.buildCommands(updateUserRequest, school) +
         listOfNotNull(
             takeIf { user.teacherPlatformAttributes?.shareCode == null }?.let {
-                UserUpdateCommand.ReplaceShareCode(generateShareCode())
+                UserUpdate.ReplaceShareCode(generateShareCode())
             },
             takeIf { shouldSetAccessExpiresOn(user) }?.let {
                 val accessExpiry = calculateAccessExpiryDate()
-                UserUpdateCommand.ReplaceAccessExpiresOn(accessExpiresOn = accessExpiry)
+                UserUpdate.ReplaceAccessExpiresOn(accessExpiresOn = accessExpiry)
             }
         )
 

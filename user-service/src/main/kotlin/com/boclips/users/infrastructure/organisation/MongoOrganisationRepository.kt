@@ -8,10 +8,10 @@ import com.boclips.users.domain.model.organisation.OrganisationDetails
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.service.OrganisationDomainUpdate
-import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.OrganisationTypeUpdate
+import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDealType
 import com.boclips.users.domain.service.OrganisationUpdate
 import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
@@ -80,26 +80,14 @@ class MongoOrganisationRepository(
         return findOrganisationById(OrganisationId(organisationDocument._id.toHexString()))!!
     }
 
-    override fun updateOne(update: OrganisationUpdate): Organisation<*>? {
-        val document = collection().findOneById(ObjectId(update.id.value)) ?: return null
-
-        val updatedDocument = when (update) {
-            is OrganisationTypeUpdate -> document.copy(dealType = update.type)
-            is OrganisationExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
-            is OrganisationDomainUpdate -> document.copy(domain = update.domain)
-        }
-
-        return save(updatedDocument)
-    }
-
-    override fun updateOne(id: OrganisationId, updates: List<OrganisationUpdate>): Organisation<*>? {
+    override fun update(id: OrganisationId, vararg updates: OrganisationUpdate): Organisation<*>? {
         val document = collection().findOneById(ObjectId(id.value)) ?: return null
 
         val updatedDocument = updates.fold(document, { accumulator: OrganisationDocument, update: OrganisationUpdate ->
             return@fold when (update) {
-                is OrganisationTypeUpdate -> accumulator.copy(dealType = update.type)
-                is OrganisationExpiresOnUpdate -> accumulator.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
-                is OrganisationDomainUpdate -> accumulator.copy(domain = update.domain)
+                is ReplaceDealType -> accumulator.copy(dealType = update.type)
+                is ReplaceExpiryDate -> accumulator.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
+                is ReplaceDomain -> accumulator.copy(domain = update.domain)
             }
         })
 
