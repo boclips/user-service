@@ -1,12 +1,9 @@
 package com.boclips.users.domain.service.events
 
-import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.organisation.DealType
-import com.boclips.users.domain.service.OrganisationTypeUpdate
+import com.boclips.eventbus.events.organisation.OrganisationUpdated
+import com.boclips.users.domain.service.OrganisationDomainUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
-import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,39 +14,24 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
     lateinit var repository: OrganisationRepositoryEventDecorator
 
     @Test
-    fun `user updated events are dispatched when district is updated`() {
-        val district = saveDistrict()
-        val school = saveSchool(OrganisationDetailsFactory.school(district = district))
-        saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u1")))
-        saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u2")))
-        saveUser(UserFactory.sample(organisationId = null, identity = IdentityFactory.sample("u3")))
+    fun `organisation updated event gets dispatched when organisation is updated`() {
+        val organisation = saveSchool()
 
-        repository.updateOne(
-            OrganisationTypeUpdate(
-                district.id,
-                DealType.DESIGN_PARTNER
-            )
-        )
+        repository.updateOne(OrganisationDomainUpdate(id = organisation.id, domain = "newdomain.com"))
 
-        val events = eventBus.getEventsOfType(UserUpdated::class.java)
-        assertThat(events).hasSize(2)
+        val events = eventBus.getEventsOfType(OrganisationUpdated::class.java)
+        assertThat(events).hasSize(1)
     }
 
     @Test
-    fun `user updated events are dispatched when school is updated`() {
-        val school = saveSchool(OrganisationDetailsFactory.school(district = null))
-        saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u1")))
-        saveUser(UserFactory.sample(organisationId = school.id, identity = IdentityFactory.sample("u2")))
-        saveUser(UserFactory.sample(organisationId = null, identity = IdentityFactory.sample("u3")))
+    fun `organisation updated events get dispatched when parent organisation is updated`() {
+        val parent = saveDistrict()
+        val child = saveSchool(school = OrganisationDetailsFactory.school(district = parent))
 
-        repository.updateOne(
-            OrganisationTypeUpdate(
-                school.id,
-                DealType.DESIGN_PARTNER
-            )
-        )
+        repository.updateOne(OrganisationDomainUpdate(id = parent.id, domain = "newdomain.com"))
 
-        val events = eventBus.getEventsOfType(UserUpdated::class.java)
+        val events = eventBus.getEventsOfType(OrganisationUpdated::class.java)
         assertThat(events).hasSize(2)
+        assertThat(events.map { it.organisation.id }).containsExactlyInAnyOrder(parent.id.value, child.id.value)
     }
 }

@@ -1,5 +1,7 @@
 package com.boclips.users.domain.service
 
+import com.boclips.eventbus.BoclipsEventListener
+import com.boclips.eventbus.events.organisation.OrganisationUpdated
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.NewTeacher
@@ -7,8 +9,8 @@ import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.organisation.OrganisationResolver
-import com.boclips.users.infrastructure.user.UserDocument
 import mu.KLogging
 import org.springframework.stereotype.Service
 
@@ -20,9 +22,6 @@ class UserService(
     val organisationResolver: OrganisationResolver
 ) {
     companion object : KLogging()
-
-
-
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
@@ -94,5 +93,15 @@ class UserService(
         )
 
         return userRepository.create(user)
+    }
+
+    @BoclipsEventListener
+    fun updateOrganisation(organisationUpdated: OrganisationUpdated) {
+        val organisation =
+            organisationRepository.findOrganisationById(OrganisationId(organisationUpdated.organisation.id))!!
+
+        userRepository.findAllByOrganisationId(organisation.id).forEach { user ->
+            userRepository.update(user, UserUpdateCommand.ReplaceOrganisation(organisation))
+        }
     }
 }

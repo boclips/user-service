@@ -8,7 +8,7 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.service.OrganisationDomainOnUpdate
+import com.boclips.users.domain.service.OrganisationDomainUpdate
 import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationTypeUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -376,7 +376,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             val accessExpiresOn = ZonedDateTime.parse("2012-08-08T00:00:00Z")
             val updatedOrganisation = organisationRepository.updateOne(
                 organisation.id, listOf(
-                    OrganisationDomainOnUpdate(organisation.id, "some-domain"),
+                    OrganisationDomainUpdate(organisation.id, "some-domain"),
                     OrganisationExpiresOnUpdate(organisation.id, accessExpiresOn)
                 )
             )

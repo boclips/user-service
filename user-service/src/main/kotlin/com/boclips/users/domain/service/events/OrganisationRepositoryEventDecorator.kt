@@ -1,15 +1,13 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.EventBus
-import com.boclips.eventbus.events.user.UserUpdated
+import com.boclips.eventbus.events.organisation.OrganisationUpdated
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationUpdate
-import com.boclips.users.domain.service.UserRepository
 
 class OrganisationRepositoryEventDecorator(
-    val repository: OrganisationRepository,
-    private val userRepository: UserRepository,
+    private val repository: OrganisationRepository,
     private val eventConverter: EventConverter,
     private val eventBus: EventBus
 ) : OrganisationRepository by repository {
@@ -17,17 +15,17 @@ class OrganisationRepositoryEventDecorator(
     override fun updateOne(update: OrganisationUpdate): Organisation<*>? {
         val updatedOrganisation = repository.updateOne(update) ?: return null
 
-        val childOrganisations = repository.findOrganisationsByParentId(update.id) + updatedOrganisation
+        val allOrganisations = repository.findOrganisationsByParentId(update.id) + updatedOrganisation
 
-        childOrganisations.forEach { childOrganisation ->
-            userRepository.findAllByOrganisationId(childOrganisation.id).forEach { user ->
+        allOrganisations
+            .map(eventConverter::toEventOrganisation)
+            .forEach { organisation ->
                 eventBus.publish(
-                    UserUpdated.builder()
-                        .user(eventConverter.toEventUser(user))
+                    OrganisationUpdated.builder()
+                        .organisation(organisation)
                         .build()
                 )
             }
-        }
 
 
         return updatedOrganisation

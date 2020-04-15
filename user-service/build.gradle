@@ -74,7 +74,7 @@ dependencies {
     implementation('org.springframework.retry:spring-retry')
     implementation('org.springframework.boot:spring-boot-starter-aop')
 
-    implementation('com.github.boclips:event-bus:2.14.2')
+    implementation('com.github.boclips:event-bus:2.14.3')
     implementation('com.github.boclips:boclips-spring-web:0.128.0')
     implementation('com.github.boclips:boclips-spring-security:0.296.0')
     implementation('com.github.boclips:videos:84')

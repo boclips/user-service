@@ -33,7 +33,7 @@ class EventConverter(
         return toEventOrganisation(organisation)
     }
 
-    private fun toEventOrganisation(organisation: com.boclips.users.domain.model.organisation.Organisation<*>): Organisation {
+    fun toEventOrganisation(organisation: com.boclips.users.domain.model.organisation.Organisation<*>): Organisation {
         val parent = parentOrganisation(organisation.details)
         return Organisation.builder()
             .id(organisation.id.value)

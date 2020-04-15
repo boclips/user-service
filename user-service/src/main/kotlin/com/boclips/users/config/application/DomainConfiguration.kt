@@ -34,8 +34,7 @@ class DomainConfiguration(
         return OrganisationRepositoryEventDecorator(
             repository = mongoOrganisationRepository,
             eventBus = eventBus,
-            eventConverter = eventConverter(),
-            userRepository = mongoUserRepository
+            eventConverter = eventConverter()
         )
     }
 

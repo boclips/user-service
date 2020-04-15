@@ -8,14 +8,13 @@ import com.boclips.users.domain.model.organisation.OrganisationDetails
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.service.OrganisationDomainOnUpdate
+import com.boclips.users.domain.service.OrganisationDomainUpdate
 import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationTypeUpdate
 import com.boclips.users.domain.service.OrganisationUpdate
 import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
-import com.mongodb.BasicDBObject
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import org.bson.conversions.Bson
@@ -31,7 +30,6 @@ import org.litote.kmongo.orderBy
 import org.litote.kmongo.regex
 import org.litote.kmongo.save
 import org.litote.kmongo.setValue
-import org.litote.kmongo.util.idValue
 import java.util.regex.Pattern
 
 class MongoOrganisationRepository(
@@ -88,7 +86,7 @@ class MongoOrganisationRepository(
         val updatedDocument = when (update) {
             is OrganisationTypeUpdate -> document.copy(dealType = update.type)
             is OrganisationExpiresOnUpdate -> document.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
-            is OrganisationDomainOnUpdate -> document.copy(domain = update.domain)
+            is OrganisationDomainUpdate -> document.copy(domain = update.domain)
         }
 
         return save(updatedDocument)
@@ -101,7 +99,7 @@ class MongoOrganisationRepository(
             return@fold when (update) {
                 is OrganisationTypeUpdate -> accumulator.copy(dealType = update.type)
                 is OrganisationExpiresOnUpdate -> accumulator.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
-                is OrganisationDomainOnUpdate -> accumulator.copy(domain = update.domain)
+                is OrganisationDomainUpdate -> accumulator.copy(domain = update.domain)
             }
         })
 

@@ -7,7 +7,7 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.service.OrganisationDomainOnUpdate
+import com.boclips.users.domain.service.OrganisationDomainUpdate
 import com.boclips.users.domain.service.OrganisationExpiresOnUpdate
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.api.request.UpdateOrganisationRequest
@@ -31,7 +31,7 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
         }
 
         val domainUpdate = request?.domain?.let { domain ->
-            OrganisationDomainOnUpdate(organisationId, domain)
+            OrganisationDomainUpdate(organisationId, domain)
         }
 
         organisationRepository.updateOne(organisationId, listOfNotNull(expiryUpdate, domainUpdate))

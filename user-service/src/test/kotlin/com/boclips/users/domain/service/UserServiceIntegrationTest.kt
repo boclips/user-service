@@ -77,21 +77,21 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThrows<UserNotFoundException> { userService.findUserById(userId) }
     }
 
+    private val newUser = NewTeacher(
+        email = "joe@dough.com",
+        password = "thisisapassword",
+        analyticsId = AnalyticsId(value = "analytics"),
+        referralCode = "abc-a123",
+        shareCode = "test",
+        utmCampaign = "",
+        utmSource = "",
+        utmContent = "",
+        utmTerm = "",
+        utmMedium = ""
+    )
+
     @Test
     fun `create teacher`() {
-        val newUser = NewTeacher(
-            email = "joe@dough.com",
-            password = "thisisapassword",
-            analyticsId = AnalyticsId(value = "analytics"),
-            referralCode = "abc-a123",
-            shareCode = "test",
-            utmCampaign = "",
-            utmSource = "",
-            utmContent = "",
-            utmTerm = "",
-            utmMedium = ""
-        )
-
         val timeBeforeCommand = ZonedDateTime.now(ZoneOffset.UTC)
 
         val persistedUser = userService.createTeacher(newUser)
@@ -114,21 +114,25 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `an individual teacher user is not associated to external organisation`() {
-        val newUser = NewTeacher(
-            email = "joe@dough.com",
-            password = "thisisapassword",
-            analyticsId = AnalyticsId(value = "analytics"),
-            referralCode = "abc-a123",
-            shareCode = "test",
-            utmCampaign = "",
-            utmSource = "",
-            utmContent = "",
-            utmTerm = "",
-            utmMedium = ""
-        )
-
         val persistedUser = userService.createTeacher(newUser)
 
         assertThat(persistedUser.organisationId).isNull()
+    }
+
+    @Test
+    fun `user gets updated when organisation has changed`() {
+        val organisation = organisationRepository.save(
+            OrganisationFactory.school()
+        )
+
+        val user = userRepository.create(
+            UserFactory.sample(organisationId = organisation.id)
+        )
+
+        organisationRepository.updateOne(OrganisationDomainUpdate(organisation.id, "newdomain.com"))
+
+        val updatedUser = userRepository.findById(user.id)
+
+        assertThat(updatedUser?.organisation?.details?.domain).isEqualTo("newdomain.com")
     }
 }
