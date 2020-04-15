@@ -22,7 +22,7 @@ internal class EventConverterTest : AbstractSpringIntegrationTest() {
 
         val user = userRepository.create(UserFactory.sample())
 
-        userRepository.update(user, UserUpdateCommand.ReplaceOrganisationId(district.id))
+        userRepository.update(user, UserUpdateCommand.ReplaceOrganisation(district))
 
         val event = eventBus.getEventOfType(UserUpdated::class.java)
         Assertions.assertThat(event.user.id).isEqualTo(user.id.value)

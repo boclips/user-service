@@ -1,17 +1,15 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.infrastructure.MongoDatabase
-import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
+import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.and
-import mu.KLogging
 import org.litote.kmongo.`in`
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOneById
@@ -23,16 +21,11 @@ import java.util.regex.Pattern
 
 class MongoUserRepository(
     private val mongoClient: MongoClient,
-    private val userDocumentConverter: UserDocumentConverter,
-    private val organisationIdResolver: OrganisationIdResolver
+    private val userDocumentConverter: UserDocumentConverter
 ) : UserRepository {
 
-    companion object : KLogging() {
-        const val collectionName = "users"
-    }
-
     private fun getUsersCollection(): MongoCollection<UserDocument> {
-        return mongoClient.getDatabase(MongoDatabase.DB_NAME).getCollection<UserDocument>(collectionName)
+        return mongoClient.getDatabase(MongoDatabase.DB_NAME).getCollection<UserDocument>("users")
     }
 
     override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {
@@ -61,8 +54,9 @@ class MongoUserRepository(
                         utmTerm = updateCommand.utmTerm
                     )
                 }
-                is UserUpdateCommand.ReplaceOrganisationId -> userDocument.apply {
-                    organisationId = updateCommand.organisationId.value
+                is UserUpdateCommand.ReplaceOrganisation -> userDocument.apply {
+                    organisationId = updateCommand.organisation.id.value
+                    organisation = OrganisationDocumentConverter.toDocument(updateCommand.organisation)
                 }
                 is UserUpdateCommand.ReplaceAccessExpiresOn -> userDocument.apply {
                     accessExpiresOn = updateCommand.accessExpiresOn.toInstant()
@@ -111,17 +105,6 @@ class MongoUserRepository(
         return getUsersCollection()
             .findOneById(id.value)
             ?.let { userDocumentConverter.convertToUser(it) }
-    }
-
-    override fun create(identity: Identity): User {
-        val organisationId = organisationIdResolver.resolve(identity.roles)
-
-        val document = UserDocument.from(
-            identity = identity,
-            organisationId = organisationId
-        )
-
-        return saveUserDocument(document)
     }
 
     override fun create(user: User) = saveUserDocument(UserDocument.from(user))

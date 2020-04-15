@@ -32,7 +32,7 @@ class AssignUsersByOrganisationDomain(
 
         logger.info { "Identified ${orphanUsers.size} users not associate to organisation ${organisation.id} with domain ${organisation.details.domain}" }
 
-        return orphanUsers.map { userRepository.update(it, UserUpdateCommand.ReplaceOrganisationId(organisation.id)) }
+        return orphanUsers.map { userRepository.update(it, UserUpdateCommand.ReplaceOrganisation(organisation)) }
     }
 
     private fun handleFlatOrganisation(organisation: Organisation<*>): List<User> {

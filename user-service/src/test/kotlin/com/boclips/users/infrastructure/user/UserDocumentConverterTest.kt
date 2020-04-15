@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
+import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import com.boclips.users.testsupport.factories.UserDocumentFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.boclips.videos.api.response.subject.SubjectResource
@@ -44,6 +45,7 @@ class UserDocumentConverterTest {
                 utmCampaign = "utmCampaign"
             ),
             organisationId = "new-org-id",
+            organisation = OrganisationDocumentFactory.sample(name = "organisation name"),
             accessExpiresOn = null,
             createdAt = Instant.now(),
             role = "TEACHER"
@@ -67,6 +69,7 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.marketingTracking.utmSource).isEqualTo("utmSource")
         assertThat(convertedUser.marketingTracking.utmCampaign).isEqualTo("utmCampaign")
         assertThat(convertedUser.organisationId!!.value).isEqualTo("new-org-id")
+        assertThat(convertedUser.organisation?.details?.name).isEqualTo("organisation name")
         assertThat(convertedUser.accessExpiresOn).isNull()
         assertThat(convertedUser.profile!!.role).isEqualTo("TEACHER")
     }

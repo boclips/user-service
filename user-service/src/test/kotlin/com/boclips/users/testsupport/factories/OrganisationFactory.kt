@@ -10,7 +10,6 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import org.bson.types.ObjectId
 import java.time.ZonedDateTime
 
 class OrganisationFactory {
@@ -61,6 +60,21 @@ class OrganisationFactory {
                 type = type,
                 details = school,
                 accessExpiresOn = accessExpiresOn,
+                role = role
+            )
+        }
+
+        fun apiIntegration(
+            id: OrganisationId = OrganisationId(),
+            type: DealType = DealType.STANDARD,
+            details: ApiIntegration = OrganisationDetailsFactory.apiIntegration(),
+            role: String = "ROLE_${details.name}"
+        ): Organisation<ApiIntegration> {
+            return Organisation(
+                id = id,
+                type = type,
+                details = details,
+                accessExpiresOn = null,
                 role = role
             )
         }

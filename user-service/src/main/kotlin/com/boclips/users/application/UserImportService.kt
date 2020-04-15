@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import mu.KLogging
 import org.springframework.stereotype.Component
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component
 @Component
 class UserImportService(
     private val userRepository: UserRepository,
+    private val userService: UserService,
     private val identityProvider: IdentityProvider
 ) {
     companion object : KLogging()
@@ -28,7 +30,7 @@ class UserImportService(
         }
 
         return identityProvider.getIdentitiesById(userId)?.let {
-            userRepository.create(it)
+            userService.create(it)
         } ?: throw IdentityNotFoundException(userId)
     }
 }

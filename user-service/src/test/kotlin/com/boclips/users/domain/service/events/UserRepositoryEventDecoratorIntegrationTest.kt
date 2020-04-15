@@ -66,7 +66,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
         )
         userRepository.update(
             user,
-            UserUpdateCommand.ReplaceOrganisationId(school.id)
+            UserUpdateCommand.ReplaceOrganisation(school)
         )
 
         val event = eventBus.getEventOfType(UserUpdated::class.java)

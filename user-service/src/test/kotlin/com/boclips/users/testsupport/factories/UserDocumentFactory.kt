@@ -1,5 +1,6 @@
 package com.boclips.users.testsupport.factories
 
+import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import java.time.Instant
@@ -27,6 +28,7 @@ class UserDocumentFactory {
                 utmContent = null
             ),
             organisationId: String? = "some-org-id",
+            organisation: OrganisationDocument? = null,
             accessExpiresOn: Instant? = null,
             createdAt: Instant = Instant.now(),
             hasLifetimeAccess: Boolean = false,
@@ -45,6 +47,7 @@ class UserDocumentFactory {
             hasOptedIntoMarketing = hasOptedIntoMarketing,
             marketing = marketing,
             organisationId = organisationId,
+            organisation = organisation,
             accessExpiresOn = accessExpiresOn,
             createdAt = createdAt,
             hasLifetimeAccess = hasLifetimeAccess,

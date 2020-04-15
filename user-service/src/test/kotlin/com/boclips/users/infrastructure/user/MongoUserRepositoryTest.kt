@@ -8,6 +8,8 @@ import com.boclips.users.domain.service.UserUpdateCommand
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
+import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -17,18 +19,6 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
-
-    @Test
-    fun `persists account`() {
-        val identity = IdentityFactory.sample(roles = listOf("ROLE_TEACHER"))
-        userRepository.create(identity)
-
-        val fetchedUser = userRepository.findById(identity.id)!!
-
-        assertThat(fetchedUser.id).isNotNull()
-        assertThat(fetchedUser.identity.email).isEqualTo(identity.email)
-        assertThat(fetchedUser.identity.id).isEqualTo(identity.id)
-    }
 
     @Test
     fun `persists user`() {
@@ -97,13 +87,11 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val newOrganisationId = OrganisationId()
         userRepository.update(
             user,
             UserUpdateCommand.ReplaceLastName("Earhart"),
             UserUpdateCommand.ReplaceHasOptedIntoMarketing(true),
             UserUpdateCommand.ReplaceReferralCode("1234"),
-            UserUpdateCommand.ReplaceOrganisationId(newOrganisationId),
             UserUpdateCommand.ReplaceRole(role = "TEACHER")
         )
 
@@ -112,8 +100,32 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(updatedUser.profile!!.lastName).isEqualTo("Earhart")
         assertThat(updatedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
         assertThat(updatedUser.referralCode).isEqualTo("1234")
-        assertThat(updatedUser.organisationId).isEqualTo(newOrganisationId)
         assertThat(updatedUser.profile!!.role).isEqualTo("TEACHER")
+    }
+
+    @Test
+    fun `updating user organisation`() {
+        val originalOrganisation = OrganisationFactory.school(
+            id = OrganisationId()
+        )
+        val user = userRepository.create(
+            UserFactory.sample(
+                organisation = originalOrganisation
+            )
+        )
+
+        val newOrganisation = OrganisationFactory.school(
+            id = OrganisationId(),
+            school = OrganisationDetailsFactory.school(
+                district = OrganisationFactory.district()
+            )
+        )
+
+        val updatedUser = userRepository.update(user, UserUpdateCommand.ReplaceOrganisation(newOrganisation))
+
+        assertThat(updatedUser.organisation).isEqualTo(newOrganisation)
+        assertThat(updatedUser.organisationId).isEqualTo(newOrganisation.id)
+        assertThat(userRepository.findById(user.id)).isEqualTo(updatedUser)
     }
 
     @Test

@@ -1,7 +1,9 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.application.exceptions.UserNotFoundException
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.NewTeacher
+import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -16,6 +18,28 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
+
+    @Test
+    fun `create a user from identity`() {
+        val organisation = organisationRepository.save(
+            OrganisationFactory.apiIntegration(role = "ROLE_CLIENT_ORG")
+        )
+
+        val identity = IdentityFactory.sample(roles = listOf("ROLE_CLIENT_ORG"))
+        val user: User = userService.create(identity)
+
+        assertThat(user.id).isEqualTo(identity.id)
+        assertThat(user.identity.id).isEqualTo(identity.id)
+        assertThat(user.identity.email).isEqualTo(identity.email)
+        assertThat(user.identity.username).isEqualTo(identity.username)
+        assertThat(user.identity.createdAt).isEqualTo(identity.createdAt)
+        assertThat(user.organisationId).isEqualTo(organisation.id)
+        assertThat(user.organisation).isEqualTo(organisation)
+        assertThat(user.profile?.hasOptedIntoMarketing).isEqualTo(false)
+        assertThat(user.teacherPlatformAttributes?.hasLifetimeAccess).isEqualTo(false)
+        assertThat(user.accessExpiresOn).isNull()
+        assertThat(userRepository.findById(identity.id)).isEqualTo(user)
+    }
 
     @Test
     fun `can find all teachers`() {

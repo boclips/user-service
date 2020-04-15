@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class RoleBasedOrganisationDetailsTypeResolverTest : AbstractSpringIntegrationTest() {
     @Test
     fun `matches a teacher user to "Boclips for Teachers"`() {
-        val organisationId = organisationIdResolver.resolve(listOf("ROLE_TEACHER"))
+        val organisationId = organisationResolver.resolve(listOf("ROLE_TEACHER"))
 
         assertThat(organisationId).isNull()
     }
@@ -16,30 +16,30 @@ class RoleBasedOrganisationDetailsTypeResolverTest : AbstractSpringIntegrationTe
     fun `matches a viewsonic user to "ViewSonic MyViewBoard"`() {
         val organisation = saveApiIntegration(role = "ROLE_VIEWSONIC")
 
-        val organisationId = organisationIdResolver.resolve(listOf("ROLE_VIEWSONIC"))
+        val resolvedOrganisation = organisationResolver.resolve(listOf("ROLE_VIEWSONIC"))
 
-        assertThat(organisationId).isEqualTo(organisation.id)
+        assertThat(resolvedOrganisation).isEqualTo(organisation)
     }
 
     @Test
     fun `matches a pearson user to "Pearson MyRealize"`() {
         val organisation = saveApiIntegration(role = "ROLE_PEARSON_MYREALIZE")
 
-        val organisationId = organisationIdResolver.resolve(listOf("ROLE_PEARSON_MYREALIZE"))
+        val resolvedOrganisation = organisationResolver.resolve(listOf("ROLE_PEARSON_MYREALIZE"))
 
-        assertThat(organisationId).isEqualTo(organisation.id)
+        assertThat(resolvedOrganisation).isEqualTo(organisation)
     }
 
     @Test
     fun `does not match if there are only unknown roles`() {
-        val matched = organisationIdResolver.resolve(listOf("ROLE_STUDENT", "uma_offline", "Matt"))
+        val matched = organisationResolver.resolve(listOf("ROLE_STUDENT", "uma_offline", "Matt"))
 
         assertThat(matched).isNull()
     }
 
     @Test
     fun `can deal with no roles entities`() {
-        val matched = organisationIdResolver.resolve(emptyList())
+        val matched = organisationResolver.resolve(emptyList())
 
         assertThat(matched).isNull()
     }

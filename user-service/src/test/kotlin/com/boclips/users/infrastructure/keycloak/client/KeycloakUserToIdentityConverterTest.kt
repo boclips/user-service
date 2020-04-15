@@ -1,10 +1,5 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.infrastructure.organisation.OrganisationIdResolver
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -21,9 +16,6 @@ class KeycloakUserToIdentityConverterTest {
 
     @BeforeEach
     fun setup() {
-        val organisationMatcherMock = mock<OrganisationIdResolver>()
-        whenever(organisationMatcherMock.resolve(any())).thenReturn(OrganisationId("my-id"))
-
         userConverter = KeycloakUserToAccountConverter()
         keycloakUser = UserRepresentation().apply {
             this.id = UUID.randomUUID().toString()

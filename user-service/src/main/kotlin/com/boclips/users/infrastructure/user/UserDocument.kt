@@ -1,8 +1,8 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.infrastructure.organisation.OrganisationDocument
+import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import java.time.Instant
 
 data class UserDocument(
@@ -19,6 +19,7 @@ data class UserDocument(
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
     var organisationId: String?,
+    var organisation: OrganisationDocument?,
     var accessExpiresOn: Instant?,
     var createdAt: Instant,
     var hasLifetimeAccess: Boolean,
@@ -47,32 +48,11 @@ data class UserDocument(
                     utmContent = user.marketingTracking.utmContent
                 ),
                 organisationId = user.organisationId?.value,
+                organisation = user.organisation?.let(OrganisationDocumentConverter::toDocument),
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
                 createdAt = user.identity.createdAt.toInstant(),
                 hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false,
                 role = user.profile?.role
-            )
-        }
-
-        fun from(identity: Identity, organisationId: OrganisationId?): UserDocument {
-            return UserDocument(
-                _id = identity.id.value,
-                subjectIds = null,
-                ageRange = null,
-                analyticsId = null,
-                referralCode = null,
-                shareCode = null,
-                firstName = null,
-                lastName = null,
-                email = identity.email,
-                username = identity.username,
-                hasOptedIntoMarketing = false,
-                marketing = null,
-                organisationId = organisationId?.value,
-                accessExpiresOn = null,
-                createdAt = identity.createdAt.toInstant(),
-                hasLifetimeAccess = false,
-                role = null
             )
         }
     }

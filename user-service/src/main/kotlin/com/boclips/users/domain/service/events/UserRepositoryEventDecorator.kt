@@ -18,10 +18,6 @@ class UserRepositoryEventDecorator(
         return userRepository.create(user).also(::publishUserCreated)
     }
 
-    override fun create(identity: Identity): User {
-        return userRepository.create(identity).also(::publishUserCreated)
-    }
-
     override fun update(user: User, vararg updateCommands: UserUpdateCommand): User {
         return userRepository.update(user, *updateCommands).also(::publishUserUpdated)
     }

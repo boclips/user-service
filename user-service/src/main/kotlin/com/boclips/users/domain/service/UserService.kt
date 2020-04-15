@@ -1,11 +1,14 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.application.exceptions.UserNotFoundException
+import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.infrastructure.organisation.OrganisationResolver
+import com.boclips.users.infrastructure.user.UserDocument
 import mu.KLogging
 import org.springframework.stereotype.Service
 
@@ -13,9 +16,13 @@ import org.springframework.stereotype.Service
 class UserService(
     val userRepository: UserRepository,
     val organisationRepository: OrganisationRepository,
-    val identityProvider: IdentityProvider
+    val identityProvider: IdentityProvider,
+    val organisationResolver: OrganisationResolver
 ) {
     companion object : KLogging()
+
+
+
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
@@ -69,5 +76,23 @@ class UserService(
         val retrievedUser = userRepository.findById(UserId(userId.value))
         logger.info { "Retrieved user ${userId.value}" }
         return retrievedUser ?: throw UserNotFoundException(userId)
+    }
+
+    fun create(identity: Identity): User {
+        val organisation = organisationResolver.resolve(identity.roles)
+
+        val user = User(
+            identity = identity,
+            profile = null,
+            teacherPlatformAttributes = null,
+            marketingTracking = MarketingTracking(),
+            referralCode = null,
+            analyticsId = null,
+            organisation = organisation,
+            organisationId = organisation?.id,
+            accessExpiresOn = null
+        )
+
+        return userRepository.create(user)
     }
 }
