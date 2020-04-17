@@ -13,9 +13,15 @@ class GetTrackableUserId(
     }
 
     operator fun invoke(): String {
-        return UserExtractor.getCurrentUser()?.let {
-            val user = getOrImportUser(UserId(it.id))
-            if (user.hasOnboarded()) user.id.value else ANONYMOUS_USER_ID
-        } ?: ANONYMOUS_USER_ID
+        val currentUser = UserExtractor.getCurrentUser()
+
+        return if (currentUser?.id == ANONYMOUS_USER_ID) {
+            ANONYMOUS_USER_ID
+        } else {
+            currentUser?.let {
+                val user = getOrImportUser(UserId(it.id))
+                if (user.hasOnboarded()) user.id.value else ANONYMOUS_USER_ID
+            } ?: ANONYMOUS_USER_ID
+        }
     }
 }

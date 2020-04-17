@@ -35,4 +35,12 @@ class GetTrackableUserIdIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = getTrackableUserId.invoke()
         assertThat(userId).isEqualTo(ANONYMOUS_USER_ID)
     }
+
+    @Test
+    fun `does not fetch user when user us anonymous`() {
+        setSecurityContext("anonymousUser")
+
+        val userId = getTrackableUserId.invoke()
+        assertThat(userId).isEqualTo(ANONYMOUS_USER_ID)
+    }
 }
