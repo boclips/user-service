@@ -5,7 +5,6 @@ import com.boclips.users.domain.service.AmericanSchoolsProvider
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
-import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
@@ -15,7 +14,6 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountCon
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
-import com.boclips.users.infrastructure.organisation.OrganisationResolver
 import com.boclips.users.infrastructure.organisation.RoleBasedOrganisationResolver
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
@@ -25,7 +23,6 @@ import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.infrastructure.user.MongoUserRepository
 import com.boclips.users.infrastructure.user.UserDocumentConverter
-import com.boclips.users.infrastructure.videoservice.VideoServiceProperties
 import com.boclips.videos.api.httpclient.SubjectsClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mongodb.MongoClient
@@ -44,85 +41,81 @@ import org.springframework.web.client.RestTemplate
 @Configuration
 class InfrastructureConfiguration(
     private val objectMapper: ObjectMapper,
-    val mongoProperties: MongoProperties,
-    val tracer: Tracer
+    private val subjectsClient: SubjectsClient,
+    private val mongoProperties: MongoProperties,
+    private val mixpanelProperties: MixpanelProperties,
+    private val keycloakProperties: KeycloakProperties,
+    private val googleRecaptchaProperties: GoogleRecaptchaProperties,
+    private val schoolDiggerProperties: SchoolDiggerProperties,
+    private val hubspotProperties: HubSpotProperties,
+    private val tracer: Tracer
 ) {
 
     @Profile("!test")
     @Bean
-    fun analyticsClient(properties: MixpanelProperties) = MixpanelClient(properties)
+    fun analyticsClient() = MixpanelClient(mixpanelProperties)
 
     @Profile("!test")
     @Bean
-    fun keycloakWrapper(keycloak: Keycloak) = KeycloakWrapper(keycloak)
+    fun keycloakWrapper() = KeycloakWrapper(keycloak())
 
     @Profile("!test")
     @Bean
-    fun keycloakClient(keycloakWrapper: KeycloakWrapper, organisationResolver: OrganisationResolver) =
+    fun keycloakClient() =
         KeycloakClient(
-            keycloakWrapper,
+            keycloakWrapper(),
             KeycloakUserToAccountConverter()
         )
 
     @Profile("!test")
     @Bean
-    fun identityProvider(keycloakClient: KeycloakClient): IdentityProvider = keycloakClient
+    fun identityProvider(): IdentityProvider = keycloakClient()
 
     @Profile("!test")
     @Bean
-    fun sessionProvider(keycloakClient: KeycloakClient): SessionProvider = keycloakClient
+    fun sessionProvider(): SessionProvider = keycloakClient()
 
     @Profile("!test")
     @Bean
-    fun keycloak(properties: KeycloakProperties): Keycloak {
+    fun keycloak(): Keycloak {
         return Keycloak.getInstance(
-            properties.url,
+            keycloakProperties.url,
             KeycloakWrapper.REALM,
-            properties.username,
-            properties.password,
+            keycloakProperties.username,
+            keycloakProperties.password,
             "boclips-admin"
         )
     }
 
     @Profile("!test")
     @Bean
-    fun customerManagement(
-        properties: HubSpotProperties,
-        subjectService: VideoServiceSubjectsClient
-    ): MarketingService =
+    fun customerManagement(): MarketingService =
         HubSpotClient(
             objectMapper = objectMapper,
-            hubspotProperties = properties,
+            hubspotProperties = hubspotProperties,
             restTemplate = RestTemplate()
         )
 
     @Profile("!test")
     @Bean
-    fun captchaProvider(googleRecaptchaProperties: GoogleRecaptchaProperties): CaptchaProvider =
+    fun captchaProvider(): CaptchaProvider =
         GoogleRecaptchaClient(properties = googleRecaptchaProperties)
 
-    @Profile("!test")
     @Bean
-    fun videoServiceClient(videoServiceProperties: VideoServiceProperties) =
-        SubjectsClient.create(apiUrl = videoServiceProperties.baseUrl)
-
-    @Profile("!test")
-    @Bean
-    fun cacheableSubjectsClient(subjectsClient: SubjectsClient) = CacheableSubjectsClient(subjectsClient)
+    fun cacheableSubjectsClient() = CacheableSubjectsClient(subjectsClient)
 
     @Bean
-    fun subjectService(cacheableSubjectsClient: CacheableSubjectsClient) =
-        VideoServiceSubjectsClient(cacheableSubjectsClient)
+    fun subjectService() =
+        VideoServiceSubjectsClient(cacheableSubjectsClient())
 
-    @Profile("!test")
     @Bean
-    fun userDocumentConverter(subjectService: SubjectService): UserDocumentConverter {
-        return UserDocumentConverter(subjectService)
+    fun userDocumentConverter(): UserDocumentConverter {
+        return UserDocumentConverter(subjectService())
     }
 
     @Profile("!test")
     @Bean
-    fun americanSchoolsProvider(schoolDiggerProperties: SchoolDiggerProperties): AmericanSchoolsProvider =
+    fun americanSchoolsProvider(): AmericanSchoolsProvider =
         SchoolDiggerClient(properties = schoolDiggerProperties, restTemplate = RestTemplate())
 
     @Bean
@@ -131,12 +124,10 @@ class InfrastructureConfiguration(
     }
 
     @Bean
-    fun mongoUserRepository(
-        userDocumentConverter: UserDocumentConverter
-    ): MongoUserRepository {
+    fun mongoUserRepository(): MongoUserRepository {
         return MongoUserRepository(
             mongoClient(),
-            userDocumentConverter
+            userDocumentConverter()
         )
     }
 

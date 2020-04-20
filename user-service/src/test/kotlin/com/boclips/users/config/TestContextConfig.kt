@@ -5,14 +5,10 @@ import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
-import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
-import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
-import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.users.testsupport.KeycloakClientFake
-import com.boclips.videos.api.httpclient.SubjectsClient
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import org.mockito.Mockito
 import org.springframework.context.annotation.Bean
@@ -44,13 +40,7 @@ class TestContextConfig {
         Mockito.mock(CaptchaProvider::class.java)
 
     @Bean
-    fun userDocumentConverter(subjectService: SubjectService) = UserDocumentConverter(subjectService)
-
-    @Bean
-    fun subjectsClient() = SubjectsClientFake()
-
-    @Bean
-    fun cacheableSubjectsClient(subjectsClient: SubjectsClient) = CacheableSubjectsClient(subjectsClient)
+    fun fakeSubjectsClient() = SubjectsClientFake()
 
     @Bean
     fun eventBus(): SynchronousFakeEventBus {
