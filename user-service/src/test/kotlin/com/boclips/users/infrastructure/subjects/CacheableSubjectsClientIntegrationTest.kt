@@ -5,12 +5,8 @@ import com.boclips.videos.api.response.subject.SubjectResource
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.Awaitility.await
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 
 class CacheableSubjectsClientIntegrationTest : AbstractSpringIntegrationTest() {
-
-    @Autowired
-    lateinit var cacheableSubjectsClient: CacheableSubjectsClient
 
     @Test
     fun `it caches subjects`() {

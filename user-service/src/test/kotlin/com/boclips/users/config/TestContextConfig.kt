@@ -11,7 +11,6 @@ import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.user.UserDocumentConverter
-import com.boclips.users.testsupport.FakeSubjectService
 import com.boclips.users.testsupport.KeycloakClientFake
 import com.boclips.videos.api.httpclient.SubjectsClient
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
@@ -43,9 +42,6 @@ class TestContextConfig {
     @Bean
     fun captchaProvider(properties: GoogleRecaptchaProperties): CaptchaProvider =
         Mockito.mock(CaptchaProvider::class.java)
-
-    @Bean
-    fun subjectService() = FakeSubjectService()
 
     @Bean
     fun userDocumentConverter(subjectService: SubjectService) = UserDocumentConverter(subjectService)

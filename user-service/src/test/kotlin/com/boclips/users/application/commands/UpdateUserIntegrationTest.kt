@@ -1,28 +1,25 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.api.factories.UpdateUserRequestFactory
+import com.boclips.users.api.request.user.MarketingTrackingRequest
+import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.application.UserUpdatesCommandFactory
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.api.request.user.MarketingTrackingRequest
-import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
-import com.boclips.users.api.factories.UpdateUserRequestFactory
-import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
-import com.boclips.users.testsupport.factories.UserDocumentFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
@@ -60,18 +57,19 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `update user information`() {
-        subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+        val subject = saveSubject("Maths")
 
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
         saveUser(UserFactory.sample(id = userId))
-        updateUser(userId,
+        updateUser(
+            userId,
             UpdateUserRequest(
                 firstName = "josh",
                 lastName = "fleck",
                 hasOptedIntoMarketing = true,
-                subjects = listOf("subject-1"),
+                subjects = listOf(subject.id.value),
                 ages = listOf(4, 5, 6),
                 country = "USA",
                 referralCode = "1234",
@@ -94,8 +92,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(profile.hasOptedIntoMarketing).isTrue()
         assertThat(profile.ages).containsExactly(4, 5, 6)
         assertThat(profile.subjects).hasSize(1)
-        assertThat(profile.subjects.first().name).isEqualTo("Maths")
-        assertThat(profile.subjects.first().id).isEqualTo(SubjectId("subject-1"))
+        assertThat(profile.subjects).containsExactly(subject)
         assertThat(profile.role).isEqualTo("TEACHER")
         assertThat(user.referralCode).isEqualTo("1234")
         assertThat(user.marketingTracking.utmSource).isEqualTo("test-source")
@@ -107,7 +104,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `when a user is updated, their CRM profile is too`() {
-        subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+        val subject = saveSubject("Maths")
 
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
@@ -115,21 +112,21 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = userId, username = "josh@fleck.com")))
         updateUser(
             userId, UpdateUserRequest(
-            firstName = "josh",
-            lastName = "fleck",
-            hasOptedIntoMarketing = true,
-            subjects = listOf("subject-1"),
-            ages = listOf(4, 5, 6),
-            country = "USA",
-            referralCode = "1234",
-            utm = MarketingTrackingRequest(
-                source = "test-source",
-                medium = "test-medium",
-                campaign = "test-campaign",
-                term = "test-term",
-                content = "test-content"
+                firstName = "josh",
+                lastName = "fleck",
+                hasOptedIntoMarketing = true,
+                subjects = listOf(subject.id.value),
+                ages = listOf(4, 5, 6),
+                country = "USA",
+                referralCode = "1234",
+                utm = MarketingTrackingRequest(
+                    source = "test-source",
+                    medium = "test-medium",
+                    campaign = "test-campaign",
+                    term = "test-term",
+                    content = "test-content"
+                )
             )
-        )
         )
 
         argumentCaptor<List<CrmProfile>>().apply {
@@ -148,8 +145,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             assertThat(updatedProfile.hasOptedIntoMarketing).isTrue()
             assertThat(updatedProfile.ageRange).containsExactly(4, 5, 6)
             assertThat(updatedProfile.subjects).hasSize(1)
-            assertThat(updatedProfile.subjects.first().name).isEqualTo("Maths")
-            assertThat(updatedProfile.subjects.first().id).isEqualTo(SubjectId("subject-1"))
+            assertThat(updatedProfile.subjects.first()).isEqualTo(subject)
             assertThat(updatedProfile.marketingTracking.utmSource).isEqualTo("test-source")
             assertThat(updatedProfile.marketingTracking.utmMedium).isEqualTo("test-medium")
             assertThat(updatedProfile.marketingTracking.utmCampaign).isEqualTo("test-campaign")
@@ -340,17 +336,17 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         keycloakClientFake.createAccount(IdentityFactory.sample(id = userId.value))
         setSecurityContext(userId.value)
 
-        val mySubject = subjectService.addSubject(Subject(name = "Maths", id = SubjectId("subject-1")))
+        val mySubject = saveSubject("Maths")
 
         val persistedUser = updateUser(
             userId.value, UpdateUserRequest(
-            firstName = "josh",
-            lastName = "fleck",
-            hasOptedIntoMarketing = true,
-            subjects = listOf(mySubject.id.value),
-            ages = listOf(4, 5, 6),
-            role = "PARENT"
-        )
+                firstName = "josh",
+                lastName = "fleck",
+                hasOptedIntoMarketing = true,
+                subjects = listOf(mySubject.id.value),
+                ages = listOf(4, 5, 6),
+                role = "PARENT"
+            )
         )
 
         assertThat(persistedUser.profile!!.firstName).isEqualTo("josh")

@@ -2,8 +2,6 @@ package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -33,12 +31,8 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
 
     @Test
     fun `it publishes an event when user is updated`() {
-        val maths = subjectService.addSubject(
-            Subject(
-                id = SubjectId(value = "1"),
-                name = "Maths"
-            )
-        )
+        val maths = saveSubject("Maths")
+
         val district = organisationRepository.save(
             organisation = OrganisationFactory.sample(
                 details = OrganisationDetailsFactory.district(name = "District 9")
@@ -74,9 +68,8 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
         assertThat(event.user.firstName).isEqualTo("Dave")
         assertThat(event.user.lastName).isEqualTo("Davidson")
         assertThat(event.user.email).isEqualTo("dave@davidson.com")
-        assertThat(event.user.subjects).hasSize(1)
-        assertThat(event.user.subjects.first().id.value).isEqualTo("1")
-        assertThat(event.user.subjects.first().name).isEqualTo("Maths")
+        assertThat(event.user.subjects.first().id.value).isEqualTo(maths.id.value)
+        assertThat(event.user.subjects.first().name).isEqualTo(maths.name)
         assertThat(event.user.ages).hasSize(1)
         assertThat(event.user.ages.first()).isEqualTo(7)
         assertThat(event.user.organisation.id).isEqualTo(school.id.value)

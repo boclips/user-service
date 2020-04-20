@@ -5,6 +5,8 @@ import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.commands.AddCollectionToAccessRule
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.Identity
+import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
@@ -22,17 +24,20 @@ import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationService
+import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserService
 import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
-import com.boclips.users.presentation.converters.AccessRuleConverter
+import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
+import com.boclips.videos.api.request.subject.CreateSubjectRequest
+import com.boclips.videos.api.response.subject.SubjectResource
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.mongodb.MongoClient
 import com.nhaarman.mockitokotlin2.any
@@ -104,16 +109,13 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var marketingService: MarketingService
 
     @Autowired
-    lateinit var subjectService: FakeSubjectService
+    lateinit var subjectService: SubjectService
 
     @Autowired
     lateinit var organisationResolver: OrganisationResolver
 
     @Autowired
     lateinit var accessRuleRepository: AccessRuleRepository
-
-    @Autowired
-    lateinit var accessRuleConverter: AccessRuleConverter
 
     @Autowired
     lateinit var fakeAmericanSchoolsProvider: FakeAmericanSchoolsProvider
@@ -132,6 +134,9 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var organisationService: OrganisationService
+
+    @Autowired
+    lateinit var cacheableSubjectsClient: CacheableSubjectsClient
 
     @LocalServerPort
     var randomServerPort: Int = 0
@@ -153,7 +158,7 @@ abstract class AbstractSpringIntegrationTest {
         mongoClient.getDatabase(MongoDatabase.DB_NAME).drop()
         keycloakClientFake.clear()
         wireMockServer.resetAll()
-        subjectService.reset()
+        cacheableSubjectsClient.flushSubjectsCache()
         subjectsClient.clear()
 
         Mockito.reset(captchaProvider)
@@ -241,6 +246,12 @@ abstract class AbstractSpringIntegrationTest {
     fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
         return AccessRule.IncludedVideos(id = AccessRuleId(), name = name, videoIds = videoIds)
             .let(accessRuleRepository::save)
+    }
+
+    fun saveSubject(name: String): Subject {
+        subjectsClient.create(CreateSubjectRequest(name))
+        return subjectsClient.findAll().find { it.name == name }!!
+            .let { resource -> Subject(id = SubjectId(resource.id), name = resource.name!!) }
     }
 
     fun ResultActions.andExpectApiErrorPayload(): ResultActions {

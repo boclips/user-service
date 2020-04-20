@@ -1,7 +1,5 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserUpdate
@@ -130,18 +128,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `updating user subjects`() {
-        val maths = subjectService.addSubject(
-            Subject(
-                id = SubjectId(value = "1"),
-                name = "Maths"
-            )
-        )
-        val physics = subjectService.addSubject(
-            Subject(
-                id = SubjectId(value = "2"),
-                name = "Physics"
-            )
-        )
+        val maths = saveSubject("Maths")
+        val physics = saveSubject("Physics")
 
         val user = userRepository.create(
             UserFactory.sample(

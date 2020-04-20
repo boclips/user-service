@@ -3,8 +3,6 @@ package com.boclips.users.presentation.controllers
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -161,7 +159,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class UpdateUser {
         @Test
         fun `updates a user`() {
-            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            val subject = saveSubject("Maths")
             val user = saveUser(UserFactory.sample())
             val school = saveSchool(
                 school = OrganisationDetailsFactory.school(
@@ -178,7 +176,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                             """
                         {"firstName": "jane",
                          "lastName": "doe",
-                         "subjects": ["subject-1"],
+                         "subjects": ["${subject.id.value}"],
                          "ages": [4,5,6],
                          "country": "USA",
                          "state": "CA",
@@ -263,7 +261,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `invalid state`() {
-            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            saveSubject("Maths")
             saveUser(UserFactory.sample())
             saveSchool(
                 school = OrganisationDetailsFactory.school(
@@ -297,6 +295,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `successful onboarding sets up the trial access date`() {
+            val subject = saveSubject("Maths")
             val user = setupSampleUserBeforeOnboarding("user-id")
 
             val userBeforeOnboarding = userRepository.findById(user.id)
@@ -309,7 +308,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                             """
                         {"firstName": "jane",
                          "lastName": "doe",
-                         "subjects": ["subject-1"],
+                         "subjects": ["${subject.id.value}"],
                          "ages": [4,5,6],
                          "country": "USA",
                          "state": "CA",
@@ -339,7 +338,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveUser(user)
 
-            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            val subject = saveSubject("Maths")
             saveSchool(
                 school = OrganisationDetailsFactory.school(
                     name = "San Fran Forest School",
@@ -360,7 +359,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                             """
                         {"firstName": "jane",
                          "lastName": "doe",
-                         "subjects": ["subject-1"],
+                         "subjects": ["${subject.id.value}"],
                          "ages": [4,5,6],
                          "country": "USA",
                          "state": "CA",
@@ -390,7 +389,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveUser(user)
 
-            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
+            val maths = saveSubject("Maths")
             saveSchool(
                 school = OrganisationDetailsFactory.school(
                     name = "San Fran Forest School",
@@ -408,7 +407,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                             """
                         {"firstName": "jane",
                          "lastName": "doe",
-                         "subjects": ["subject-1"],
+                         "subjects": ["${maths.id.value}"],
                          "ages": [4,5,6],
                          "country": "USA",
                          "state": "CA",
@@ -425,6 +424,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `updates for an onboarded user does not change the access expiry`() {
+            val subject = saveSubject("Maths")
             val user = setupSampleUserBeforeOnboarding("user-id")
 
             val userBeforeOnboarding = userRepository.findById(user.id)
@@ -437,7 +437,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                             """
                         {"firstName": "jane",
                          "lastName": "doe",
-                         "subjects": ["subject-1"],
+                         "subjects": ["${subject.id.value}"],
                          "ages": [4,5,6],
                          "country": "USA",
                          "state": "CA",
@@ -485,7 +485,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveUser(user)
 
-            subjectService.addSubject(Subject(name = "Maths", id = SubjectId(value = "subject-1")))
             saveSchool(
                 school = OrganisationDetailsFactory.school(
                     name = "San Fran Forest School",

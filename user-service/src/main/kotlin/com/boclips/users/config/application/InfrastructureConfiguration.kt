@@ -110,7 +110,6 @@ class InfrastructureConfiguration(
     @Bean
     fun cacheableSubjectsClient(subjectsClient: SubjectsClient) = CacheableSubjectsClient(subjectsClient)
 
-    @Profile("!test")
     @Bean
     fun subjectService(cacheableSubjectsClient: CacheableSubjectsClient) =
         VideoServiceSubjectsClient(cacheableSubjectsClient)
