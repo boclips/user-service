@@ -1,6 +1,9 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserUpdated
+import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
@@ -8,10 +11,39 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
+import com.boclips.eventbus.domain.Subject as EventSubject
+import com.boclips.eventbus.domain.SubjectId as EventSubjectId
 
-internal class EventConverterTest : AbstractSpringIntegrationTest() {
+class EventConverterTest : AbstractSpringIntegrationTest() {
+
+    @Test
+    fun `converting user to event`() {
+        val user = UserFactory.sample(
+            profile = ProfileFactory.sample(
+                firstName = "John",
+                lastName = "Johnson",
+                subjects = listOf(Subject(id = SubjectId("subject-id"), name = "maths")),
+                ages = listOf(5,6,7,8),
+                school = OrganisationFactory.school(
+                    school = OrganisationDetailsFactory.school(name = "School name")
+                )
+            )
+        )
+
+        val eventUser = EventConverter().toEventUser(user)
+
+        assertThat(eventUser.profile.firstName).isEqualTo("John")
+        assertThat(eventUser.profile.lastName).isEqualTo("Johnson")
+        assertThat(eventUser.profile.subjects).containsExactly(EventSubject(EventSubjectId("subject-id"), "maths"))
+        assertThat(eventUser.profile.ages).containsExactly(5,6,7,8)
+        assertThat(eventUser.profile.school?.name).isEqualTo("School name")
+    }
+
+
     @Test
     fun `when user is assigned only to a district, the parent is set null`() {
         val district = organisationRepository.save(

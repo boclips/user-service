@@ -38,6 +38,7 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
             },
             updateUserRequest.role?.let { UserUpdate.ReplaceRole(role = it)},
             organisation?.let { UserUpdate.ReplaceOrganisation(it) },
+            @Suppress("UNCHECKED_CAST")
             organisation?.let { if(it.details is School) UserUpdate.ReplaceProfileSchool(it as Organisation<School>) else null}
         )
     }
