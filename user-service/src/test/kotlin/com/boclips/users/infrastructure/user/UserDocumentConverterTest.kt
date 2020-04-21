@@ -49,7 +49,8 @@ class UserDocumentConverterTest {
             ),
             accessExpiresOn = null,
             createdAt = Instant.now(),
-            role = "TEACHER"
+            role = "TEACHER",
+            profileSchool = OrganisationDocumentFactory.sample(name = "School")
         )
 
         val convertedUser = userDocumentConverter.convertToUser(document)
@@ -64,6 +65,7 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.profile!!.subjects).hasSize(1)
         assertThat(convertedUser.profile!!.subjects[0].name).isEqualTo("maths")
         assertThat(convertedUser.profile!!.hasOptedIntoMarketing).isEqualTo(true)
+        assertThat(convertedUser.profile!!.school?.details?.name).isEqualTo("School")
         assertThat(convertedUser.marketingTracking.utmTerm).isEqualTo("utmTerm")
         assertThat(convertedUser.marketingTracking.utmContent).isEqualTo("utmContent")
         assertThat(convertedUser.marketingTracking.utmMedium).isEqualTo("utmMedium")

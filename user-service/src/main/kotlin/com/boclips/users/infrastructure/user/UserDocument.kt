@@ -22,7 +22,8 @@ data class UserDocument(
     var accessExpiresOn: Instant?,
     var createdAt: Instant,
     var hasLifetimeAccess: Boolean,
-    var role: String?
+    var role: String?,
+    var profileSchool: OrganisationDocument?
 ) {
 
     companion object {
@@ -50,7 +51,8 @@ data class UserDocument(
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
                 createdAt = user.identity.createdAt.toInstant(),
                 hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false,
-                role = user.profile?.role
+                role = user.profile?.role,
+                profileSchool = user.profile?.school?.let(OrganisationDocumentConverter::toDocument)
             )
         }
     }

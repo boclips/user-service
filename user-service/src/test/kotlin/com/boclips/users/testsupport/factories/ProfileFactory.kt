@@ -2,6 +2,8 @@ package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.Profile
 import com.boclips.users.domain.model.Subject
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.School
 
 class ProfileFactory {
     companion object {
@@ -11,14 +13,16 @@ class ProfileFactory {
             firstName: String = "Joe",
             lastName: String = "Dough",
             hasOptedIntoMarketing: Boolean = true,
-            role: String? = "TEACHER"
+            role: String? = "TEACHER",
+            school: Organisation<School>? = null
         ) = Profile(
             subjects = subjects,
             ages = ages,
             firstName = firstName,
             lastName = lastName,
             hasOptedIntoMarketing = hasOptedIntoMarketing,
-            role = role
+            role = role,
+            school = school
         )
     }
 }

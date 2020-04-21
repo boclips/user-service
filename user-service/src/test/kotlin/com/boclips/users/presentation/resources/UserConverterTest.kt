@@ -40,6 +40,7 @@ class UserConverterTest {
                         firstName = "Thierry",
                         lastName = "Henry",
                         ages = listOf(1, 2, 3),
+                        school = OrganisationFactory.school(school = OrganisationDetailsFactory.school(name = "Elm Street School")),
                         subjects = listOf(Subject(SubjectId("subject-id"), name = "Math"))
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id"),
@@ -63,6 +64,7 @@ class UserConverterTest {
                 "subject-id"
             )
         )
+        assertThat(userResource.school?.name).isEqualTo("Elm Street School")
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
         assertThat(userResource.organisationAccountId).isEqualTo("1234")

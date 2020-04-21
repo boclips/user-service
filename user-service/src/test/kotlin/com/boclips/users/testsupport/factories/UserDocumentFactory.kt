@@ -31,7 +31,8 @@ class UserDocumentFactory {
             accessExpiresOn: Instant? = null,
             createdAt: Instant = Instant.now(),
             hasLifetimeAccess: Boolean = false,
-            role: String = "TEACHER"
+            role: String = "TEACHER",
+            profileSchool: OrganisationDocument? = null
         ): UserDocument = UserDocument(
             _id = id,
             firstName = firstName,
@@ -49,7 +50,8 @@ class UserDocumentFactory {
             accessExpiresOn = accessExpiresOn,
             createdAt = createdAt,
             hasLifetimeAccess = hasLifetimeAccess,
-            role = role
+            role = role,
+            profileSchool = profileSchool
         )
     }
 }

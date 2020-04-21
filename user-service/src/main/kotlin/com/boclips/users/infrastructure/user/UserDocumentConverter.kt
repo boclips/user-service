@@ -8,6 +8,8 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import java.time.ZoneOffset
@@ -34,7 +36,8 @@ data class UserDocumentConverter(
                         )
                     } ?: emptyList(),
                 ages = userDocument.ageRange.orEmpty(),
-                role = userDocument.role
+                role = userDocument.role,
+                school = userDocument.profileSchool?.let(OrganisationDocumentConverter::schoolFromDocumentOrNull)
             ),
             teacherPlatformAttributes = convertTeacherPlatformAttributes(userDocument),
             analyticsId = userDocument.analyticsId?.let { AnalyticsId(value = it) },

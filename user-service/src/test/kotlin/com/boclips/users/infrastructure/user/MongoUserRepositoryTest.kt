@@ -126,6 +126,17 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `updating profile school`() {
+        val school = organisationRepository.save(OrganisationFactory.school())
+        val user = userRepository.create(UserFactory.sample(profile = null))
+
+        val updatedUser = userRepository.update(user, UserUpdate.ReplaceProfileSchool(school))
+
+        assertThat(updatedUser.profile?.school).isEqualTo(school)
+        assertThat(userRepository.findById(user.id)).isEqualTo(updatedUser)
+    }
+
+    @Test
     fun `updating user subjects`() {
         val maths = saveSubject("Maths")
         val physics = saveSubject("Physics")

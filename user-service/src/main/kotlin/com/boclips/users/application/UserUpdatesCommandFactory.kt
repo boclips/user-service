@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.api.request.user.UpdateUserRequest
+import com.boclips.users.domain.model.organisation.School
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,7 +37,8 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
                 )
             },
             updateUserRequest.role?.let { UserUpdate.ReplaceRole(role = it)},
-            organisation?.let { UserUpdate.ReplaceOrganisation(it) }
+            organisation?.let { UserUpdate.ReplaceOrganisation(it) },
+            organisation?.let { if(it.details is School) UserUpdate.ReplaceProfileSchool(it as Organisation<School>) else null}
         )
     }
 

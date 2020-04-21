@@ -1,10 +1,12 @@
 package com.boclips.users.presentation.converters
 
 import com.boclips.users.api.response.SubjectResource
+import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.user.TeacherPlatformAttributesResource
 import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import org.springframework.stereotype.Component
 
@@ -26,10 +28,8 @@ class UserConverter(
             email = user.identity.email,
             analyticsId = user.analyticsId?.value,
             organisationAccountId = user.organisation?.id?.value,
-            organisation = user.organisation?.let { orgAccount ->
-                    OrganisationDetailsConverter()
-                        .toResource(orgAccount.details)
-            },
+            organisation = user.organisation?.let(this::toOrganisationResource),
+            school = user.profile?.school?.let(this::toOrganisationResource),
             teacherPlatformAttributes = user.teacherPlatformAttributes?.let {
                 TeacherPlatformAttributesResource(
                     shareCode = user.teacherPlatformAttributes.shareCode
@@ -41,5 +41,9 @@ class UserConverter(
                 userLinkBuilder.accessRulesLink(UserId(user.id.value))
             ).map { it.rel.value() to it }.toMap()
         )
+    }
+
+    private fun toOrganisationResource(organisation: Organisation<*>): OrganisationDetailsResource {
+        return OrganisationDetailsConverter().toResource(organisation.details)
     }
 }

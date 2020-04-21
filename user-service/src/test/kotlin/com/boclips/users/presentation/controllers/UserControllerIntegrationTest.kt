@@ -30,6 +30,7 @@ import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.data.Offset
 import org.bson.types.ObjectId
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
@@ -192,6 +193,11 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.lastName", equalTo("doe")))
                 .andExpect(jsonPath("$.ages", equalTo(listOf(4, 5, 6))))
                 .andExpect(jsonPath("$.subjects", hasSize<Int>(1)))
+                .andExpect(jsonPath("$.school.name", equalTo("San Fran Forest School")))
+                .andExpect(jsonPath("$.school.state.name", equalTo("California")))
+                .andExpect(jsonPath("$.school.state.id", equalTo("CA")))
+                .andExpect(jsonPath("$.school.country.name", equalTo("United States")))
+                .andExpect(jsonPath("$.school.country.id", equalTo("USA")))
                 .andExpect(jsonPath("$.organisationAccountId", equalTo(school.id.value)))
                 .andExpect(jsonPath("$.organisation.name", equalTo("San Fran Forest School")))
                 .andExpect(jsonPath("$.organisation.state.name", equalTo("California")))

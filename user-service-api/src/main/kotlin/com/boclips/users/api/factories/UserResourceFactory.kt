@@ -18,7 +18,8 @@ class UserResourceFactory {
             analyticsId: String = "321",
             teacherPlatformAttributes: TeacherPlatformAttributesResource? = null,
             organisationAccountId: String = "org123",
-            organisation: OrganisationDetailsResource? = null
+            organisation: OrganisationDetailsResource? = null,
+            school: OrganisationDetailsResource? = null
         ): UserResource =
             UserResource(
                 id = id,
@@ -30,7 +31,9 @@ class UserResourceFactory {
                 analyticsId = analyticsId,
                 teacherPlatformAttributes = teacherPlatformAttributes,
                 organisationAccountId = organisationAccountId,
-                organisation = organisation
+                organisation = organisation,
+                school = school
+
             )
     }
 }

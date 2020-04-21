@@ -30,6 +30,8 @@ data class UserResource(
     val organisationAccountId: String?,
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
     val organisation: OrganisationDetailsResource?,
+    @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
+    val school: OrganisationDetailsResource?,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var _links: Map<String, Link>? = null
 )

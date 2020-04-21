@@ -4,6 +4,7 @@ import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.api.request.user.MarketingTrackingRequest
 import com.boclips.users.api.request.user.UpdateUserRequest
+import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
@@ -117,11 +118,22 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `converts organisation change to a command`() {
-        val organisation = OrganisationFactory.school()
-        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(), organisation)
+    fun `school change converted to organisation and profile school updates`() {
+        val school = OrganisationFactory.school()
+        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(), school)
+
+        assertThat(commands).hasSize(2)
+        assertThat(commands).hasAtLeastOneElementOfType(UserUpdate.ReplaceOrganisation::class.java)
+        assertThat(commands).hasAtLeastOneElementOfType(UserUpdate.ReplaceProfileSchool::class.java)
+    }
+
+    @Test
+    fun `district change converted to organisation update only`() {
+        val district = OrganisationFactory.district()
+        val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(), district)
 
         assertThat(commands).hasSize(1)
+        assertThat(commands).hasAtLeastOneElementOfType(UserUpdate.ReplaceOrganisation::class.java)
     }
 
     @Test

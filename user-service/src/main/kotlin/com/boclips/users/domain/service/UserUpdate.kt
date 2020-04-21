@@ -2,6 +2,7 @@ package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.School
 import java.time.ZonedDateTime
 
 sealed class UserUpdate {
@@ -12,6 +13,7 @@ sealed class UserUpdate {
     data class ReplaceHasOptedIntoMarketing(val hasOptedIntoMarketing: Boolean) : UserUpdate()
     data class ReplaceReferralCode(val referralCode: String) : UserUpdate()
     data class ReplaceOrganisation(val organisation: Organisation<*>) : UserUpdate()
+    data class ReplaceProfileSchool(val school: Organisation<School>) : UserUpdate()
     data class ReplaceRole(val role: String) : UserUpdate()
     data class ReplaceMarketingTracking(
         val utmCampaign: String?,

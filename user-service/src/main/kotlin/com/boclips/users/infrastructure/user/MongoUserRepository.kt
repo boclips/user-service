@@ -72,6 +72,9 @@ class MongoUserRepository(
                 is UserUpdate.ReplaceRole -> userDocument.apply {
                     role = updateCommand.role
                 }
+                is UserUpdate.ReplaceProfileSchool -> userDocument.apply {
+                    profileSchool = OrganisationDocumentConverter.toDocument(updateCommand.school)
+                }
             }
         }
 

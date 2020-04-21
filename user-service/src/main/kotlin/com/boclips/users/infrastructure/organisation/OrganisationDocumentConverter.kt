@@ -57,6 +57,15 @@ object OrganisationDocumentConverter {
         )
     }
 
+    fun schoolFromDocumentOrNull(organisationDocument: OrganisationDocument): Organisation<School>? {
+        val organisation = fromDocument(organisationDocument)
+        if(organisation.details is School) {
+            @Suppress("UNCHECKED_CAST")
+            return organisation as Organisation<School>
+        }
+        return null
+    }
+
     fun toDocument(organisation: Organisation<*>): OrganisationDocument {
 
         val district = when (organisation.details) {
