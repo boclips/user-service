@@ -40,6 +40,6 @@ class DomainConfiguration(
 
     @Bean
     fun eventConverter(): EventConverter {
-        return EventConverter(mongoOrganisationRepository)
+        return EventConverter()
     }
 }

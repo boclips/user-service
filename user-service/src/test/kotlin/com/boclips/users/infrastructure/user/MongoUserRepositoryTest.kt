@@ -81,7 +81,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                     hasOptedIntoMarketing = false
                 ),
                 referralCode = "",
-                organisationId = null
+                organisation = null
             )
         )
 
@@ -122,7 +122,6 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
         val updatedUser = userRepository.update(user, UserUpdate.ReplaceOrganisation(newOrganisation))
 
         assertThat(updatedUser.organisation).isEqualTo(newOrganisation)
-        assertThat(updatedUser.organisationId).isEqualTo(newOrganisation.id)
         assertThat(userRepository.findById(user.id)).isEqualTo(updatedUser)
     }
 
@@ -246,36 +245,36 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `find users by organisation id`() {
-        val organisationId1 = OrganisationId()
-        val organisationId2 = OrganisationId()
+        val organisation1 = OrganisationFactory.school()
+        val organisation2 = OrganisationFactory.school()
 
         userRepository.create(
             UserFactory.sample(
-                organisationId = organisationId1
+                organisation = organisation1
             )
         )
         userRepository.create(
             UserFactory.sample(
-                organisationId = organisationId2
+                organisation = organisation2
             )
         )
 
-        val usersInOrg = userRepository.findAllByOrganisationId(organisationId1)
+        val usersInOrg = userRepository.findAllByOrganisationId(organisation1.id)
 
         assertThat(usersInOrg).hasSize(1)
     }
 
     @Test
     fun `find users matching domain and not being part of organisation`() {
-        val organisationId1 = OrganisationId()
-        val organisationId2 = OrganisationId()
+        val organisation1 = OrganisationFactory.school()
+        val organisation2 = OrganisationFactory.school()
 
         userRepository.create(
             UserFactory.sample(
                 identity = IdentityFactory.sample(
                     id = "user-1",
                     username = "user1@me.com"
-                ), organisationId = organisationId1
+                ), organisation = organisation1
             )
         )
         userRepository.create(
@@ -283,7 +282,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 identity = IdentityFactory.sample(
                     id = "user-2",
                     username = "user1@me.com"
-                ), organisationId = organisationId2
+                ), organisation = organisation2
             )
         )
         userRepository.create(
@@ -291,14 +290,14 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 identity = IdentityFactory.sample(
                     id = "user-3",
                     username = "user1@meme.com"
-                ), organisationId = organisationId1
+                ), organisation = organisation1
             )
         )
 
-        val matches = userRepository.findOrphans(domain = "me.com", organisationId = organisationId2)
+        val matches = userRepository.findOrphans(domain = "me.com", organisationId = organisation2.id)
 
         assertThat(matches).hasSize(1)
         assertThat(matches.first().id.value).isEqualTo("user-1")
-        assertThat(matches.first().organisationId).isEqualTo(organisationId1)
+        assertThat(matches.first().organisation?.id).isEqualTo(organisation1.id)
     }
 }

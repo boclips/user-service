@@ -8,7 +8,6 @@ import com.boclips.users.application.UserUpdatesCommandFactory
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.school.Country
@@ -187,7 +186,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 organisationRepository.lookupSchools(schoolName = "new school", countryCode = "ESP")
                     .firstOrNull()
             assertThat(newSchool).isNotNull
-            assertThat(updatedUser.organisationId?.value).isEqualTo(newSchool?.id)
+            assertThat(updatedUser.organisation?.id?.value).isEqualTo(newSchool?.id)
         }
 
         @Test
@@ -222,7 +221,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val newSchool =
                 organisationRepository.lookupSchools(schoolName = school.details.name, countryCode = "ESP")
             assertThat(newSchool).hasSize(1)
-            assertThat(updatedUser.organisationId?.value).isEqualTo(newSchool.first().id)
+            assertThat(updatedUser.organisation?.id?.value).isEqualTo(newSchool.first().id)
         }
     }
 
@@ -261,7 +260,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val newSchools =
                 organisationRepository.lookupSchools(schoolName = school.details.name, countryCode = "USA")
             assertThat(newSchools).hasSize(1)
-            assertThat(updatedUser.organisationId?.value).isEqualTo(newSchools.first().id)
+            assertThat(updatedUser.organisation?.id?.value).isEqualTo(newSchools.first().id)
         }
 
         @Test
@@ -282,7 +281,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = userId),
-                    organisationId = school.id
+                    organisation = school
                 )
             )
             val updatedUser = updateUser(
@@ -296,7 +295,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             val organisationAccount =
-                organisationRepository.findSchoolById(updatedUser.organisationId!!)!!
+                organisationRepository.findSchoolById(updatedUser.organisation!!.id)!!
             assertThat(organisationAccount.details.country.isUSA()).isEqualTo(true)
             assertThat(organisationAccount.details.state!!.id).isEqualTo("AZ")
             assertThat(organisationAccount.details.externalId).isNull()
@@ -385,7 +384,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                     profile = ProfileFactory.sample(
                         firstName = ""
                     ),
-                    organisationId = null
+                    organisation = null
                 )
 
             userRepository.create(newUser)

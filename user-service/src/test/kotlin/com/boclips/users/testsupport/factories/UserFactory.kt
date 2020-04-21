@@ -7,7 +7,6 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.OrganisationId
 import java.time.ZonedDateTime
 
 class UserFactory {
@@ -21,7 +20,6 @@ class UserFactory {
             identity: Identity = IdentityFactory.sample(),
             profile: Profile? = ProfileFactory.sample(),
             teacherPlatformAttributes: TeacherPlatformAttributes? = TeacherPlatformAttributesFactory.sample(),
-            organisationId: OrganisationId? = null,
             organisation: Organisation<*>? = null,
             accessExpiresOn: ZonedDateTime? = null
         ) = User(
@@ -31,7 +29,6 @@ class UserFactory {
             referralCode = referralCode,
             teacherPlatformAttributes = teacherPlatformAttributes,
             marketingTracking = marketing,
-            organisationId = organisationId,
             organisation = organisation,
             accessExpiresOn = accessExpiresOn
         )

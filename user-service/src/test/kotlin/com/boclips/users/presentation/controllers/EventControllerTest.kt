@@ -34,7 +34,7 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
         saveUser(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = userId),
-                organisationId = organisationAccount.id
+                organisation = organisationAccount
             )
         )
 

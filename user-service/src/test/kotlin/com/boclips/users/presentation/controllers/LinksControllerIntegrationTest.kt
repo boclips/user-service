@@ -72,7 +72,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(firstName = ""),
-                organisationId = null
+                organisation = null
             )
         )
 
@@ -99,7 +99,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
-                organisationId = organisationAccount.id
+                organisation = organisationAccount
             )
         )
 
@@ -127,7 +127,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
-                organisationId = organisationAccount.id,
+                organisation = organisationAccount,
                 accessExpiresOn = null
             )
         )
@@ -147,7 +147,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
-                organisationId = organisationAccount.id,
+                organisation = organisationAccount,
                 accessExpiresOn = ZonedDateTime.now().plusDays(1)
             )
         )
@@ -167,7 +167,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = "a-user-id"),
                 profile = ProfileFactory.sample(),
-                organisationId = organisationAccount.id,
+                organisation = organisationAccount,
                 accessExpiresOn = ZonedDateTime.now().minusDays(1)
             )
         )

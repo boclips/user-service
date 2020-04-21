@@ -52,8 +52,7 @@ class OrganisationController(
     @PostMapping("/organisations/{id}/associate")
     @Deprecated("This endpoint follows a bad practice as associate is not a rest resource. It serves a temporary need to associate orphan users.")
     fun assignUsers(@PathVariable id: String): ResponseEntity<UsersResource> {
-        val organisation = getOrganisationById(id)
-        val resources = assignUsersByOrganisationDomain(id).map { (userConverter.toUserResource(it, organisation)) }
+        val resources = assignUsersByOrganisationDomain(id).map(userConverter::toUserResource)
         return ResponseEntity.ok(
             UsersResource(
                 _embedded = UserResourceWrapper(

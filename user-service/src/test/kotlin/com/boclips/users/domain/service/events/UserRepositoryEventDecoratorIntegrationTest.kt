@@ -20,7 +20,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
             organisationRepository.save(organisation = OrganisationFactory.sample(details = OrganisationDetailsFactory.school()))
         val user = userRepository.create(
             UserFactory.sample(
-                organisationId = organisation.id
+                organisation = organisation
             )
         )
 

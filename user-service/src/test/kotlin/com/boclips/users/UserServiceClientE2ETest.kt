@@ -65,7 +65,7 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "123"),
                     profile = Profile(firstName = "Mona", lastName = "The Vampire"),
-                    organisationId = organisation.id
+                    organisation = organisation
                 )
             )
 

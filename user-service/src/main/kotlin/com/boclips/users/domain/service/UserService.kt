@@ -25,12 +25,12 @@ class UserService(
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
-        val schools = organisationRepository.findSchools()
+        val schoolIds = organisationRepository.findSchools()
+            .map { it.id }
+            .toSet()
 
-        val allTeachers = userRepository.findAll().filter {
-            it.organisationId == null || schools.map { it.id }.contains(
-                it.organisationId
-            )
+        val allTeachers = userRepository.findAll().filter { user ->
+            user.organisation == null || schoolIds.contains(user.organisation.id)
         }
 
         logger.info { "Fetched ${allTeachers.size} teacher users from database" }
@@ -61,7 +61,7 @@ class UserService(
                     utmContent = newTeacher.utmContent,
                     utmTerm = newTeacher.utmTerm
                 ),
-                organisationId = null,
+                organisation = null,
                 accessExpiresOn = null
             )
         )
@@ -88,7 +88,6 @@ class UserService(
             referralCode = null,
             analyticsId = null,
             organisation = organisation,
-            organisationId = organisation?.id,
             accessExpiresOn = null
         )
 

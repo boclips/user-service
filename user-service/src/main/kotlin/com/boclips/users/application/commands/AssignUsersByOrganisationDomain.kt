@@ -47,7 +47,7 @@ class AssignUsersByOrganisationDomain(
         val orphanUsers = domain?.let { userRepository.findOrphans(it, organisation.id) } ?: emptyList()
 
         return orphanUsers.filter { user ->
-            !childOrganisations.map { it.id }.contains(user.organisationId)
+            !childOrganisations.map { it.id }.contains(user.organisation?.id)
         }
     }
 }

@@ -44,8 +44,9 @@ class UserDocumentConverterTest {
                 utmSource = "utmSource",
                 utmCampaign = "utmCampaign"
             ),
-            organisationId = "new-org-id",
-            organisation = OrganisationDocumentFactory.sample(name = "organisation name"),
+            organisation = OrganisationDocumentFactory.sample(
+                name = "organisation name"
+            ),
             accessExpiresOn = null,
             createdAt = Instant.now(),
             role = "TEACHER"
@@ -68,7 +69,6 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.marketingTracking.utmMedium).isEqualTo("utmMedium")
         assertThat(convertedUser.marketingTracking.utmSource).isEqualTo("utmSource")
         assertThat(convertedUser.marketingTracking.utmCampaign).isEqualTo("utmCampaign")
-        assertThat(convertedUser.organisationId!!.value).isEqualTo("new-org-id")
         assertThat(convertedUser.organisation?.details?.name).isEqualTo("organisation name")
         assertThat(convertedUser.accessExpiresOn).isNull()
         assertThat(convertedUser.profile!!.role).isEqualTo("TEACHER")

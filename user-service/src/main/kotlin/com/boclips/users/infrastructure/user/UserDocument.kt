@@ -18,7 +18,6 @@ data class UserDocument(
     var shareCode: String?,
     var hasOptedIntoMarketing: Boolean?,
     var marketing: MarketingTrackingDocument?,
-    var organisationId: String?,
     var organisation: OrganisationDocument?,
     var accessExpiresOn: Instant?,
     var createdAt: Instant,
@@ -47,7 +46,6 @@ data class UserDocument(
                     utmTerm = user.marketingTracking.utmTerm,
                     utmContent = user.marketingTracking.utmContent
                 ),
-                organisationId = user.organisationId?.value,
                 organisation = user.organisation?.let(OrganisationDocumentConverter::toDocument),
                 accessExpiresOn = user.accessExpiresOn?.toInstant(),
                 createdAt = user.identity.createdAt.toInstant(),

@@ -5,11 +5,8 @@ import com.boclips.eventbus.domain.SubjectId
 import com.boclips.eventbus.domain.user.Organisation
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.service.OrganisationRepository
 
-class EventConverter(
-    private val organisationRepository: OrganisationRepository
-) {
+class EventConverter {
 
     fun toEventUser(user: User): com.boclips.eventbus.domain.user.User {
         return com.boclips.eventbus.domain.user.User.builder()
@@ -22,15 +19,9 @@ class EventConverter(
             }.orEmpty())
             .ages(user.profile?.ages?.toMutableList().orEmpty())
             .isBoclipsEmployee(user.identity.isBoclipsEmployee())
-            .organisation(toEventOrganisation(user))
+            .organisation(user.organisation?.let(this::toEventOrganisation))
             .role(user.profile?.role)
             .build()
-    }
-
-    private fun toEventOrganisation(user: User): Organisation? {
-        val organisationId = user.organisationId ?: return null
-        val organisation = organisationRepository.findOrganisationById(organisationId) ?: return null
-        return toEventOrganisation(organisation)
     }
 
     fun toEventOrganisation(organisation: com.boclips.users.domain.model.organisation.Organisation<*>): Organisation {

@@ -56,8 +56,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
                 utmCampaign = "test-campaign",
                 utmTerm = "test-term",
                 utmContent = "test-content"
-            ),
-            organisationId = OrganisationId("org-id")
+            )
         )
 
         val crmProfile: CrmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))!!

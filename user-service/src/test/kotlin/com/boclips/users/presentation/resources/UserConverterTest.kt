@@ -43,14 +43,13 @@ class UserConverterTest {
                         subjects = listOf(Subject(SubjectId("subject-id"), name = "Math"))
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id"),
-                    organisationId = OrganisationId("1234")
-                ),
-                organisation = OrganisationFactory.sample(
-                    id = OrganisationId("1234"),
-                    details = OrganisationDetailsFactory.school(
-                        name = "My school",
-                        state = State.fromCode("NY"),
-                        country = Country.fromCode("USA")
+                    organisation = OrganisationFactory.sample(
+                        id = OrganisationId("1234"),
+                        details = OrganisationDetailsFactory.school(
+                            name = "My school",
+                            state = State.fromCode("NY"),
+                            country = Country.fromCode("USA")
+                        )
                     )
                 )
             )
@@ -78,19 +77,17 @@ class UserConverterTest {
     fun `converts teachers platform specific fields`() {
         val user = UserFactory.sample(
             teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "TRWN"),
-            organisationId = OrganisationId("1234")
-        )
-
-        val organisationAccount = OrganisationFactory.sample(
-            id = OrganisationId("1234"),
-            details = OrganisationDetailsFactory.school(
-                name = "My school",
-                state = State.fromCode("NY"),
-                country = Country.fromCode("USA")
+            organisation = OrganisationFactory.sample(
+                id = OrganisationId("1234"),
+                details = OrganisationDetailsFactory.school(
+                    name = "My school",
+                    state = State.fromCode("NY"),
+                    country = Country.fromCode("USA")
+                )
             )
         )
 
-        val userResource = userConverter.toUserResource(user, organisationAccount)
+        val userResource = userConverter.toUserResource(user)
 
         assertThat(userResource.teacherPlatformAttributes).isNotNull
         assertThat(userResource.teacherPlatformAttributes!!.shareCode).isEqualTo("TRWN")
@@ -101,9 +98,8 @@ class UserConverterTest {
         val userResource =
             userConverter.toUserResource(
                 user = UserFactory.sample(
-                    organisationId = null
-                ),
-                organisation = null
+                    organisation = null
+                )
             )
 
         assertThat(userResource.organisation).isNull()

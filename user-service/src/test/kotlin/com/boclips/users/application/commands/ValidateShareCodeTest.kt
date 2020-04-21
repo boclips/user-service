@@ -56,7 +56,7 @@ class ValidateShareCodeTest : AbstractSpringIntegrationTest() {
                 referralCode = null,
                 teacherPlatformAttributes = null,
                 marketingTracking = MarketingTrackingFactory.sample(),
-                organisationId = null,
+                organisation = null,
                 accessExpiresOn = null
             )
         )

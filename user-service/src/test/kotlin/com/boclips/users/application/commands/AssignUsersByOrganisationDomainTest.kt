@@ -1,8 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.service.UniqueId
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
@@ -19,7 +18,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `assigns users that have the same domain but are not linked directly or indirectly to the organisation`() {
-        val user = createUser(organisationId = UniqueId(), username = "rebecca@district-domain.com")
+        val user = createUser(organisation = null, username = "rebecca@district-domain.com")
 
         val district =
             organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
@@ -28,7 +27,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
 
         assertThat(changedUsers.size).isEqualTo(1)
         assertThat(changedUsers[0].id).isEqualTo(user.id)
-        assertThat(changedUsers[0].organisationId).isEqualTo(district.id)
+        assertThat(changedUsers[0].organisation).isEqualTo(district)
     }
 
     @Test
@@ -46,7 +45,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-        createUser(organisationId = school.id.value, username = "rebecca@district-domain.com")
+        createUser(organisation = school, username = "rebecca@district-domain.com")
 
         val changedUsers = assignUsersByOrganisationDomain(district.id.value)
 
@@ -64,7 +63,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
 
         assertThat(changedUsers.size).isEqualTo(1)
         assertThat(changedUsers[0].id).isEqualTo(user.id)
-        assertThat(changedUsers[0].organisationId).isEqualTo(district.id)
+        assertThat(changedUsers[0].organisation).isEqualTo(district)
     }
 
     @Test
@@ -77,7 +76,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
         val changedUsers = assignUsersByOrganisationDomain(district.id.value)
 
         assertThat(changedUsers.size).isEqualTo(0)
-        assertThat(userRepository.findById(user.id)!!.organisationId).isNull()
+        assertThat(userRepository.findById(user.id)!!.organisation).isNull()
     }
 
     @Test
@@ -90,15 +89,11 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
         assertThat(changedUsers.size).isEqualTo(0)
     }
 
-    private fun createUser(organisationId: String? = null, username: String): User {
-        val nullableOrganisationId = organisationId?.let {
-            OrganisationId(organisationId)
-        }
-
+    private fun createUser(organisation: Organisation<*>? = null, username: String): User {
         return userRepository.create(
             user = UserFactory.sample(
                 identity = IdentityFactory.sample(username = username),
-                organisationId = nullableOrganisationId
+                organisation = organisation
             )
         )
     }

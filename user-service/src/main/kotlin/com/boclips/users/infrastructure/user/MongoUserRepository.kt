@@ -6,11 +6,14 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.infrastructure.MongoDatabase
+import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.and
+import org.bson.types.ObjectId
 import org.litote.kmongo.`in`
+import org.litote.kmongo.div
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.getCollection
@@ -55,7 +58,6 @@ class MongoUserRepository(
                     )
                 }
                 is UserUpdate.ReplaceOrganisation -> userDocument.apply {
-                    organisationId = updateCommand.organisation.id.value
                     organisation = OrganisationDocumentConverter.toDocument(updateCommand.organisation)
                 }
                 is UserUpdate.ReplaceAccessExpiresOn -> userDocument.apply {
@@ -88,7 +90,7 @@ class MongoUserRepository(
         return getUsersCollection().find(
             and(
                 UserDocument::email regex ".+@${Pattern.quote(domain)}$",
-                UserDocument::organisationId ne organisationId.value
+                UserDocument::organisation / OrganisationDocument::_id ne ObjectId(organisationId.value)
             )
         )
             .map { document -> userDocumentConverter.convertToUser(document) }
@@ -96,7 +98,9 @@ class MongoUserRepository(
     }
 
     override fun findAllByOrganisationId(id: OrganisationId): List<User> {
-        return getUsersCollection().find(UserDocument::organisationId eq id.value)
+        return getUsersCollection().find(
+            UserDocument::organisation / OrganisationDocument::_id eq ObjectId(id.value)
+        )
             .map { document -> userDocumentConverter.convertToUser(document) }
             .toList()
     }

@@ -8,7 +8,6 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import java.time.ZoneOffset
@@ -47,7 +46,6 @@ data class UserDocumentConverter(
                 utmTerm = userDocument.marketing?.utmTerm ?: "",
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
-            organisationId = userDocument.organisationId?.let { OrganisationId(it) },
             organisation = userDocument.organisation?.let(OrganisationDocumentConverter::fromDocument),
             accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
         )

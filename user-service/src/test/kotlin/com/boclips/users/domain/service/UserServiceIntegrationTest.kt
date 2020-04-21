@@ -33,7 +33,6 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.identity.email).isEqualTo(identity.email)
         assertThat(user.identity.username).isEqualTo(identity.username)
         assertThat(user.identity.createdAt).isEqualTo(identity.createdAt)
-        assertThat(user.organisationId).isEqualTo(organisation.id)
         assertThat(user.organisation).isEqualTo(organisation)
         assertThat(user.profile?.hasOptedIntoMarketing).isEqualTo(false)
         assertThat(user.teacherPlatformAttributes?.hasLifetimeAccess).isEqualTo(false)
@@ -52,14 +51,14 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "1"),
-                    organisationId = organisation.id
+                    organisation = organisation
                 )
             ),
-            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "4"), organisationId = null)),
+            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "4"), organisation = null)),
             saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "5"),
-                    organisationId = apiOrganisation.id
+                    organisation = apiOrganisation
                 )
             )
         )
@@ -116,7 +115,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     fun `an individual teacher user is not associated to external organisation`() {
         val persistedUser = userService.createTeacher(newUser)
 
-        assertThat(persistedUser.organisationId).isNull()
+        assertThat(persistedUser.organisation).isNull()
     }
 
     @Test
@@ -126,7 +125,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         val user = userRepository.create(
-            UserFactory.sample(organisationId = organisation.id)
+            UserFactory.sample(organisation = organisation)
         )
 
         organisationRepository.update(organisation.id, ReplaceDomain("newdomain.com"))

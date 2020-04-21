@@ -14,7 +14,6 @@ data class User(
     val marketingTracking: MarketingTracking,
     val referralCode: String?,
     val analyticsId: AnalyticsId? = null,
-    val organisationId: OrganisationId?,
     val organisation: Organisation<*>? = null,
     val accessExpiresOn: ZonedDateTime?
 ) {

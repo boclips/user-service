@@ -1,7 +1,6 @@
 package com.boclips.users.domain.service
 
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.School
 import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
@@ -11,12 +10,10 @@ class AccessExpiryService(val organisationRepository: OrganisationRepository) {
     fun userHasAccess(user: User): Boolean {
         val userAccessExpiry = user.accessExpiresOn ?: return true
 
-        val organisation: Organisation<School>? =
-            user.organisationId?.let { organisationRepository.findSchoolById(it) }
-
         val organisationAccessExpiry =
-            organisation?.let {
-                it.details.district?.accessExpiresOn ?: it.accessExpiresOn
+            user.organisation?.let { organisation ->
+                val district = (organisation.details as? School)?.district
+                district?.accessExpiresOn ?: organisation.accessExpiresOn
             }
 
         val accessExpiresOn = getLatestDate(userAccessExpiry, organisationAccessExpiry)

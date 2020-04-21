@@ -27,7 +27,6 @@ class UserDocumentFactory {
                 utmTerm = null,
                 utmContent = null
             ),
-            organisationId: String? = "some-org-id",
             organisation: OrganisationDocument? = null,
             accessExpiresOn: Instant? = null,
             createdAt: Instant = Instant.now(),
@@ -46,7 +45,6 @@ class UserDocumentFactory {
             username = username,
             hasOptedIntoMarketing = hasOptedIntoMarketing,
             marketing = marketing,
-            organisationId = organisationId,
             organisation = organisation,
             accessExpiresOn = accessExpiresOn,
             createdAt = createdAt,

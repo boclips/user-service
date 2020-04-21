@@ -47,7 +47,7 @@ class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
 
         val user = UserFactory.sample(
             accessExpiresOn = ZonedDateTime.now().minusDays(1),
-            organisationId = schoolAccount.id
+            organisation = schoolAccount
         )
 
         assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(true)
@@ -66,7 +66,7 @@ class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
         val schoolAccount = organisationRepository.save(OrganisationFactory.sample(details = school))
 
         val user = UserFactory.sample(
-            organisationId = schoolAccount.id,
+            organisation = schoolAccount,
             accessExpiresOn = ZonedDateTime.now().plusDays(10)
         )
 
@@ -85,7 +85,7 @@ class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
         val schoolAccount = organisationRepository.save(OrganisationFactory.sample(details = school))
 
         val user = UserFactory.sample(
-            organisationId = schoolAccount.id,
+            organisation = schoolAccount,
             accessExpiresOn = null
         )
 
@@ -104,7 +104,7 @@ class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
         val schoolAccount = organisationRepository.save(OrganisationFactory.sample(details = school))
 
         val user = UserFactory.sample(
-            organisationId = schoolAccount.id,
+            organisation = schoolAccount,
             accessExpiresOn = ZonedDateTime.now().minusMonths(10)
         )
 

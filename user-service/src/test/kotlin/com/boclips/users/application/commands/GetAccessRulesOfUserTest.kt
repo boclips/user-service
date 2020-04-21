@@ -19,7 +19,7 @@ class GetAccessRulesOfUserTest : AbstractSpringIntegrationTest() {
         saveContentPackage(contentPackage)
 
         val organisation = saveApiIntegration(contentPackageId = contentPackage.id)
-        val user = saveUser(UserFactory.sample(organisationId = organisation.id))
+        val user = saveUser(UserFactory.sample(organisation = organisation))
 
         val accessRulesOfUser = getAccessRulesOfUser(user.id.value)
         assertThat(accessRulesOfUser).containsExactly(videoAccessRule)

@@ -332,7 +332,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null),
                 identity = IdentityFactory.sample(id = "user-id"),
                 profile = null,
-                organisationId = null,
+                organisation = null,
                 accessExpiresOn = null
             )
 
@@ -383,7 +383,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "HYML"),
                 identity = IdentityFactory.sample(id = "user-id"),
                 profile = null,
-                organisationId = null,
+                organisation = null,
                 accessExpiresOn = null
             )
 
@@ -479,7 +479,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 ),
                 identity = IdentityFactory.sample(id = userId),
                 profile = null,
-                organisationId = null,
+                organisation = null,
                 accessExpiresOn = null
             )
 
@@ -503,7 +503,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `get own profile as teacher`() {
             val organisation = saveSchool()
-            val user = saveUser(UserFactory.sample(organisationId = organisation.id))
+            val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
                     get("/v1/users/${user.id.value}").asTeacher(user.id.value)
@@ -538,7 +538,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `get own profile as teacher and api user`() {
             val organisation = saveSchool()
-            val user = saveUser(UserFactory.sample(organisationId = organisation.id))
+            val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
                     get("/v1/users/${user.id.value}").asUserWithRoles(
@@ -566,7 +566,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `Boclips service is able to retrieve user information and see their organisation and links`() {
             val organisationAccount = saveApiIntegration()
-            val user = saveUser(UserFactory.sample(organisationId = organisationAccount.id))
+            val user = saveUser(UserFactory.sample(organisation = organisationAccount))
 
             mvc.perform(
                     get("/v1/users/${user.id.value}").asBoclipsService()
@@ -632,7 +632,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveContentPackage(contentPackage)
             val organisation = saveApiIntegration(contentPackageId = contentPackage.id)
-            val user = saveUser(UserFactory.sample(organisationId = organisation.id))
+            val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
                     get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(
@@ -699,7 +699,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val importedUser = userRepository.findById(UserId(userId))
 
             assertThat(importedUser).isNotNull
-            assertThat(importedUser!!.organisationId).isEqualTo(organisation.id)
+            assertThat(importedUser!!.organisation).isEqualTo(organisation)
         }
     }
 
