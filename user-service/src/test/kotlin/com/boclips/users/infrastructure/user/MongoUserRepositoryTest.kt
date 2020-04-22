@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserUpdate
+import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
@@ -13,13 +14,14 @@ import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
     @Test
-    fun `persists user`() {
+    fun `creating a user`() {
         val user = UserFactory.sample(
             marketing = MarketingTrackingFactory.sample(
                 utmCampaign = "campaign",
@@ -40,6 +42,16 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(fetchedUser!!.id).isEqualTo(user.id)
         assertThat(fetchedUser.referralCode).isEqualTo(user.referralCode)
+    }
+
+    @Test
+    fun `exception is thrown when trying to create a user which already exist`() {
+        val user = UserFactory.sample(id = "user-id")
+        userRepository.create(user)
+
+        assertThrows<UserAlreadyExistsException> {
+            userRepository.create(user)
+        }
     }
 
     @Test

@@ -25,10 +25,6 @@ class UserImportService(
     }
 
     fun importFromIdentityProvider(userId: UserId): User {
-        if (userRepository.findById(userId) !== null) {
-            throw UserAlreadyExistsException()
-        }
-
         return identityProvider.getIdentitiesById(userId)?.let {
             userService.create(it)
         } ?: throw IdentityNotFoundException(userId)

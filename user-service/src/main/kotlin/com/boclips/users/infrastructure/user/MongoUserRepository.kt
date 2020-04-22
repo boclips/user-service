@@ -6,9 +6,11 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.infrastructure.MongoDatabase
+import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import com.mongodb.MongoClient
+import com.mongodb.MongoWriteException
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.and
 import org.bson.types.ObjectId
@@ -78,7 +80,8 @@ class MongoUserRepository(
             }
         }
 
-        return saveUserDocument(userDocument)
+        getUsersCollection().save(userDocument)
+        return findById(UserId(userDocument._id)) ?: throw IllegalStateException("this should never happen")
     }
 
     override fun findAll(ids: List<UserId>) = getUsersCollection()
@@ -114,11 +117,16 @@ class MongoUserRepository(
             ?.let { userDocumentConverter.convertToUser(it) }
     }
 
-    override fun create(user: User) = saveUserDocument(UserDocument.from(user))
-
-    private fun saveUserDocument(document: UserDocument): User {
-        getUsersCollection().save(document)
-        return findById(UserId(document._id)) ?: throw IllegalStateException("this should never happen")
+    override fun create(user: User): User {
+        try {
+            getUsersCollection().insertOne(UserDocument.from(user))
+        } catch (e: MongoWriteException) {
+            // Creation might fail if an other process already inserted the user around the same time
+            // See: https://jira.mongodb.org/browse/SERVER-22607
+            findById(user.id) ?: throw RuntimeException("Unable to save user: ${user.id}", e)
+            throw UserAlreadyExistsException()
+        }
+        return findById(user.id) ?: throw IllegalStateException("this should never happen")
     }
 }
 

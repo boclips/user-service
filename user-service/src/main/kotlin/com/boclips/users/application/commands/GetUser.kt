@@ -2,19 +2,16 @@ package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
 import com.boclips.security.utils.UserExtractor.currentUserHasRole
+import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.presentation.converters.UserConverter
 import org.springframework.stereotype.Component
 
 @Component
 class GetUser(
-    private val organisationRepository: OrganisationRepository,
     private val userConverter: UserConverter,
     private val getOrImportUser: GetOrImportUser
 ) {

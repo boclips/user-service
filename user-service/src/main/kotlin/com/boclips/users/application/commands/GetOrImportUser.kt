@@ -6,6 +6,7 @@ import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import org.springframework.stereotype.Service
 
 @Service
@@ -22,6 +23,8 @@ class GetOrImportUser(
             userImportService.importFromIdentityProvider(userId = userId)
         } catch (ex: IdentityNotFoundException) {
             throw UserNotFoundException(userId)
+        } catch (ex: UserAlreadyExistsException) {
+            userRepository.findById(userId) ?: throw IllegalStateException("User should be there $userId")
         }
     }
 }
