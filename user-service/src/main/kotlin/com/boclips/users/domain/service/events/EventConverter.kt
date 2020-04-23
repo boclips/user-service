@@ -19,19 +19,16 @@ class EventConverter {
             }.orEmpty())
             .ages(user.profile?.ages?.toMutableList().orEmpty())
             .school(user.profile?.school?.let(this::toEventOrganisation))
+            .role(user.profile?.role)
             .build()
 
         return EventUser.builder()
             .id(user.id.value)
             .email(user.identity.email)
+            .createdAt(user.identity.createdAt)
             .profile(profile)
-            .firstName(user.profile?.firstName)
-            .lastName(user.profile?.lastName)
-            .subjects(profile.subjects)
-            .ages(profile.ages)
             .isBoclipsEmployee(user.identity.isBoclipsEmployee())
             .organisation(user.organisation?.let(this::toEventOrganisation))
-            .role(user.profile?.role)
             .build()
     }
 
