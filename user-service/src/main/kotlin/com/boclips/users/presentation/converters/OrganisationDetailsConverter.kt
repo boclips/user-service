@@ -4,23 +4,24 @@ import com.boclips.users.api.response.country.CountryResource
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.state.StateResource
 import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.OrganisationDetails
+import com.boclips.users.domain.model.organisation.Organisation
 import org.springframework.stereotype.Component
 
 @Component
 class OrganisationDetailsConverter {
-    fun toResource(organisationDetails: OrganisationDetails): OrganisationDetailsResource {
+    fun toResource(organisation: Organisation<*>): OrganisationDetailsResource {
         return OrganisationDetailsResource(
-            name = organisationDetails.name,
-            domain = organisationDetails.domain,
-            type = organisationDetails.type().toString(),
-            state = organisationDetails.state?.let {
+            id = organisation.id.value,
+            name = organisation.details.name,
+            domain = organisation.details.domain,
+            type = organisation.details.type().toString(),
+            state = organisation.details.state?.let {
                 StateResource(
                     name = it.name,
                     id = it.id
                 )
             },
-            country = organisationDetails.country?.let {
+            country = organisation.details.country?.let {
                 CountryResource(
                     name = it.name,
                     id = it.id,
@@ -28,8 +29,8 @@ class OrganisationDetailsConverter {
                     _links = null
                 )
             },
-            allowsOverridingUserIds = when (organisationDetails) {
-                is ApiIntegration -> organisationDetails.allowsOverridingUserIds
+            allowsOverridingUserIds = when (organisation.details) {
+                is ApiIntegration -> organisation.details.allowsOverridingUserIds
                 else -> null
             }
         )

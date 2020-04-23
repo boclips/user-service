@@ -27,6 +27,7 @@ class OrganisationResourceFactory {
 
         @JvmStatic
         fun sampleDetails(
+            id: String = UniqueId(),
             name: String = "Sample Organisation Details",
             domain: String? = null,
             type: String? = "API",
@@ -34,6 +35,7 @@ class OrganisationResourceFactory {
             country: CountryResource? = null,
             allowsOverridingUserIds: Boolean? = null
         ) = OrganisationDetailsResource(
+            id = id,
             name = name,
             domain = domain,
             type = type,

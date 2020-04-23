@@ -44,6 +44,6 @@ class UserConverter(
     }
 
     private fun toOrganisationResource(organisation: Organisation<*>): OrganisationDetailsResource {
-        return OrganisationDetailsConverter().toResource(organisation.details)
+        return OrganisationDetailsConverter().toResource(organisation)
     }
 }
