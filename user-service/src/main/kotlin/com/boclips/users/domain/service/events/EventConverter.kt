@@ -40,6 +40,8 @@ class EventConverter {
             .type(organisation.details.type().name)
             .name(organisation.details.name)
             .postcode(organisation.details.postcode)
+                .countryCode(organisation.details.country?.id)
+                .state(organisation.details.state?.id)
             .parent(parent)
             .build()
     }

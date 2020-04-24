@@ -2,6 +2,7 @@ package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -77,5 +78,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
         assertThat(event.user.organisation.name).isEqualTo("The Street Wise Academy")
         assertThat(event.user.organisation.parent.name).isEqualTo("District 9")
         assertThat(event.user.organisation.postcode).isEqualTo("012345")
+        assertThat(event.user.organisation.countryCode).isEqualTo("USA")
+        assertThat(event.user.organisation.state).isEqualTo("IL")
     }
 }

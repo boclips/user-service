@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 import com.boclips.eventbus.domain.Subject as EventSubject
 import com.boclips.eventbus.domain.SubjectId as EventSubjectId
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 
 class EventConverterTest : AbstractSpringIntegrationTest() {
 
@@ -75,5 +77,24 @@ class EventConverterTest : AbstractSpringIntegrationTest() {
         val event = eventBus.getEventOfType(UserUpdated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)
         assertThat(event.user.profile.role).isEqualTo("PARENT")
+    }
+
+    @Test
+    fun `convert country code and state if exists`() {
+
+        val school = organisationRepository.save(
+                organisation = OrganisationFactory.sample(
+                        details = OrganisationDetailsFactory.school(country = Country.fromCode("USA"),state = State.fromCode("IL"))
+                )
+        )
+
+        val user = userRepository.create(UserFactory.sample(organisation = null))
+
+        userRepository.update(user, UserUpdate.ReplaceOrganisation(school))
+
+        val event = eventBus.getEventOfType(UserUpdated::class.java)
+        assertThat(event.user.id).isEqualTo(user.id.value)
+        assertThat(event.user.organisation.countryCode).isEqualTo("USA")
+        assertThat(event.user.organisation.state).isEqualTo("IL")
     }
 }
