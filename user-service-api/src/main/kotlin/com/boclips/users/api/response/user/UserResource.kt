@@ -26,6 +26,7 @@ data class UserResource(
     val analyticsId: String?,
     @get:JsonView(TeacherProjection::class)
     val teacherPlatformAttributes: TeacherPlatformAttributesResource?,
+    @Deprecated("Use organisation.id instead")
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
     val organisationAccountId: String?,
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
