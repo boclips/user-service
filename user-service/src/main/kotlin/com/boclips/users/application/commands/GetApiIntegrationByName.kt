@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class GetApiIntegrationByName(
     private val repository: OrganisationRepository
 ) {
-    operator fun invoke(name: String): Organisation<ApiIntegration> {
+    operator fun invoke(name: String): ApiIntegration {
         return repository.findApiIntegrationByName(name) ?: throw OrganisationNotFoundException(name)
     }
 }

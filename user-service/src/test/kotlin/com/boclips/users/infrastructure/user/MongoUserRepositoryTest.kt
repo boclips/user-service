@@ -7,7 +7,6 @@ import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
@@ -126,9 +125,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val newOrganisation = OrganisationFactory.school(
             id = OrganisationId(),
-            school = OrganisationDetailsFactory.school(
-                district = OrganisationFactory.district()
-            )
+            district = OrganisationFactory.district()
         )
 
         val updatedUser = userRepository.update(user, UserUpdate.ReplaceOrganisation(newOrganisation))

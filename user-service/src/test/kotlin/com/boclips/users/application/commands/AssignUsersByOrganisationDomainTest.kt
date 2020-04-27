@@ -4,7 +4,6 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -20,8 +19,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
     fun `assigns users that have the same domain but are not linked directly or indirectly to the organisation`() {
         val user = createUser(organisation = null, username = "rebecca@district-domain.com")
 
-        val district =
-            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
+        val district = organisationRepository.save(OrganisationFactory.district(domain = "district-domain.com"))
 
         val changedUsers = assignUsersByOrganisationDomain(district.id.value)
 
@@ -32,18 +30,14 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `does not update users that already belongs to an organisation indirectly (being a sub organisation)`() {
-        val district =
-            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
+        val district = organisationRepository.save(OrganisationFactory.district(domain = "district-domain.com"))
 
-        val school =
-            organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.school(
-                        name = "a school",
-                        district = district
-                    )
-                )
+        val school = organisationRepository.save(
+            OrganisationFactory.school(
+                name = "a school",
+                district = district
             )
+        )
 
         createUser(organisation = school, username = "rebecca@district-domain.com")
 
@@ -56,8 +50,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
     fun `assigns users that share the domain of an organisation but are not linked to that organisation`() {
         val user = createUser(username = "rebecca@district-domain.com")
 
-        val district =
-            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
+        val district = organisationRepository.save(OrganisationFactory.district(domain = "district-domain.com"))
 
         val changedUsers = assignUsersByOrganisationDomain(district.id.value)
 
@@ -70,8 +63,7 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
     fun `do not change users of different domains`() {
         val user = createUser(username = "rebecca@another-domain.com")
 
-        val district =
-            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = "district-domain.com")))
+        val district = organisationRepository.save(OrganisationFactory.district(domain = "district-domain.com"))
 
         val changedUsers = assignUsersByOrganisationDomain(district.id.value)
 
@@ -81,15 +73,14 @@ class AssignUsersByOrganisationDomainTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `does not assign users to organisations without domain information`() {
-        val district =
-            organisationRepository.save(OrganisationFactory.sample(details = OrganisationDetailsFactory.district(domain = null)))
+        val district = organisationRepository.save(OrganisationFactory.district(domain = null))
 
         val changedUsers = assignUsersByOrganisationDomain(district.id.value)
 
         assertThat(changedUsers.size).isEqualTo(0)
     }
 
-    private fun createUser(organisation: Organisation<*>? = null, username: String): User {
+    private fun createUser(organisation: Organisation? = null, username: String): User {
         return userRepository.create(
             user = UserFactory.sample(
                 identity = IdentityFactory.sample(username = username),

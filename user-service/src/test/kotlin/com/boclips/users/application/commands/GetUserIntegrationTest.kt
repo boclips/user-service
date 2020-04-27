@@ -6,8 +6,12 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.school
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -27,7 +31,12 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
-        val school = saveSchool()
+        val school = saveOrganisation(school(
+            address = Address(
+                country = Country.usa(),
+                state = State.fromCode("CA")
+            )
+        ))
         saveUser(
             UserFactory.sample(
                 identity = IdentityFactory.sample(
@@ -51,11 +60,11 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(userResource.analyticsId!!).isEqualTo("123")
         assertThat(userResource.email).isEqualTo("jane@doe.com")
         assertThat(userResource.organisationAccountId).isEqualTo(school.id.value)
-        assertThat(userResource.organisation!!.name).isEqualTo(school.details.name)
-        assertThat(userResource.organisation!!.state!!.name).isEqualTo(school.details.state!!.name)
-        assertThat(userResource.organisation!!.state!!.id).isEqualTo(school.details.state!!.id)
-        assertThat(userResource.organisation!!.country!!.name).isEqualTo(school.details.country.name)
-        assertThat(userResource.organisation!!.country!!.id).isEqualTo(school.details.country.id)
+        assertThat(userResource.organisation!!.name).isEqualTo(school.name)
+        assertThat(userResource.organisation!!.state!!.name).isEqualTo(school.address.state!!.name)
+        assertThat(userResource.organisation!!.state!!.id).isEqualTo(school.address.state!!.id)
+        assertThat(userResource.organisation!!.country!!.name).isEqualTo(school.address.country?.name)
+        assertThat(userResource.organisation!!.country!!.id).isEqualTo(school.address.country?.id)
     }
 
     @Test

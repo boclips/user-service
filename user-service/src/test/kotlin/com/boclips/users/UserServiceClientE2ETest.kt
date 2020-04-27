@@ -9,6 +9,7 @@ import com.boclips.users.domain.model.Profile
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import feign.FeignException
@@ -60,7 +61,13 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
                     accessRuleIds = listOf(accessRule.id)
                 )
             )
-            val organisation = saveOrganisationWithContentPackage(contentPackageId = contentPackage.id)
+            val organisation = saveOrganisation(
+                OrganisationFactory.apiIntegration(
+                    deal = OrganisationFactory.deal(
+                        contentPackageId = contentPackage.id
+                    )
+                )
+            )
             val user = saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "123"),
@@ -106,7 +113,7 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `can fetch an organisation`() {
-            val organisation = saveOrganisationWithContentPackage(organisationName = "hello")
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration(name = "hello"))
             val organisationResource = organisationsClient.getOrganisation(organisation.id.value)
 
             assertThat(organisationResource.id).isEqualTo(organisation.id.value)

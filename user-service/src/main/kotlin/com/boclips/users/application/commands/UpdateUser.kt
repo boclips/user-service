@@ -9,7 +9,6 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.organisation.DealType
-import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
@@ -22,6 +21,9 @@ import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import com.boclips.users.api.request.user.UpdateUserRequest
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.Deal
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import mu.KLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -29,7 +31,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
-// TODO EV: think about how to refactor dependencies
 @Component
 class UpdateUser(
     private val userService: UserService,
@@ -70,7 +71,7 @@ class UpdateUser(
 
     private fun buildUpdateCommands(
         updateUserRequest: UpdateUserRequest,
-        school: Organisation<School>?,
+        school: School?,
         user: User
     ): List<UserUpdate> = userUpdatesCommandFactory.buildCommands(updateUserRequest, school) +
         listOfNotNull(
@@ -96,27 +97,30 @@ class UpdateUser(
         return if (defaultAccessExpiry.isBefore(extendedTrialEndDate)) extendedTrialEndDate else defaultAccessExpiry
     }
 
-    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): Organisation<School>? {
+    private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): School? {
         val schoolById = updateUserRequest.schoolId?.let {
-            organisationService.findOrCreateSchooldiggerSchool(it)
+            organisationService.findOrCreateSchooldiggerSchool(ExternalOrganisationId(it))
         }
 
         return schoolById
             ?: updateUserRequest.schoolName?.let { schoolName ->
                 findSchoolByName(schoolName, updateUserRequest.country!!)
                     ?: organisationRepository.save(
-                        organisation = Organisation(
+                        organisation = School(
                             id = OrganisationId(),
-                            details = School(
-                                name = schoolName,
+                            name = schoolName,
+                            address = Address(
                                 country = Country.fromCode(updateUserRequest.country!!),
-                                state = updateUserRequest.state?.let { State.fromCode(it) },
-                                district = null,
-                                externalId = null
+                                state = updateUserRequest.state?.let { State.fromCode(it) }
                             ),
-                            accessExpiresOn = null,
-                            type = DealType.STANDARD,
-                            role = null
+                            deal = Deal(
+                                accessExpiresOn = null,
+                                type = DealType.STANDARD
+                            ),
+                            district = null,
+                            externalId = null,
+                            role = null,
+                            domain = null
                         )
                     )
             }
@@ -125,12 +129,11 @@ class UpdateUser(
     private fun findSchoolByName(
         schoolName: String,
         countryCode: String
-    ): Organisation<School>? {
+    ): School? {
         return organisationRepository.lookupSchools(
             schoolName,
             countryCode
         ).firstOrNull { it.name == schoolName }
-            ?.let { organisationRepository.findSchoolById(OrganisationId(it.id)) }
     }
 
     private fun updateMarketingService(id: UserId) {

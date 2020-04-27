@@ -6,9 +6,10 @@ import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.api.request.UpdateOrganisationRequest
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -33,13 +34,15 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
         val oldExpiryTime = ZonedDateTime.parse("2019-06-06T00:00:00Z")
 
         val district = organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.district(
-                    name = "my district",
-                    externalId = "123",
+            OrganisationFactory.district(
+                name = "my district",
+                externalId = ExternalOrganisationId("123"),
+                address = Address(
                     state = State(id = "FL", name = "Florida")
                 ),
-                accessExpiresOn = oldExpiryTime
+                deal = OrganisationFactory.deal(
+                    accessExpiresOn = oldExpiryTime
+                )
             )
         )
 
@@ -49,7 +52,7 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
             UpdateOrganisationRequest(accessExpiresOn = updatedExpiryTimeToString)
         val updatedOrganisation = updateOrganisation(district.id.value, request)
 
-        assertThat(updatedOrganisation.accessExpiresOn).isEqualTo(updatedExpiryTime)
+        assertThat(updatedOrganisation.deal.accessExpiresOn).isEqualTo(updatedExpiryTime)
     }
 
     @Test

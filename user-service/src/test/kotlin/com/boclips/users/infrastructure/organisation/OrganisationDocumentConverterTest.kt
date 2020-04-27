@@ -5,7 +5,6 @@ import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -28,19 +27,17 @@ class OrganisationDocumentConverterTest {
         val organisationAccount = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
         assertThat(organisationAccount.id.value).isEqualTo(organisationDocument._id!!.toHexString())
-        assertThat(organisationAccount.type).isEqualTo(DealType.STANDARD)
-        assertThat(organisationAccount.details).isInstanceOf(School::class.java)
+        assertThat(organisationAccount.deal.type).isEqualTo(DealType.STANDARD)
+        assertThat(organisationAccount).isInstanceOf(School::class.java)
 
-        val independentSchool = organisationAccount.details as School
+        val independentSchool = organisationAccount as School
         assertThat(independentSchool.name).isEqualTo("amazing school")
         assertThat(independentSchool.domain).isEqualTo("independent.ac.co.uk")
-        assertThat(independentSchool.country.id).isEqualTo(organisationDocument.country?.code)
-        assertThat(independentSchool.state?.id).isEqualTo(organisationDocument.state?.code)
-        assertThat(independentSchool.externalId).isEqualTo("external-id")
-
+        assertThat(independentSchool.address.country?.id).isEqualTo(organisationDocument.country?.code)
+        assertThat(independentSchool.address.state?.id).isEqualTo(organisationDocument.state?.code)
+        assertThat(independentSchool.externalId?.value).isEqualTo("external-id")
         assertThat(independentSchool.district).isNull()
-
-        assertThat(organisationAccount.accessExpiresOn).isNull()
+        assertThat(organisationAccount.deal.accessExpiresOn).isNull()
     }
 
     @Test
@@ -57,13 +54,13 @@ class OrganisationDocumentConverterTest {
             )
         )
 
-        val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
+        val school = OrganisationDocumentConverter.fromDocument(organisationDocument) as School
 
-        assertThat(school.type).isEqualTo(DealType.STANDARD)
-        assertThat(school.details).isInstanceOf(School::class.java)
-        assertThat((school.details as School).district?.type).isEqualTo(DealType.STANDARD)
-        assertThat((school.details as School).district?.details).isInstanceOf(District::class.java)
-        assertThat(school.details.domain).isEqualTo("school.com")
+        assertThat(school.deal.type).isEqualTo(DealType.STANDARD)
+        assertThat(school).isInstanceOf(School::class.java)
+        assertThat(school.district?.deal?.type).isEqualTo(DealType.STANDARD)
+        assertThat(school.district).isInstanceOf(District::class.java)
+        assertThat(school.domain).isEqualTo("school.com")
     }
 
     @Test
@@ -81,12 +78,12 @@ class OrganisationDocumentConverterTest {
             )
         )
 
-        val school = OrganisationDocumentConverter.fromDocument(organisationDocument)
+        val school = OrganisationDocumentConverter.fromDocument(organisationDocument) as School
 
-        assertThat(school.type).isEqualTo(DealType.DESIGN_PARTNER)
-        assertThat((school.details as School).district?.type).isEqualTo(DealType.DESIGN_PARTNER)
-        assertThat((school.details as School).district?.accessExpiresOn).isEqualTo(accessExpiresOn)
-        assertThat(school.details.domain).isEqualTo("design-partner.com")
+        assertThat(school.deal.type).isEqualTo(DealType.DESIGN_PARTNER)
+        assertThat(school.district?.deal?.type).isEqualTo(DealType.DESIGN_PARTNER)
+        assertThat(school.district?.deal?.accessExpiresOn).isEqualTo(accessExpiresOn)
+        assertThat(school.domain).isEqualTo("design-partner.com")
     }
 
     @Test
@@ -103,11 +100,7 @@ class OrganisationDocumentConverterTest {
     fun `parent document gets written as nested object`() {
         val districtId = OrganisationId()
         val district = OrganisationFactory.district(id = districtId)
-        val school = OrganisationFactory.school(
-            school = OrganisationDetailsFactory.school(
-                district = district
-            )
-        )
+        val school = OrganisationFactory.school(district = district)
 
         val schoolDocument = OrganisationDocumentConverter.toDocument(school)
 

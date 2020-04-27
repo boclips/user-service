@@ -9,7 +9,7 @@ data class Profile(
     val subjects: List<Subject> = emptyList(),
     val ages: List<Int> = emptyList(),
     val hasOptedIntoMarketing: Boolean = false,
-    val school: Organisation<School>? = null,
+    val school: School? = null,
     val role: String? = null
 )
 

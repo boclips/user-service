@@ -1,8 +1,9 @@
 package com.boclips.users.infrastructure.schooldigger
 
-import com.boclips.users.domain.model.LookupEntry
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
+import com.boclips.users.domain.model.organisation.ExternalOrganisationInformation
+import com.boclips.users.domain.model.organisation.ExternalSchoolInformation
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.AmericanSchoolsProvider
@@ -21,36 +22,42 @@ class SchoolDiggerClient(
 ) : AmericanSchoolsProvider {
     companion object : KLogging()
 
-    override fun fetchSchool(schoolId: String): Pair<School, District?>? {
-        val school = try {
+    override fun fetchSchool(schoolId: String): ExternalSchoolInformation? {
+        val diggerSchool = try {
             restTemplate.getForObject(
                 buildSchoolEndpoint(schoolId),
                 SchoolDiggerSchoolDetail::class.java
-            )
+            ) ?: return null
         } catch (e: Exception) {
             logger.error("cannot fetch school $schoolId in schooldigger", e)
             return null
         }
 
-        return school?.let { existingSchool ->
-            School(
-                name = existingSchool.schoolName,
-                externalId = existingSchool.schoolid,
-                state = State.fromCode(existingSchool.address.state),
-                postcode = existingSchool.address.zip,
-                country = Country.usa(),
-                district = null
-            ) to existingSchool.district?.let { existingDistrict ->
-                District(
-                    name = existingDistrict.districtName,
-                    externalId = existingDistrict.districtID,
-                    state = State.fromCode(existingSchool.address.state)
+        val school = ExternalOrganisationInformation(
+            id = ExternalOrganisationId(diggerSchool.schoolid),
+            name = diggerSchool.schoolName,
+            address = Address(
+                state = State.fromCode(diggerSchool.address.state),
+                postcode = diggerSchool.address.zip,
+                country = Country.usa()
+            )
+        )
+
+        val district = diggerSchool.district?.let { diggerDistrict ->
+            ExternalOrganisationInformation(
+                id = ExternalOrganisationId(diggerDistrict.districtID),
+                name = diggerDistrict.districtName,
+                address = Address(
+                    country = school.address.country,
+                    state = school.address.state
                 )
-            }
+            )
         }
+
+        return ExternalSchoolInformation(school, district)
     }
 
-    override fun lookupSchools(stateId: String, schoolName: String): List<LookupEntry> {
+    override fun lookupSchools(stateId: String, schoolName: String): List<ExternalOrganisationInformation> {
         val headers = HttpHeaders()
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
@@ -68,9 +75,14 @@ class SchoolDiggerClient(
             return emptyList()
         }
 
-        return response.body?.schoolMatches
-            ?.map { LookupEntry(it.schoolid, "${it.schoolName}, ${it.city}") }
-            ?: emptyList()
+        return response.body?.schoolMatches.orEmpty()
+            .map {
+                ExternalOrganisationInformation(
+                    id = ExternalOrganisationId(it.schoolid),
+                    name = "${it.schoolName}, ${it.city}",
+                    address = Address()
+                )
+            }
     }
 
     private fun buildSchoolEndpoint(schoolId: String): URI {

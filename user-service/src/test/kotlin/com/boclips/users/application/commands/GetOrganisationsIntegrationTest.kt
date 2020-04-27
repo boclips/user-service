@@ -1,11 +1,11 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.model.OrganisationFilter
+import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -19,17 +19,17 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
     fun `searching non usa organisations`() {
 
         val ukSchool = organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "organisation 1",
+            OrganisationFactory.school(
+                name = "organisation 1",
+                address = Address(
                     country = Country.fromCode("GBR")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "organisation 2",
+            OrganisationFactory.school(
+                name = "organisation 2",
+                address = Address(
                     country = Country.fromCode("USA"),
                     state = State.fromCode("NY")
                 )
@@ -37,9 +37,9 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.district(
-                    name = "another one",
+            OrganisationFactory.district(
+                name = "another one",
+                address = Address(
                     state = State.fromCode("FL")
                 )
             )
@@ -59,26 +59,27 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `searching USA organisations`() {
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.district(
-                    name = "floridistrict",
+            OrganisationFactory.district(
+                name = "floridistrict",
+                address = Address(
+                    country = Country.fromCode("USA"),
                     state = State.fromCode("FL")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "oregon-isation",
+            OrganisationFactory.school(
+                name = "oregon-isation",
+                address = Address(
                     country = Country.fromCode("USA"),
                     state = State.fromCode("OR")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "gb skool",
+            OrganisationFactory.school(
+                name = "gb skool",
+                address = Address(
                     country = Country.fromCode("GBR")
                 )
             )
@@ -94,35 +95,35 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisations).hasSize(2)
         assertThat(organisations.totalElements).isEqualTo(2)
-        assertThat(organisations.items[0].details.name).isEqualTo("floridistrict")
-        assertThat(organisations.items[0].details.country).isEqualTo(Country.usa())
-        assertThat(organisations.items[1].details.name).isEqualTo("oregon-isation")
-        assertThat(organisations.items[1].details.country).isEqualTo(Country.usa())
+        assertThat(organisations.items[0].name).isEqualTo("floridistrict")
+        assertThat(organisations.items[0].address.country).isEqualTo(Country.usa())
+        assertThat(organisations.items[1].name).isEqualTo("oregon-isation")
+        assertThat(organisations.items[1].address.country).isEqualTo(Country.usa())
     }
 
     @Test
     fun `searching organisations without filters`() {
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.district(
-                    name = "floridistrict",
+            OrganisationFactory.district(
+                name = "floridistrict",
+                address = Address(
                     state = State.fromCode("FL")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "oregon-isation",
+            OrganisationFactory.school(
+                name = "oregon-isation",
+                address = Address(
                     country = Country.fromCode("USA"),
                     state = State.fromCode("OR")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "gb skool",
+            OrganisationFactory.school(
+                name = "gb skool",
+                address = Address(
                     country = Country.fromCode("GBR")
                 )
             )
@@ -136,8 +137,8 @@ class GetOrganisationsIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisations).hasSize(3)
         assertThat(organisations.totalElements).isEqualTo(3)
-        assertThat(organisations.items[0].details.name).isEqualTo("floridistrict")
-        assertThat(organisations.items[1].details.name).isEqualTo("gb skool")
-        assertThat(organisations.items[2].details.name).isEqualTo("oregon-isation")
+        assertThat(organisations.items[0].name).isEqualTo("floridistrict")
+        assertThat(organisations.items[1].name).isEqualTo("gb skool")
+        assertThat(organisations.items[2].name).isEqualTo("oregon-isation")
     }
 }

@@ -8,7 +8,6 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -42,10 +41,8 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `can find all teachers`() {
-        val organisation =
-            organisationRepository.save(organisation = OrganisationFactory.sample(details = OrganisationDetailsFactory.school()))
-        val apiOrganisation =
-            saveApiIntegration(details = OrganisationDetailsFactory.apiIntegration())
+        val organisation = organisationRepository.save(OrganisationFactory.school())
+        val apiOrganisation = saveOrganisation(OrganisationFactory.apiIntegration())
 
         listOf(
             saveUser(
@@ -132,6 +129,6 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val updatedUser = userRepository.findById(user.id)
 
-        assertThat(updatedUser?.organisation?.details?.domain).isEqualTo("newdomain.com")
+        assertThat(updatedUser?.organisation?.domain).isEqualTo("newdomain.com")
     }
 }

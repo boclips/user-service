@@ -14,7 +14,7 @@ class ProfileFactory {
             lastName: String = "Dough",
             hasOptedIntoMarketing: Boolean = true,
             role: String? = "TEACHER",
-            school: Organisation<School>? = null
+            school: School? = null
         ) = Profile(
             subjects = subjects,
             ages = ages,

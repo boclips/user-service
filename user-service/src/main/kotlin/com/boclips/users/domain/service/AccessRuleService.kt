@@ -15,8 +15,9 @@ class AccessRuleService(
         const val DEFAULT_CONTENT_PACKAGE_NAME = "Classroom"
     }
 
-    fun forOrganisation(organisation: Organisation<*>?): List<AccessRule> {
+    fun forOrganisation(organisation: Organisation?): List<AccessRule> {
         return organisation
+            ?.deal
             ?.contentPackageId
             ?.let { contentPackageId ->
                 contentPackageRepository.findById(contentPackageId)

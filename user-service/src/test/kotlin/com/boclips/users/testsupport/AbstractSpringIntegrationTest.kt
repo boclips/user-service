@@ -11,12 +11,8 @@ import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.domain.model.contentpackage.AccessRuleId
 import com.boclips.users.domain.model.contentpackage.ContentPackage
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
-import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.service.AccessExpiryService
 import com.boclips.users.domain.service.AccessRuleRepository
 import com.boclips.users.domain.service.ContentPackageRepository
@@ -33,11 +29,8 @@ import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.boclips.videos.api.request.subject.CreateSubjectRequest
-import com.boclips.videos.api.response.subject.SubjectResource
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.mongodb.MongoClient
 import com.nhaarman.mockitokotlin2.any
@@ -193,54 +186,14 @@ abstract class AbstractSpringIntegrationTest {
         return user.id.value
     }
 
-    fun saveOrganisationWithContentPackage(
-        organisationName: String = "Boclips for Teachers",
-        contentPackageId: ContentPackageId? = null,
-        allowsOverridingUserIds: Boolean = false
-    ): Organisation<*> {
-        return saveApiIntegration(
-            details = OrganisationDetailsFactory.apiIntegration(
-                name = organisationName,
-                allowsOverridingUserIds = allowsOverridingUserIds
-            ),
-            contentPackageId = contentPackageId
-        )
-    }
-
     fun saveContentPackage(
         contentPackage: ContentPackage
     ): ContentPackage {
         return contentPackageRepository.save(contentPackage)
     }
 
-    fun saveApiIntegration(
-        contentPackageId: ContentPackageId? = null,
-        role: String = "ROLE_VIEWSONIC",
-        details: ApiIntegration = OrganisationDetailsFactory.apiIntegration(allowsOverridingUserIds = false)
-    ): Organisation<ApiIntegration> {
-        return organisationRepository.save(
-            OrganisationFactory.sample(
-                details = details,
-                role = role,
-                contentPackageId = contentPackageId
-            )
-        )
-    }
-
-    fun saveDistrict(
-        district: District = OrganisationDetailsFactory.district()
-    ): Organisation<District> {
-        return organisationRepository.save(
-            OrganisationFactory.sample(
-                details = district
-            )
-        )
-    }
-
-    fun saveSchool(
-        school: School = OrganisationDetailsFactory.school()
-    ): Organisation<School> {
-        return organisationRepository.save(OrganisationFactory.sample(details = school))
+    fun <T : Organisation> saveOrganisation(organisation: T): T {
+        return organisationRepository.save(organisation)
     }
 
     fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {

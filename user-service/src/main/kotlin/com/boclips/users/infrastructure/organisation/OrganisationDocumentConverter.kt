@@ -1,9 +1,12 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
@@ -15,95 +18,84 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 object OrganisationDocumentConverter {
-    fun fromDocument(organisationDocument: OrganisationDocument): Organisation<*> {
-        val organisation = when (organisationDocument.type) {
+    fun fromDocument(organisationDocument: OrganisationDocument): Organisation {
+        val id = OrganisationId(organisationDocument._id!!.toHexString())
+
+        val address = Address(
+            country = organisationDocument.country?.let { Country.fromCode(it.code) },
+            state = organisationDocument.state?.let { State.fromCode(it.code) },
+            postcode = organisationDocument.postcode
+        )
+
+        val deal = Deal(
+            contentPackageId = organisationDocument.contentPackageId?.let { ContentPackageId(value = it) },
+            accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
+            type = organisationDocument.dealType ?: organisationDocument.parent?.dealType ?: DealType.STANDARD
+        )
+
+        val externalId = organisationDocument.externalId?.let(::ExternalOrganisationId)
+
+        return when (organisationDocument.type) {
             OrganisationType.API -> ApiIntegration(
+                id = id,
                 name = organisationDocument.name,
+                address = address,
+                deal = deal,
                 domain = organisationDocument.domain,
-                country = organisationDocument.country?.let { Country.fromCode(it.code) },
-                state = organisationDocument.state?.let { State.fromCode(it.code) },
-                allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false
+                allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false,
+                role = organisationDocument.role
             )
 
             OrganisationType.SCHOOL -> School(
+                id = id,
                 name = organisationDocument.name,
                 domain = organisationDocument.domain,
-                country = organisationDocument.country?.let { Country.fromCode(it.code) }
-                    ?: throw IllegalStateException("School ${organisationDocument._id} must have a country"),
-                state = organisationDocument.state?.let { State.fromCode(it.code) },
-                postcode = organisationDocument.postcode,
-                district = organisationDocument.parent?.let(this::mapSchoolDistrict),
-                externalId = organisationDocument.externalId
+                address = address,
+                deal = deal,
+                district = organisationDocument.parent?.let { fromDocument(it) as? District? },
+                externalId = externalId,
+                role = organisationDocument.role
             )
 
             OrganisationType.DISTRICT -> District(
+                id = id,
                 name = organisationDocument.name,
+                address = address,
+                deal = deal,
                 domain = organisationDocument.domain,
-                state = organisationDocument.state?.let { State.fromCode(it.code) }
-                    ?: throw IllegalStateException("District ${organisationDocument._id} must have a state"),
-                externalId = organisationDocument.externalId
-                    ?: throw IllegalStateException("District ${organisationDocument._id} must have externalId")
-
+                externalId = externalId,
+                role = organisationDocument.role
             )
         }
 
-        return Organisation(
-            id = OrganisationId(organisationDocument._id!!.toHexString()),
-            type = organisationDocument.dealType ?: organisationDocument.parent?.dealType ?: DealType.STANDARD,
-            details = organisation,
-            accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
-            role = organisationDocument.role,
-            contentPackageId = organisationDocument.contentPackageId?.let { ContentPackageId(value = it) }
-        )
     }
 
-    fun schoolFromDocumentOrNull(organisationDocument: OrganisationDocument): Organisation<School>? {
-        val organisation = fromDocument(organisationDocument)
-        if(organisation.details is School) {
-            @Suppress("UNCHECKED_CAST")
-            return organisation as Organisation<School>
-        }
-        return null
-    }
-
-    fun toDocument(organisation: Organisation<*>): OrganisationDocument {
-
-        val district = when (organisation.details) {
-            is School -> organisation.details.district
+    fun toDocument(organisation: Organisation): OrganisationDocument {
+        val district = when (organisation) {
+            is School -> organisation.district
             else -> null
         }
 
-        val organisationDocument = OrganisationDocument(
+        return OrganisationDocument(
             _id = ObjectId(organisation.id.value),
-            dealType = organisation.type,
-            name = organisation.details.name,
-            domain = organisation.details.domain,
+            dealType = organisation.deal.type,
+            name = organisation.name,
+            domain = organisation.domain,
             role = organisation.role,
-            externalId = when (organisation.details) {
-                is School -> organisation.details.externalId
-                is District -> organisation.details.externalId
+            externalId = when (organisation) {
+                is School -> organisation.externalId?.value
+                is District -> organisation.externalId?.value
                 is ApiIntegration -> null
             },
-            type = organisation.details.type(),
-            country = organisation.details.country?.id?.let { LocationDocument(code = it) },
-            state = organisation.details.state?.id?.let { LocationDocument(code = it) },
-            postcode = organisation.details.postcode,
-            allowsOverridingUserIds = when (organisation.details) {
-                is ApiIntegration -> organisation.details.allowsOverridingUserIds
-                else -> null
-            },
+            type = organisation.type(),
+            country = organisation.address.country?.id?.let { LocationDocument(code = it) },
+            state = organisation.address.state?.id?.let { LocationDocument(code = it) },
+            postcode = organisation.address.postcode,
+            allowsOverridingUserIds = (organisation as? ApiIntegration?)?.allowsOverridingUserIds,
             parent = district?.let { toDocument(it) },
-            accessExpiresOn = organisation.accessExpiresOn?.toInstant(),
-            contentPackageId = organisation.contentPackageId?.value
+            accessExpiresOn = organisation.deal.accessExpiresOn?.toInstant(),
+            contentPackageId = organisation.deal.contentPackageId?.value
         )
-
-        return organisationDocument
-    }
-
-    private fun mapSchoolDistrict(parentOrganisationDocument: OrganisationDocument): Organisation<District>? {
-        val organisation = fromDocument(parentOrganisationDocument)
-        @Suppress("UNCHECKED_CAST")
-        return if(organisation.details is District) organisation as Organisation<District> else null
     }
 }
 

@@ -1,6 +1,8 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UniqueId
@@ -9,8 +11,8 @@ import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -21,7 +23,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.ZonedDateTime
@@ -33,10 +34,10 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a forbidden response when caller is not allowed to view organisations`() {
             mvc.perform(
-                    get("/v1/organisations?countryCode=USA")
-                        .asUser("has-role@test.com")
-                )
-                .andExpect(MockMvcResultMatchers.status().isForbidden)
+                get("/v1/organisations?countryCode=USA")
+                    .asUser("has-role@test.com")
+            )
+                .andExpect(status().isForbidden)
         }
 
         @Test
@@ -44,44 +45,49 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
 
             val district = organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.district(
-                        name = "my district",
-                        externalId = "123",
+                OrganisationFactory.district(
+                    name = "my district",
+                    externalId = ExternalOrganisationId("123"),
+                    address = Address(
+                        country = Country.usa(),
                         state = State(id = "FL", name = "Florida")
                     ),
-                    accessExpiresOn = expiryTime
+                    deal = deal(
+                        accessExpiresOn = expiryTime
+                    )
                 )
             )
 
             organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.school(
-                        name = "my district school",
-                        countryName = "USA",
-                        state = State(id = "FL", name = "Florida"),
-                        district = district
-                    )
+                OrganisationFactory.school(
+                    name = "my district school",
+                    address = Address(
+                        country = Country.usa(),
+                        state = State(id = "FL", name = "Florida")
+                    ),
+                    district = district
                 )
             )
             organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.school(
-                        name = "my independent school",
-                        countryName = "USA",
-                        state = State(id = "FL", name = "Florida"),
-                        district = null
+                OrganisationFactory.school(
+                    name = "my independent school",
+                    address = Address(
+                        country = Country.usa(),
+                        state = State(id = "FL", name = "Florida")
                     ),
-                    accessExpiresOn = expiryTime
+                    district = null,
+                    deal = deal(
+                        accessExpiresOn = expiryTime
+                    )
                 )
             )
 
             mvc.perform(
-                    get("/v1/organisations?countryCode=USA&page=0&size=1").asUserWithRoles(
-                        "some-boclipper",
-                        UserRoles.VIEW_ORGANISATIONS
-                    )
+                get("/v1/organisations?countryCode=USA&page=0&size=1").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.VIEW_ORGANISATIONS
                 )
+            )
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name").exists())
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.type").exists())
@@ -101,37 +107,37 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `fetches all independent organisations when no countryCode is provided`() {
             val district = organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.district(
-                        name = "my district",
-                        externalId = "123",
+                OrganisationFactory.district(
+                    name = "my district",
+                    externalId = ExternalOrganisationId("123"),
+                    address = Address(
                         state = State(id = "FL", name = "Florida")
                     )
                 )
             )
             val school = organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.school(
-                        name = "my school",
+                OrganisationFactory.school(
+                    name = "my school",
+                    address = Address(
                         country = Country.fromCode("GBR")
                     )
                 )
             )
 
             mvc.perform(
-                    get("/v1/organisations").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
-                )
+                get("/v1/organisations").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS)
+            )
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(2)))
                 .andExpect(
                     jsonPath(
                         "$._embedded.organisations[0].organisationDetails.name",
-                        equalTo(district.details.name)
+                        equalTo(district.name)
                     )
                 )
                 .andExpect(
                     jsonPath(
                         "$._embedded.organisations[1].organisationDetails.name",
-                        equalTo(school.details.name)
+                        equalTo(school.name)
                     )
                 )
         }
@@ -145,26 +151,26 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
             val district = organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.district(
-                        name = "my district",
-                        externalId = "123",
+                OrganisationFactory.district(
+                    name = "my district",
+                    externalId = ExternalOrganisationId("123"),
+                    address = Address(
                         state = State(id = "FL", name = "Florida")
                     )
                 )
             )
 
             mvc.perform(
-                    patch("/v1/organisations/${district.id.value}").asUserWithRoles(
-                            "some-boclipper",
-                            UserRoles.UPDATE_ORGANISATIONS
-                        )
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
-                        )
+                patch("/v1/organisations/${district.id.value}").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.UPDATE_ORGANISATIONS
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${district.id.value}")))
                 .andExpect(jsonPath("$.id", equalTo(district.id.value)))
                 .andExpect(jsonPath("$.accessExpiresOn", equalTo(expiryTimeToString)))
@@ -174,26 +180,26 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `update organization domain`() {
             val givenDomain = "my-district.pl"
             val district = organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.district(
-                        name = "my district",
-                        externalId = "123",
+                OrganisationFactory.district(
+                    name = "my district",
+                    externalId = ExternalOrganisationId("123"),
+                    address = Address(
                         state = State(id = "FL", name = "Florida")
                     )
                 )
             )
 
             mvc.perform(
-                    post("/v1/organisations/${district.id.value}").asUserWithRoles(
-                            "some-boclipper",
-                            UserRoles.UPDATE_ORGANISATIONS
-                        )
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """ {"domain": "$givenDomain"} """.trimIndent()
-                        )
+                post("/v1/organisations/${district.id.value}").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.UPDATE_ORGANISATIONS
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """ {"domain": "$givenDomain"} """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", equalTo(district.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.domain", equalTo(givenDomain)))
         }
@@ -201,26 +207,26 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `bad request when date is invalid`() {
             val district = organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.district(
-                        name = "my district",
-                        externalId = "123",
+                OrganisationFactory.district(
+                    name = "my district",
+                    externalId = ExternalOrganisationId("123"),
+                    address = Address(
                         state = State(id = "FL", name = "Florida")
                     )
                 )
             )
 
             mvc.perform(
-                    patch("/v1/organisations/${district.id.value}").asUserWithRoles(
-                            "some-boclipper",
-                            UserRoles.UPDATE_ORGANISATIONS
-                        )
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """{"accessExpiresOn": "not a time"}""".trimIndent()
-                        )
+                patch("/v1/organisations/${district.id.value}").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.UPDATE_ORGANISATIONS
                 )
-                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """{"accessExpiresOn": "not a time"}""".trimIndent()
+                    )
+            )
+                .andExpect(status().isBadRequest)
         }
 
         @Test
@@ -229,25 +235,25 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
 
             mvc.perform(
-                    patch("/v1/organisations/${UniqueId()}").asUserWithRoles(
-                            "some-boclipper",
-                            UserRoles.UPDATE_ORGANISATIONS
-                        )
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
-                        )
+                patch("/v1/organisations/${UniqueId()}").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.UPDATE_ORGANISATIONS
                 )
-                .andExpect(MockMvcResultMatchers.status().isNotFound)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
+                    )
+            )
+                .andExpect(status().isNotFound)
         }
 
         @Test
         fun `returns forbidden when caller is not allowed to update organisations`() {
             val district = organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.district(
-                        name = "my district",
-                        externalId = "123",
+                OrganisationFactory.district(
+                    name = "my district",
+                    externalId = ExternalOrganisationId("123"),
+                    address = Address(
                         state = State(id = "FL", name = "Florida")
                     )
                 )
@@ -256,13 +262,13 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryTime = ZonedDateTime.now()
             val expiryTimeToString = expiryTime.format(DateTimeFormatter.ISO_INSTANT)
             mvc.perform(
-                    patch("/v1/organisations/${district.id.value}").asUser("an-outsider")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
-                        )
-                )
-                .andExpect(MockMvcResultMatchers.status().isForbidden)
+                patch("/v1/organisations/${district.id.value}").asUser("an-outsider")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """{"accessExpiresOn": "$expiryTimeToString"}""".trimIndent()
+                    )
+            )
+                .andExpect(status().isForbidden)
         }
     }
 
@@ -273,17 +279,15 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             userRepository.create(user = UserFactory.sample(identity = IdentityFactory.sample(username = "rebecca@district-domain.com")))
             val district =
                 organisationRepository.save(
-                    OrganisationFactory.sample(
-                        details = OrganisationDetailsFactory.district(
-                            domain = "district-domain.com"
-                        )
+                    OrganisationFactory.district(
+                        domain = "district-domain.com"
                     )
                 )
 
             mvc.perform(
-                    post("/v1/organisations/${district.id.value}/associate").asUserWithRoles(UserRoles.UPDATE_ORGANISATIONS)
-                )
-                .andExpect(MockMvcResultMatchers.status().isOk)
+                post("/v1/organisations/${district.id.value}/associate").asUserWithRoles(UserRoles.UPDATE_ORGANISATIONS)
+            )
+                .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.users", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.users[0].email", equalTo("rebecca@district-domain.com")))
                 .andExpect(jsonPath("$._embedded.users[0].organisationAccountId", equalTo(district.id.value)))
@@ -292,7 +296,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `associates users requires permissions to do so`() {
             mvc.perform(post("/v1/organisations/org-id/sync"))
-                .andExpect(MockMvcResultMatchers.status().isForbidden)
+                .andExpect(status().isForbidden)
         }
     }
 
@@ -303,21 +307,21 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val organisationName = "Test Org"
             val contentPackage = saveContentPackage(ContentPackageFactory.sample())
             val organisation = organisationRepository.save(
-                OrganisationFactory.sample(
-                    details = OrganisationDetailsFactory.apiIntegration(
-                        name = organisationName,
-                        allowsOverridingUserIds = true
-                    ),
+                OrganisationFactory.apiIntegration(
+                    name = organisationName,
+                    allowsOverridingUserId = true,
                     role = "ROLE_TEST_ORG",
-                    contentPackageId = contentPackage.id
+                    deal = deal(
+                        contentPackageId = contentPackage.id
+                    )
                 )
             )
 
             mvc.perform(
-                    get("/v1/organisations/${organisation.id.value}")
-                        .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
-                )
-                .andExpect(MockMvcResultMatchers.status().isOk)
+                get("/v1/organisations/${organisation.id.value}")
+                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
+            )
+                .andExpect(status().isOk)
                 .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.organisationDetails.allowsOverridingUserIds", equalTo(true)))
@@ -328,19 +332,19 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a forbidden response when caller does not have view organisations role`() {
             mvc.perform(
-                    get("/v1/organisations/some-org")
-                        .asUser("has-role@test.com")
-                )
-                .andExpect(MockMvcResultMatchers.status().isForbidden)
+                get("/v1/organisations/some-org")
+                    .asUser("has-role@test.com")
+            )
+                .andExpect(status().isForbidden)
         }
 
         @Test
         fun `returns a 404 response when organisation is not found by id`() {
             mvc.perform(
-                    get("/v1/organisations/${UniqueId()}")
-                        .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
-                )
-                .andExpect(MockMvcResultMatchers.status().isNotFound)
+                get("/v1/organisations/${UniqueId()}")
+                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
+            )
+                .andExpect(status().isNotFound)
         }
     }
 
@@ -348,9 +352,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class GettingOrganisations {
         @Test
         fun `gets a page of all organisations when filters are empty`() {
-            saveDistrict(district = OrganisationDetailsFactory.district(name = "district 1", domain = "district.com"))
-            saveDistrict(district = OrganisationDetailsFactory.district(name = "district 2"))
-            saveSchool(school = OrganisationDetailsFactory.school(name = "school 1"))
+            saveOrganisation(OrganisationFactory.district(name = "district 1", domain = "district.com"))
+            saveOrganisation(OrganisationFactory.district(name = "district 2"))
+            saveOrganisation(OrganisationFactory.school(name = "school 1"))
 
             mvc
                 .perform(get("/v1/organisations").asUserWithRoles("some-boclipper", UserRoles.VIEW_ORGANISATIONS))
@@ -363,8 +367,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `gets a page of all organisations matching name`() {
-            saveDistrict(district = OrganisationDetailsFactory.district(name = "putname"))
-            saveDistrict(district = OrganisationDetailsFactory.district(name = "pamdale"))
+            saveOrganisation(OrganisationFactory.district(name = "putname"))
+            saveOrganisation(OrganisationFactory.district(name = "pamdale"))
 
             mvc
                 .perform(

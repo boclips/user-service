@@ -7,6 +7,7 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.factories.IdentityFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.school
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -30,7 +31,7 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
         val userId = "test-user-id"
         setSecurityContext(userId)
 
-        val organisationAccount = saveSchool()
+        val organisationAccount = saveOrganisation(school())
         saveUser(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = userId),

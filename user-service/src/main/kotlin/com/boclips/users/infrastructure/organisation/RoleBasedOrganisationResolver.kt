@@ -6,7 +6,7 @@ import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 
 class RoleBasedOrganisationResolver(private val organisationRepository: OrganisationRepository) :
     OrganisationResolver {
-    override fun resolve(roles: List<String>): Organisation<*>? {
+    override fun resolve(roles: List<String>): Organisation? {
         if (roles.isEmpty()) {
             return null
         }

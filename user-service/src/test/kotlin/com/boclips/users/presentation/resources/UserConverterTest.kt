@@ -4,13 +4,13 @@ import com.boclips.users.api.response.SubjectResource
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.converters.UserConverter
+import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
@@ -40,14 +40,17 @@ class UserConverterTest {
                         firstName = "Thierry",
                         lastName = "Henry",
                         ages = listOf(1, 2, 3),
-                        school = OrganisationFactory.school(school = OrganisationDetailsFactory.school(name = "Elm Street School")),
+                        school = OrganisationFactory.school(
+                            name = "Elm Street School"
+                        ),
                         subjects = listOf(Subject(SubjectId("subject-id"), name = "Math"))
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id"),
-                    organisation = OrganisationFactory.sample(
+                    organisation = OrganisationFactory.school(
                         id = OrganisationId("1234"),
-                        details = OrganisationDetailsFactory.school(
-                            name = "My school",
+                        name = "My school",
+                        address = Address(
+
                             state = State.fromCode("NY"),
                             country = Country.fromCode("USA")
                         )
@@ -79,10 +82,10 @@ class UserConverterTest {
     fun `converts teachers platform specific fields`() {
         val user = UserFactory.sample(
             teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "TRWN"),
-            organisation = OrganisationFactory.sample(
+            organisation = OrganisationFactory.school(
                 id = OrganisationId("1234"),
-                details = OrganisationDetailsFactory.school(
-                    name = "My school",
+                name = "My school",
+                address = Address(
                     state = State.fromCode("NY"),
                     country = Country.fromCode("USA")
                 )

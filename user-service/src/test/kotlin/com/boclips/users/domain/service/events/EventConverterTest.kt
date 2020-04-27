@@ -3,10 +3,12 @@ package com.boclips.users.domain.service.events
 import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.Subject
 import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -15,8 +17,6 @@ import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 import com.boclips.eventbus.domain.Subject as EventSubject
 import com.boclips.eventbus.domain.SubjectId as EventSubjectId
-import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.model.school.State
 
 class EventConverterTest : AbstractSpringIntegrationTest() {
 
@@ -31,9 +31,7 @@ class EventConverterTest : AbstractSpringIntegrationTest() {
                 lastName = "Johnson",
                 subjects = listOf(Subject(id = SubjectId("subject-id"), name = "maths")),
                 ages = listOf(5, 6, 7, 8),
-                school = OrganisationFactory.school(
-                    school = OrganisationDetailsFactory.school(name = "School name")
-                )
+                school = OrganisationFactory.school(name = "School name")
             )
         )
 
@@ -50,9 +48,7 @@ class EventConverterTest : AbstractSpringIntegrationTest() {
     @Test
     fun `when user is assigned only to a district, the parent is set null`() {
         val district = organisationRepository.save(
-            organisation = OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.district(name = "District 9")
-            )
+            organisation = OrganisationFactory.district(name = "District 9")
         )
 
         val user = userRepository.create(UserFactory.sample())
@@ -81,11 +77,13 @@ class EventConverterTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `convert country code and state if exists`() {
-
         val school = organisationRepository.save(
-                organisation = OrganisationFactory.sample(
-                        details = OrganisationDetailsFactory.school(country = Country.fromCode("USA"),state = State.fromCode("IL"))
+            organisation = OrganisationFactory.school(
+                address = Address(
+                    country = Country.fromCode("USA"),
+                    state = State.fromCode("IL")
                 )
+            )
         )
 
         val user = userRepository.create(UserFactory.sample(organisation = null))

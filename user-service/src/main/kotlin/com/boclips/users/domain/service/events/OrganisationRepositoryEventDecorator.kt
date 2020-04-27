@@ -13,7 +13,7 @@ class OrganisationRepositoryEventDecorator(
     private val eventBus: EventBus
 ) : OrganisationRepository by repository {
 
-    override fun update(id: OrganisationId, vararg updates: OrganisationUpdate): Organisation<*>? {
+    override fun update(id: OrganisationId, vararg updates: OrganisationUpdate): Organisation? {
         val updatedOrganisation = repository.update(id, *updates) ?: return null
 
         val allOrganisations = repository.findOrganisationsByParentId(id) + updatedOrganisation

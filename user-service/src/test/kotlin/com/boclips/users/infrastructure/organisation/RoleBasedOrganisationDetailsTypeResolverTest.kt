@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,7 +15,7 @@ class RoleBasedOrganisationDetailsTypeResolverTest : AbstractSpringIntegrationTe
 
     @Test
     fun `matches a viewsonic user to "ViewSonic MyViewBoard"`() {
-        val organisation = saveApiIntegration(role = "ROLE_VIEWSONIC")
+        val organisation = saveOrganisation(OrganisationFactory.apiIntegration(role = "ROLE_VIEWSONIC"))
 
         val resolvedOrganisation = organisationResolver.resolve(listOf("ROLE_VIEWSONIC"))
 
@@ -23,7 +24,7 @@ class RoleBasedOrganisationDetailsTypeResolverTest : AbstractSpringIntegrationTe
 
     @Test
     fun `matches a pearson user to "Pearson MyRealize"`() {
-        val organisation = saveApiIntegration(role = "ROLE_PEARSON_MYREALIZE")
+        val organisation = saveOrganisation(OrganisationFactory.apiIntegration(role = "ROLE_PEARSON_MYREALIZE"))
 
         val resolvedOrganisation = organisationResolver.resolve(listOf("ROLE_PEARSON_MYREALIZE"))
 

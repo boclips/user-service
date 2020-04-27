@@ -21,29 +21,29 @@ class AssignUsersByOrganisationDomain(
     companion object : KLogging()
 
     operator fun invoke(id: String): List<User> {
-        val organisation: Organisation<*> =
+        val organisation: Organisation =
             organisationRepository.findOrganisationById(OrganisationId(id)) ?: throw OrganisationNotFoundException(id)
 
-        val orphanUsers = when (organisation.details) {
+        val orphanUsers = when (organisation) {
             is School -> handleFlatOrganisation(organisation)
             is District -> handleHierarchicalOrganisation(organisation)
             is ApiIntegration -> handleFlatOrganisation(organisation)
         }
 
-        logger.info { "Identified ${orphanUsers.size} users not associate to organisation ${organisation.id} with domain ${organisation.details.domain}" }
+        logger.info { "Identified ${orphanUsers.size} users not associate to organisation ${organisation.id} with domain ${organisation.domain}" }
 
         return orphanUsers.map { userRepository.update(it, UserUpdate.ReplaceOrganisation(organisation)) }
     }
 
-    private fun handleFlatOrganisation(organisation: Organisation<*>): List<User> {
-        val domain = organisation.details.domain
+    private fun handleFlatOrganisation(organisation: Organisation): List<User> {
+        val domain = organisation.domain
         return domain?.let { userRepository.findOrphans(it, organisation.id) } ?: emptyList()
     }
 
-    private fun handleHierarchicalOrganisation(organisation: Organisation<*>): List<User> {
+    private fun handleHierarchicalOrganisation(organisation: Organisation): List<User> {
         val childOrganisations = organisationRepository.findOrganisationsByParentId(organisation.id)
 
-        val domain = organisation.details.domain
+        val domain = organisation.domain
         val orphanUsers = domain?.let { userRepository.findOrphans(it, organisation.id) } ?: emptyList()
 
         return orphanUsers.filter { user ->

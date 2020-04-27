@@ -1,8 +1,9 @@
 package com.boclips.users.presentation.controllers
 
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
@@ -13,26 +14,26 @@ class SchoolControllerTest : AbstractSpringIntegrationTest() {
     @Test
     fun `lists schools when given only query and country - outside USA schools`() {
         val school = organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "my school 1",
-                    countryName = "GBR"
+            OrganisationFactory.school(
+                name = "my school 1",
+                address = Address(
+                    country = Country.fromCode("GBR")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "my school 2",
-                    countryName = "POL"
+            OrganisationFactory.school(
+                name = "my school 2",
+                address = Address(
+                    country = Country.fromCode("POL")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "something else",
-                    countryName = "GBR"
+            OrganisationFactory.school(
+                name = "something else",
+                address = Address(
+                    country = Country.fromCode("GBR")
                 )
             )
         )

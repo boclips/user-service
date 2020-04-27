@@ -1,10 +1,9 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.LookupEntry
 import com.boclips.users.domain.model.Page
 import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.OrganisationDetails
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
@@ -45,7 +44,7 @@ class MongoOrganisationRepository(
     override fun lookupSchools(
         schoolName: String,
         countryCode: String
-    ): List<LookupEntry> {
+    ): List<School> {
         return collection()
             .find(
                 and(
@@ -54,24 +53,26 @@ class MongoOrganisationRepository(
                     OrganisationDocument::type eq OrganisationType.SCHOOL
                 )
             )
-            .toList().map { LookupEntry(it._id!!.toHexString(), it.name) }
+            .toList().convert()
     }
 
-    override fun findApiIntegrationByRole(role: String): Organisation<ApiIntegration>? {
+    override fun findApiIntegrationByRole(role: String): ApiIntegration? {
         return collection()
             .findOne(
                 and(
                     OrganisationDocument::role eq role,
                     OrganisationDocument::type eq OrganisationType.API
                 )
-            )?.fetchParentAndConvert()
+            )
+            ?.convert()
     }
 
-    override fun <T : OrganisationDetails> save(organisation: Organisation<T>): Organisation<T> {
-        return save(OrganisationDocumentConverter.toDocument(organisation)).cast()
+    override fun <T : Organisation> save(organisation: T): T {
+        return save(OrganisationDocumentConverter.toDocument(organisation))
+            .cast()
     }
 
-    private fun save(organisationDocument: OrganisationDocument): Organisation<*> {
+    private fun save(organisationDocument: OrganisationDocument): Organisation {
         collection().save(organisationDocument)
         collection().updateMany(
             OrganisationDocument::parent / OrganisationDocument::_id eq organisationDocument._id!!,
@@ -80,7 +81,7 @@ class MongoOrganisationRepository(
         return findOrganisationById(OrganisationId(organisationDocument._id.toHexString()))!!
     }
 
-    override fun update(id: OrganisationId, vararg updates: OrganisationUpdate): Organisation<*>? {
+    override fun update(id: OrganisationId, vararg updates: OrganisationUpdate): Organisation? {
         val document = collection().findOneById(ObjectId(id.value)) ?: return null
 
         val updatedDocument = updates.fold(document, { accumulator: OrganisationDocument, update: OrganisationUpdate ->
@@ -94,22 +95,21 @@ class MongoOrganisationRepository(
         return save(updatedDocument)
     }
 
-    override fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation<*>> {
+    override fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation> {
         return collection().find(OrganisationDocument::parent / OrganisationDocument::_id eq ObjectId(parentId.value))
-            .convert<OrganisationDetails>()
+            .convert<Organisation>()
     }
 
-    override fun findOrganisationById(id: OrganisationId): Organisation<*>? {
-        return collection().findOneById(ObjectId(id.value))
-            ?.fetchParentAndConvert<OrganisationDetails>()
+    override fun findOrganisationById(id: OrganisationId): Organisation? {
+        return collection().findOneById(ObjectId(id.value))?.convert()
     }
 
-    override fun findSchoolById(id: OrganisationId): Organisation<School>? {
+    override fun findSchoolById(id: OrganisationId): School? {
         return findOrganisationById(id)
-            ?.takeIf { it.details is School }?.cast()
+            ?.let { it as? School? }
     }
 
-    override fun findSchools(): List<Organisation<School>> {
+    override fun findSchools(): List<School> {
         return collection().find(OrganisationDocument::type eq OrganisationType.SCHOOL).convert()
     }
 
@@ -119,7 +119,7 @@ class MongoOrganisationRepository(
         types: List<OrganisationType>?,
         page: Int,
         size: Int
-    ): Page<Organisation<*>> {
+    ): Page<Organisation> {
 
         val filter = query(
             name = name,
@@ -134,7 +134,7 @@ class MongoOrganisationRepository(
             .sort(sort())
             .skip(page * size)
             .limit(size)
-            .convert<OrganisationDetails>()
+            .convert<Organisation>()
 
         return Page(
             items = results,
@@ -144,19 +144,18 @@ class MongoOrganisationRepository(
         )
     }
 
-    override fun findApiIntegrationByName(name: String): Organisation<ApiIntegration>? {
+    override fun findApiIntegrationByName(name: String): ApiIntegration? {
         return collection().findOne(
             and(
                 OrganisationDocument::name eq name,
                 OrganisationDocument::type eq OrganisationType.API
             )
         )
-            ?.fetchParentAndConvert()
+            ?.convert()
     }
 
-    override fun findOrganisationByExternalId(id: String): Organisation<*>? {
-        return collection().findOne(OrganisationDocument::externalId eq id)
-            ?.fetchParentAndConvert<OrganisationDetails>()
+    override fun findOrganisationByExternalId(id: ExternalOrganisationId): Organisation? {
+        return collection().findOne(OrganisationDocument::externalId eq id.value)?.convert()
     }
 
     private fun query(
@@ -188,18 +187,18 @@ class MongoOrganisationRepository(
         )
     }
 
-    private fun <T : OrganisationDetails> Iterable<OrganisationDocument>.convert(): List<Organisation<T>> {
+    private fun <T : Organisation> Iterable<OrganisationDocument>.convert(): List<T> {
         return this.map { document ->
             fromDocument(document).cast<T>()
         }
     }
 
-    private fun <T : OrganisationDetails> OrganisationDocument.fetchParentAndConvert(): Organisation<T> {
-        return listOf(this).convert<T>().first()
+    private fun <T : Organisation> OrganisationDocument.convert(): T {
+        return fromDocument(this).cast()
     }
 
-    private fun <T : OrganisationDetails> Organisation<*>.cast(): Organisation<T> {
+    private fun <T : Organisation> Organisation.cast(): T {
         @Suppress("UNCHECKED_CAST")
-        return this as Organisation<T>
+        return this as T
     }
 }

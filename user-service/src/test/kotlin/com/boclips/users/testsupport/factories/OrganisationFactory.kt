@@ -1,132 +1,95 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.OrganisationDetails
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.model.school.State
 import java.time.ZonedDateTime
 
 class OrganisationFactory {
     companion object {
-        fun <T : OrganisationDetails> sample(
-            id: OrganisationId = OrganisationId(),
+
+        fun address(
+            country: Country? = null
+        ): Address = Address(
+            country = country
+        )
+
+        fun deal(
+            contentPackageId: ContentPackageId? = null,
             type: DealType = DealType.STANDARD,
-            details: T,
-            accessExpiresOn: ZonedDateTime? = null,
-            role: String? = "SAMPLE_ROLE",
-            contentPackageId: ContentPackageId? = null
-        ): Organisation<T> {
-            return Organisation(
-                id = id,
-                type = type,
-                details = details,
-                accessExpiresOn = accessExpiresOn,
-                role = role,
-                contentPackageId = contentPackageId
-            )
-        }
+            accessExpiresOn: ZonedDateTime? = null
+        ): Deal = Deal(
+            contentPackageId = contentPackageId,
+            type = type,
+            accessExpiresOn = accessExpiresOn
+        )
 
         fun district(
             id: OrganisationId = OrganisationId(),
-            type: DealType = DealType.STANDARD,
-            district: District = OrganisationDetailsFactory.district(),
-            accessExpiresOn: ZonedDateTime? = null,
-            role: String? = "SAMPLE_ROLE"
-        ): Organisation<District> {
-            return Organisation(
+            name: String = "A District",
+            address: Address = address(country = Country.usa()),
+            deal: Deal = deal(),
+            role: String? = null,
+            domain: String? = null,
+            externalId: ExternalOrganisationId? = null
+        ): District {
+            return District(
                 id = id,
-                type = type,
-                details = district,
-                accessExpiresOn = accessExpiresOn,
-                role = role
+                name = name,
+                address = address,
+                deal = deal,
+                role = role,
+                externalId = externalId,
+                domain = domain
             )
         }
 
         fun school(
             id: OrganisationId = OrganisationId(),
-            type: DealType = DealType.STANDARD,
-            school: School = OrganisationDetailsFactory.school(),
-            accessExpiresOn: ZonedDateTime? = null,
-            role: String? = "SAMPLE_ROLE"
-        ): Organisation<School> {
-            return Organisation(
-                id = id,
-                type = type,
-                details = school,
-                accessExpiresOn = accessExpiresOn,
-                role = role
-            )
-        }
-
-        fun apiIntegration(
-            id: OrganisationId = OrganisationId(),
-            type: DealType = DealType.STANDARD,
-            details: ApiIntegration = OrganisationDetailsFactory.apiIntegration(),
-            role: String = "ROLE_${details.name}"
-        ): Organisation<ApiIntegration> {
-            return Organisation(
-                id = id,
-                type = type,
-                details = details,
-                accessExpiresOn = null,
-                role = role
-            )
-        }
-    }
-}
-
-class OrganisationDetailsFactory {
-    companion object {
-        fun school(
-            name: String = "Amazing Organisation",
-            externalId: String = "externalId",
-            country: Country = Country.fromCode(Country.USA_ISO),
-            countryName: String? = null,
-            postCode: String? = null,
-            state: State = State.fromCode("IL"),
-            district: Organisation<District>? = null
+            name: String = "A School",
+            address: Address = address(),
+            deal: Deal = deal(),
+            role: String? = null,
+            domain: String? = null,
+            district: District? = null,
+            externalId: ExternalOrganisationId? = null
         ): School {
             return School(
+                id = id,
                 name = name,
+                address = address,
+                deal = deal,
+                role = role,
                 externalId = externalId,
-                country = countryName?.let { Country.fromCode(it) } ?: country,
-                state = state,
-                postcode = postCode,
+                domain = domain,
                 district = district
             )
         }
 
-        fun district(
-            name: String = "Amazing Organisation",
-            domain: String? = null,
-            externalId: String = "externalId",
-            state: State = State.fromCode("IL")
-        ): District {
-            return District(
-                name = name,
-                domain = domain,
-                externalId = externalId,
-                state = state
-            )
-        }
-
         fun apiIntegration(
-            name: String = "Amazing Organisation",
-            country: Country = Country.fromCode(Country.USA_ISO),
-            state: State = State.fromCode("IL"),
-            allowsOverridingUserIds: Boolean = false
+            id: OrganisationId = OrganisationId(),
+            name: String = "An API Customer",
+            address: Address = address(),
+            deal: Deal = deal(),
+            role: String? = null,
+            domain: String? = null,
+            allowsOverridingUserId: Boolean = false
         ): ApiIntegration {
             return ApiIntegration(
+                id = id,
                 name = name,
-                country = country,
-                state = state,
-                allowsOverridingUserIds = allowsOverridingUserIds
+                address = address,
+                deal = deal,
+                role = role,
+                domain = domain,
+                allowsOverridingUserIds = allowsOverridingUserId
             )
         }
     }

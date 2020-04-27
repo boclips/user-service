@@ -2,11 +2,12 @@ package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
+import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.school.Country
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -18,7 +19,7 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
     @Test
     fun `it publishes an event when user is created`() {
         val organisation =
-            organisationRepository.save(organisation = OrganisationFactory.sample(details = OrganisationDetailsFactory.school()))
+            organisationRepository.save(OrganisationFactory.school())
         val user = userRepository.create(
             UserFactory.sample(
                 organisation = organisation
@@ -35,16 +36,16 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
         val maths = saveSubject("Maths")
 
         val district = organisationRepository.save(
-            organisation = OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.district(name = "District 9")
-            )
+            organisation = OrganisationFactory.district(name = "District 9")
         )
         val school = organisationRepository.save(
-            organisation = OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "The Street Wise Academy",
-                    district = district,
-                    postCode = "012345"
+            organisation = OrganisationFactory.school(
+                name = "The Street Wise Academy",
+                district = district,
+                address = Address(
+                    country = Country.usa(),
+                    state = State.fromCode("IL"),
+                    postcode = "012345"
                 )
             )
         )

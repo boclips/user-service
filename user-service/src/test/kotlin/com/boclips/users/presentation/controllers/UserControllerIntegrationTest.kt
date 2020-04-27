@@ -12,6 +12,7 @@ import com.boclips.users.domain.model.contentpackage.CollectionId
 import com.boclips.users.domain.model.contentpackage.ContentPackage
 import com.boclips.users.domain.model.contentpackage.ContentPackageId
 import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -23,14 +24,15 @@ import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.school
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.data.Offset
 import org.bson.types.ObjectId
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
@@ -53,10 +55,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can create a new user with valid request`() {
         mvc.perform(
-                post("/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
@@ -65,8 +67,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                    )
-            )
+                )
+        )
             .andExpect(status().isCreated)
             .andExpect(header().exists("Location"))
     }
@@ -74,18 +76,18 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can create a new user without optional fields`() {
         mvc.perform(
-                post("/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                    )
-            )
+                )
+        )
             .andExpect(status().isCreated)
             .andExpect(header().exists("Location"))
     }
@@ -103,33 +105,33 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     """.trimIndent()
 
         mvc.perform(
-                post("/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(payload)
-            )
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+        )
             .andExpect(status().isCreated)
 
         mvc.perform(
-                post("/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(payload)
-            )
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+        )
             .andExpect(status().isConflict)
     }
 
     @Test
     fun `cannot create account with invalid request`() {
         mvc.perform(
-                post("/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
                     {
                      "email": "jane@doe.com"
                      }
                     """.trimIndent()
-                    )
-            )
+                )
+        )
             .andExpect(status().isBadRequest)
             .andExpectApiErrorPayload()
     }
@@ -139,10 +141,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
 
         mvc.perform(
-                post("/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
+            post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
@@ -151,8 +153,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                    )
-            )
+                )
+        )
             .andExpect(status().isBadRequest)
     }
 
@@ -162,19 +164,21 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `updates a user`() {
             val subject = saveSubject("Maths")
             val user = saveUser(UserFactory.sample())
-            val school = saveSchool(
-                school = OrganisationDetailsFactory.school(
+            val school = saveOrganisation(
+                OrganisationFactory.school(
                     name = "San Fran Forest School",
-                    state = State.fromCode("CA"),
-                    country = Country.fromCode("USA")
+                    address = Address(
+                        state = State.fromCode("CA"),
+                        country = Country.fromCode("USA")
+                    )
                 )
             )
 
             mvc.perform(
-                    put("/v1/users/${user.id.value}").asTeacher(user.id.value)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/${user.id.value}").asTeacher(user.id.value)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {"firstName": "jane",
                          "lastName": "doe",
                          "subjects": ["${subject.id.value}"],
@@ -184,8 +188,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                          "schoolName": "San Fran Forest School"
                          }
                         """.trimIndent()
-                        )
-                )
+                    )
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._links.profile.href", endsWith("/users/${user.id.value}")))
                 .andExpect(jsonPath("$.id").exists())
@@ -212,17 +216,17 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "user-id")))
 
             mvc.perform(
-                    put("/v1/users/user-id")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {
                              "firstName": "change this",
                              "lastName": "and that"
                         }
                         """.trimIndent()
-                        ).asUser("different-users-id")
-                )
+                    ).asUser("different-users-id")
+            )
                 .andExpect(status().isForbidden)
         }
 
@@ -237,19 +241,19 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
 
             mvc.perform(
-                    put("/v1/users/user-id").asUserWithRoles(
-                            "different-user-id",
-                            UserRoles.UPDATE_USERS,
-                            UserRoles.VIEW_USERS
-                        )
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/user-id").asUserWithRoles(
+                    "different-user-id",
+                    UserRoles.UPDATE_USERS,
+                    UserRoles.VIEW_USERS
+                )
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {"firstName": "newname"
                          }
                         """.trimIndent()
-                        )
-                )
+                    )
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._links.profile.href", endsWith("/users/user-id")))
                 .andExpect(jsonPath("$.id").exists())
@@ -270,21 +274,23 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `invalid state`() {
             saveSubject("Maths")
             saveUser(UserFactory.sample())
-            saveSchool(
-                school = OrganisationDetailsFactory.school(
+            saveOrganisation(
+                OrganisationFactory.school(
                     name = "San Fran Forest School",
-                    state = State.fromCode("CA"),
-                    country = Country.fromCode("USA")
+                    address = Address(
+                        state = State.fromCode("CA"),
+                        country = Country.fromCode("USA")
+                    )
                 )
             )
 
             setSecurityContext("user-id")
 
             mvc.perform(
-                    put("/v1/users/user-id").asUser("user-id")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {"firstName": "jane",
                          "lastName": "doe",
                          "subjects": ["subject-1"],
@@ -294,8 +300,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                          "schoolName": "A new school name"
                          }
                         """.trimIndent()
-                        )
-                )
+                    )
+            )
                 .andExpect(status().isBadRequest)
                 .andExpectApiErrorPayload()
         }
@@ -309,10 +315,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             assertThat(userBeforeOnboarding!!.accessExpiresOn).isNull()
 
             mvc.perform(
-                    put("/v1/users/user-id").asUser("user-id")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {"firstName": "jane",
                          "lastName": "doe",
                          "subjects": ["${subject.id.value}"],
@@ -322,8 +328,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                          "schoolName": "San Fran Forest School"
                          }
                         """.trimIndent()
-                        )
-                )
+                    )
+            )
                 .andExpect(status().isOk)
 
             val userAfterOnboarding = userRepository.findById(user.id)
@@ -346,11 +352,13 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(user)
 
             val subject = saveSubject("Maths")
-            saveSchool(
-                school = OrganisationDetailsFactory.school(
+            saveOrganisation(
+                OrganisationFactory.school(
                     name = "San Fran Forest School",
-                    state = State.fromCode("CA"),
-                    country = Country.fromCode("USA")
+                    address = Address(
+                        state = State.fromCode("CA"),
+                        country = Country.fromCode("USA")
+                    )
                 )
             )
 
@@ -360,10 +368,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             assertThat(userBeforeOnboarding!!.teacherPlatformAttributes!!.shareCode).isNull()
 
             mvc.perform(
-                    put("/v1/users/user-id").asUser("user-id")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {"firstName": "jane",
                          "lastName": "doe",
                          "subjects": ["${subject.id.value}"],
@@ -373,8 +381,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                          "schoolName": "San Fran Forest School"
                          }
                         """.trimIndent()
-                        )
-                )
+                    )
+            )
                 .andExpect(status().isOk)
 
             val userAfterOnboarding = userRepository.findById(user.id)
@@ -397,21 +405,23 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(user)
 
             val maths = saveSubject("Maths")
-            saveSchool(
-                school = OrganisationDetailsFactory.school(
+            saveOrganisation(
+                OrganisationFactory.school(
                     name = "San Fran Forest School",
-                    state = State.fromCode("CA"),
-                    country = Country.fromCode("USA")
+                    address = Address(
+                        state = State.fromCode("CA"),
+                        country = Country.fromCode("USA")
+                    )
                 )
             )
 
             setSecurityContext("user-id")
 
             mvc.perform(
-                    put("/v1/users/user-id").asUser("user-id")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {"firstName": "jane",
                          "lastName": "doe",
                          "subjects": ["${maths.id.value}"],
@@ -421,8 +431,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                          "schoolName": "San Fran Forest School"
                          }
                         """.trimIndent()
-                        )
-                )
+                    )
+            )
                 .andExpect(status().isOk)
 
             val userAfterOnboarding = userRepository.findById(user.id)
@@ -438,10 +448,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             assertThat(userBeforeOnboarding!!.accessExpiresOn).isNull()
 
             mvc.perform(
-                    put("/v1/users/user-id").asUser("user-id")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {"firstName": "jane",
                          "lastName": "doe",
                          "subjects": ["${subject.id.value}"],
@@ -451,8 +461,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                          "schoolName": "San Fran Forest School"
                          }
                         """.trimIndent()
-                        )
-                )
+                    )
+            )
                 .andExpect(status().isOk)
 
             val userAfterOnboarding = userRepository.findById(user.id)
@@ -460,16 +470,16 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val originalAccessExpiresOn = userAfterOnboarding!!.accessExpiresOn
 
             mvc.perform(
-                    put("/v1/users/user-id").asUser("user-id")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """
+                put("/v1/users/user-id").asUser("user-id")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                         {"firstName": "Joseph",
                          "lastName": "Smith"
                          }
                         """.trimIndent()
-                        )
-                )
+                    )
+            )
                 .andExpect(status().isOk)
 
             val userAfterUpdate = userRepository.findById(user.id)
@@ -492,11 +502,13 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveUser(user)
 
-            saveSchool(
-                school = OrganisationDetailsFactory.school(
+            saveOrganisation(
+                OrganisationFactory.school(
                     name = "San Fran Forest School",
-                    state = State.fromCode("CA"),
-                    country = Country.fromCode("USA")
+                    address = Address(
+                        state = State.fromCode("CA"),
+                        country = Country.fromCode("USA")
+                    )
                 )
             )
 
@@ -509,12 +521,12 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class GetUser {
         @Test
         fun `get own profile as teacher`() {
-            val organisation = saveSchool()
+            val organisation = saveOrganisation(school(address = Address(country = Country.usa(), state = State.fromCode("WA"))))
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
-                    get("/v1/users/${user.id.value}").asTeacher(user.id.value)
-                )
+                get("/v1/users/${user.id.value}").asTeacher(user.id.value)
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.firstName").exists())
@@ -532,8 +544,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val user = saveUser(UserFactory.sample())
 
             mvc.perform(
-                    get("/v1/users/${user.id.value}").asApiUser(user.id.value)
-                )
+                get("/v1/users/${user.id.value}").asApiUser(user.id.value)
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.analyticsId").doesNotExist())
@@ -544,16 +556,16 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `get own profile as teacher and api user`() {
-            val organisation = saveSchool()
+            val organisation = saveOrganisation(school())
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
-                    get("/v1/users/${user.id.value}").asUserWithRoles(
-                        user.id.value,
-                        UserRoles.ROLE_TEACHER,
-                        UserRoles.ROLE_API
-                    )
+                get("/v1/users/${user.id.value}").asUserWithRoles(
+                    user.id.value,
+                    UserRoles.ROLE_TEACHER,
+                    UserRoles.ROLE_API
                 )
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.analyticsId").exists())
@@ -565,27 +577,27 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `get user that does not exist`() {
             mvc.perform(
-                    get("/v1/users/rafal").asUserWithRoles("ben", UserRoles.VIEW_USERS)
-                )
+                get("/v1/users/rafal").asUserWithRoles("ben", UserRoles.VIEW_USERS)
+            )
                 .andExpect(status().isNotFound)
         }
 
         @Test
         fun `Boclips service is able to retrieve user information and see their organisation and links`() {
-            val organisationAccount = saveApiIntegration()
+            val organisationAccount = saveOrganisation(OrganisationFactory.apiIntegration())
             val user = saveUser(UserFactory.sample(organisation = organisationAccount))
 
             mvc.perform(
-                    get("/v1/users/${user.id.value}").asBoclipsService()
-                )
+                get("/v1/users/${user.id.value}").asBoclipsService()
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.organisationAccountId").exists())
-                .andExpect(jsonPath("$.organisation.name", equalTo(organisationAccount.details.name)))
+                .andExpect(jsonPath("$.organisation.name", equalTo(organisationAccount.name)))
                 .andExpect(
                     jsonPath(
                         "$.organisation.allowsOverridingUserIds",
-                        equalTo(organisationAccount.details.allowsOverridingUserIds)
+                        equalTo(organisationAccount.allowsOverridingUserIds)
                     )
                 )
                 .andExpect(jsonPath("$._links.self.href", endsWith("users/${user.id.value}")))
@@ -638,15 +650,16 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             saveContentPackage(contentPackage)
-            val organisation = saveApiIntegration(contentPackageId = contentPackage.id)
+            val organisation =
+                saveOrganisation(OrganisationFactory.apiIntegration(deal = deal(contentPackageId = contentPackage.id)))
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
-                    get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(
-                        user.id.value,
-                        UserRoles.VIEW_ACCESS_RULES
-                    )
+                get("/v1/users/${user.id.value}/access-rules").asUserWithRoles(
+                    user.id.value,
+                    UserRoles.VIEW_ACCESS_RULES
                 )
+            )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(2)))
@@ -689,18 +702,22 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             val contentPackage = saveContentPackage(ContentPackageFactory.sample())
 
-            val organisation = saveApiIntegration(
-                contentPackageId = contentPackage.id,
-                role = organisationMatchingRole
+            val organisation = saveOrganisation(
+                OrganisationFactory.apiIntegration(
+                    deal = deal(
+                        contentPackageId = contentPackage.id
+                    ),
+                    role = organisationMatchingRole
+                )
             )
 
             mvc.perform(
-                    get("/v1/users/$userId/access-rules").asUserWithRoles(
-                        userId,
-                        UserRoles.VIEW_ACCESS_RULES,
-                        authority
-                    )
+                get("/v1/users/$userId/access-rules").asUserWithRoles(
+                    userId,
+                    UserRoles.VIEW_ACCESS_RULES,
+                    authority
                 )
+            )
                 .andExpect(status().isOk)
 
             val importedUser = userRepository.findById(UserId(userId))

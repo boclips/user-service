@@ -1,8 +1,9 @@
 package com.boclips.users.infrastructure.schooldigger
 
-import com.boclips.users.domain.model.LookupEntry
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
+import com.boclips.users.domain.model.organisation.ExternalOrganisationInformation
+import com.boclips.users.domain.model.organisation.ExternalSchoolInformation
 import com.boclips.users.domain.service.AmericanSchoolsProvider
 import com.boclips.users.testsupport.loadWireMockStub
 import com.github.tomakehurst.wiremock.WireMockServer
@@ -54,8 +55,8 @@ class AmericanSchoolsProviderContractTest {
                     FakeAmericanSchoolsProvider().apply {
                         createLookupEntries(
                             "NY",
-                            LookupEntry("id-1", "Abraham Lincoln High School, Brooklyn"),
-                            LookupEntry("id-2", "Stella K Abraham High School For Girls, Hewlett")
+                            ExternalOrganisationInformation(ExternalOrganisationId("id-1"), "Abraham Lincoln High School, Brooklyn", Address()),
+                            ExternalOrganisationInformation(ExternalOrganisationId("id-2"), "Stella K Abraham High School For Girls, Hewlett", Address())
                         )
                     },
                     {})
@@ -71,8 +72,8 @@ class AmericanSchoolsProviderContractTest {
         val schools = client.lookupSchools(stateId = "NY", schoolName = "Abraham")
 
         assertThat(schools).containsExactly(
-            LookupEntry("id-1", "Abraham Lincoln High School, Brooklyn"),
-            LookupEntry("id-2", "Stella K Abraham High School For Girls, Hewlett")
+            ExternalOrganisationInformation(ExternalOrganisationId("id-1"), "Abraham Lincoln High School, Brooklyn", Address()),
+            ExternalOrganisationInformation(ExternalOrganisationId("id-2"), "Stella K Abraham High School For Girls, Hewlett", Address())
         )
     }
 }
@@ -82,23 +83,23 @@ class AmericanSchoolsProviderContractTest {
 class FakeAmericanSchoolsProvider : AmericanSchoolsProvider {
 
     var calls = 0
-    var entries = mutableMapOf<String, List<LookupEntry>>()
-    var pair: Pair<School, District?>? = null
+    var entries = mutableMapOf<String, List<ExternalOrganisationInformation>>()
+    var schoolDetails: ExternalSchoolInformation? = null
 
-    override fun fetchSchool(schoolId: String): Pair<School, District?>? {
+    override fun fetchSchool(schoolId: String): ExternalSchoolInformation? {
         calls++
-        return pair
+        return schoolDetails
     }
 
-    fun createLookupEntries(stateId: String, vararg lookupEntries: LookupEntry) {
+    fun createLookupEntries(stateId: String, vararg lookupEntries: ExternalOrganisationInformation) {
         entries.put(stateId, lookupEntries.toList())
     }
 
-    fun createSchoolAndDistrict(pair: Pair<School, District?>?) {
-        this.pair = pair
+    fun createSchoolAndDistrict(schoolDetails: ExternalSchoolInformation?) {
+        this.schoolDetails = schoolDetails
     }
 
-    override fun lookupSchools(stateId: String, schoolName: String): List<LookupEntry> {
+    override fun lookupSchools(stateId: String, schoolName: String): List<ExternalOrganisationInformation> {
         calls++
         return entries[stateId]?.filter { it.name.contains(schoolName) } ?: emptyList()
     }
@@ -107,7 +108,7 @@ class FakeAmericanSchoolsProvider : AmericanSchoolsProvider {
 
     fun clear() {
         calls = 0
-        pair = null
+        schoolDetails = null
         entries = mutableMapOf()
     }
 }

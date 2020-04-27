@@ -3,7 +3,7 @@ package com.boclips.users.domain.service.events
 import com.boclips.eventbus.events.organisation.OrganisationUpdated
 import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +15,7 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
 
     @Test
     fun `organisation updated event gets dispatched when organisation is updated`() {
-        val organisation = saveSchool()
+        val organisation = saveOrganisation(OrganisationFactory.school())
 
         repository.update(organisation.id, ReplaceDomain("newdomain.com"))
 
@@ -25,8 +25,8 @@ class OrganisationRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegr
 
     @Test
     fun `organisation updated events get dispatched when parent organisation is updated`() {
-        val parent = saveDistrict()
-        val child = saveSchool(school = OrganisationDetailsFactory.school(district = parent))
+        val parent = saveOrganisation(OrganisationFactory.district())
+        val child = saveOrganisation(OrganisationFactory.school(district = parent))
 
         repository.update(parent.id, ReplaceDomain("newdomain.com"))
 

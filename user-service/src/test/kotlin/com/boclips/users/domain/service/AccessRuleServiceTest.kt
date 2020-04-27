@@ -3,10 +3,11 @@ package com.boclips.users.domain.service
 import com.boclips.users.domain.model.contentpackage.AccessRule
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.ContentPackageFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
-
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -35,7 +36,13 @@ class AccessRuleServiceTest : AbstractSpringIntegrationTest() {
         fun `can look up access rules for an existing organisation (necessary for api integrations)`() {
             val accessRule = saveIncludedVideosAccessRule(name = "great rule", videoIds = listOf())
             val contentPackage = saveContentPackage(ContentPackageFactory.sample(accessRuleIds = listOf(accessRule.id)))
-            val organisation = saveOrganisationWithContentPackage(contentPackageId = contentPackage.id)
+            val organisation = saveOrganisation(
+                apiIntegration(
+                    deal = deal(
+                        contentPackageId = contentPackage.id
+                    )
+                )
+            )
 
             val accessRules = accessRuleService.forOrganisation(organisation = organisation)
 
@@ -51,7 +58,13 @@ class AccessRuleServiceTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `defaults for organisations without a content package (necessary for schools and districts)`() {
-            val organisation = saveOrganisationWithContentPackage(contentPackageId = null)
+            val organisation = saveOrganisation(
+                apiIntegration(
+                    deal = deal(
+                        contentPackageId = null
+                    )
+                )
+            )
             val accessRules = accessRuleService.forOrganisation(organisation)
 
             assertThat(accessRules).containsExactlyInAnyOrder(*defaultAccessRules.toTypedArray())

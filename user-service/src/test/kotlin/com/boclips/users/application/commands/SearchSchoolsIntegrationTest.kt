@@ -1,9 +1,10 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.domain.model.LookupEntry
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
+import com.boclips.users.domain.model.organisation.ExternalOrganisationInformation
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -16,25 +17,25 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `when school is not from USA`() {
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "school 1",
+            OrganisationFactory.school(
+                name = "school 1",
+                address = Address(
                     country = Country.fromCode("GBR")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "school 2",
+            OrganisationFactory.school(
+                name = "school 2",
+                address = Address(
                     country = Country.fromCode("HUN")
                 )
             )
         )
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "another one",
+            OrganisationFactory.school(
+                name = "another one",
+                address = Address(
                     country = Country.fromCode("GBR")
                 )
             )
@@ -49,18 +50,18 @@ class SearchSchoolsIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `when school is from the USA fetches them from external API only`() {
         organisationRepository.save(
-            OrganisationFactory.sample(
-                details = OrganisationDetailsFactory.school(
-                    name = "school 1",
+            OrganisationFactory.school(
+                name = "school 1",
+                address = Address(
                     country = Country.fromCode("USA")
                 )
             )
         )
         fakeAmericanSchoolsProvider.createLookupEntries(
             "NY",
-            LookupEntry("", "usa school 1"),
-            LookupEntry("", "usa school 2"),
-            LookupEntry("", "usa hot dog shop 1")
+            ExternalOrganisationInformation(ExternalOrganisationId(""), "usa school 1", Address()),
+            ExternalOrganisationInformation(ExternalOrganisationId(""), "usa school 2", Address()),
+            ExternalOrganisationInformation(ExternalOrganisationId(""), "usa hot dog shop 1", Address())
         )
 
         val schools = searchSchools(schoolName = "school", countryCode = "USA", state = "NY")

@@ -10,12 +10,14 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.CrmProfile
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.MarketingService
+import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationDetailsFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
@@ -186,7 +188,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 organisationRepository.lookupSchools(schoolName = "new school", countryCode = "ESP")
                     .firstOrNull()
             assertThat(newSchool).isNotNull
-            assertThat(updatedUser.organisation?.id?.value).isEqualTo(newSchool?.id)
+            assertThat(updatedUser.organisation?.id).isEqualTo(newSchool?.id)
         }
 
         @Test
@@ -199,29 +201,24 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                     profile = ProfileFactory.sample()
                 )
             )
-            val school =
-                organisationRepository.save(
-                    OrganisationFactory.school(
-                        school = OrganisationDetailsFactory.school(
-                            country = Country.fromCode(
-                                "ESP"
-                            )
-                        )
-                    )
+            val school = organisationRepository.save(
+                OrganisationFactory.school(
+                    address = Address(country = Country.fromCode("ESP"))
                 )
+            )
 
             val updatedUser = updateUser(
                 userId,
                 UpdateUserRequestFactory.sample(
-                    schoolName = school.details.name,
+                    schoolName = school.name,
                     country = "ESP"
                 )
             )
 
             val newSchool =
-                organisationRepository.lookupSchools(schoolName = school.details.name, countryCode = "ESP")
+                organisationRepository.lookupSchools(schoolName = school.name, countryCode = "ESP")
             assertThat(newSchool).hasSize(1)
-            assertThat(updatedUser.organisation?.id?.value).isEqualTo(newSchool.first().id)
+            assertThat(updatedUser.organisation?.id).isEqualTo(newSchool.first().id)
         }
     }
 
@@ -238,29 +235,26 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                     profile = ProfileFactory.sample()
                 )
             )
-            val school =
-                organisationRepository.save(
-                    OrganisationFactory.school(
-                        school = OrganisationDetailsFactory.school(
-                            country = Country.fromCode(
-                                "USA"
-                            )
-                        )
+            val school = organisationRepository.save(
+                OrganisationFactory.school(
+                    externalId = ExternalOrganisationId(UniqueId()),
+                    address = Address(
+                        country = Country.fromCode("USA")
                     )
                 )
+            )
 
             val updatedUser = updateUser(
                 userId,
                 UpdateUserRequestFactory.sample(
                     country = "USA",
-                    schoolId = school.details.externalId
+                    schoolId = school.externalId?.value
                 )
             )
 
-            val newSchools =
-                organisationRepository.lookupSchools(schoolName = school.details.name, countryCode = "USA")
+            val newSchools = organisationRepository.lookupSchools(schoolName = school.name, countryCode = "USA")
             assertThat(newSchools).hasSize(1)
-            assertThat(updatedUser.organisation?.id?.value).isEqualTo(newSchools.first().id)
+            assertThat(updatedUser.organisation?.id).isEqualTo(newSchools.first().id)
         }
 
         @Test
@@ -270,11 +264,11 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val school =
                 organisationRepository.save(
                     OrganisationFactory.school(
-                        school = OrganisationDetailsFactory.school(
+                        address = Address(
                             country = Country.fromCode("USA"),
-                            state = State.fromCode("CA"),
-                            externalId = "i'm in schooldigger"
-                        )
+                            state = State.fromCode("CA")
+                        ),
+                        externalId = ExternalOrganisationId("i'm in schooldigger")
                     )
                 )
 
@@ -296,9 +290,9 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             val organisationAccount =
                 organisationRepository.findSchoolById(updatedUser.organisation!!.id)!!
-            assertThat(organisationAccount.details.country.isUSA()).isEqualTo(true)
-            assertThat(organisationAccount.details.state!!.id).isEqualTo("AZ")
-            assertThat(organisationAccount.details.externalId).isNull()
+            assertThat(organisationAccount.address.country?.isUSA()).isEqualTo(true)
+            assertThat(organisationAccount.address.state!!.id).isEqualTo("AZ")
+            assertThat(organisationAccount.externalId).isNull()
         }
     }
 

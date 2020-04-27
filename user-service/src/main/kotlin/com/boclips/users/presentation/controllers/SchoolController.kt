@@ -24,7 +24,7 @@ class SchoolController(private val searchSchools: SearchSchools) {
             _embedded = SchoolsWrapperResource(
                 schools = schools.map {
                     SchoolResource(
-                        id = it.id,
+                        id = it.id.value,
                         name = it.name
                     )
                 }

@@ -9,19 +9,19 @@ import org.springframework.stereotype.Component
 
 @Component
 class OrganisationDetailsConverter {
-    fun toResource(organisation: Organisation<*>): OrganisationDetailsResource {
+    fun toResource(organisation: Organisation): OrganisationDetailsResource {
         return OrganisationDetailsResource(
             id = organisation.id.value,
-            name = organisation.details.name,
-            domain = organisation.details.domain,
-            type = organisation.details.type().toString(),
-            state = organisation.details.state?.let {
+            name = organisation.name,
+            domain = organisation.domain,
+            type = organisation.type().toString(),
+            state = organisation.address.state?.let {
                 StateResource(
                     name = it.name,
                     id = it.id
                 )
             },
-            country = organisation.details.country?.let {
+            country = organisation.address.country?.let {
                 CountryResource(
                     name = it.name,
                     id = it.id,
@@ -29,8 +29,8 @@ class OrganisationDetailsConverter {
                     _links = null
                 )
             },
-            allowsOverridingUserIds = when (organisation.details) {
-                is ApiIntegration -> organisation.details.allowsOverridingUserIds
+            allowsOverridingUserIds = when (organisation) {
+                is ApiIntegration -> organisation.allowsOverridingUserIds
                 else -> null
             }
         )

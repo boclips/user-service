@@ -1,8 +1,11 @@
 package com.boclips.users.domain.service
 
+import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
+import com.boclips.users.domain.model.organisation.ExternalOrganisationInformation
+import com.boclips.users.domain.model.organisation.ExternalSchoolInformation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
 import org.springframework.stereotype.Service
@@ -12,49 +15,63 @@ class OrganisationService(
     val americanSchoolsProvider: AmericanSchoolsProvider,
     val organisationRepository: OrganisationRepository
 ) {
-    fun findOrCreateSchooldiggerSchool(externalSchoolId: String): Organisation<School>? {
-        var schoolOrganisation = organisationRepository.findOrganisationByExternalId(externalSchoolId)
-            ?.takeIf { it.details is School }
-            ?.let {
-                @Suppress("UNCHECKED_CAST")
-                it as Organisation<School>
-            }
+    fun findOrCreateSchooldiggerSchool(externalSchoolId: ExternalOrganisationId): School? {
+        val existingOrganisation = organisationRepository
+            .findOrganisationByExternalId(externalSchoolId)
 
-        if (schoolOrganisation == null) {
-            val (school, district) = americanSchoolsProvider.fetchSchool(externalSchoolId) ?: null to null
-            schoolOrganisation = school
-                ?.copy(district = district?.let { getOrCreateDistrict(district) })
-                ?.let {
-                    val organisation = Organisation(
-                        id = OrganisationId(),
-                        details = it,
-                        accessExpiresOn = null,
-                        type = DealType.STANDARD,
-                        role = null
-                    )
-
-                    organisationRepository.save(organisation)
-                }
+        if(existingOrganisation != null) {
+            return existingOrganisation as School
         }
 
-        return schoolOrganisation
+        val externalSchoolInfo = americanSchoolsProvider.fetchSchool(externalSchoolId.value) ?: return null
+
+        return createSchool(externalSchoolInfo)
     }
 
-    private fun getOrCreateDistrict(district: District): Organisation<District>? {
-        return organisationRepository.findOrganisationByExternalId(district.externalId)
-            ?.takeIf { it.details is District }
-            ?.let {
-                @Suppress("UNCHECKED_CAST")
-                it as Organisation<District>
-            }
-            ?: organisationRepository.save(
-                Organisation(
-                    id = OrganisationId(),
-                    details = district,
+    private fun getOrCreateDistrict(externalInfo: ExternalOrganisationInformation): District? {
+        val existingOrganisation = organisationRepository.findOrganisationByExternalId(externalInfo.id)
+
+        if(existingOrganisation != null) {
+            return existingOrganisation as District
+        }
+
+        return createDistrict(externalInfo)
+    }
+
+    private fun createSchool(externalInfo: ExternalSchoolInformation): School? {
+        return organisationRepository.save(
+            School(
+                id = OrganisationId(),
+                name = externalInfo.school.name,
+                address = externalInfo.school.address,
+                deal = Deal(
+                    contentPackageId = null,
                     accessExpiresOn = null,
-                    type = DealType.STANDARD,
-                    role = null
-                )
+                    type = DealType.STANDARD
+                ),
+                role = null,
+                district = externalInfo.district?.let(this::getOrCreateDistrict),
+                externalId = externalInfo.school.id,
+                domain = null
             )
+        )
+    }
+
+    private fun createDistrict(externalInfo: ExternalOrganisationInformation): District {
+        return organisationRepository.save(
+            District(
+                id = OrganisationId(),
+                name = externalInfo.name,
+                address = externalInfo.address,
+                deal = Deal(
+                    contentPackageId = null,
+                    accessExpiresOn = null,
+                    type = DealType.STANDARD
+                ),
+                role = null,
+                externalId = externalInfo.id,
+                domain = null
+            )
+        )
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
     fun buildCommands(
         updateUserRequest: UpdateUserRequest,
-        organisation: Organisation<*>? = null
+        organisation: Organisation? = null
     ): List<UserUpdate> {
         return listOfNotNull(
             updateUserRequest.firstName?.let { UserUpdate.ReplaceFirstName(firstName = it) },
@@ -38,8 +38,7 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
             },
             updateUserRequest.role?.let { UserUpdate.ReplaceRole(role = it)},
             organisation?.let { UserUpdate.ReplaceOrganisation(it) },
-            @Suppress("UNCHECKED_CAST")
-            organisation?.let { if(it.details is School) UserUpdate.ReplaceProfileSchool(it as Organisation<School>) else null}
+            organisation?.let { (it as? School?) }?.let(UserUpdate::ReplaceProfileSchool)
         )
     }
 

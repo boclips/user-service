@@ -18,7 +18,7 @@ import java.time.format.DateTimeParseException
 
 @Component
 class UpdateOrganisation(private val organisationRepository: OrganisationRepository) {
-    operator fun invoke(id: String, request: UpdateOrganisationRequest?): Organisation<*> {
+    operator fun invoke(id: String, request: UpdateOrganisationRequest?): Organisation {
         if (!UserExtractor.currentUserHasRole(UserRoles.UPDATE_ORGANISATIONS)) {
             throw PermissionDeniedException()
         }

@@ -2,6 +2,8 @@ package com.boclips.users.application.commands
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.ContentPackageFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -18,7 +20,9 @@ class GetAccessRulesOfUserTest : AbstractSpringIntegrationTest() {
 
         saveContentPackage(contentPackage)
 
-        val organisation = saveApiIntegration(contentPackageId = contentPackage.id)
+        val organisation = saveOrganisation(
+            apiIntegration(deal = deal(contentPackageId = contentPackage.id))
+        )
         val user = saveUser(UserFactory.sample(organisation = organisation))
 
         val accessRulesOfUser = getAccessRulesOfUser(user.id.value)

@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component
 class OrganisationConverter(
     private val organisationLinkBuilder: OrganisationLinkBuilder
 ) {
-    fun toResource(organisation: Organisation<*>): OrganisationResource {
+    fun toResource(organisation: Organisation): OrganisationResource {
         return OrganisationResource(
             id = organisation.id.value,
-            contentPackageId = organisation.contentPackageId?.value,
-            accessExpiresOn = organisation.accessExpiresOn,
+            contentPackageId = organisation.deal.contentPackageId?.value,
+            accessExpiresOn = organisation.deal.accessExpiresOn,
             organisationDetails = OrganisationDetailsConverter().toResource(organisation),
             _links = listOfNotNull(
                 organisationLinkBuilder.self(organisation.id),
@@ -27,7 +27,7 @@ class OrganisationConverter(
         )
     }
 
-    fun toResource(organisations: Page<Organisation<*>>): OrganisationsResource {
+    fun toResource(organisations: Page<Organisation>): OrganisationsResource {
         return OrganisationsResource(
             _embedded = OrganisationsWrapper(
                 organisations = organisations.items.map {

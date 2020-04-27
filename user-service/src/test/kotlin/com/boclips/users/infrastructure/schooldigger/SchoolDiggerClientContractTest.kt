@@ -20,7 +20,7 @@ class SchoolDiggerClientContractTest {
         val lookupSchools = client.lookupSchools("AK", "sc")
 
         assertThat(lookupSchools).isNotEmpty
-        assertThat(lookupSchools.first().id).isNotBlank()
+        assertThat(lookupSchools.first().id.value).isNotBlank()
         assertThat(lookupSchools.first().name).isNotBlank()
     }
 
@@ -35,16 +35,16 @@ class SchoolDiggerClientContractTest {
     fun fetchSchool() {
         val (school, district) = client.fetchSchool("020048000180")!!
 
-        assertThat(school.name).isNotBlank()
-        assertThat(school.externalId).isNotBlank()
-        assertThat(school.state).isNotNull
-        assertThat(school.country).isEqualTo(Country.usa())
-        assertThat(school.postcode).isNotBlank()
+        assertThat(school.name)
+        assertThat(school.id.value).isNotBlank()
+        assertThat(school.address.state).isNotNull
+        assertThat(school.address.country).isEqualTo(Country.usa())
+        assertThat(school.address.postcode).isNotBlank()
         assertThat(district).isNotNull
-        assertThat(district!!.externalId).isNotBlank()
+        assertThat(district!!.id.value).isNotBlank()
         assertThat(district.name).isNotBlank()
-        assertThat(district.country).isEqualTo(Country.usa())
-        assertThat(district.state).isEqualTo(school.state)
+        assertThat(district.address.country).isEqualTo(Country.usa())
+        assertThat(district.address.state).isEqualTo(school.address.state)
     }
 
     @Test
