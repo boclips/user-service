@@ -24,7 +24,7 @@ interface OrganisationRepository {
         size: Int
     ): Page<Organisation>
 
-    fun findApiIntegrationByRole(role: String): ApiIntegration?
+    fun findByRoleIn(roles: List<String>): List<Organisation>
     fun findApiIntegrationByName(name: String): ApiIntegration?
 
     fun lookupSchools(schoolName: String, countryCode: String): List<School>

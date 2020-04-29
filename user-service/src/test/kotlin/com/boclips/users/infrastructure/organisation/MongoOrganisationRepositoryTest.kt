@@ -15,6 +15,7 @@ import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.service.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -29,7 +30,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         fun `persists an organisation`() {
             val organisationName = "Persist Organisation"
 
-            val organisation: ApiIntegration = OrganisationFactory.apiIntegration(
+            val organisation: ApiIntegration = apiIntegration(
                 name = organisationName,
                 deal = deal(
                     type = DealType.STANDARD,
@@ -143,21 +144,16 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
     inner class FindOrganisations {
         @Test
         fun `looks up an organisation by associated role`() {
-            val role = "ROLE_VIEWSONIC"
-            val organisation = organisationRepository.save(
-                OrganisationFactory.apiIntegration(
-                    role = role
-                )
-            )
+            val organisation1 = organisationRepository.save(apiIntegration(role = "ROLE_1"))
+            val organisation2 = organisationRepository.save(apiIntegration(role = "ROLE_2"))
 
-            val foundOrganisation = organisationRepository.findApiIntegrationByRole(role)
-            assertThat(organisation).isEqualTo(foundOrganisation)
+            val foundOrganisations = organisationRepository.findByRoleIn(listOf("ROLE_1", "ROLE_2", "ROLE_3"))
+            assertThat(foundOrganisations).containsExactly(organisation1, organisation2)
         }
 
         @Test
         fun `looks up an organisation by id`() {
-            val organisation =
-                organisationRepository.save(OrganisationFactory.apiIntegration())
+            val organisation = organisationRepository.save(apiIntegration())
 
             val foundOrganisation = organisationRepository.findOrganisationById(organisation.id)
 
@@ -175,7 +171,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
             organisationRepository.save(
-                OrganisationFactory.apiIntegration(name = "Some School")
+                apiIntegration(name = "Some School")
             )
             organisationRepository.save(
                 OrganisationFactory.school(
@@ -206,7 +202,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `looks up an api integration by name`() {
             val organisation = organisationRepository.save(
-                OrganisationFactory.apiIntegration(name = "api-name")
+                apiIntegration(name = "api-name")
             )
 
             val retrievedOrganisation = organisationRepository.findApiIntegrationByName(name = "api-name")
@@ -268,7 +264,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             )
 
             organisationRepository.save(
-                OrganisationFactory.apiIntegration(
+                apiIntegration(
                     address = Address(
                         country = Country.fromCode(Country.USA_ISO)
                     )
@@ -300,7 +296,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             val school =
                 organisationRepository.save(OrganisationFactory.school())
             organisationRepository.save(OrganisationFactory.district())
-            organisationRepository.save(OrganisationFactory.apiIntegration())
+            organisationRepository.save(apiIntegration())
 
             val allSchools = organisationRepository.findSchools()
 

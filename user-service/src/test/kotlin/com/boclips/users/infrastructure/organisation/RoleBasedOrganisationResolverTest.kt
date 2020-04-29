@@ -4,8 +4,9 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-class RoleBasedOrganisationDetailsTypeResolverTest : AbstractSpringIntegrationTest() {
+class RoleBasedOrganisationResolverTest : AbstractSpringIntegrationTest() {
     @Test
     fun `matches a teacher user to "Boclips for Teachers"`() {
         val organisationId = organisationResolver.resolve(listOf("ROLE_TEACHER"))
@@ -43,5 +44,15 @@ class RoleBasedOrganisationDetailsTypeResolverTest : AbstractSpringIntegrationTe
         val matched = organisationResolver.resolve(emptyList())
 
         assertThat(matched).isNull()
+    }
+
+    @Test
+    fun `throws when more than one role matches`() {
+        saveOrganisation(OrganisationFactory.apiIntegration(role = "ROLE_VIEWSONIC"))
+        saveOrganisation(OrganisationFactory.apiIntegration(role = "ROLE_PEARSON_MYREALIZE"))
+
+        assertThrows<IllegalStateException> {
+            organisationResolver.resolve(listOf("ROLE_VIEWSONIC", "ROLE_PEARSON_MYREALIZE"))
+        }
     }
 }

@@ -44,7 +44,7 @@ class CreateApiIntegration(
         repository.findApiIntegrationByName(request.name!!)?.let {
             throw OrganisationAlreadyExistsException(request.name!!)
         }
-        repository.findApiIntegrationByRole(request.role!!)?.let {
+        if(repository.findByRoleIn(listOf(request.role!!)).isNotEmpty()) {
             throw OrganisationAlreadyExistsException(request.role!!)
         }
     }

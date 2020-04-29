@@ -66,7 +66,7 @@ class UserService(
             )
         )
 
-        logger.info { "Created user ${user.id.value}" }
+        logger.info { "Created teacher user ${user.id.value}" }
 
         return user
     }
@@ -78,6 +78,8 @@ class UserService(
     }
 
     fun create(identity: Identity): User {
+        logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]"  }
+
         val organisation = organisationResolver.resolve(identity.roles)
 
         val user = User(
@@ -91,7 +93,9 @@ class UserService(
             accessExpiresOn = null
         )
 
-        return userRepository.create(user)
+        return userRepository.create(user).also { createdUser ->
+            logger.info { "User ${createdUser.id.value} created under organisation ${createdUser.organisation?.name}" }
+        }
     }
 
     @BoclipsEventListener

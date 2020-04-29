@@ -56,15 +56,10 @@ class MongoOrganisationRepository(
             .toList().convert()
     }
 
-    override fun findApiIntegrationByRole(role: String): ApiIntegration? {
+    override fun findByRoleIn(roles: List<String>): List<Organisation> {
         return collection()
-            .findOne(
-                and(
-                    OrganisationDocument::role eq role,
-                    OrganisationDocument::type eq OrganisationType.API
-                )
-            )
-            ?.convert()
+            .find(OrganisationDocument::role `in` roles)
+            .convert()
     }
 
     override fun <T : Organisation> save(organisation: T): T {
