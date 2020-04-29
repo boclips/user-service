@@ -21,7 +21,9 @@ class UserService(
     val identityProvider: IdentityProvider,
     val organisationResolver: OrganisationResolver
 ) {
-    companion object : KLogging()
+    companion object : KLogging() {
+        const val TEACHER_ROLE = "ROLE_TEACHER"
+    }
 
     // TODO implement stream
     fun findAllTeachers(): List<User> {
@@ -41,7 +43,8 @@ class UserService(
     fun createTeacher(newTeacher: NewTeacher): User {
         val identity = identityProvider.createIdentity(
             email = newTeacher.email,
-            password = newTeacher.password
+            password = newTeacher.password,
+            role = TEACHER_ROLE
         )
 
         val user = userRepository.create(

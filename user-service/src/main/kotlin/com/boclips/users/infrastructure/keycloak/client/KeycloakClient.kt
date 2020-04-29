@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.SessionProvider
-import com.boclips.users.infrastructure.keycloak.KeycloakUser
+import com.boclips.users.infrastructure.keycloak.KeycloakCreateUserRequest
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.UnknownUserSourceException
 import com.boclips.users.infrastructure.keycloak.UserNotCreatedException
@@ -22,11 +22,12 @@ open class KeycloakClient(
     companion object : KLogging()
 
     @Retryable(value = [UserNotCreatedException::class], maxAttempts = 2)
-    override fun createIdentity(email: String, password: String): Identity {
+    override fun createIdentity(email: String, password: String, role: String?): Identity {
         val createdUser = keycloak.createUser(
-            KeycloakUser(
+            KeycloakCreateUserRequest(
                 email = email,
-                password = password
+                password = password,
+                role = role
             )
         )
         logger.info { "Created user ${createdUser.id} in Keycloak" }

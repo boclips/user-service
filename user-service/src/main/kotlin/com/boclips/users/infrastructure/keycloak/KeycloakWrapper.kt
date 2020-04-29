@@ -11,7 +11,6 @@ import kotlin.math.ceil
 open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize: Int = 500) {
     companion object : KLogging() {
         const val REALM = "boclips"
-        const val TEACHER_ROLE = "ROLE_TEACHER"
     }
 
     fun users(): Sequence<UserRepresentation> {
@@ -73,16 +72,16 @@ open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize:
             }
     }
 
-    fun createUser(keycloakUser: KeycloakUser): UserRepresentation {
+    fun createUser(request: KeycloakCreateUserRequest): UserRepresentation {
         logger.info { "Attempt to create user" }
         val response: Response = keycloak.realm(REALM)
             .users()
             .create(UserRepresentation().apply {
-                username = keycloakUser.email
-                email = keycloakUser.email
+                username = request.email
+                email = request.email
                 credentials = listOf(CredentialRepresentation().apply {
                     type = CredentialRepresentation.PASSWORD
-                    value = keycloakUser.password
+                    value = request.password
                     isTemporary = false
                 })
                 isEmailVerified = false
@@ -93,9 +92,9 @@ open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize:
 
         if (response.status != 201) throw UserNotCreatedException("User could not be created, Keycloak returned ${response.status}")
 
-        return getUserByUsername(keycloakUser.email)?.let { user ->
-            addRealmRoleToUser(TEACHER_ROLE, user.id)
-            getUserByUsername(keycloakUser.email)
+        return getUserByUsername(request.email)?.let { user ->
+            request.role?.let { role -> addRealmRoleToUser(role, user.id) }
+            getUserByUsername(request.email)
         } ?: throw UserNotCreatedException("User was created but could not be found.")
     }
 

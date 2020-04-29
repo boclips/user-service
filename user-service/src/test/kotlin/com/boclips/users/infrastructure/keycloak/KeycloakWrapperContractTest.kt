@@ -36,9 +36,10 @@ class KeycloakWrapperContractTest {
         val randomEmail = generateRandomEmail()
 
         val createdUser = wrapper.createUser(
-            KeycloakUser(
+            KeycloakCreateUserRequest(
                 email = randomEmail,
-                password = "123"
+                password = "123",
+                role = null
             )
         )
 
@@ -51,11 +52,12 @@ class KeycloakWrapperContractTest {
     }
 
     @Test
-    fun `new users are granted the ROLE_TEACHER composite role`() {
+    fun `new users can be created with a role`() {
         val createdUser = wrapper.createUser(
-            KeycloakUser(
+            KeycloakCreateUserRequest(
                 email = generateRandomEmail(),
-                password = "123"
+                password = "123",
+                role = "ROLE_TEACHER"
             )
         )
 
@@ -66,9 +68,10 @@ class KeycloakWrapperContractTest {
 
     @Test
     fun `throws when user already exists`() {
-        val user = KeycloakUser(
+        val user = KeycloakCreateUserRequest(
             email = generateRandomEmail(),
-            password = "123"
+            password = "123",
+            role = null
         )
 
         assertThrows<UserAlreadyExistsException> {
@@ -82,9 +85,10 @@ class KeycloakWrapperContractTest {
     @Test
     fun `can fetch users`() {
         val createdUser = wrapper.createUser(
-            KeycloakUser(
+            KeycloakCreateUserRequest(
                 email = generateRandomEmail(),
-                password = "123"
+                password = "123",
+                role = "ROLE_TEACHER"
             )
         )
 
@@ -129,9 +133,10 @@ class KeycloakWrapperContractTest {
         @Test
         fun `cannot fetch user session for a user that has never logged in`() {
             val createdUser = wrapper.createUser(
-                KeycloakUser(
+                KeycloakCreateUserRequest(
                     email = generateRandomEmail(),
-                    password = "123"
+                    password = "123",
+                    role = null
                 )
             )
 
@@ -165,9 +170,10 @@ class KeycloakWrapperContractTest {
         @Test
         fun `returns user`() {
             val createdUser = wrapper.createUser(
-                KeycloakUser(
+                KeycloakCreateUserRequest(
                     email = generateRandomEmail(),
-                    password = "123"
+                    password = "123",
+                    role = "ROLE_TEACHER"
                 )
             )
 
@@ -184,9 +190,10 @@ class KeycloakWrapperContractTest {
         @Test
         fun `gets user by username`() {
             val createdUser = wrapper.createUser(
-                KeycloakUser(
+                KeycloakCreateUserRequest(
                     email = generateRandomEmail(),
-                    password = "123"
+                    password = "123",
+                    role = "ROLE_TEACHER"
                 )
             )
 

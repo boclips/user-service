@@ -14,7 +14,7 @@ class KeycloakClientFake : IdentityProvider, SessionProvider {
     private val fakeUsers = hashMapOf<String, Identity>()
     private var session: UserSessions = UserSessions(lastAccess = null)
 
-    override fun createIdentity(email: String, password: String): Identity {
+    override fun createIdentity(email: String, password: String, role: String?): Identity {
         if (fakeUsers.values.filter { it.email == email }.isNotEmpty()) {
             throw UserAlreadyExistsException()
         }
@@ -23,7 +23,7 @@ class KeycloakClientFake : IdentityProvider, SessionProvider {
         fakeUsers[id] = Identity(
             id = UserId(value = id),
             username = email,
-            roles = listOf("TEACHERS"),
+            roles = listOfNotNull(role),
             createdAt = ZonedDateTime.now()
         )
         return fakeUsers[id]!!
