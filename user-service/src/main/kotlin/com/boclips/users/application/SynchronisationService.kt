@@ -4,7 +4,6 @@ import com.boclips.users.domain.service.IdentityProvider
 import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.SessionProvider
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component

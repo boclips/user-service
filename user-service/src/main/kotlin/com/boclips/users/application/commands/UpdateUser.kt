@@ -1,6 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
+import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.application.UserUpdatesCommandFactory
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
@@ -8,7 +9,10 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.DealType
+import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
@@ -17,13 +21,8 @@ import com.boclips.users.domain.service.MarketingService
 import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserService
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.domain.service.convertUserToCrmProfile
-import com.boclips.users.api.request.user.UpdateUserRequest
-import com.boclips.users.domain.model.organisation.Address
-import com.boclips.users.domain.model.organisation.Deal
-import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import mu.KLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -33,7 +32,6 @@ import java.time.temporal.ChronoUnit
 
 @Component
 class UpdateUser(
-    private val userService: UserService,
     private val userRepository: UserRepository,
     private val marketingService: MarketingService,
     private val userUpdatesCommandFactory: UserUpdatesCommandFactory,
@@ -44,6 +42,7 @@ class UpdateUser(
 ) {
     companion object : KLogging() {
         const val DEFAULT_TRIAL_DAYS_LENGTH = 10L
+
         // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-06-30
         const val EXTENDED_TRIAL_END_DATE = "2020-06-30T00:00:00Z"
     }
@@ -58,15 +57,11 @@ class UpdateUser(
 
         val school = findOrCreateSchool(updateUserRequest)
 
-        getOrImportUser(updateUserId).let { user ->
+        return getOrImportUser(updateUserId).let { user ->
             val updateCommands = buildUpdateCommands(updateUserRequest, school, user)
-
             userRepository.update(user, *updateCommands.toTypedArray())
-
-            updateMarketingService(updateUserId)
         }
-
-        return userService.findUserById(updateUserId)
+            .also { user -> updateMarketingService(user) }
     }
 
     private fun buildUpdateCommands(
@@ -136,9 +131,7 @@ class UpdateUser(
         ).firstOrNull { it.name == schoolName }
     }
 
-    private fun updateMarketingService(id: UserId) {
-        val user = userService.findUserById(id)
-
+    private fun updateMarketingService(user: User) {
         convertUserToCrmProfile(user, UserSessions(Instant.now()))?.let {
             marketingService.updateProfile(listOf(it))
         }

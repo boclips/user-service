@@ -9,16 +9,17 @@ import com.boclips.users.domain.model.UserSessions
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
+import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.service.AnalyticsClient
 import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.UserService
+import com.boclips.users.domain.service.UserCreationService
 import com.boclips.users.domain.service.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
 
 @Component
 class CreateTeacher(
-    private val userService: UserService,
+    private val userCreationService: UserCreationService,
     private val marketingService: MarketingService,
     private val captchaProvider: CaptchaProvider,
     private val analyticsClient: AnalyticsClient,
@@ -37,14 +38,16 @@ class CreateTeacher(
             analyticsId = AnalyticsId(value = createTeacherRequest.analyticsId.orEmpty()),
             referralCode = createTeacherRequest.referralCode.orEmpty(),
             shareCode = generateTeacherShareCode(),
-            utmSource = createTeacherRequest.utmSource ?: "",
-            utmContent = createTeacherRequest.utmContent ?: "",
-            utmTerm = createTeacherRequest.utmTerm ?: "",
-            utmMedium = createTeacherRequest.utmMedium ?: "",
-            utmCampaign = createTeacherRequest.utmCampaign ?: ""
+            marketingTracking = MarketingTracking(
+                utmSource = createTeacherRequest.utmSource ?: "",
+                utmContent = createTeacherRequest.utmContent ?: "",
+                utmTerm = createTeacherRequest.utmTerm ?: "",
+                utmMedium = createTeacherRequest.utmMedium ?: "",
+                utmCampaign = createTeacherRequest.utmCampaign ?: ""
+            )
         )
 
-        val createdUser = userService.createTeacher(newTeacher = newUser)
+        val createdUser = userCreationService.createTeacher(newTeacher = newUser)
 
         attemptToUpdateProfile(createdUser)
         createdUser.analyticsId?.let { trackUserCreatedEvent(it) }

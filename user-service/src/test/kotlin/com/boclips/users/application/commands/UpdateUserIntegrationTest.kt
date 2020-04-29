@@ -45,7 +45,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun setup() {
         mockMarketingService = mock()
         updateUser = UpdateUser(
-            userService = userService,
             getOrImportUser = getOrImportUser,
             marketingService = mockMarketingService,
             organisationRepository = organisationRepository,

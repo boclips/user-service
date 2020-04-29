@@ -2,12 +2,10 @@ package com.boclips.users.domain.service
 
 import com.boclips.eventbus.BoclipsEventListener
 import com.boclips.eventbus.events.organisation.OrganisationUpdated
-import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.organisation.OrganisationResolver
@@ -15,7 +13,7 @@ import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(
+class UserCreationService(
     val userRepository: UserRepository,
     val organisationRepository: OrganisationRepository,
     val identityProvider: IdentityProvider,
@@ -32,37 +30,21 @@ class UserService(
             role = TEACHER_ROLE
         )
 
-        val user = userRepository.create(
-            User(
-                identity = identity,
-                profile = null,
-                teacherPlatformAttributes = TeacherPlatformAttributes(
-                    shareCode = newTeacher.shareCode,
-                    hasLifetimeAccess = false
-                ),
-                analyticsId = newTeacher.analyticsId,
-                referralCode = newTeacher.referralCode,
-                marketingTracking = MarketingTracking(
-                    utmCampaign = newTeacher.utmCampaign,
-                    utmSource = newTeacher.utmSource,
-                    utmMedium = newTeacher.utmMedium,
-                    utmContent = newTeacher.utmContent,
-                    utmTerm = newTeacher.utmTerm
-                ),
-                organisation = null,
-                accessExpiresOn = null
-            )
+        val user = User(
+            identity = identity,
+            profile = null,
+            teacherPlatformAttributes = TeacherPlatformAttributes(
+                shareCode = newTeacher.shareCode,
+                hasLifetimeAccess = false
+            ),
+            analyticsId = newTeacher.analyticsId,
+            referralCode = newTeacher.referralCode,
+            marketingTracking = newTeacher.marketingTracking,
+            organisation = null,
+            accessExpiresOn = null
         )
 
-        logger.info { "Created teacher user ${user.id.value}" }
-
-        return user
-    }
-
-    fun findUserById(userId: UserId): User {
-        val retrievedUser = userRepository.findById(UserId(userId.value))
-        logger.info { "Retrieved user ${userId.value}" }
-        return retrievedUser ?: throw UserNotFoundException(userId)
+        return save(user)
     }
 
     fun create(identity: Identity): User {
@@ -81,6 +63,10 @@ class UserService(
             accessExpiresOn = null
         )
 
+        return save(user)
+    }
+
+    private fun save(user: User): User {
         return userRepository.create(user).also { createdUser ->
             logger.info { "User ${createdUser.id.value} created under organisation ${createdUser.organisation?.name}" }
         }

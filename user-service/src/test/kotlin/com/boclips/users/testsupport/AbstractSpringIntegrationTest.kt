@@ -22,7 +22,7 @@ import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.OrganisationService
 import com.boclips.users.domain.service.SubjectService
 import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserService
+import com.boclips.users.domain.service.UserCreationService
 import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
@@ -123,7 +123,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var addCollectionToAccessRule: AddCollectionToAccessRule
 
     @Autowired
-    lateinit var userService: UserService
+    lateinit var userCreationService: UserCreationService
 
     @Autowired
     lateinit var organisationService: OrganisationService

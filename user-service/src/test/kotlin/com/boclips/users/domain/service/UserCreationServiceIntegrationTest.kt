@@ -1,10 +1,9 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -12,11 +11,10 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
-class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
+class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `create a user from identity`() {
@@ -25,7 +23,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         val identity = IdentityFactory.sample(roles = listOf("ROLE_CLIENT_ORG"))
-        val user: User = userService.create(identity)
+        val user: User = userCreationService.create(identity)
 
         assertThat(user.id).isEqualTo(identity.id)
         assertThat(user.identity.id).isEqualTo(identity.id)
@@ -39,31 +37,26 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(userRepository.findById(identity.id)).isEqualTo(user)
     }
 
-    @Test
-    fun `throws exception if user not found`() {
-        val userId = UserId(value = "1234")
-
-        assertThrows<UserNotFoundException> { userService.findUserById(userId) }
-    }
-
     private val newUser = NewTeacher(
         email = "joe@dough.com",
         password = "thisisapassword",
         analyticsId = AnalyticsId(value = "analytics"),
         referralCode = "abc-a123",
         shareCode = "test",
-        utmCampaign = "",
-        utmSource = "",
-        utmContent = "",
-        utmTerm = "",
-        utmMedium = ""
+        marketingTracking = MarketingTracking(
+            utmCampaign = "",
+            utmSource = "",
+            utmContent = "",
+            utmTerm = "",
+            utmMedium = ""
+        )
     )
 
     @Test
     fun `create teacher`() {
         val timeBeforeCommand = ZonedDateTime.now(ZoneOffset.UTC)
 
-        val persistedUser = userService.createTeacher(newUser)
+        val persistedUser = userCreationService.createTeacher(newUser)
 
         assertThat(persistedUser.identity.createdAt).isNotNull()
         assertThat(persistedUser.identity.createdAt).isAfterOrEqualTo(timeBeforeCommand)
@@ -83,7 +76,7 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `an individual teacher user is not associated to external organisation`() {
-        val persistedUser = userService.createTeacher(newUser)
+        val persistedUser = userCreationService.createTeacher(newUser)
 
         assertThat(persistedUser.organisation).isNull()
     }
