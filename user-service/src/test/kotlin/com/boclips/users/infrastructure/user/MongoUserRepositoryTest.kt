@@ -64,6 +64,33 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `can find all teachers`() {
+        val school = organisationRepository.save(OrganisationFactory.school())
+        val apiOrganisation = saveOrganisation(OrganisationFactory.apiIntegration())
+
+        listOf(
+            saveUser(
+                UserFactory.sample(
+                    identity = IdentityFactory.sample(id = "1"),
+                    organisation = school
+                )
+            ),
+            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "4"), organisation = null)),
+            saveUser(
+                UserFactory.sample(
+                    identity = IdentityFactory.sample(id = "5"),
+                    organisation = apiOrganisation
+                )
+            )
+        )
+
+        val users = userRepository.findAllTeachers()
+
+        assertThat(users).hasSize(2)
+        assertThat(users.map { it.id.value }).containsExactly("1", "4")
+    }
+
+    @Test
     fun `updating user first name field only replaces first name`() {
         val user = userRepository.create(
             UserFactory.sample(

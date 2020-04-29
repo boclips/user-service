@@ -29,5 +29,4 @@ interface OrganisationRepository {
 
     fun lookupSchools(schoolName: String, countryCode: String): List<School>
     fun findSchoolById(id: OrganisationId): School?
-    fun findSchools(): List<School>
 }

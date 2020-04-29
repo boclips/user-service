@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.user
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.UserId
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.infrastructure.MongoDatabase
@@ -11,6 +12,7 @@ import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import com.mongodb.MongoClient
 import com.mongodb.MongoWriteException
+import com.mongodb.client.FindIterable
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.and
 import org.bson.types.ObjectId
@@ -20,6 +22,7 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.getCollection
 import org.litote.kmongo.ne
+import org.litote.kmongo.or
 import org.litote.kmongo.regex
 import org.litote.kmongo.save
 import java.util.regex.Pattern
@@ -89,7 +92,18 @@ class MongoUserRepository(
         .mapNotNull { userDocumentConverter.convertToUser(it) }
 
     override fun findAll(): List<User> {
-        return getUsersCollection().find().map { document -> userDocumentConverter.convertToUser(document) }.toList()
+        return getUsersCollection().find().convert()
+    }
+
+    override fun findAllTeachers(): List<User> {
+        return getUsersCollection()
+            .find(
+                or(
+                    UserDocument::organisation / OrganisationDocument::type eq OrganisationType.SCHOOL,
+                    UserDocument::organisation eq null
+                )
+            )
+            .convert()
     }
 
     override fun findOrphans(domain: String, organisationId: OrganisationId): List<User> {
@@ -99,16 +113,14 @@ class MongoUserRepository(
                 UserDocument::organisation / OrganisationDocument::_id ne ObjectId(organisationId.value)
             )
         )
-            .map { document -> userDocumentConverter.convertToUser(document) }
-            .toList()
+            .convert()
     }
 
     override fun findAllByOrganisationId(id: OrganisationId): List<User> {
         return getUsersCollection().find(
             UserDocument::organisation / OrganisationDocument::_id eq ObjectId(id.value)
         )
-            .map { document -> userDocumentConverter.convertToUser(document) }
-            .toList()
+            .convert()
     }
 
     override fun findById(id: UserId): User? {
@@ -127,6 +139,12 @@ class MongoUserRepository(
             throw UserAlreadyExistsException()
         }
         return findById(user.id) ?: throw IllegalStateException("this should never happen")
+    }
+
+    private fun FindIterable<UserDocument>.convert(): List<User> {
+        return this
+            .map { document -> userDocumentConverter.convertToUser(document) }
+            .toList()
     }
 }
 

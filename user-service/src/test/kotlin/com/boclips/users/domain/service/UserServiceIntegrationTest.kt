@@ -40,33 +40,6 @@ class UserServiceIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `can find all teachers`() {
-        val organisation = organisationRepository.save(OrganisationFactory.school())
-        val apiOrganisation = saveOrganisation(OrganisationFactory.apiIntegration())
-
-        listOf(
-            saveUser(
-                UserFactory.sample(
-                    identity = IdentityFactory.sample(id = "1"),
-                    organisation = organisation
-                )
-            ),
-            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "4"), organisation = null)),
-            saveUser(
-                UserFactory.sample(
-                    identity = IdentityFactory.sample(id = "5"),
-                    organisation = apiOrganisation
-                )
-            )
-        )
-
-        val users = userService.findAllTeachers()
-
-        assertThat(users).hasSize(2)
-        assertThat(users.map { it.id.value }).containsExactly("1", "4")
-    }
-
-    @Test
     fun `throws exception if user not found`() {
         val userId = UserId(value = "1234")
 

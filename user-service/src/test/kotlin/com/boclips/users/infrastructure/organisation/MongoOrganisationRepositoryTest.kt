@@ -228,7 +228,6 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             organisationRepository.save(OrganisationFactory.school(district = null))
             organisationRepository.save(OrganisationFactory.school(district = null))
 
-            assertThat(organisationRepository.findSchools()).hasSize(3)
             assertThat(organisationRepository.findOrganisationsByParentId(district.id)).hasSize(1)
         }
 
@@ -289,18 +288,6 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                     types = listOf(OrganisationType.SCHOOL, OrganisationType.DISTRICT)
                 )
             ).hasSize(1)
-        }
-
-        @Test
-        fun `find schools`() {
-            val school =
-                organisationRepository.save(OrganisationFactory.school())
-            organisationRepository.save(OrganisationFactory.district())
-            organisationRepository.save(apiIntegration())
-
-            val allSchools = organisationRepository.findSchools()
-
-            assertThat(allSchools).containsExactlyInAnyOrder(school)
         }
 
         @Test

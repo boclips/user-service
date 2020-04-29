@@ -104,10 +104,6 @@ class MongoOrganisationRepository(
             ?.let { it as? School? }
     }
 
-    override fun findSchools(): List<School> {
-        return collection().find(OrganisationDocument::type eq OrganisationType.SCHOOL).convert()
-    }
-
     override fun findOrganisations(
         name: String?,
         countryCode: String?,

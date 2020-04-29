@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class SynchronisationService(
-    val userService: UserService,
     val marketingService: MarketingService,
     val sessionProvider: SessionProvider,
     val userImportService: UserImportService,
@@ -21,7 +20,7 @@ class SynchronisationService(
     companion object : KLogging()
 
     fun synchroniseCrmProfiles() {
-        val teacherUsers = userService.findAllTeachers()
+        val teacherUsers = userRepository.findAllTeachers()
         logger.info { "Found ${teacherUsers.size} teacher users to be synchronised" }
 
         val allCrmProfiles = teacherUsers

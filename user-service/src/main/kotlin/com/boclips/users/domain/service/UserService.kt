@@ -25,21 +25,6 @@ class UserService(
         const val TEACHER_ROLE = "ROLE_TEACHER"
     }
 
-    // TODO implement stream
-    fun findAllTeachers(): List<User> {
-        val schoolIds = organisationRepository.findSchools()
-            .map { it.id }
-            .toSet()
-
-        val allTeachers = userRepository.findAll().filter { user ->
-            user.organisation == null || schoolIds.contains(user.organisation.id)
-        }
-
-        logger.info { "Fetched ${allTeachers.size} teacher users from database" }
-
-        return allTeachers
-    }
-
     fun createTeacher(newTeacher: NewTeacher): User {
         val identity = identityProvider.createIdentity(
             email = newTeacher.email,
