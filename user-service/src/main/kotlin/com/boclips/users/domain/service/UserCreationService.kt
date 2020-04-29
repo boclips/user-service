@@ -1,13 +1,10 @@
 package com.boclips.users.domain.service
 
-import com.boclips.eventbus.BoclipsEventListener
-import com.boclips.eventbus.events.organisation.OrganisationUpdated
 import com.boclips.users.domain.model.Identity
 import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.TeacherPlatformAttributes
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.infrastructure.organisation.OrganisationResolver
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -48,7 +45,7 @@ class UserCreationService(
     }
 
     fun create(identity: Identity): User {
-        logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]"  }
+        logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]" }
 
         val organisation = organisationResolver.resolve(identity.roles)
 
@@ -69,16 +66,6 @@ class UserCreationService(
     private fun save(user: User): User {
         return userRepository.create(user).also { createdUser ->
             logger.info { "User ${createdUser.id.value} created under organisation ${createdUser.organisation?.name}" }
-        }
-    }
-
-    @BoclipsEventListener
-    fun updateOrganisation(organisationUpdated: OrganisationUpdated) {
-        val organisation =
-            organisationRepository.findOrganisationById(OrganisationId(organisationUpdated.organisation.id))!!
-
-        userRepository.findAllByOrganisationId(organisation.id).forEach { user ->
-            userRepository.update(user, UserUpdate.ReplaceOrganisation(organisation))
         }
     }
 }

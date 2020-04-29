@@ -1,14 +1,19 @@
 package com.boclips.users.domain.service.events
 
+import com.boclips.eventbus.BoclipsEventListener
 import com.boclips.eventbus.EventBus
+import com.boclips.eventbus.events.organisation.OrganisationUpdated
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.service.OrganisationRepository
 import com.boclips.users.domain.service.UserRepository
 import com.boclips.users.domain.service.UserUpdate
 
 class UserRepositoryEventDecorator(
     private val userRepository: UserRepository,
+    private val organisationRepository: OrganisationRepository,
     private val eventConverter: EventConverter,
     private val eventBus: EventBus
 ) :
@@ -35,5 +40,15 @@ class UserRepositoryEventDecorator(
                 .user(eventConverter.toEventUser(user))
                 .build()
         )
+    }
+
+    @BoclipsEventListener
+    fun updateOrganisation(organisationUpdated: OrganisationUpdated) {
+        val organisation =
+            organisationRepository.findOrganisationById(OrganisationId(organisationUpdated.organisation.id))!!
+
+        userRepository.findAllByOrganisationId(organisation.id).forEach { user ->
+            userRepository.update(user, UserUpdate.ReplaceOrganisation(organisation))
+        }
     }
 }

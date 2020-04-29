@@ -4,11 +4,9 @@ import com.boclips.users.domain.model.NewTeacher
 import com.boclips.users.domain.model.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZoneOffset
@@ -79,22 +77,5 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         val persistedUser = userCreationService.createTeacher(newUser)
 
         assertThat(persistedUser.organisation).isNull()
-    }
-
-    @Test
-    fun `user gets updated when organisation has changed`() {
-        val organisation = organisationRepository.save(
-            OrganisationFactory.school()
-        )
-
-        val user = userRepository.create(
-            UserFactory.sample(organisation = organisation)
-        )
-
-        organisationRepository.update(organisation.id, ReplaceDomain("newdomain.com"))
-
-        val updatedUser = userRepository.findById(user.id)
-
-        assertThat(updatedUser?.organisation?.domain).isEqualTo("newdomain.com")
     }
 }

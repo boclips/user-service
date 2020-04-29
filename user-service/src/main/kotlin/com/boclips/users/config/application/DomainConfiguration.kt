@@ -23,6 +23,7 @@ class DomainConfiguration(
     fun userRepository(): UserRepository {
         return UserRepositoryEventDecorator(
             mongoUserRepository,
+            organisationRepository(),
             eventConverter(),
             eventBus
         )

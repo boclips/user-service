@@ -5,6 +5,7 @@ import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.domain.service.OrganisationUpdate
 import com.boclips.users.domain.service.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -81,5 +82,22 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
         assertThat(event.user.organisation.postcode).isEqualTo("012345")
         assertThat(event.user.organisation.countryCode).isEqualTo("USA")
         assertThat(event.user.organisation.state).isEqualTo("IL")
+    }
+
+    @Test
+    fun `user gets updated when organisation has changed`() {
+        val organisation = organisationRepository.save(
+            OrganisationFactory.school()
+        )
+
+        val user = userRepository.create(
+            UserFactory.sample(organisation = organisation)
+        )
+
+        organisationRepository.update(organisation.id, OrganisationUpdate.ReplaceDomain("newdomain.com"))
+
+        val updatedUser = userRepository.findById(user.id)
+
+        assertThat(updatedUser?.organisation?.domain).isEqualTo("newdomain.com")
     }
 }
