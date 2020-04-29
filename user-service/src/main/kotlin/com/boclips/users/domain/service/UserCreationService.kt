@@ -20,6 +20,10 @@ class UserCreationService(
         const val TEACHER_ROLE = "ROLE_TEACHER"
     }
 
+    fun create(identity: Identity): User {
+        return create(identity) { it }
+    }
+
     fun createTeacher(newTeacher: NewTeacher): User {
         val identity = identityProvider.createIdentity(
             email = newTeacher.email,
@@ -27,43 +31,36 @@ class UserCreationService(
             role = TEACHER_ROLE
         )
 
-        val user = User(
-            identity = identity,
-            profile = null,
-            teacherPlatformAttributes = TeacherPlatformAttributes(
-                shareCode = newTeacher.shareCode,
-                hasLifetimeAccess = false
-            ),
-            analyticsId = newTeacher.analyticsId,
-            referralCode = newTeacher.referralCode,
-            marketingTracking = newTeacher.marketingTracking,
-            organisation = null,
-            accessExpiresOn = null
-        )
-
-        return save(user)
+        return create(identity) {
+            it.copy(
+                teacherPlatformAttributes = TeacherPlatformAttributes(
+                    shareCode = newTeacher.shareCode,
+                    hasLifetimeAccess = false
+                ),
+                analyticsId = newTeacher.analyticsId,
+                referralCode = newTeacher.referralCode,
+                marketingTracking = newTeacher.marketingTracking
+            )
+        }
     }
 
-    fun create(identity: Identity): User {
+    private fun create(identity: Identity, setup: (defaults: User) -> User): User {
         logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]" }
 
         val organisation = organisationResolver.resolve(identity.roles)
-
-        val user = User(
-            identity = identity,
-            profile = null,
-            teacherPlatformAttributes = null,
-            marketingTracking = MarketingTracking(),
-            referralCode = null,
-            analyticsId = null,
-            organisation = organisation,
-            accessExpiresOn = null
+        val user = setup(
+            User(
+                identity = identity,
+                profile = null,
+                teacherPlatformAttributes = null,
+                marketingTracking = MarketingTracking(),
+                referralCode = null,
+                analyticsId = null,
+                organisation = organisation,
+                accessExpiresOn = null
+            )
         )
 
-        return save(user)
-    }
-
-    private fun save(user: User): User {
         return userRepository.create(user).also { createdUser ->
             logger.info { "User ${createdUser.id.value} created under organisation ${createdUser.organisation?.name}" }
         }
