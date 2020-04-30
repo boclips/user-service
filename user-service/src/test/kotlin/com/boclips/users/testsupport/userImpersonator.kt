@@ -41,3 +41,12 @@ fun MockHttpServletRequestBuilder.asApiUser(userId: String = "api@example.com") 
             .user(userId)
             .roles(UserRoles.ROLE_API)
     )
+
+fun MockHttpServletRequestBuilder.asOperator() =
+    this.with(
+        SecurityMockMvcRequestPostProcessors
+            .user("operator")
+            .roles(
+                UserRoles.UPDATE_USERS
+            )
+    )
