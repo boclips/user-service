@@ -9,6 +9,8 @@ import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
+import com.boclips.users.domain.model.organisation.OrganisationTag.DEFAULT_ORGANISATION
+import com.boclips.users.domain.model.organisation.OrganisationTag.DESIGN_PARTNER
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.AddTag
@@ -20,6 +22,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.district
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -141,6 +144,15 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             assertThat(schoolAfterDistrictUpdate?.district?.deal?.type).isEqualTo(DealType.DESIGN_PARTNER)
             assertThat(schoolAfterDistrictUpdate?.name).isEqualTo("school name")
         }
+    }
+
+    @Test
+    fun `find by tag`() {
+        organisationRepository.save(district(name = "Default", tags = setOf(DEFAULT_ORGANISATION)))
+        organisationRepository.save(district(name = "Another", tags = setOf(DESIGN_PARTNER)))
+
+        assertThat(organisationRepository.findByTag(DEFAULT_ORGANISATION)).hasSize(1)
+        assertThat(organisationRepository.findByTag(DEFAULT_ORGANISATION).first().name).isEqualTo("Default")
     }
 
     @Nested

@@ -10,6 +10,7 @@ import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDealType
 import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.infrastructure.MongoDatabase
@@ -20,6 +21,7 @@ import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.litote.kmongo.`in`
 import org.litote.kmongo.and
+import org.litote.kmongo.contains
 import org.litote.kmongo.div
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
@@ -59,6 +61,12 @@ class MongoOrganisationRepository(
     override fun findByRoleIn(roles: List<String>): List<Organisation> {
         return collection()
             .find(OrganisationDocument::role `in` roles)
+            .convert()
+    }
+
+    override fun findByTag(tag: OrganisationTag): List<Organisation> {
+        return collection()
+            .find(OrganisationDocument::tags contains tag.name)
             .convert()
     }
 

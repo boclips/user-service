@@ -19,6 +19,7 @@ interface OrganisationRepository {
     ): Page<Organisation>
 
     fun findByRoleIn(roles: List<String>): List<Organisation>
+    fun findByTag(tag: OrganisationTag): List<Organisation>
     fun findApiIntegrationByName(name: String): ApiIntegration?
 
     fun lookupSchools(schoolName: String, countryCode: String): List<School>
