@@ -5,7 +5,6 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
-import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
@@ -44,8 +43,7 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
             ),
             deal = Deal(
                 contentPackageId = ContentPackageId("content-package-id"),
-                accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
-                type = DealType.DESIGN_PARTNER
+                accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
             )
         )
 

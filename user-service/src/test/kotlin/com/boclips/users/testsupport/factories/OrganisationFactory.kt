@@ -4,7 +4,6 @@ import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.Deal
-import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -24,11 +23,9 @@ class OrganisationFactory {
 
         fun deal(
             contentPackageId: ContentPackageId? = null,
-            type: DealType = DealType.STANDARD,
             accessExpiresOn: ZonedDateTime? = null
         ): Deal = Deal(
             contentPackageId = contentPackageId,
-            type = type,
             accessExpiresOn = accessExpiresOn
         )
 

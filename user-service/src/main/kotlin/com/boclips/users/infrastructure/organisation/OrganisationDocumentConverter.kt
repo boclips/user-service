@@ -4,7 +4,6 @@ import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.Deal
-import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
@@ -31,8 +30,7 @@ object OrganisationDocumentConverter : KLogging() {
 
         val deal = Deal(
             contentPackageId = organisationDocument.contentPackageId?.let { ContentPackageId(value = it) },
-            accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
-            type = organisationDocument.dealType ?: organisationDocument.parent?.dealType ?: DealType.STANDARD
+            accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
         )
 
         val tags = organisationDocument.tags.orEmpty().mapNotNull { tagName ->
@@ -92,7 +90,6 @@ object OrganisationDocumentConverter : KLogging() {
 
         return OrganisationDocument(
             _id = ObjectId(organisation.id.value),
-            dealType = organisation.deal.type,
             name = organisation.name,
             domain = organisation.domain,
             role = organisation.role,

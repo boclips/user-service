@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.OrganisationType
 import org.bson.types.ObjectId
 import java.time.Instant
@@ -12,7 +11,6 @@ data class OrganisationDocument(
     val domain: String?,
     val externalId: String?,
     val type: OrganisationType,
-    val dealType: DealType?,
     val country: LocationDocument?,
     val state: LocationDocument?,
     val postcode: String?,

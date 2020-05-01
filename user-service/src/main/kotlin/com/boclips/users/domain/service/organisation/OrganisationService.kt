@@ -1,7 +1,6 @@
 package com.boclips.users.domain.service.organisation
 
 import com.boclips.users.domain.model.organisation.Deal
-import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.ExternalOrganisationInformation
@@ -47,8 +46,7 @@ class OrganisationService(
                 address = externalInfo.school.address,
                 deal = Deal(
                     contentPackageId = null,
-                    accessExpiresOn = null,
-                    type = DealType.STANDARD
+                    accessExpiresOn = null
                 ),
                 role = null,
                 tags = emptySet(),
@@ -67,8 +65,7 @@ class OrganisationService(
                 address = externalInfo.address,
                 deal = Deal(
                     contentPackageId = null,
-                    accessExpiresOn = null,
-                    type = DealType.STANDARD
+                    accessExpiresOn = null
                 ),
                 tags = emptySet(),
                 role = null,

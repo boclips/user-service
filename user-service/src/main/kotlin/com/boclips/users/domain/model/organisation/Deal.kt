@@ -5,6 +5,5 @@ import java.time.ZonedDateTime
 
 data class Deal(
     val contentPackageId: ContentPackageId? = null,
-    val accessExpiresOn: ZonedDateTime?,
-    val type: DealType
+    val accessExpiresOn: ZonedDateTime?
 )

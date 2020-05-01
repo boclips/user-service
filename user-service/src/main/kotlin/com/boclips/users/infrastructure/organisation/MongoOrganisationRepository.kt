@@ -11,7 +11,6 @@ import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDom
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.organisation.OrganisationTag
-import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDealType
 import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
@@ -89,7 +88,6 @@ class MongoOrganisationRepository(
 
         val updatedDocument = updates.fold(document, { accumulator: OrganisationDocument, update: OrganisationUpdate ->
             return@fold when (update) {
-                is ReplaceDealType -> accumulator.copy(dealType = update.type)
                 is ReplaceExpiryDate -> accumulator.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
                 is ReplaceDomain -> accumulator.copy(domain = update.domain)
                 is OrganisationUpdate.AddTag -> accumulator.copy(tags = accumulator.tags.orEmpty() + update.tag.name)

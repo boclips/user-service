@@ -11,7 +11,6 @@ import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.user.UserSessions
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
-import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
@@ -109,8 +108,7 @@ class UpdateUser(
                                 state = updateUserRequest.state?.let { State.fromCode(it) }
                             ),
                             deal = Deal(
-                                accessExpiresOn = null,
-                                type = DealType.STANDARD
+                                accessExpiresOn = null
                             ),
                             tags = emptySet(),
                             district = null,

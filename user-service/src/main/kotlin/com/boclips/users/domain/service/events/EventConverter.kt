@@ -37,7 +37,6 @@ class EventConverter {
         val parent = parentOrganisation(organisation)
         return EventOrganisation.builder()
             .id(organisation.id.value)
-            .accountType(organisation.deal.type.name)
             .type(organisation.type().name)
             .name(organisation.name)
             .postcode(organisation.address.postcode)

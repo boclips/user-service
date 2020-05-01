@@ -77,7 +77,6 @@ class EventConverterTest : AbstractSpringIntegrationTest() {
         assertThat(event.user.id).isEqualTo(user.id.value)
         assertThat(event.user.organisation.id).isEqualTo(district.id.value)
         assertThat(event.user.organisation.type).isEqualTo("DISTRICT")
-        assertThat(event.user.organisation.accountType).isEqualTo("STANDARD")
         assertThat(event.user.organisation.name).isEqualTo("District 9")
         assertThat(event.user.organisation.parent).isNull()
     }

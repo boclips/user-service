@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.organisation
 
-import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
@@ -21,14 +20,12 @@ class OrganisationDocumentConverterTest {
             domain = "independent.ac.co.uk",
             type = OrganisationType.SCHOOL,
             externalId = "external-id",
-            dealType = null,
             accessExpiresOn = null
         )
 
         val organisationAccount = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
         assertThat(organisationAccount.id.value).isEqualTo(organisationDocument._id!!.toHexString())
-        assertThat(organisationAccount.deal.type).isEqualTo(DealType.STANDARD)
         assertThat(organisationAccount).isInstanceOf(School::class.java)
 
         val independentSchool = organisationAccount as School
@@ -48,7 +45,6 @@ class OrganisationDocumentConverterTest {
             name = "amazing school",
             domain = "school.com",
             type = OrganisationType.SCHOOL,
-            dealType = null,
             externalId = "external-id",
             parent = OrganisationDocumentFactory.sample(
                 type = OrganisationType.DISTRICT
@@ -57,9 +53,7 @@ class OrganisationDocumentConverterTest {
 
         val school = OrganisationDocumentConverter.fromDocument(organisationDocument) as School
 
-        assertThat(school.deal.type).isEqualTo(DealType.STANDARD)
         assertThat(school).isInstanceOf(School::class.java)
-        assertThat(school.district?.deal?.type).isEqualTo(DealType.STANDARD)
         assertThat(school.district).isInstanceOf(District::class.java)
         assertThat(school.domain).isEqualTo("school.com")
     }
@@ -70,19 +64,15 @@ class OrganisationDocumentConverterTest {
 
         val organisationDocument = OrganisationDocumentFactory.sample(
             type = OrganisationType.SCHOOL,
-            dealType = null,
             domain = "design-partner.com",
             parent = OrganisationDocumentFactory.sample(
                 type = OrganisationType.DISTRICT,
-                dealType = DealType.DESIGN_PARTNER,
                 accessExpiresOn = accessExpiresOn
             )
         )
 
         val school = OrganisationDocumentConverter.fromDocument(organisationDocument) as School
 
-        assertThat(school.deal.type).isEqualTo(DealType.DESIGN_PARTNER)
-        assertThat(school.district?.deal?.type).isEqualTo(DealType.DESIGN_PARTNER)
         assertThat(school.district?.deal?.accessExpiresOn).isEqualTo(accessExpiresOn)
         assertThat(school.domain).isEqualTo("design-partner.com")
     }
