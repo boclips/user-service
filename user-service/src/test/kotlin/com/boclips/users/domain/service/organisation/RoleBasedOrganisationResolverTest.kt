@@ -1,16 +1,25 @@
-package com.boclips.users.infrastructure.organisation
+package com.boclips.users.domain.service.organisation
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class RoleBasedOrganisationResolverTest : AbstractSpringIntegrationTest() {
+
+    lateinit var resolver: RoleBasedOrganisationResolver
+
+    @BeforeEach
+    internal fun setUp() {
+        resolver = RoleBasedOrganisationResolver(organisationRepository)
+    }
+
     @Test
     fun `matches a teacher user to "Boclips for Teachers"`() {
-        val organisationId = organisationResolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_TEACHER")))
+        val organisationId = resolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_TEACHER")))
 
         assertThat(organisationId).isNull()
     }
@@ -19,7 +28,7 @@ class RoleBasedOrganisationResolverTest : AbstractSpringIntegrationTest() {
     fun `matches a viewsonic user to "ViewSonic MyViewBoard"`() {
         val organisation = saveOrganisation(OrganisationFactory.apiIntegration(role = "ROLE_VIEWSONIC"))
 
-        val resolvedOrganisation = organisationResolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_VIEWSONIC")))
+        val resolvedOrganisation = resolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_VIEWSONIC")))
 
         assertThat(resolvedOrganisation).isEqualTo(organisation)
     }
@@ -28,21 +37,21 @@ class RoleBasedOrganisationResolverTest : AbstractSpringIntegrationTest() {
     fun `matches a pearson user to "Pearson MyRealize"`() {
         val organisation = saveOrganisation(OrganisationFactory.apiIntegration(role = "ROLE_PEARSON_MYREALIZE"))
 
-        val resolvedOrganisation = organisationResolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_PEARSON_MYREALIZE")))
+        val resolvedOrganisation = resolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_PEARSON_MYREALIZE")))
 
         assertThat(resolvedOrganisation).isEqualTo(organisation)
     }
 
     @Test
     fun `does not match if there are only unknown roles`() {
-        val matched = organisationResolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_STUDENT", "uma_offline", "Matt")))
+        val matched = resolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_STUDENT", "uma_offline", "Matt")))
 
         assertThat(matched).isNull()
     }
 
     @Test
     fun `can deal with no roles entities`() {
-        val matched = organisationResolver.resolve(IdentityFactory.sample(roles = emptyList()))
+        val matched = resolver.resolve(IdentityFactory.sample(roles = emptyList()))
 
         assertThat(matched).isNull()
     }
@@ -53,7 +62,7 @@ class RoleBasedOrganisationResolverTest : AbstractSpringIntegrationTest() {
         saveOrganisation(OrganisationFactory.apiIntegration(role = "ROLE_PEARSON_MYREALIZE"))
 
         assertThrows<IllegalStateException> {
-            organisationResolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_VIEWSONIC", "ROLE_PEARSON_MYREALIZE")))
+            resolver.resolve(IdentityFactory.sample(roles = listOf("ROLE_VIEWSONIC", "ROLE_PEARSON_MYREALIZE")))
         }
     }
 }

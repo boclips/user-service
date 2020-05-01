@@ -14,7 +14,6 @@ import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountCon
 import com.boclips.users.infrastructure.mixpanel.MixpanelClient
 import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
-import com.boclips.users.infrastructure.organisation.RoleBasedOrganisationResolver
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
 import com.boclips.users.infrastructure.schooldigger.SchoolDiggerClient
@@ -117,11 +116,6 @@ class InfrastructureConfiguration(
     @Bean
     fun americanSchoolsProvider(): AmericanSchoolsProvider =
         SchoolDiggerClient(properties = schoolDiggerProperties, restTemplate = RestTemplate())
-
-    @Bean
-    fun roleBasedOrganisationIdResolver(): RoleBasedOrganisationResolver {
-        return RoleBasedOrganisationResolver(mongoOrganisationAccountRepository())
-    }
 
     @Bean
     fun mongoUserRepository(): MongoUserRepository {

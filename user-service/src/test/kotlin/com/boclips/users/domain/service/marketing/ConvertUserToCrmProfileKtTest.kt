@@ -1,11 +1,10 @@
-package com.boclips.users.domain.service
+package com.boclips.users.domain.service.marketing
 
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.domain.model.user.UserSessions
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory

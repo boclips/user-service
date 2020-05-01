@@ -1,4 +1,4 @@
-package com.boclips.users.domain.service
+package com.boclips.users.domain.service.access
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory

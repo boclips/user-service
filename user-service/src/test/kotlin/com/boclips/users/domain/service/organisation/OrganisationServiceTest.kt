@@ -1,4 +1,4 @@
-package com.boclips.users.domain.service
+package com.boclips.users.domain.service.organisation
 
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
