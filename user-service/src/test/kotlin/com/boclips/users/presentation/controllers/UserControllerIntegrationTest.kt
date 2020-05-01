@@ -202,7 +202,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.school.state.id", equalTo("CA")))
                 .andExpect(jsonPath("$.school.country.name", equalTo("United States")))
                 .andExpect(jsonPath("$.school.country.id", equalTo("USA")))
-                .andExpect(jsonPath("$.organisationAccountId", equalTo(school.id.value)))
                 .andExpect(jsonPath("$.organisation.id", equalTo(school.id.value)))
                 .andExpect(jsonPath("$.organisation.name", equalTo("San Fran Forest School")))
                 .andExpect(jsonPath("$.organisation.state.name", equalTo("California")))
@@ -550,7 +549,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.analyticsId").doesNotExist())
                 .andExpect(jsonPath("$.organisation").doesNotExist())
-                .andExpect(jsonPath("$.organisationAccountId").doesNotExist())
                 .andExpect(jsonPath("$.teacherPlatformAttributes").doesNotExist())
         }
 
@@ -570,7 +568,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.analyticsId").exists())
                 .andExpect(jsonPath("$.organisation").exists())
-                .andExpect(jsonPath("$.organisationAccountId").exists())
                 .andExpect(jsonPath("$.teacherPlatformAttributes").exists())
         }
 
@@ -592,7 +589,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.organisationAccountId").exists())
+                .andExpect(jsonPath("$.organisation.id").exists())
                 .andExpect(jsonPath("$.organisation.name", equalTo(organisationAccount.name)))
                 .andExpect(
                     jsonPath(

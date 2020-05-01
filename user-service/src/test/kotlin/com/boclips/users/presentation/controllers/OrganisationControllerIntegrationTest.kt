@@ -290,7 +290,6 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.users", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.users[0].email", equalTo("rebecca@district-domain.com")))
-                .andExpect(jsonPath("$._embedded.users[0].organisationAccountId", equalTo(district.id.value)))
                 .andExpect(jsonPath("$._embedded.users[0].organisation.id", equalTo(district.id.value)))
         }
 

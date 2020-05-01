@@ -59,7 +59,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(userResource.lastName).isEqualTo("Doe")
         assertThat(userResource.analyticsId!!).isEqualTo("123")
         assertThat(userResource.email).isEqualTo("jane@doe.com")
-        assertThat(userResource.organisationAccountId).isEqualTo(school.id.value)
+        assertThat(userResource.organisation!!.id).isEqualTo(school.id.value)
         assertThat(userResource.organisation!!.name).isEqualTo(school.name)
         assertThat(userResource.organisation!!.state!!.name).isEqualTo(school.address.state!!.name)
         assertThat(userResource.organisation!!.state!!.id).isEqualTo(school.address.state!!.id)

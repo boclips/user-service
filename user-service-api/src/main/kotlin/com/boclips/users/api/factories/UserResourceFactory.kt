@@ -17,7 +17,6 @@ class UserResourceFactory {
             email: String = "bo@clips.com",
             analyticsId: String = "321",
             teacherPlatformAttributes: TeacherPlatformAttributesResource? = null,
-            organisationAccountId: String = "org123",
             organisation: OrganisationDetailsResource? = null,
             school: OrganisationDetailsResource? = null
         ): UserResource =
@@ -30,7 +29,6 @@ class UserResourceFactory {
                 email = email,
                 analyticsId = analyticsId,
                 teacherPlatformAttributes = teacherPlatformAttributes,
-                organisationAccountId = organisationAccountId,
                 organisation = organisation,
                 school = school
 

@@ -75,7 +75,7 @@ class UserConverterTest {
         assertThat(userResource.school?.name).isEqualTo("Elm Street School")
         assertThat(userResource.analyticsId).isEqualTo("some-analytics-id")
         assertThat(userResource.email).isEqualTo("thierry@henry.fr")
-        assertThat(userResource.organisationAccountId).isEqualTo("1234")
+        assertThat(userResource.organisation!!.id).isEqualTo("1234")
         assertThat(userResource.organisation!!.name).isEqualTo("My school")
         assertThat(userResource.organisation!!.state!!.name).isEqualTo("New York")
         assertThat(userResource.organisation!!.state!!.id).isEqualTo("NY")

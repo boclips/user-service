@@ -27,7 +27,6 @@ class UserConverter(
             },
             email = user.identity.email,
             analyticsId = user.analyticsId?.value,
-            organisationAccountId = user.organisation?.id?.value,
             organisation = user.organisation?.let(this::toOrganisationResource),
             school = user.profile?.school?.let(this::toOrganisationResource),
             teacherPlatformAttributes = user.teacherPlatformAttributes?.let {
