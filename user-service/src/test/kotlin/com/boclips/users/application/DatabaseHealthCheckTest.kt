@@ -1,6 +1,6 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.model.user.UserRepository
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow

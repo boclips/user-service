@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.marketing.CrmProfile
 import java.time.Instant
 

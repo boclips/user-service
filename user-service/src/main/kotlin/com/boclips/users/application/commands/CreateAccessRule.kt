@@ -3,14 +3,13 @@ package com.boclips.users.application.commands
 import com.boclips.users.api.request.CreateAccessRuleRequest
 import com.boclips.users.application.exceptions.AccessRuleExistsException
 import com.boclips.users.application.exceptions.InvalidVideoTypeException
-import com.boclips.users.domain.model.contentpackage.AccessRule
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.CollectionId
-import com.boclips.users.domain.model.contentpackage.VideoId
-import com.boclips.users.domain.model.contentpackage.VideoType
-import com.boclips.users.domain.service.AccessRuleRepository
+import com.boclips.users.domain.model.access.AccessRule
+import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.CollectionId
+import com.boclips.users.domain.model.access.VideoId
+import com.boclips.users.domain.model.access.VideoType
+import com.boclips.users.domain.model.access.AccessRuleRepository
 import com.boclips.users.domain.service.UniqueId
-import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
 @Service

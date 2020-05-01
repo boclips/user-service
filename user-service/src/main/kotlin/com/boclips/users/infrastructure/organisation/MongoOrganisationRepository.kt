@@ -7,11 +7,11 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceExpiryDate
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDealType
-import com.boclips.users.domain.service.OrganisationUpdate
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
+import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDealType
+import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
 import com.mongodb.MongoClient

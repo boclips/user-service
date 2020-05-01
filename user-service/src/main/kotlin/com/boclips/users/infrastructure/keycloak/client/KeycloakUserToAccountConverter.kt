@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.UserId
 import org.keycloak.representations.idm.UserRepresentation
 import java.time.Instant
 import java.time.ZoneOffset

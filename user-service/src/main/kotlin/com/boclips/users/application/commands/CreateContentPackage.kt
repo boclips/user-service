@@ -3,11 +3,11 @@ package com.boclips.users.application.commands
 import com.boclips.users.api.request.CreateContentPackageRequest
 import com.boclips.users.application.exceptions.DuplicateContentPackageException
 import com.boclips.users.application.exceptions.InvalidCreateContentPackageException
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.ContentPackage
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
-import com.boclips.users.domain.service.AccessRuleRepository
-import com.boclips.users.domain.service.ContentPackageRepository
+import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.ContentPackage
+import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.access.AccessRuleRepository
+import com.boclips.users.domain.model.access.ContentPackageRepository
 import com.boclips.users.domain.service.UniqueId
 import org.springframework.stereotype.Service
 

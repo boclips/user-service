@@ -2,7 +2,7 @@ package com.boclips.users.application.commands
 
 import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.user.UserBroadcastRequested
-import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.events.EventConverter
 import mu.KLogging
 import org.springframework.stereotype.Component

@@ -3,7 +3,7 @@ package com.boclips.users.domain.service.events
 import com.boclips.eventbus.domain.Subject
 import com.boclips.eventbus.domain.SubjectId
 import com.boclips.eventbus.domain.user.UserProfile
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.eventbus.domain.user.Organisation as EventOrganisation

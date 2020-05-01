@@ -4,8 +4,8 @@ import com.boclips.security.utils.UserExtractor.currentUserHasAnyRole
 import com.boclips.security.utils.UserExtractor.getCurrentUserIfNotAnonymous
 import com.boclips.security.utils.UserExtractor.getIfAuthenticated
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.presentation.controllers.EventController
 import com.boclips.users.presentation.controllers.UserController
 import mu.KLogging

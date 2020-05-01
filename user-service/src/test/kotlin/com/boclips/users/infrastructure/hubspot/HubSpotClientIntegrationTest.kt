@@ -1,7 +1,8 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.service.convertUserToCrmProfile
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -51,8 +52,16 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                 UserFactory.sample(
                     profile = ProfileFactory.sample(
                         subjects = listOf(
-                            com.boclips.users.domain.model.Subject(id = SubjectId("1"), name = "Maths"),
-                            com.boclips.users.domain.model.Subject(id = SubjectId("2"), name = "Science")
+                            Subject(
+                                id = SubjectId(
+                                    "1"
+                                ), name = "Maths"
+                            ),
+                            Subject(
+                                id = SubjectId(
+                                    "2"
+                                ), name = "Science"
+                            )
                         ),
                         ages = listOf(3, 4, 5, 6),
                         firstName = "Jane",
@@ -91,7 +100,11 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
         val user = UserFactory.sample(profile = ProfileFactory.sample(hasOptedIntoMarketing = false))
 
-        hubSpotClient.updateSubscription(convertUserToCrmProfile(user, UserSessionsFactory.sample())!!)
+        hubSpotClient.updateSubscription(
+            convertUserToCrmProfile(
+                user,
+                UserSessionsFactory.sample()
+            )!!)
 
         wireMockServer.verify(
             putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.identity.email}.*"))
@@ -118,7 +131,11 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
         val user = UserFactory.sample(profile = ProfileFactory.sample(hasOptedIntoMarketing = true))
 
-        hubSpotClient.updateSubscription(convertUserToCrmProfile(user, UserSessionsFactory.sample())!!)
+        hubSpotClient.updateSubscription(
+            convertUserToCrmProfile(
+                user,
+                UserSessionsFactory.sample()
+            )!!)
 
         wireMockServer.verify(
             putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.identity.email}.*"))

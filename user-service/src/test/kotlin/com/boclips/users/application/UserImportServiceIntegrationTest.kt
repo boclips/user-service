@@ -2,7 +2,7 @@ package com.boclips.users.application
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.application.exceptions.IdentityNotFoundException
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
@@ -54,7 +54,11 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
         saveAccount(UserFactory.sample(id = userId1))
         saveAccount(UserFactory.sample(id = userId2))
 
-        userImportService.importFromIdentityProvider(listOf(UserId(userId1), UserId(userId2)))
+        userImportService.importFromIdentityProvider(listOf(
+            UserId(
+                userId1
+            ), UserId(userId2)
+        ))
 
         val users = userRepository.findAll()
 
@@ -65,6 +69,10 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
     fun `throws if account does not exist`() {
         setSecurityContext("test-user")
 
-        assertThrows<IdentityNotFoundException> { userImportService.importFromIdentityProvider(UserId(value = "test")) }
+        assertThrows<IdentityNotFoundException> { userImportService.importFromIdentityProvider(
+            UserId(
+                value = "test"
+            )
+        ) }
     }
 }

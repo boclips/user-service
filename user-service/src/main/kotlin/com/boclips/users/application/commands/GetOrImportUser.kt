@@ -3,9 +3,9 @@ package com.boclips.users.application.commands
 import com.boclips.users.application.UserImportService
 import com.boclips.users.application.exceptions.IdentityNotFoundException
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import org.springframework.stereotype.Service
 

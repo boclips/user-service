@@ -6,7 +6,7 @@ import com.boclips.users.domain.model.organisation.ExternalOrganisationInformati
 import com.boclips.users.domain.model.organisation.ExternalSchoolInformation
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.service.AmericanSchoolsProvider
+import com.boclips.users.domain.service.organisation.AmericanSchoolsProvider
 import mu.KLogging
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders

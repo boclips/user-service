@@ -2,9 +2,9 @@ package com.boclips.users.config
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.SessionProvider
+import com.boclips.users.domain.service.user.IdentityProvider
+import com.boclips.users.domain.service.marketing.MarketingService
+import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.mixpanel.MixpanelClientFake
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties

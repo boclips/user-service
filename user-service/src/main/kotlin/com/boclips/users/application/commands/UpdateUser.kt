@@ -6,9 +6,9 @@ import com.boclips.users.application.UserUpdatesCommandFactory
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.model.user.UserSessions
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.DealType
@@ -17,12 +17,12 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.OrganisationService
-import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserUpdate
-import com.boclips.users.domain.service.convertUserToCrmProfile
+import com.boclips.users.domain.service.marketing.MarketingService
+import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.service.organisation.OrganisationService
+import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.model.user.UserUpdate
+import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -132,7 +132,10 @@ class UpdateUser(
     }
 
     private fun updateMarketingService(user: User) {
-        convertUserToCrmProfile(user, UserSessions(Instant.now()))?.let {
+        convertUserToCrmProfile(
+            user,
+            UserSessions(Instant.now())
+        )?.let {
             marketingService.updateProfile(listOf(it))
         }
     }

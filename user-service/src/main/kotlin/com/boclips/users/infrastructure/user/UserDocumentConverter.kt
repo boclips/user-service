@@ -1,15 +1,15 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.Profile
-import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.TeacherPlatformAttributes
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.Profile
+import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.model.user.TeacherPlatformAttributes
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.service.SubjectService
+import com.boclips.users.domain.service.subject.SubjectService
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -28,7 +28,11 @@ data class UserDocumentConverter(
                 firstName = userDocument.firstName.orEmpty(),
                 lastName = userDocument.lastName.orEmpty(),
                 hasOptedIntoMarketing = userDocument.hasOptedIntoMarketing ?: false,
-                subjects = userDocument.subjectIds.orEmpty().map { SubjectId(value = it) }.takeIf { it.isNotEmpty() }
+                subjects = userDocument.subjectIds.orEmpty().map {
+                    SubjectId(
+                        value = it
+                    )
+                }.takeIf { it.isNotEmpty() }
                     ?.let {
                         subjectService.getSubjectsById(
                             it

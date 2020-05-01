@@ -1,10 +1,10 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.SessionProvider
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.model.user.UserSessions
+import com.boclips.users.domain.service.user.IdentityProvider
+import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakCreateUserRequest
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.UnknownUserSourceException
@@ -77,6 +77,10 @@ open class KeycloakClient(
             return UserSessions(lastAccess = null)
         }
 
-        return UserSessions(lastAccess = Instant.ofEpochMilli(loginEventRepresentations.first().time))
+        return UserSessions(
+            lastAccess = Instant.ofEpochMilli(
+                loginEventRepresentations.first().time
+            )
+        )
     }
 }

@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.subjects
 
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.boclips.videos.api.response.subject.SubjectResource
 import org.assertj.core.api.Assertions.assertThat
@@ -36,14 +36,22 @@ class VideoServiceSubjectsClientTest {
         subjectsClient.add(SubjectResource(id = "1", name = "maths"))
 
         val subjects =
-            videoServiceSubjectsClient.getSubjectsById(listOf(SubjectId(value = "1"), SubjectId(value = "2")))
+            videoServiceSubjectsClient.getSubjectsById(listOf(
+                SubjectId(
+                    value = "1"
+                ), SubjectId(value = "2")
+            ))
         assertThat(subjects).hasSize(1)
         assertThat(subjects.first().id.value).isEqualTo("1")
     }
 
     @Test
     fun `returns empty list of cannot for missing ids`() {
-        assertThat(videoServiceSubjectsClient.getSubjectsById(listOf(SubjectId(value = "1")))).isEmpty()
+        assertThat(videoServiceSubjectsClient.getSubjectsById(listOf(
+            SubjectId(
+                value = "1"
+            )
+        ))).isEmpty()
     }
 
     @Test
@@ -57,7 +65,11 @@ class VideoServiceSubjectsClientTest {
         subjectsClient.add(SubjectResource(id = "2", name = "french"))
 
         assertThat(
-            videoServiceSubjectsClient.allSubjectsExist(listOf(SubjectId(value = "1"), SubjectId(value = "2")))
+            videoServiceSubjectsClient.allSubjectsExist(listOf(
+                SubjectId(
+                    value = "1"
+                ), SubjectId(value = "2")
+            ))
         ).isTrue()
     }
 

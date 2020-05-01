@@ -1,8 +1,8 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.ContentPackage
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.ContentPackage
+import com.boclips.users.domain.model.access.ContentPackageId
 import org.bson.types.ObjectId
 
 object ContentPackageFactory {

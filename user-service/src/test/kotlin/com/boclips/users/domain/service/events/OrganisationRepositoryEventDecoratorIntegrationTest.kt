@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.organisation.OrganisationUpdated
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions.assertThat

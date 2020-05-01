@@ -1,13 +1,12 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.Profile
-import com.boclips.users.domain.model.TeacherPlatformAttributes
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.Profile
+import com.boclips.users.domain.model.user.TeacherPlatformAttributes
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.School
 import java.time.ZonedDateTime
 
 class UserFactory {

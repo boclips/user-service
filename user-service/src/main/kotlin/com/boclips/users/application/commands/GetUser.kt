@@ -6,7 +6,7 @@ import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.presentation.converters.UserConverter
 import org.springframework.stereotype.Component
 

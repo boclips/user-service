@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat

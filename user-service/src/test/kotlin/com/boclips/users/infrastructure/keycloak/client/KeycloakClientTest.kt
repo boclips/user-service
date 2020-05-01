@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.keycloak.client
 
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.model.user.UserSessions
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -78,7 +78,11 @@ internal class KeycloakClientTest {
                 this.type = "LOGIN"
             }))
 
-            val lastUserSession: UserSessions = keycloakClient.getUserSessions(UserId(value = "x"))
+            val lastUserSession: UserSessions = keycloakClient.getUserSessions(
+                UserId(
+                    value = "x"
+                )
+            )
 
             assertThat(lastUserSession.hasLoggedIn()).isTrue()
             assertThat(lastUserSession.lastAccess).isEqualTo(Instant.ofEpochMilli(1558080047000))
@@ -88,7 +92,11 @@ internal class KeycloakClientTest {
         fun `returns null when user has not logged in`() {
             whenever(keycloakWrapperMock.getLastUserSession(any())).thenReturn(emptyList())
 
-            val lastUserSession = keycloakClient.getUserSessions(UserId(value = "x"))
+            val lastUserSession = keycloakClient.getUserSessions(
+                UserId(
+                    value = "x"
+                )
+            )
 
             assertThat(lastUserSession.lastAccess).isNull()
             assertThat(lastUserSession.hasLoggedIn()).isFalse()

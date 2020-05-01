@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.hateoas
 
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

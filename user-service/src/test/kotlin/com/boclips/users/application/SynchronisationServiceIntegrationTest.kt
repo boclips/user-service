@@ -1,6 +1,6 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -36,6 +36,10 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         synchronisationService.synchroniseUserAccounts()
 
         assertThat(userRepository.findAll()).hasSize(2)
-        assertThat(userRepository.findAll().map { it.id }).containsExactly(UserId("cat"), UserId("dog"))
+        assertThat(userRepository.findAll().map { it.id }).containsExactly(
+            UserId(
+                "cat"
+            ), UserId("dog")
+        )
     }
 }

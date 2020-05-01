@@ -1,8 +1,8 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.api.response.SubjectResource
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -43,7 +43,12 @@ class UserConverterTest {
                         school = OrganisationFactory.school(
                             name = "Elm Street School"
                         ),
-                        subjects = listOf(Subject(SubjectId("subject-id"), name = "Math"))
+                        subjects = listOf(
+                            Subject(
+                                SubjectId("subject-id"),
+                                name = "Math"
+                            )
+                        )
                     ),
                     analyticsId = AnalyticsId(value = "some-analytics-id"),
                     organisation = OrganisationFactory.school(

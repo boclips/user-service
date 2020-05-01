@@ -1,10 +1,10 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.AccessRuleNotFoundException
-import com.boclips.users.domain.model.contentpackage.AccessRule
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.CollectionId
-import com.boclips.users.domain.service.AccessRuleRepository
+import com.boclips.users.domain.model.access.AccessRule
+import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.CollectionId
+import com.boclips.users.domain.model.access.AccessRuleRepository
 import org.springframework.stereotype.Service
 
 @Service

@@ -1,11 +1,11 @@
 package com.boclips.users.application
 
 import com.boclips.users.application.exceptions.InvalidSubjectException
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.service.SubjectService
-import com.boclips.users.domain.service.UserUpdate
+import com.boclips.users.domain.service.subject.SubjectService
+import com.boclips.users.domain.model.user.UserUpdate
 import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.domain.model.organisation.School
 import org.springframework.stereotype.Component
@@ -46,10 +46,18 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
         return if (containsInvalidSubjects(subjects)) {
             throw InvalidSubjectException(subjects)
         } else {
-            subjectService.getSubjectsById(subjects.map { SubjectId(value = it) })
+            subjectService.getSubjectsById(subjects.map {
+                SubjectId(
+                    value = it
+                )
+            })
         }
     }
 
     private fun containsInvalidSubjects(subjects: List<String>?) =
-        !subjectService.allSubjectsExist(subjects.orEmpty().map { SubjectId(value = it) })
+        !subjectService.allSubjectsExist(subjects.orEmpty().map {
+            SubjectId(
+                value = it
+            )
+        })
 }

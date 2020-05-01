@@ -4,7 +4,7 @@ import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.page.PageRendered
 import com.boclips.eventbus.events.platform.PlatformInteractedWith
 import com.boclips.eventbus.events.user.UserExpired
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.user.User
 import org.springframework.stereotype.Service
 
 @Service

@@ -3,17 +3,17 @@ package com.boclips.users.application.commands
 import com.boclips.users.api.request.user.CreateTeacherRequest
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
-import com.boclips.users.domain.model.NewTeacher
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.user.NewTeacher
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserSessions
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.service.AnalyticsClient
-import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.UserCreationService
-import com.boclips.users.domain.service.convertUserToCrmProfile
+import com.boclips.users.domain.service.analytics.AnalyticsClient
+import com.boclips.users.domain.service.marketing.MarketingService
+import com.boclips.users.domain.service.user.UserCreationService
+import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
 
@@ -57,7 +57,10 @@ class CreateTeacher(
 
     private fun attemptToUpdateProfile(createdUser: User) {
         try {
-            convertUserToCrmProfile(createdUser, UserSessions(lastAccess = null))?.let {
+            convertUserToCrmProfile(
+                createdUser,
+                UserSessions(lastAccess = null)
+            )?.let {
                 marketingService.updateProfile(listOf(it))
                 marketingService.updateSubscription(it)
             }

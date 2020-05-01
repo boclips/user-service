@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.UserId
 import org.springframework.stereotype.Component
 
 @Component

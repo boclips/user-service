@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.converters
 
 import com.boclips.users.api.response.accessrule.AccessRuleResource
-import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.IncludedAccessRuleLinkBuilder
 import org.springframework.stereotype.Service

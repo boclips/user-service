@@ -4,7 +4,7 @@ import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.infrastructure.subjects.VideoServiceSubjectsClient
 import com.boclips.users.api.request.user.MarketingTrackingRequest
 import com.boclips.users.api.request.user.UpdateUserRequest
-import com.boclips.users.domain.service.UserUpdate
+import com.boclips.users.domain.model.user.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake

@@ -1,8 +1,7 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.Profile
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.user.Profile
+import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.organisation.School
 
 class ProfileFactory {

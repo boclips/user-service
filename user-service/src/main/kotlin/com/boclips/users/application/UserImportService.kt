@@ -1,11 +1,11 @@
 package com.boclips.users.application
 
 import com.boclips.users.application.exceptions.IdentityNotFoundException
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserCreationService
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.service.user.IdentityProvider
+import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.service.user.UserCreationService
 import mu.KLogging
 import org.springframework.stereotype.Component
 

@@ -1,7 +1,7 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.UserId
 import java.time.ZonedDateTime
 
 class IdentityFactory {

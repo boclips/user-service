@@ -2,8 +2,8 @@ package com.boclips.users.presentation.controllers.accessrules
 
 import com.boclips.users.application.commands.AddCollectionToAccessRule
 import com.boclips.users.application.commands.RemoveCollectionFromAccessRule
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.CollectionId
+import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.CollectionId
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping

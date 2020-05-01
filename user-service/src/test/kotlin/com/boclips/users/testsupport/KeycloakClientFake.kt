@@ -1,10 +1,10 @@
 package com.boclips.users.testsupport
 
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.model.UserSessions
-import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.SessionProvider
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.model.user.UserSessions
+import com.boclips.users.domain.service.user.IdentityProvider
+import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
 import java.time.Instant
 import java.time.ZonedDateTime
@@ -12,7 +12,8 @@ import java.util.UUID
 
 class KeycloakClientFake : IdentityProvider, SessionProvider {
     private val fakeUsers = hashMapOf<String, Identity>()
-    private var session: UserSessions = UserSessions(lastAccess = null)
+    private var session: UserSessions =
+        UserSessions(lastAccess = null)
 
     override fun createIdentity(email: String, password: String, role: String?): Identity {
         if (fakeUsers.values.filter { it.email == email }.isNotEmpty()) {

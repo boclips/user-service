@@ -1,12 +1,12 @@
 package com.boclips.users.testsupport.factories
 
-import com.boclips.users.domain.model.contentpackage.AccessRule
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.CollectionId
-import com.boclips.users.domain.model.contentpackage.ContentPartnerId
-import com.boclips.users.domain.model.contentpackage.DistributionMethod
-import com.boclips.users.domain.model.contentpackage.VideoId
-import com.boclips.users.domain.model.contentpackage.VideoType
+import com.boclips.users.domain.model.access.AccessRule
+import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.CollectionId
+import com.boclips.users.domain.model.access.ContentPartnerId
+import com.boclips.users.domain.model.access.DistributionMethod
+import com.boclips.users.domain.model.access.VideoId
+import com.boclips.users.domain.model.access.VideoType
 
 class AccessRuleFactory {
     companion object {

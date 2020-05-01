@@ -1,7 +1,7 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.NewTeacher
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.user.NewTeacher
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest

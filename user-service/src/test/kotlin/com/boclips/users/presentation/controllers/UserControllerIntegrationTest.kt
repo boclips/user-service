@@ -2,16 +2,16 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
-import com.boclips.users.domain.model.contentpackage.AccessRule
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.CollectionId
-import com.boclips.users.domain.model.contentpackage.ContentPackage
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
-import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.access.AccessRule
+import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.CollectionId
+import com.boclips.users.domain.model.access.ContentPackage
+import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
@@ -720,7 +720,11 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
 
-            val importedUser = userRepository.findById(UserId(userId))
+            val importedUser = userRepository.findById(
+                UserId(
+                    userId
+                )
+            )
 
             assertThat(importedUser).isNotNull
             assertThat(importedUser!!.organisation).isEqualTo(organisation)

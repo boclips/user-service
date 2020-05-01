@@ -1,15 +1,15 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.OrganisationNotFoundException
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserUpdate
+import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.model.user.UserUpdate
 import mu.KLogging
 import org.springframework.stereotype.Component
 

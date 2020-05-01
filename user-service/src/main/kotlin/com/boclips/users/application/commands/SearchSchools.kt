@@ -3,8 +3,8 @@ package com.boclips.users.application.commands
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.ExternalOrganisationInformation
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.service.AmericanSchoolsProvider
-import com.boclips.users.domain.service.OrganisationRepository
+import com.boclips.users.domain.service.organisation.AmericanSchoolsProvider
+import com.boclips.users.domain.model.organisation.OrganisationRepository
 import org.springframework.stereotype.Component
 
 @Component

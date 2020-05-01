@@ -2,7 +2,7 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -144,7 +144,11 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     @Test
     fun `profile link for new user when not authenticated`() {
         val userId = "new-user-id"
-        val profileLink = userLinkBuilder.newUserProfileLink(UserId(userId))
+        val profileLink = userLinkBuilder.newUserProfileLink(
+            UserId(
+                userId
+            )
+        )
 
         assertThat(profileLink).isNotNull
         assertThat(profileLink!!.href).endsWith("/users/$userId")
@@ -182,7 +186,11 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `access rules link when authenticated and has VIEW_ACCESS_RULES role`() {
         setSecurityContext("a-user", UserRoles.VIEW_ACCESS_RULES)
 
-        val accessRulesLink = userLinkBuilder.accessRulesLink(UserId("a-user"))
+        val accessRulesLink = userLinkBuilder.accessRulesLink(
+            UserId(
+                "a-user"
+            )
+        )
 
         assertThat(accessRulesLink).isNotNull()
         assertThat(accessRulesLink!!.href).endsWith("/users/a-user/access-rules")
@@ -193,7 +201,11 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
     fun `no access rules link when does not have VIEW_ACCESS_RULES role`() {
         setSecurityContext("a-user")
 
-        val accessRulesLink = userLinkBuilder.accessRulesLink(UserId("a-user"))
+        val accessRulesLink = userLinkBuilder.accessRulesLink(
+            UserId(
+                "a-user"
+            )
+        )
 
         assertThat(accessRulesLink).isNull()
     }

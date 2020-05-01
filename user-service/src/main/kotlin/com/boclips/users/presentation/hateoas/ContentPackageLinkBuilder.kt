@@ -1,6 +1,6 @@
 package com.boclips.users.presentation.hateoas
 
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.presentation.controllers.ContentPackageController
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder

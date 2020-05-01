@@ -2,14 +2,14 @@ package com.boclips.users.application.commands
 
 import com.boclips.users.api.request.CreateOrganisationRequest
 import com.boclips.users.application.exceptions.OrganisationAlreadyExistsException
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.service.ContentPackageRepository
-import com.boclips.users.domain.service.OrganisationRepository
+import com.boclips.users.domain.model.access.ContentPackageRepository
+import com.boclips.users.domain.model.organisation.OrganisationRepository
 import org.springframework.stereotype.Service
 
 @Service

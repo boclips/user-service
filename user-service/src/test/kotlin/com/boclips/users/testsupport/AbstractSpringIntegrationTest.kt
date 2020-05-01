@@ -4,27 +4,27 @@ import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.commands.AddCollectionToAccessRule
 import com.boclips.users.application.commands.GetOrImportUser
-import com.boclips.users.domain.model.Identity
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.contentpackage.AccessRule
-import com.boclips.users.domain.model.contentpackage.AccessRuleId
-import com.boclips.users.domain.model.contentpackage.ContentPackage
-import com.boclips.users.domain.model.contentpackage.VideoId
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.access.AccessRule
+import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.ContentPackage
+import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.service.AccessExpiryService
-import com.boclips.users.domain.service.AccessRuleRepository
-import com.boclips.users.domain.service.ContentPackageRepository
-import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.OrganisationService
-import com.boclips.users.domain.service.SubjectService
-import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserCreationService
+import com.boclips.users.domain.service.access.AccessExpiryService
+import com.boclips.users.domain.model.access.AccessRuleRepository
+import com.boclips.users.domain.model.access.ContentPackageRepository
+import com.boclips.users.domain.service.user.IdentityProvider
+import com.boclips.users.domain.service.marketing.MarketingService
+import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.service.organisation.OrganisationService
+import com.boclips.users.domain.service.subject.SubjectService
+import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.service.user.UserCreationService
 import com.boclips.users.infrastructure.MongoDatabase
-import com.boclips.users.infrastructure.organisation.OrganisationResolver
+import com.boclips.users.domain.service.organisation.OrganisationResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
@@ -204,7 +204,13 @@ abstract class AbstractSpringIntegrationTest {
     fun saveSubject(name: String): Subject {
         subjectsClient.create(CreateSubjectRequest(name))
         return subjectsClient.findAll().find { it.name == name }!!
-            .let { resource -> Subject(id = SubjectId(resource.id), name = resource.name!!) }
+            .let { resource ->
+                Subject(
+                    id = SubjectId(
+                        resource.id
+                    ), name = resource.name!!
+                )
+            }
     }
 
     fun ResultActions.andExpectApiErrorPayload(): ResultActions {

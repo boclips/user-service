@@ -2,8 +2,8 @@ package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.ShareCodeNotFoundException
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.model.user.UserRepository
 import org.springframework.stereotype.Component
 
 @Component

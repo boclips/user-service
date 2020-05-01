@@ -1,11 +1,11 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
-import com.boclips.users.domain.model.UserSessions
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.model.user.UserSessions
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
@@ -22,7 +22,10 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
     fun `user is activated if it has set profile information`() {
         val user = UserFactory.sample(profile = ProfileFactory.sample())
 
-        val crmProfile: CrmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))!!
+        val crmProfile: CrmProfile = convertUserToCrmProfile(
+            user,
+            UserSessions(Instant.now())
+        )!!
 
         assertThat(crmProfile.activated).isTrue()
     }
@@ -31,7 +34,10 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
     fun `user is not activated if it has set profile information`() {
         val user = UserFactory.sample(profile = ProfileFactory.sample(firstName = ""))
 
-        val crmProfile: CrmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))!!
+        val crmProfile: CrmProfile = convertUserToCrmProfile(
+            user,
+            UserSessions(Instant.now())
+        )!!
 
         assertThat(crmProfile.activated).isFalse()
     }
@@ -45,7 +51,13 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
                 firstName = "First",
                 lastName = "Last",
                 ages = listOf(1, 2, 3, 4),
-                subjects = listOf(Subject(id = SubjectId("subject-id"), name = "Subject Name")),
+                subjects = listOf(
+                    Subject(
+                        id = SubjectId(
+                            "subject-id"
+                        ), name = "Subject Name"
+                    )
+                ),
                 role = "TEACHER",
                 hasOptedIntoMarketing = true
             ),
@@ -59,7 +71,10 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val crmProfile: CrmProfile = convertUserToCrmProfile(user, UserSessions(Instant.now()))!!
+        val crmProfile: CrmProfile = convertUserToCrmProfile(
+            user,
+            UserSessions(Instant.now())
+        )!!
 
         assertThat(crmProfile.firstName).isEqualTo("First")
         assertThat(crmProfile.lastName).isEqualTo("Last")
@@ -69,7 +84,11 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
         assertThat(crmProfile.ageRange).containsExactly(1, 2, 3, 4)
         assertThat(crmProfile.subjects).hasSize(1)
         assertThat(crmProfile.subjects.first().name).isEqualTo("Subject Name")
-        assertThat(crmProfile.subjects.first().id).isEqualTo(SubjectId("subject-id"))
+        assertThat(crmProfile.subjects.first().id).isEqualTo(
+            SubjectId(
+                "subject-id"
+            )
+        )
         assertThat(crmProfile.role).isEqualTo("TEACHER")
         assertThat(crmProfile.accessExpiresOn).isEqualTo(expiryDate.toInstant())
         assertThat(crmProfile.marketingTracking.utmSource).isEqualTo("test-source")

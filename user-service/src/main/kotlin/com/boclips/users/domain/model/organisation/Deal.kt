@@ -1,6 +1,6 @@
 package com.boclips.users.domain.model.organisation
 
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.access.ContentPackageId
 import java.time.ZonedDateTime
 
 data class Deal(

@@ -5,7 +5,7 @@ import com.boclips.users.api.httpclient.UsersClient
 import com.boclips.users.api.httpclient.helper.ObjectMapperDefinition
 import com.boclips.users.api.httpclient.helper.TestTokenFactory
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.Profile
+import com.boclips.users.domain.model.user.Profile
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -43,7 +43,10 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
             val user = saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "123"),
-                    profile = Profile(firstName = "Mona", lastName = "The Vampire")
+                    profile = Profile(
+                        firstName = "Mona",
+                        lastName = "The Vampire"
+                    )
                 )
             )
 
@@ -71,7 +74,10 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
             val user = saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "123"),
-                    profile = Profile(firstName = "Mona", lastName = "The Vampire"),
+                    profile = Profile(
+                        firstName = "Mona",
+                        lastName = "The Vampire"
+                    ),
                     organisation = organisation
                 )
             )
@@ -86,7 +92,10 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
             val user = saveUser(
                 UserFactory.sample(
                     identity = IdentityFactory.sample(id = "123"),
-                    profile = Profile(firstName = "Mona", lastName = "The Vampire"),
+                    profile = Profile(
+                        firstName = "Mona",
+                        lastName = "The Vampire"
+                    ),
                     teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "123")
                 )
             )

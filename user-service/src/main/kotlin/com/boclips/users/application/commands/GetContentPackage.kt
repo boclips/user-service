@@ -1,9 +1,9 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.ContentPackageNotFoundException
-import com.boclips.users.domain.model.contentpackage.ContentPackage
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
-import com.boclips.users.domain.service.ContentPackageRepository
+import com.boclips.users.domain.model.access.ContentPackage
+import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.access.ContentPackageRepository
 import org.springframework.stereotype.Service
 
 @Service

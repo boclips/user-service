@@ -1,7 +1,7 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.model.user.UserRepository
 import mu.KLogging
 import org.springframework.boot.actuate.health.Health
 import org.springframework.boot.actuate.health.HealthIndicator

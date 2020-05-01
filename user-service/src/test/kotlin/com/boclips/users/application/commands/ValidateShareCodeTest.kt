@@ -2,7 +2,7 @@ package com.boclips.users.application.commands
 
 import com.boclips.users.application.exceptions.ShareCodeNotFoundException
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory

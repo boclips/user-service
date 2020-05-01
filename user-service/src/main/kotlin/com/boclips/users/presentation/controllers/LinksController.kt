@@ -1,9 +1,9 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.security.utils.UserExtractor
-import com.boclips.users.domain.model.UserId
-import com.boclips.users.domain.service.AccessExpiryService
-import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.domain.service.access.AccessExpiryService
+import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.boclips.users.presentation.hateoas.EventLinkBuilder

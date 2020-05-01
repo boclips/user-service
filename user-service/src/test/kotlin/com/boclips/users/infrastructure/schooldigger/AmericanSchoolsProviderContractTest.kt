@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.ExternalOrganisationInformation
 import com.boclips.users.domain.model.organisation.ExternalSchoolInformation
-import com.boclips.users.domain.service.AmericanSchoolsProvider
+import com.boclips.users.domain.service.organisation.AmericanSchoolsProvider
 import com.boclips.users.testsupport.loadWireMockStub
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -80,7 +80,8 @@ class AmericanSchoolsProviderContractTest {
 
 @Profile("test")
 @Service
-class FakeAmericanSchoolsProvider : AmericanSchoolsProvider {
+class FakeAmericanSchoolsProvider :
+    AmericanSchoolsProvider {
 
     var calls = 0
     var entries = mutableMapOf<String, List<ExternalOrganisationInformation>>()

@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.hubspot
 
-import com.boclips.users.domain.model.Subject
-import com.boclips.users.domain.model.SubjectId
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.testsupport.factories.CrmProfileFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -16,8 +16,16 @@ class HubSpotContactConverterTest {
             HubSpotContactConverter().convert(
                 CrmProfileFactory.sample(
                     subjects = listOf(
-                        Subject(id = SubjectId(value = "1"), name = "Maths"),
-                        Subject(id = SubjectId(value = "2"), name = "Biology")
+                        Subject(
+                            id = SubjectId(
+                                value = "1"
+                            ), name = "Maths"
+                        ),
+                        Subject(
+                            id = SubjectId(
+                                value = "2"
+                            ), name = "Biology"
+                        )
                     )
                 )
             )

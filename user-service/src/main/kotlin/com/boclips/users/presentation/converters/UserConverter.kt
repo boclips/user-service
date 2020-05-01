@@ -4,8 +4,8 @@ import com.boclips.users.api.response.SubjectResource
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.user.TeacherPlatformAttributesResource
 import com.boclips.users.api.response.user.UserResource
-import com.boclips.users.domain.model.User
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import org.springframework.stereotype.Component

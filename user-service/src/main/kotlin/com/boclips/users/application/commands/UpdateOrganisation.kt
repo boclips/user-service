@@ -7,9 +7,9 @@ import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceExpiryDate
-import com.boclips.users.domain.service.OrganisationRepository
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
+import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.api.request.UpdateOrganisationRequest
 import org.springframework.stereotype.Component
 import java.time.ZonedDateTime

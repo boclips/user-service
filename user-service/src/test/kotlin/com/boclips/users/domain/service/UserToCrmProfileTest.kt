@@ -1,5 +1,6 @@
 package com.boclips.users.domain.service
 
+import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSessionsFactory
@@ -15,7 +16,10 @@ class UserToCrmProfileTest {
         val sessions = UserSessionsFactory.sample(lastAccess = lastAccess)
         val user = UserFactory.sample()
 
-        val crmProfile = convertUserToCrmProfile(user, sessions)!!
+        val crmProfile = convertUserToCrmProfile(
+            user,
+            sessions
+        )!!
 
         assertThat(crmProfile.id).isEqualTo(user.id)
         assertThat(crmProfile.activated).isEqualTo(true)
@@ -35,7 +39,10 @@ class UserToCrmProfileTest {
         val sessions = UserSessionsFactory.sample(lastAccess = lastAccess)
         val user = UserFactory.sample(organisation = OrganisationFactory.school())
 
-        val crmProfile = convertUserToCrmProfile(user, sessions)!!
+        val crmProfile = convertUserToCrmProfile(
+            user,
+            sessions
+        )!!
 
         assertThat(crmProfile.id).isEqualTo(user.id)
         assertThat(crmProfile.activated).isEqualTo(true)
@@ -43,7 +50,9 @@ class UserToCrmProfileTest {
 
     @Test
     fun `returns null when no user profile`() {
-        val crmProfile = convertUserToCrmProfile(UserFactory.sample(profile = null), UserSessionsFactory.sample())
+        val crmProfile = convertUserToCrmProfile(
+            UserFactory.sample(profile = null), UserSessionsFactory.sample()
+        )
 
         assertThat(crmProfile).isNull()
     }
@@ -53,7 +62,10 @@ class UserToCrmProfileTest {
         val user = UserFactory.sample()
         val sessions = UserSessionsFactory.sample(lastAccess = null)
 
-        val crmProfile = convertUserToCrmProfile(user, sessions)!!
+        val crmProfile = convertUserToCrmProfile(
+            user,
+            sessions
+        )!!
 
         assertThat(crmProfile.lastLoggedIn).isNull()
     }

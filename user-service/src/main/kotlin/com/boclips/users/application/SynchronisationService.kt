@@ -1,10 +1,10 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.service.IdentityProvider
-import com.boclips.users.domain.service.MarketingService
-import com.boclips.users.domain.service.SessionProvider
-import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.convertUserToCrmProfile
+import com.boclips.users.domain.service.user.IdentityProvider
+import com.boclips.users.domain.service.marketing.MarketingService
+import com.boclips.users.domain.service.user.SessionProvider
+import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
 
@@ -25,7 +25,10 @@ class SynchronisationService(
         val allCrmProfiles = teacherUsers
             .map { user ->
                 val sessions = sessionProvider.getUserSessions(user.id)
-                return@map convertUserToCrmProfile(user, sessions)
+                return@map convertUserToCrmProfile(
+                    user,
+                    sessions
+                )
             }
             .filterNotNull()
 

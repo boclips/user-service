@@ -5,11 +5,11 @@ import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.organisation.OrganisationUpdated
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.UserRepository
-import com.boclips.users.domain.service.UserUpdate
+import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.model.user.UserUpdate
 
 class UserRepositoryEventDecorator(
     private val userRepository: UserRepository,

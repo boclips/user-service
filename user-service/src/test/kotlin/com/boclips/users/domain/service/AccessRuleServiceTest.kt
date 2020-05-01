@@ -1,6 +1,7 @@
 package com.boclips.users.domain.service
 
-import com.boclips.users.domain.model.contentpackage.AccessRule
+import com.boclips.users.domain.model.access.AccessRule
+import com.boclips.users.domain.service.access.AccessRuleService
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration

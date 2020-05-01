@@ -11,7 +11,7 @@ import com.boclips.users.application.commands.GetAccessRulesOfUser
 import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.commands.UpdateUser
 import com.boclips.users.application.commands.ValidateShareCode
-import com.boclips.users.domain.model.UserId
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.projections.WithProjection
 import com.boclips.users.presentation.converters.AccessRuleConverter

@@ -4,8 +4,8 @@ import com.boclips.eventbus.EventBus
 import com.boclips.eventbus.events.organisation.OrganisationUpdated
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.OrganisationUpdate
+import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.organisation.OrganisationUpdate
 
 class OrganisationRepositoryEventDecorator(
     private val repository: OrganisationRepository,

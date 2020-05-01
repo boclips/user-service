@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.Page
-import com.boclips.users.domain.model.contentpackage.ContentPackageId
+import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.DealType
@@ -10,9 +10,9 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.school.Country
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDealType
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceDomain
-import com.boclips.users.domain.service.OrganisationUpdate.ReplaceExpiryDate
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDealType
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration

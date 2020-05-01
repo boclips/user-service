@@ -1,6 +1,6 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.User
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import java.time.Instant

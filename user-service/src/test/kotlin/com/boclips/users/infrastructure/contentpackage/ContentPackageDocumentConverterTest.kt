@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.contentpackage
 
+import com.boclips.users.infrastructure.access.ContentPackageDocumentConverter
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

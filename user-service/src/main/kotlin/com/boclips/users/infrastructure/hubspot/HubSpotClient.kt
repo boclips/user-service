@@ -1,7 +1,7 @@
 package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.marketing.CrmProfile
-import com.boclips.users.domain.service.MarketingService
+import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.infrastructure.getContentTypeHeader
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.hubspot.resources.MarketingEmailSubscriptions

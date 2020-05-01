@@ -1,8 +1,8 @@
 package com.boclips.users.config.application
 
 import com.boclips.eventbus.EventBus
-import com.boclips.users.domain.service.OrganisationRepository
-import com.boclips.users.domain.service.UserRepository
+import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.events.EventConverter
 import com.boclips.users.domain.service.events.OrganisationRepositoryEventDecorator
 import com.boclips.users.domain.service.events.UserRepositoryEventDecorator
