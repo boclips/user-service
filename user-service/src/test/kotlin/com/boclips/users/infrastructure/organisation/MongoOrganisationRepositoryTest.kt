@@ -8,7 +8,10 @@ import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.organisation.OrganisationUpdate
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.AddTag
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDealType
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
@@ -356,10 +359,12 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             val updatedOrganisation = organisationRepository.update(
                 organisation.id,
                 ReplaceDomain("some-domain"),
-                ReplaceExpiryDate(accessExpiresOn)
+                ReplaceExpiryDate(accessExpiresOn),
+                AddTag(OrganisationTag.DESIGN_PARTNER)
             )
 
             assertThat(updatedOrganisation?.domain).isEqualTo("some-domain")
+            assertThat(updatedOrganisation?.tags).containsExactly(OrganisationTag.DESIGN_PARTNER)
             assertThat(updatedOrganisation?.deal?.accessExpiresOn).isEqualTo(accessExpiresOn)
         }
 

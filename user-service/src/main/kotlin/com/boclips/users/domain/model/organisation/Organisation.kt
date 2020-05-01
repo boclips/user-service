@@ -10,7 +10,7 @@ sealed class Organisation(
     open val address: Address,
     open val deal: Deal,
     open val role: String?,
-    open val tags: List<OrganisationTag>,
+    open val tags: Set<OrganisationTag>,
     open val domain: String?
 ) {
     abstract fun type(): OrganisationType
@@ -22,7 +22,7 @@ data class School(
     override val address: Address,
     override val deal: Deal,
     override val role: String?,
-    override val tags: List<OrganisationTag>,
+    override val tags: Set<OrganisationTag>,
     override val domain: String?,
     val district: District?,
     val externalId: ExternalOrganisationId?
@@ -45,7 +45,7 @@ data class District(
     override val name: String,
     override val address: Address,
     override val deal: Deal,
-    override val tags: List<OrganisationTag>,
+    override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
     val externalId: ExternalOrganisationId?
@@ -68,7 +68,7 @@ data class ApiIntegration(
     override val name: String,
     override val address: Address,
     override val deal: Deal,
-    override val tags: List<OrganisationTag>,
+    override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
     val allowsOverridingUserIds: Boolean

@@ -39,7 +39,7 @@ class OrganisationFactory {
             deal: Deal = deal(),
             role: String? = null,
             domain: String? = null,
-            tags: List<OrganisationTag> = emptyList(),
+            tags: Set<OrganisationTag> = emptySet(),
             externalId: ExternalOrganisationId? = null
         ): District {
             return District(
@@ -60,7 +60,7 @@ class OrganisationFactory {
             address: Address = address(),
             deal: Deal = deal(),
             role: String? = null,
-            tags: List<OrganisationTag> = emptyList(),
+            tags: Set<OrganisationTag> = emptySet(),
             domain: String? = null,
             district: District? = null,
             externalId: ExternalOrganisationId? = null
@@ -83,7 +83,7 @@ class OrganisationFactory {
             name: String = "An API Customer",
             address: Address = address(),
             deal: Deal = deal(),
-            tags: List<OrganisationTag> = emptyList(),
+            tags: Set<OrganisationTag> = emptySet(),
             role: String? = null,
             domain: String? = null,
             allowsOverridingUserId: Boolean = false

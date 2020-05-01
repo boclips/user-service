@@ -3,6 +3,7 @@ package com.boclips.users.infrastructure.organisation
 import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
@@ -87,8 +88,24 @@ class OrganisationDocumentConverterTest {
     }
 
     @Test
+    fun `unrecognised tags are skipped`() {
+        val document = OrganisationDocumentFactory.sample(
+            tags = setOf("NOT_A_TAG")
+        )
+
+        val organisation = OrganisationDocumentConverter.fromDocument(document)
+
+        assertThat(organisation.tags).isEmpty()
+    }
+
+    @Test
     fun `symmetrical conversion`() {
-        val organisation = OrganisationFactory.school()
+        val parentOrganisation = OrganisationFactory.district(
+            tags = setOf(OrganisationTag.DESIGN_PARTNER)
+        )
+        val organisation = OrganisationFactory.school(
+            district = parentOrganisation
+        )
         val organisationDocument = OrganisationDocumentConverter.toDocument(organisation)
         val convertedOrganisation =
             OrganisationDocumentConverter.fromDocument(organisationDocument = organisationDocument)

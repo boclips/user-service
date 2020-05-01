@@ -14,11 +14,12 @@ import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import mu.KLogging
 import org.bson.types.ObjectId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
-object OrganisationDocumentConverter {
+object OrganisationDocumentConverter : KLogging() {
     fun fromDocument(organisationDocument: OrganisationDocument): Organisation {
         val id = OrganisationId(organisationDocument._id!!.toHexString())
 
@@ -34,7 +35,14 @@ object OrganisationDocumentConverter {
             type = organisationDocument.dealType ?: organisationDocument.parent?.dealType ?: DealType.STANDARD
         )
 
-        val tags = emptyList<OrganisationTag>()
+        val tags = organisationDocument.tags.orEmpty().mapNotNull { tagName ->
+            try {
+                OrganisationTag.valueOf(tagName)
+            } catch (_: IllegalArgumentException) {
+                logger.error { "Unrecognised tag [$tagName] on organisation ${id.value}" }
+                null
+            }
+        }.toSet()
 
         val externalId = organisationDocument.externalId?.let(::ExternalOrganisationId)
 
@@ -100,6 +108,7 @@ object OrganisationDocumentConverter {
             allowsOverridingUserIds = (organisation as? ApiIntegration?)?.allowsOverridingUserIds,
             parent = district?.let { toDocument(it) },
             accessExpiresOn = organisation.deal.accessExpiresOn?.toInstant(),
+            tags = organisation.tags.map { it.name }.toSet(),
             contentPackageId = organisation.deal.contentPackageId?.value
         )
     }

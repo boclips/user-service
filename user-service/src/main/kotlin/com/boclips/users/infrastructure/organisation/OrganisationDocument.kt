@@ -19,6 +19,7 @@ data class OrganisationDocument(
     val allowsOverridingUserIds: Boolean?,
     val parent: OrganisationDocument? = null,
     val accessExpiresOn: Instant? = null,
+    val tags: Set<String>? = null,
     val contentPackageId: String? = null
 )
 
