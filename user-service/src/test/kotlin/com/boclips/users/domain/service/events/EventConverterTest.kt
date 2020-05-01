@@ -4,6 +4,7 @@ import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.model.user.UserUpdate
@@ -49,6 +50,17 @@ class EventConverterTest : AbstractSpringIntegrationTest() {
         assertThat(eventUser.profile.subjects).containsExactly(EventSubject(EventSubjectId("subject-id"), "maths"))
         assertThat(eventUser.profile.ages).containsExactly(5, 6, 7, 8)
         assertThat(eventUser.profile.school?.name).isEqualTo("School name")
+    }
+
+    @Test
+    fun `convert organisation to event`() {
+        val organisation = OrganisationFactory.district(
+            tags = setOf(OrganisationTag.DESIGN_PARTNER)
+        )
+
+        val eventOrganisation = EventConverter().toEventOrganisation(organisation)
+
+        assertThat(eventOrganisation.tags).containsExactly("DESIGN_PARTNER")
     }
 
     @Test

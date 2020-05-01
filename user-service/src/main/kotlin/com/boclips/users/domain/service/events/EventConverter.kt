@@ -43,6 +43,7 @@ class EventConverter {
             .postcode(organisation.address.postcode)
             .countryCode(organisation.address.country?.id)
             .state(organisation.address.state?.id)
+            .tags(organisation.tags.map { it.name }.toSet())
             .parent(parent)
             .build()
     }
