@@ -32,6 +32,7 @@ class CreateApiIntegration(
                 type = DealType.STANDARD,
                 accessExpiresOn = null
             ),
+            tags = emptyList(),
             role = request.role,
             domain = null,
             allowsOverridingUserIds = false

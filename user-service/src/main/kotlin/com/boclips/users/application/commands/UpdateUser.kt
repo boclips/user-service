@@ -112,6 +112,7 @@ class UpdateUser(
                                 accessExpiresOn = null,
                                 type = DealType.STANDARD
                             ),
+                            tags = emptyList(),
                             district = null,
                             externalId = null,
                             role = null,

@@ -10,6 +10,7 @@ sealed class Organisation(
     open val address: Address,
     open val deal: Deal,
     open val role: String?,
+    open val tags: List<OrganisationTag>,
     open val domain: String?
 ) {
     abstract fun type(): OrganisationType
@@ -17,19 +18,21 @@ sealed class Organisation(
 
 data class School(
     override val id: OrganisationId,
-    override val deal: Deal,
-    override val role: String?,
     override val name: String,
     override val address: Address,
+    override val deal: Deal,
+    override val role: String?,
+    override val tags: List<OrganisationTag>,
     override val domain: String?,
     val district: District?,
     val externalId: ExternalOrganisationId?
 ) : Organisation(
     id = id,
-    deal = deal,
-    role = role,
     name = name,
     address = address,
+    deal = deal,
+    role = role,
+    tags = tags,
     domain = domain
 ) {
     override fun type(): OrganisationType {
@@ -39,18 +42,20 @@ data class School(
 
 data class District(
     override val id: OrganisationId,
-    override val deal: Deal,
-    override val role: String?,
     override val name: String,
     override val address: Address,
+    override val deal: Deal,
+    override val tags: List<OrganisationTag>,
+    override val role: String?,
     override val domain: String?,
     val externalId: ExternalOrganisationId?
 ) : Organisation(
     id = id,
-    deal = deal,
-    role = role,
     name = name,
     address = address,
+    deal = deal,
+    tags = tags,
+    role = role,
     domain = domain
 ) {
     override fun type(): OrganisationType {
@@ -60,18 +65,20 @@ data class District(
 
 data class ApiIntegration(
     override val id: OrganisationId,
-    override val deal: Deal,
-    override val role: String?,
     override val name: String,
     override val address: Address,
+    override val deal: Deal,
+    override val tags: List<OrganisationTag>,
+    override val role: String?,
     override val domain: String?,
     val allowsOverridingUserIds: Boolean
 ) : Organisation(
     id = id,
-    deal = deal,
-    role = role,
     name = name,
     address = address,
+    deal = deal,
+    tags = tags,
+    role = role,
     domain = domain
 ) {
     override fun type(): OrganisationType {

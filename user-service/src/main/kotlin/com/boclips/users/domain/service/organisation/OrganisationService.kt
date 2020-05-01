@@ -51,6 +51,7 @@ class OrganisationService(
                     type = DealType.STANDARD
                 ),
                 role = null,
+                tags = emptyList(),
                 district = externalInfo.district?.let(this::getOrCreateDistrict),
                 externalId = externalInfo.school.id,
                 domain = null
@@ -69,6 +70,7 @@ class OrganisationService(
                     accessExpiresOn = null,
                     type = DealType.STANDARD
                 ),
+                tags = emptyList(),
                 role = null,
                 externalId = externalInfo.id,
                 domain = null

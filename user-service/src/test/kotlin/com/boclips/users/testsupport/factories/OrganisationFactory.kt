@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.organisation.DealType
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import java.time.ZonedDateTime
@@ -38,6 +39,7 @@ class OrganisationFactory {
             deal: Deal = deal(),
             role: String? = null,
             domain: String? = null,
+            tags: List<OrganisationTag> = emptyList(),
             externalId: ExternalOrganisationId? = null
         ): District {
             return District(
@@ -45,6 +47,7 @@ class OrganisationFactory {
                 name = name,
                 address = address,
                 deal = deal,
+                tags = tags,
                 role = role,
                 externalId = externalId,
                 domain = domain
@@ -57,6 +60,7 @@ class OrganisationFactory {
             address: Address = address(),
             deal: Deal = deal(),
             role: String? = null,
+            tags: List<OrganisationTag> = emptyList(),
             domain: String? = null,
             district: District? = null,
             externalId: ExternalOrganisationId? = null
@@ -66,6 +70,7 @@ class OrganisationFactory {
                 name = name,
                 address = address,
                 deal = deal,
+                tags = tags,
                 role = role,
                 externalId = externalId,
                 domain = domain,
@@ -78,6 +83,7 @@ class OrganisationFactory {
             name: String = "An API Customer",
             address: Address = address(),
             deal: Deal = deal(),
+            tags: List<OrganisationTag> = emptyList(),
             role: String? = null,
             domain: String? = null,
             allowsOverridingUserId: Boolean = false
@@ -87,6 +93,7 @@ class OrganisationFactory {
                 name = name,
                 address = address,
                 deal = deal,
+                tags = tags,
                 role = role,
                 domain = domain,
                 allowsOverridingUserIds = allowsOverridingUserId

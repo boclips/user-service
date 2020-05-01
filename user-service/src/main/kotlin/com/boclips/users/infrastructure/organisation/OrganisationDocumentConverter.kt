@@ -9,6 +9,7 @@ import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
@@ -33,6 +34,8 @@ object OrganisationDocumentConverter {
             type = organisationDocument.dealType ?: organisationDocument.parent?.dealType ?: DealType.STANDARD
         )
 
+        val tags = emptyList<OrganisationTag>()
+
         val externalId = organisationDocument.externalId?.let(::ExternalOrganisationId)
 
         return when (organisationDocument.type) {
@@ -41,6 +44,7 @@ object OrganisationDocumentConverter {
                 name = organisationDocument.name,
                 address = address,
                 deal = deal,
+                tags = tags,
                 domain = organisationDocument.domain,
                 allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false,
                 role = organisationDocument.role
@@ -49,9 +53,10 @@ object OrganisationDocumentConverter {
             OrganisationType.SCHOOL -> School(
                 id = id,
                 name = organisationDocument.name,
-                domain = organisationDocument.domain,
                 address = address,
                 deal = deal,
+                tags = tags,
+                domain = organisationDocument.domain,
                 district = organisationDocument.parent?.let { fromDocument(it) as? District? },
                 externalId = externalId,
                 role = organisationDocument.role
@@ -62,6 +67,7 @@ object OrganisationDocumentConverter {
                 name = organisationDocument.name,
                 address = address,
                 deal = deal,
+                tags = tags,
                 domain = organisationDocument.domain,
                 externalId = externalId,
                 role = organisationDocument.role
