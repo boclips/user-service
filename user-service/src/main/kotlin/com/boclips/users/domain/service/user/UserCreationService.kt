@@ -7,7 +7,7 @@ import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.UserRepository
-import com.boclips.users.domain.service.organisation.OrganisationResolver
+import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolver
 import mu.KLogging
 import org.springframework.stereotype.Service
 

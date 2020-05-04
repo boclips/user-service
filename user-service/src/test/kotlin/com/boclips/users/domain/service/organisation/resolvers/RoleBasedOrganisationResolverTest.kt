@@ -1,5 +1,6 @@
-package com.boclips.users.domain.service.organisation
+package com.boclips.users.domain.service.organisation.resolvers
 
+import com.boclips.users.domain.service.organisation.RoleBasedOrganisationResolver
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -14,7 +15,9 @@ class RoleBasedOrganisationResolverTest : AbstractSpringIntegrationTest() {
 
     @BeforeEach
     internal fun setUp() {
-        resolver = RoleBasedOrganisationResolver(organisationRepository)
+        resolver = RoleBasedOrganisationResolver(
+            organisationRepository
+        )
     }
 
     @Test

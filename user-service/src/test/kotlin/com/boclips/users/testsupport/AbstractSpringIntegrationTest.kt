@@ -24,7 +24,7 @@ import com.boclips.users.domain.service.subject.SubjectService
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.user.UserCreationService
 import com.boclips.users.infrastructure.MongoDatabase
-import com.boclips.users.domain.service.organisation.OrganisationResolver
+import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder

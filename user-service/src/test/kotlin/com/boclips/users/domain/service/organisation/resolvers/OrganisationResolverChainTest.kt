@@ -1,4 +1,4 @@
-package com.boclips.users.domain.service.organisation
+package com.boclips.users.domain.service.organisation.resolvers
 
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.user.Identity
@@ -11,13 +11,22 @@ class OrganisationResolverChainTest {
 
     @Test
     fun `delegates to internal resolvers in order`() {
-        val resolver = OrganisationResolverChain(
-            listOf(
-                FakeResolver(null),
-                FakeResolver(district(name = "A")),
-                FakeResolver(district(name = "B"))
+        val resolver =
+            OrganisationResolverChain(
+                listOf(
+                    FakeResolver(null),
+                    FakeResolver(
+                        district(
+                            name = "A"
+                        )
+                    ),
+                    FakeResolver(
+                        district(
+                            name = "B"
+                        )
+                    )
+                )
             )
-        )
 
         val organisation = resolver.resolve(IdentityFactory.sample())
 
@@ -26,7 +35,8 @@ class OrganisationResolverChainTest {
     }
 }
 
-class FakeResolver(val organisation: Organisation?) : OrganisationResolver {
+class FakeResolver(val organisation: Organisation?) :
+    OrganisationResolver {
     override fun resolve(identity: Identity): Organisation? {
         return organisation
     }
