@@ -53,7 +53,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `persists a school with an existing district`() {
             val district = organisationRepository.save(
-                OrganisationFactory.district(name = "good stuff")
+                district(name = "good stuff")
             )
             val school = organisationRepository.save(
                 school(
@@ -94,7 +94,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         fun `persists the expiry date from the parent organisation`() {
             val accessExpiresOn = ZonedDateTime.now().plusDays(1)
             val district = organisationRepository.save(
-                OrganisationFactory.district(
+                district(
                     name = "good stuff",
                     deal = deal(
                         accessExpiresOn = accessExpiresOn
@@ -146,6 +146,16 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisationRepository.findByTag(DEFAULT_ORGANISATION)).hasSize(1)
         assertThat(organisationRepository.findByTag(DEFAULT_ORGANISATION).first().name).isEqualTo("Default")
+    }
+
+    @Test
+    fun `find by email domain`() {
+        organisationRepository.save(district(name = "A", domain = "domain.com"))
+        organisationRepository.save(district(name = "B", domain = "another.com"))
+        organisationRepository.save(district(name = "C", domain = null))
+
+        assertThat(organisationRepository.findByEmailDomain("domain.com")).hasSize(1)
+        assertThat(organisationRepository.findByEmailDomain("domain.com").first().name).isEqualTo("A")
     }
 
     @Nested
@@ -231,7 +241,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `find organisations by parent id`() {
-            val district = organisationRepository.save(OrganisationFactory.district())
+            val district = organisationRepository.save(district())
             organisationRepository.save(school(district = district))
             organisationRepository.save(school(district = null))
             organisationRepository.save(school(district = null))
@@ -241,7 +251,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `find independent schools and districts by country code`() {
-            val district = organisationRepository.save(OrganisationFactory.district())
+            val district = organisationRepository.save(district())
 
             val schoolUsaNoDistrict = organisationRepository.save(
                 school(

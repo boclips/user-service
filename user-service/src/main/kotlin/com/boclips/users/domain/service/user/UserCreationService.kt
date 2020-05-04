@@ -49,22 +49,20 @@ class UserCreationService(
     private fun create(identity: Identity, setup: (defaults: User) -> User): User {
         logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]" }
 
-        val organisation = organisationResolver.resolve(identity)
-        val user = setup(
-            User(
-                identity = identity,
-                profile = null,
-                teacherPlatformAttributes = null,
-                marketingTracking = MarketingTracking(),
-                referralCode = null,
-                analyticsId = null,
-                organisation = organisation,
-                accessExpiresOn = null
-            )
+        return User(
+            identity = identity,
+            profile = null,
+            teacherPlatformAttributes = null,
+            marketingTracking = MarketingTracking(),
+            referralCode = null,
+            analyticsId = null,
+            organisation = organisationResolver.resolve(identity),
+            accessExpiresOn = null
         )
-
-        return userRepository.create(user).also { createdUser ->
-            logger.info { "User ${createdUser.id.value} created under organisation ${createdUser.organisation?.name}" }
-        }
+            .let(setup)
+            .let(userRepository::create)
+            .also { user ->
+                logger.info { "User ${user.id.value} created under organisation ${user.organisation?.name}" }
+            }
     }
 }

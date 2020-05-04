@@ -6,10 +6,7 @@ import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.events.EventConverter
 import com.boclips.users.domain.service.events.OrganisationRepositoryEventDecorator
 import com.boclips.users.domain.service.events.UserRepositoryEventDecorator
-import com.boclips.users.domain.service.organisation.resolvers.FallbackOrganisationResolver
 import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolver
-import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolverChain
-import com.boclips.users.domain.service.organisation.RoleBasedOrganisationResolver
 import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
 import com.boclips.users.infrastructure.user.MongoUserRepository
 import org.springframework.context.annotation.Bean
@@ -50,13 +47,6 @@ class DomainConfiguration(
 
     @Bean
     fun organisationResolver(): OrganisationResolver {
-        val roleBasedResolver = RoleBasedOrganisationResolver(mongoOrganisationRepository)
-        val fallbackResolver =
-            FallbackOrganisationResolver(
-                mongoOrganisationRepository
-            )
-        return OrganisationResolverChain(
-            listOf(roleBasedResolver, fallbackResolver)
-        )
+        return OrganisationResolver.create(mongoOrganisationRepository)
     }
 }

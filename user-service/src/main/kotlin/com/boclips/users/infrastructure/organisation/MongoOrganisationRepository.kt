@@ -69,6 +69,12 @@ class MongoOrganisationRepository(
             .convert()
     }
 
+    override fun findByEmailDomain(domain: String): List<Organisation> {
+        return collection()
+            .find(OrganisationDocument::domain eq domain)
+            .convert()
+    }
+
     override fun <T : Organisation> save(organisation: T): T {
         return save(OrganisationDocumentConverter.toDocument(organisation))
             .cast()

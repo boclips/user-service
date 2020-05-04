@@ -13,19 +13,9 @@ class OrganisationResolverChainTest {
     fun `delegates to internal resolvers in order`() {
         val resolver =
             OrganisationResolverChain(
-                listOf(
-                    FakeResolver(null),
-                    FakeResolver(
-                        district(
-                            name = "A"
-                        )
-                    ),
-                    FakeResolver(
-                        district(
-                            name = "B"
-                        )
-                    )
-                )
+                FakeResolver(null),
+                FakeResolver(district(name = "A")),
+                FakeResolver(district(name = "B"))
             )
 
         val organisation = resolver.resolve(IdentityFactory.sample())

@@ -164,7 +164,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `updates a user`() {
             val subject = saveSubject("Maths")
             val user = saveUser(UserFactory.sample())
-            val school = saveOrganisation(
+            saveOrganisation(
                 school(
                     name = "San Fran Forest School",
                     address = Address(

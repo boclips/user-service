@@ -1,6 +1,5 @@
 package com.boclips.users.domain.service.organisation.resolvers
 
-import com.boclips.users.domain.service.organisation.RoleBasedOrganisationResolver
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -9,15 +8,16 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class RoleBasedOrganisationResolverTest : AbstractSpringIntegrationTest() {
+class RoleOrganisationResolverTest : AbstractSpringIntegrationTest() {
 
-    lateinit var resolver: RoleBasedOrganisationResolver
+    lateinit var resolver: RoleOrganisationResolver
 
     @BeforeEach
     internal fun setUp() {
-        resolver = RoleBasedOrganisationResolver(
-            organisationRepository
-        )
+        resolver =
+            RoleOrganisationResolver(
+                organisationRepository
+            )
     }
 
     @Test

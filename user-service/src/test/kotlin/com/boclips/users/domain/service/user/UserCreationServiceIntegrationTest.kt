@@ -4,12 +4,9 @@ import com.boclips.users.domain.model.user.NewTeacher
 import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationTag
-import com.boclips.users.domain.model.organisation.OrganisationTag.DEFAULT_ORGANISATION
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.district
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZoneOffset
@@ -73,15 +70,5 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.marketingTracking.utmContent).isBlank()
         assertThat(persistedUser.marketingTracking.utmTerm).isBlank()
         assertThat(persistedUser.marketingTracking.utmMedium).isBlank()
-    }
-
-    @Test
-    fun `individual teacher users get associated to the default organisation`() {
-        saveOrganisation(district(name = "Boclips Free Trial", tags = setOf(DEFAULT_ORGANISATION)))
-
-        val persistedUser = userCreationService.createTeacher(newUser)
-
-        assertThat(persistedUser.organisation).isNotNull
-        assertThat(persistedUser.organisation?.name).isEqualTo("Boclips Free Trial")
     }
 }
