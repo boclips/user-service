@@ -187,7 +187,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 organisationRepository.lookupSchools(schoolName = "new school", countryCode = "ESP")
                     .firstOrNull()
             assertThat(newSchool).isNotNull
-            assertThat(updatedUser.organisation?.id).isEqualTo(newSchool?.id)
+            assertThat(updatedUser.profile?.school).isEqualTo(newSchool)
         }
 
         @Test
@@ -217,7 +217,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val newSchool =
                 organisationRepository.lookupSchools(schoolName = school.name, countryCode = "ESP")
             assertThat(newSchool).hasSize(1)
-            assertThat(updatedUser.organisation?.id).isEqualTo(newSchool.first().id)
+            assertThat(updatedUser.profile?.school).isEqualTo(newSchool.first())
         }
     }
 
@@ -253,7 +253,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             val newSchools = organisationRepository.lookupSchools(schoolName = school.name, countryCode = "USA")
             assertThat(newSchools).hasSize(1)
-            assertThat(updatedUser.organisation?.id).isEqualTo(newSchools.first().id)
+            assertThat(updatedUser.profile?.school).isEqualTo(newSchools.first())
         }
 
         @Test
@@ -287,8 +287,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val organisationAccount =
-                organisationRepository.findSchoolById(updatedUser.organisation!!.id)!!
+            val organisationAccount = updatedUser.profile?.school!!
             assertThat(organisationAccount.address.country?.isUSA()).isEqualTo(true)
             assertThat(organisationAccount.address.state!!.id).isEqualTo("AZ")
             assertThat(organisationAccount.externalId).isNull()

@@ -37,7 +37,6 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
                 )
             },
             updateUserRequest.role?.let { UserUpdate.ReplaceRole(role = it)},
-            organisation?.let { UserUpdate.ReplaceOrganisation(it) },
             organisation?.let { (it as? School?) }?.let(UserUpdate::ReplaceProfileSchool)
         )
     }

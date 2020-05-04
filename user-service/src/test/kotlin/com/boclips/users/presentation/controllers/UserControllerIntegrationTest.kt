@@ -165,7 +165,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val subject = saveSubject("Maths")
             val user = saveUser(UserFactory.sample())
             val school = saveOrganisation(
-                OrganisationFactory.school(
+                school(
                     name = "San Fran Forest School",
                     address = Address(
                         state = State.fromCode("CA"),
@@ -202,12 +202,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.school.state.id", equalTo("CA")))
                 .andExpect(jsonPath("$.school.country.name", equalTo("United States")))
                 .andExpect(jsonPath("$.school.country.id", equalTo("USA")))
-                .andExpect(jsonPath("$.organisation.id", equalTo(school.id.value)))
-                .andExpect(jsonPath("$.organisation.name", equalTo("San Fran Forest School")))
-                .andExpect(jsonPath("$.organisation.state.name", equalTo("California")))
-                .andExpect(jsonPath("$.organisation.state.id", equalTo("CA")))
-                .andExpect(jsonPath("$.organisation.country.name", equalTo("United States")))
-                .andExpect(jsonPath("$.organisation.country.id", equalTo("USA")))
         }
 
         @Test
@@ -274,7 +268,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             saveSubject("Maths")
             saveUser(UserFactory.sample())
             saveOrganisation(
-                OrganisationFactory.school(
+                school(
                     name = "San Fran Forest School",
                     address = Address(
                         state = State.fromCode("CA"),
@@ -352,7 +346,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             val subject = saveSubject("Maths")
             saveOrganisation(
-                OrganisationFactory.school(
+                school(
                     name = "San Fran Forest School",
                     address = Address(
                         state = State.fromCode("CA"),
@@ -405,7 +399,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             val maths = saveSubject("Maths")
             saveOrganisation(
-                OrganisationFactory.school(
+                school(
                     name = "San Fran Forest School",
                     address = Address(
                         state = State.fromCode("CA"),
@@ -502,7 +496,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             saveUser(user)
 
             saveOrganisation(
-                OrganisationFactory.school(
+                school(
                     name = "San Fran Forest School",
                     address = Address(
                         state = State.fromCode("CA"),

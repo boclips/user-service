@@ -122,18 +122,16 @@ class UserUpdatesCommandFactoryTest : AbstractSpringIntegrationTest() {
         val school = OrganisationFactory.school()
         val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(), school)
 
-        assertThat(commands).hasSize(2)
-        assertThat(commands).hasAtLeastOneElementOfType(UserUpdate.ReplaceOrganisation::class.java)
+        assertThat(commands).hasSize(1)
         assertThat(commands).hasAtLeastOneElementOfType(UserUpdate.ReplaceProfileSchool::class.java)
     }
 
     @Test
-    fun `district change converted to organisation update only`() {
+    fun `district change is ignored`() {
         val district = OrganisationFactory.district()
         val commands = userUpdatesConverter.buildCommands(UpdateUserRequest(), district)
 
-        assertThat(commands).hasSize(1)
-        assertThat(commands).hasAtLeastOneElementOfType(UserUpdate.ReplaceOrganisation::class.java)
+        assertThat(commands).hasSize(0)
     }
 
     @Test
