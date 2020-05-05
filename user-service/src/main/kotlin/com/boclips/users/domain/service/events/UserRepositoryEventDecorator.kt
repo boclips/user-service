@@ -48,7 +48,7 @@ class UserRepositoryEventDecorator(
             organisationRepository.findOrganisationById(OrganisationId(organisationUpdated.organisation.id))!!
 
         userRepository.findAllByOrganisationId(organisation.id).forEach { user ->
-            userRepository.update(user, UserUpdate.ReplaceOrganisation(organisation))
+            update(user, UserUpdate.ReplaceOrganisation(organisation))
         }
     }
 }

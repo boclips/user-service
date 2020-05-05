@@ -98,5 +98,6 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
         val updatedUser = userRepository.findById(user.id)
 
         assertThat(updatedUser?.organisation?.domain).isEqualTo("newdomain.com")
+        assertThat(eventBus.countEventsOfType(UserUpdated::class.java)).isEqualTo(1)
     }
 }
