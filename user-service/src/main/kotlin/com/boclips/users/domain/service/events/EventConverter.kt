@@ -3,9 +3,13 @@ package com.boclips.users.domain.service.events
 import com.boclips.eventbus.domain.Subject
 import com.boclips.eventbus.domain.SubjectId
 import com.boclips.eventbus.domain.user.UserProfile
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.eventbus.domain.user.Address as EventAddress
+import com.boclips.eventbus.domain.user.Deal as EventDeal
 import com.boclips.eventbus.domain.user.Organisation as EventOrganisation
 import com.boclips.eventbus.domain.user.User as EventUser
 
@@ -39,11 +43,28 @@ class EventConverter {
             .id(organisation.id.value)
             .type(organisation.type().name)
             .name(organisation.name)
+            .address(toEventAddress(organisation.address))
             .postcode(organisation.address.postcode)
             .countryCode(organisation.address.country?.id)
             .state(organisation.address.state?.id)
+            .deal(toEventDeal(organisation.deal))
             .tags(organisation.tags.map { it.name }.toSet())
             .parent(parent)
+            .build()
+    }
+
+    fun toEventAddress(address: Address): EventAddress {
+        return EventAddress.builder()
+            .countryCode(address.country?.id)
+            .state(address.state?.id)
+            .postcode(address.postcode)
+            .build()
+    }
+
+    fun toEventDeal(deal: Deal): EventDeal {
+        return EventDeal.builder()
+            .billing(deal.billing)
+            .expiresAt(deal.accessExpiresOn)
             .build()
     }
 

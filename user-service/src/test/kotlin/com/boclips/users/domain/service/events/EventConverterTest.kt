@@ -1,16 +1,14 @@
 package com.boclips.users.domain.service.events
 
-import com.boclips.eventbus.events.user.UserUpdated
-import com.boclips.users.domain.model.subject.Subject
-import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.model.user.UserUpdate
-import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -19,7 +17,7 @@ import java.time.ZonedDateTime
 import com.boclips.eventbus.domain.Subject as EventSubject
 import com.boclips.eventbus.domain.SubjectId as EventSubjectId
 
-class EventConverterTest : AbstractSpringIntegrationTest() {
+class EventConverterTest {
 
     @Test
     fun `converting user to event`() {
@@ -37,6 +35,7 @@ class EventConverterTest : AbstractSpringIntegrationTest() {
                         ), name = "maths"
                     )
                 ),
+                role = "PARENT",
                 ages = listOf(5, 6, 7, 8),
                 school = OrganisationFactory.school(name = "School name")
             )
@@ -48,68 +47,37 @@ class EventConverterTest : AbstractSpringIntegrationTest() {
         assertThat(eventUser.profile.firstName).isEqualTo("John")
         assertThat(eventUser.profile.lastName).isEqualTo("Johnson")
         assertThat(eventUser.profile.subjects).containsExactly(EventSubject(EventSubjectId("subject-id"), "maths"))
+        assertThat(eventUser.profile.role).isEqualTo("PARENT")
         assertThat(eventUser.profile.ages).containsExactly(5, 6, 7, 8)
         assertThat(eventUser.profile.school?.name).isEqualTo("School name")
     }
 
     @Test
     fun `convert organisation to event`() {
+        val now = ZonedDateTime.now()
         val organisation = OrganisationFactory.district(
+            address = Address(
+                country = Country.fromCode("USA"),
+                state = State.fromCode("IL"),
+                postcode = "abc123"
+            ),
+            deal = deal(
+                accessExpiresOn = now,
+                billing = true
+            ),
             tags = setOf(OrganisationTag.DESIGN_PARTNER)
         )
 
         val eventOrganisation = EventConverter().toEventOrganisation(organisation)
 
+        assertThat(eventOrganisation.address.countryCode).isEqualTo("USA")
+        assertThat(eventOrganisation.countryCode).isEqualTo("USA")
+        assertThat(eventOrganisation.address.state).isEqualTo("IL")
+        assertThat(eventOrganisation.state).isEqualTo("IL")
+        assertThat(eventOrganisation.address.postcode).isEqualTo("abc123")
+        assertThat(eventOrganisation.postcode).isEqualTo("abc123")
+        assertThat(eventOrganisation.deal.expiresAt).isEqualTo(now)
+        assertThat(eventOrganisation.deal.billing).isTrue()
         assertThat(eventOrganisation.tags).containsExactly("DESIGN_PARTNER")
-    }
-
-    @Test
-    fun `when user is assigned only to a district, the parent is set null`() {
-        val district = organisationRepository.save(
-            organisation = OrganisationFactory.district(name = "District 9")
-        )
-
-        val user = userRepository.create(UserFactory.sample())
-
-        userRepository.update(user, UserUpdate.ReplaceOrganisation(district))
-
-        val event = eventBus.getEventOfType(UserUpdated::class.java)
-        assertThat(event.user.id).isEqualTo(user.id.value)
-        assertThat(event.user.organisation.id).isEqualTo(district.id.value)
-        assertThat(event.user.organisation.type).isEqualTo("DISTRICT")
-        assertThat(event.user.organisation.name).isEqualTo("District 9")
-        assertThat(event.user.organisation.parent).isNull()
-    }
-
-    @Test
-    fun `convert role information if exists`() {
-        val user = userRepository.create(UserFactory.sample(profile = ProfileFactory.sample(role = null)))
-
-        userRepository.update(user, UserUpdate.ReplaceRole("PARENT"))
-
-        val event = eventBus.getEventOfType(UserUpdated::class.java)
-        assertThat(event.user.id).isEqualTo(user.id.value)
-        assertThat(event.user.profile.role).isEqualTo("PARENT")
-    }
-
-    @Test
-    fun `convert country code and state if exists`() {
-        val school = organisationRepository.save(
-            organisation = OrganisationFactory.school(
-                address = Address(
-                    country = Country.fromCode("USA"),
-                    state = State.fromCode("IL")
-                )
-            )
-        )
-
-        val user = userRepository.create(UserFactory.sample(organisation = null))
-
-        userRepository.update(user, UserUpdate.ReplaceOrganisation(school))
-
-        val event = eventBus.getEventOfType(UserUpdated::class.java)
-        assertThat(event.user.id).isEqualTo(user.id.value)
-        assertThat(event.user.organisation.countryCode).isEqualTo("USA")
-        assertThat(event.user.organisation.state).isEqualTo("IL")
     }
 }
