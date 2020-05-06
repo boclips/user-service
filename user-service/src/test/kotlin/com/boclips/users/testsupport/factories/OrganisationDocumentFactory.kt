@@ -21,6 +21,7 @@ class OrganisationDocumentFactory {
             postcode: String? = null,
             allowsOverridingUserIds: Boolean? = null,
             parent: OrganisationDocument? = null,
+            billing: Boolean? = null,
             accessExpiresOn: ZonedDateTime? = null
         ) = OrganisationDocument(
             _id = id,
@@ -35,6 +36,7 @@ class OrganisationDocumentFactory {
             postcode = postcode,
             allowsOverridingUserIds = allowsOverridingUserIds,
             parent = parent,
+            billing = billing,
             accessExpiresOn = accessExpiresOn?.toInstant()
         )
     }

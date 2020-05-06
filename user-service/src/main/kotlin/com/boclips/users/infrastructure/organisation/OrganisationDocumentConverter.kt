@@ -30,7 +30,7 @@ object OrganisationDocumentConverter : KLogging() {
 
         val deal = Deal(
             contentPackageId = organisationDocument.contentPackageId?.let { ContentPackageId(value = it) },
-            billing = false,
+            billing = organisationDocument.billing ?: false,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
         )
 
@@ -107,6 +107,7 @@ object OrganisationDocumentConverter : KLogging() {
             parent = district?.let { toDocument(it) },
             accessExpiresOn = organisation.deal.accessExpiresOn?.toInstant(),
             tags = organisation.tags.map { it.name }.toSet(),
+            billing = organisation.deal.billing,
             contentPackageId = organisation.deal.contentPackageId?.value
         )
     }

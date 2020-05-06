@@ -97,6 +97,7 @@ class MongoOrganisationRepository(
                 is ReplaceExpiryDate -> accumulator.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
                 is ReplaceDomain -> accumulator.copy(domain = update.domain)
                 is OrganisationUpdate.AddTag -> accumulator.copy(tags = accumulator.tags.orEmpty() + update.tag.name)
+                is OrganisationUpdate.ReplaceBilling -> accumulator.copy(billing = update.billing)
             }
         })
 

@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
@@ -89,9 +90,23 @@ class OrganisationDocumentConverterTest {
     }
 
     @Test
+    fun `unset billing treated as no billing`() {
+        val document = OrganisationDocumentFactory.sample(
+            billing = null
+        )
+
+        val organisation = OrganisationDocumentConverter.fromDocument(document)
+
+        assertThat(organisation.deal.billing).isFalse()
+    }
+
+    @Test
     fun `symmetrical conversion`() {
         val parentOrganisation = OrganisationFactory.district(
-            tags = setOf(OrganisationTag.DESIGN_PARTNER)
+            tags = setOf(OrganisationTag.DESIGN_PARTNER),
+            deal = deal(
+                billing = true
+            )
         )
         val organisation = OrganisationFactory.school(
             district = parentOrganisation

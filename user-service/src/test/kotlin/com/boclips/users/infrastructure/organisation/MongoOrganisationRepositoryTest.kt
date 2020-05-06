@@ -11,7 +11,9 @@ import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationTag.DEFAULT_ORGANISATION
 import com.boclips.users.domain.model.organisation.OrganisationTag.DESIGN_PARTNER
 import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.AddTag
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceBilling
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
@@ -358,12 +360,14 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 organisation.id,
                 ReplaceDomain("some-domain"),
                 ReplaceExpiryDate(accessExpiresOn),
-                AddTag(OrganisationTag.DESIGN_PARTNER)
+                AddTag(DESIGN_PARTNER),
+                ReplaceBilling(true)
             )
 
             assertThat(updatedOrganisation?.domain).isEqualTo("some-domain")
-            assertThat(updatedOrganisation?.tags).containsExactly(OrganisationTag.DESIGN_PARTNER)
+            assertThat(updatedOrganisation?.tags).containsExactly(DESIGN_PARTNER)
             assertThat(updatedOrganisation?.deal?.accessExpiresOn).isEqualTo(accessExpiresOn)
+            assertThat(updatedOrganisation?.deal?.billing).isTrue()
         }
 
         @Test

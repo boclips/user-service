@@ -18,6 +18,7 @@ data class OrganisationDocument(
     val parent: OrganisationDocument? = null,
     val accessExpiresOn: Instant? = null,
     val tags: Set<String>? = null,
+    val billing: Boolean? = null,
     val contentPackageId: String? = null
 )
 
