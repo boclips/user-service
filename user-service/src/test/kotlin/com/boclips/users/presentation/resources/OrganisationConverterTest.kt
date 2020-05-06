@@ -43,6 +43,7 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
             ),
             deal = Deal(
                 contentPackageId = ContentPackageId("content-package-id"),
+                billing = false,
                 accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
             )
         )

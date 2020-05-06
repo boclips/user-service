@@ -28,6 +28,7 @@ class CreateApiIntegration(
             address = Address(),
             deal = Deal(
                 contentPackageId = contentPackage?.id,
+                billing = false,
                 accessExpiresOn = null
             ),
             tags = emptySet(),

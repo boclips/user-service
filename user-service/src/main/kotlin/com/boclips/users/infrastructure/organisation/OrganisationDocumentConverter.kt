@@ -30,6 +30,7 @@ object OrganisationDocumentConverter : KLogging() {
 
         val deal = Deal(
             contentPackageId = organisationDocument.contentPackageId?.let { ContentPackageId(value = it) },
+            billing = false,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
         )
 

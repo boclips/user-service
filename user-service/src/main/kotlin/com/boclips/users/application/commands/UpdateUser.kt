@@ -108,7 +108,8 @@ class UpdateUser(
                                 state = updateUserRequest.state?.let { State.fromCode(it) }
                             ),
                             deal = Deal(
-                                accessExpiresOn = null
+                                accessExpiresOn = null,
+                                billing = false
                             ),
                             tags = emptySet(),
                             district = null,

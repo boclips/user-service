@@ -23,9 +23,11 @@ class OrganisationFactory {
 
         fun deal(
             contentPackageId: ContentPackageId? = null,
+            billing: Boolean = false,
             accessExpiresOn: ZonedDateTime? = null
         ): Deal = Deal(
             contentPackageId = contentPackageId,
+            billing = billing,
             accessExpiresOn = accessExpiresOn
         )
 

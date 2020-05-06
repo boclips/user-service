@@ -46,6 +46,7 @@ class OrganisationService(
                 address = externalInfo.school.address,
                 deal = Deal(
                     contentPackageId = null,
+                    billing = false,
                     accessExpiresOn = null
                 ),
                 role = null,
@@ -65,6 +66,7 @@ class OrganisationService(
                 address = externalInfo.address,
                 deal = Deal(
                     contentPackageId = null,
+                    billing = false,
                     accessExpiresOn = null
                 ),
                 tags = emptySet(),
