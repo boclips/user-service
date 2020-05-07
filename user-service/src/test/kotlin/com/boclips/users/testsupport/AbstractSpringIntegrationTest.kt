@@ -46,6 +46,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
@@ -161,6 +163,9 @@ abstract class AbstractSpringIntegrationTest {
 
         eventBus.clearState()
         fakeAmericanSchoolsProvider.clear()
+
+        SecurityContextHolder
+            .setContext(SecurityContextImpl(null))
     }
 
     fun saveUser(user: User): User {

@@ -27,7 +27,7 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.identity.id).isEqualTo(identity.id)
         assertThat(user.identity.email).isEqualTo(identity.email)
         assertThat(user.identity.username).isEqualTo(identity.username)
-        assertThat(user.identity.createdAt).isEqualTo(identity.createdAt)
+        assertThat(user.identity.createdAt).isEqualToIgnoringNanos(identity.createdAt)
         assertThat(user.organisation).isEqualTo(organisation)
         assertThat(user.profile?.hasOptedIntoMarketing).isEqualTo(false)
         assertThat(user.teacherPlatformAttributes?.hasLifetimeAccess).isEqualTo(false)
@@ -52,7 +52,7 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `create teacher`() {
-        val timeBeforeCommand = ZonedDateTime.now(ZoneOffset.UTC)
+        val timeBeforeCommand = ZonedDateTime.now(ZoneOffset.UTC).withNano(0)
 
         val persistedUser = userCreationService.createTeacher(newUser)
 

@@ -89,7 +89,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
             assertThat(fetchedSchool?.id).isNotNull
             assertThat(fetchedSchool?.address?.postcode).isEqualTo("12345")
-            assertThat(fetchedSchool?.deal?.accessExpiresOn).isEqualTo(accessExpiresOn)
+            assertThat(fetchedSchool?.deal?.accessExpiresOn).isEqualToIgnoringNanos(accessExpiresOn)
         }
 
         @Test
@@ -116,7 +116,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
             assertThat(fetchedSchoolAccount?.id).isNotNull
             assertThat(fetchedSchoolAccount?.address?.postcode).isEqualTo("12345")
-            assertThat(fetchedSchoolAccount?.district?.deal?.accessExpiresOn).isEqualTo(accessExpiresOn)
+            assertThat(fetchedSchoolAccount?.district?.deal?.accessExpiresOn).isEqualToIgnoringNanos(accessExpiresOn)
         }
 
         @Test
@@ -136,7 +136,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
             val schoolAfterDistrictUpdate = organisationRepository.findSchoolById(school.id)
 
-            assertThat(schoolAfterDistrictUpdate?.district?.deal?.accessExpiresOn).isEqualTo(expiry)
+            assertThat(schoolAfterDistrictUpdate?.district?.deal?.accessExpiresOn).isEqualToIgnoringNanos(expiry)
             assertThat(schoolAfterDistrictUpdate?.name).isEqualTo("school name")
         }
     }
@@ -348,7 +348,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 ReplaceExpiryDate(newExpiry)
             )
 
-            assertThat(updatedOrganisation?.deal?.accessExpiresOn).isEqualTo(newExpiry)
+            assertThat(updatedOrganisation?.deal?.accessExpiresOn).isEqualToIgnoringNanos(newExpiry)
         }
 
         @Test

@@ -258,7 +258,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val updatedUser = userRepository.findById(user.id)!!
 
-        assertThat(updatedUser.accessExpiresOn).isEqualTo(date)
+        assertThat(updatedUser.accessExpiresOn).isEqualToIgnoringNanos(date)
     }
 
     @Test
