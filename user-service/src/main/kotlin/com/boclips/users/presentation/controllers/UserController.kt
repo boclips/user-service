@@ -87,16 +87,6 @@ class UserController(
         )
     }
 
-    @PostMapping("/sync")
-    fun syncCrmContacts() {
-        synchronisationService.synchroniseCrmProfiles()
-    }
-
-    @PostMapping("/sync-identities")
-    fun syncAccounts() {
-        synchronisationService.synchroniseUserAccounts()
-    }
-
     @GetMapping("/{id}/shareCode/{shareCode}")
     fun getShareCode(@PathVariable id: String?, @PathVariable shareCode: String?): ResponseEntity<Any> =
         if (validateShareCode(id!!, shareCode!!)) {

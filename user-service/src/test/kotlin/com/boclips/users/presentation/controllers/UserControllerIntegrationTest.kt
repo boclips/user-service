@@ -596,18 +596,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
     }
 
-    @Test
-    fun `synchronise identities`() {
-        mvc.perform(post("/v1/users/sync-identities").asBackofficeUser())
-            .andExpect(status().isOk)
-    }
-
-    @Test
-    fun `synchronise crm profiles`() {
-        mvc.perform(post("/v1/users/sync").asBackofficeUser())
-            .andExpect(status().isOk)
-    }
-
     @Nested
     inner class AccessRules {
         @Test

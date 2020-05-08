@@ -14,15 +14,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class ApiSecurityConfigIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
-    fun `only user managers can synchronize users`() {
-        mvc.perform(MockMvcRequestBuilders.post("/v1/users/sync"))
-            .andExpect(status().isForbidden)
-
-        mvc.perform(MockMvcRequestBuilders.post("/v1/users/sync").asBackofficeUser())
-            .andExpect(status().is2xxSuccessful)
-    }
-
-    @Test
     fun `everybody can access actuator without permissions`() {
         mvc.perform(MockMvcRequestBuilders.get("/actuator/health"))
             .andExpect(status().is2xxSuccessful)
