@@ -84,7 +84,6 @@ dependencies {
     implementation('org.keycloak:keycloak-authz-client:9.0.3')
     implementation('org.jboss.resteasy:resteasy-jackson2-provider:3.6.2.Final')
     implementation('org.jboss.resteasy:resteasy-client:3.6.2.Final')
-    implementation('com.mixpanel:mixpanel-java:1.4.4')
     implementation('com.google.guava:guava:27.0.1-jre')
     implementation('commons-validator:commons-validator:1.6')
     implementation('commons-beanutils:commons-beanutils:1.9.4')

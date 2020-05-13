@@ -10,7 +10,6 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.analytics.Event
 import com.boclips.users.domain.model.analytics.EventType
 import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.service.analytics.AnalyticsClient
 import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.user.UserCreationService
 import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
@@ -22,7 +21,6 @@ class CreateTeacher(
     private val userCreationService: UserCreationService,
     private val marketingService: MarketingService,
     private val captchaProvider: CaptchaProvider,
-    private val analyticsClient: AnalyticsClient,
     private val generateTeacherShareCode: GenerateTeacherShareCode
 ) {
     companion object : KLogging()
@@ -50,7 +48,6 @@ class CreateTeacher(
         val createdUser = userCreationService.createTeacher(newTeacher = newUser)
 
         attemptToUpdateProfile(createdUser)
-        createdUser.analyticsId?.let { trackUserCreatedEvent(it) }
 
         return createdUser
     }
@@ -66,13 +63,6 @@ class CreateTeacher(
             }
         } catch (ex: Exception) {
             logger.info { "Failed to update contact $ex" }
-        }
-    }
-
-    private fun trackUserCreatedEvent(id: AnalyticsId?) {
-        id?.let {
-            analyticsClient.track(Event(eventType = EventType.ACCOUNT_CREATED, userId = id.value))
-            logger.info { "Send MixPanel event ACCOUNT_CREATED for MixPanel ID $id" }
         }
     }
 }

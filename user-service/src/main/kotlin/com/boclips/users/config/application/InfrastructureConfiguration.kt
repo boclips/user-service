@@ -1,9 +1,9 @@
 package com.boclips.users.config.application
 
 import com.boclips.users.application.CaptchaProvider
+import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.organisation.AmericanSchoolsProvider
 import com.boclips.users.domain.service.user.IdentityProvider
-import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
@@ -11,8 +11,6 @@ import com.boclips.users.infrastructure.keycloak.KeycloakProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountConverter
-import com.boclips.users.infrastructure.mixpanel.MixpanelClient
-import com.boclips.users.infrastructure.mixpanel.MixpanelProperties
 import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaProperties
@@ -42,17 +40,12 @@ class InfrastructureConfiguration(
     private val objectMapper: ObjectMapper,
     private val subjectsClient: SubjectsClient,
     private val mongoProperties: MongoProperties,
-    private val mixpanelProperties: MixpanelProperties,
     private val keycloakProperties: KeycloakProperties,
     private val googleRecaptchaProperties: GoogleRecaptchaProperties,
     private val schoolDiggerProperties: SchoolDiggerProperties,
     private val hubspotProperties: HubSpotProperties,
     private val tracer: Tracer
 ) {
-
-    @Profile("!test")
-    @Bean
-    fun analyticsClient() = MixpanelClient(mixpanelProperties)
 
     @Profile("!test")
     @Bean
