@@ -1,4 +1,2 @@
 keycloak:
   configurationFile: 'classpath:keycloak-production.json'
-hubspot:
-  marketingSubscriptionId: 5454940
