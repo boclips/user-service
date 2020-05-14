@@ -3,6 +3,7 @@ package com.boclips.users.config.security
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
 import org.keycloak.adapters.KeycloakConfigResolver
 import org.keycloak.adapters.KeycloakDeployment
+import org.keycloak.adapters.KeycloakDeploymentBuilder
 import org.keycloak.adapters.spi.HttpFacade
 import org.keycloak.common.enums.SslRequired
 import org.keycloak.representations.adapters.config.AdapterConfig
@@ -16,14 +17,16 @@ class AppKeycloakConfigResolver(private val keycloakProperties: KeycloakProperti
     }
 
     override fun resolve(facade: HttpFacade.Request?): KeycloakDeployment =
-        KeycloakDeployment().apply {
-            isBearerOnly = true
-            sslRequired = SslRequired.EXTERNAL
-            confidentialPort = 0
-            isUseResourceRoleMappings = true
+        KeycloakDeploymentBuilder.build(
+            AdapterConfig().apply {
+                isBearerOnly = true
+                sslRequired = "external"
+                confidentialPort = 0
+                isUseResourceRoleMappings = true
 
-            resourceName = "user-service"
-            realm = keycloakProperties.realm
-            setAuthServerBaseUrl(AdapterConfig().apply { authServerUrl = keycloakProperties.url })
-        }
+                resource = "user-service"
+                realm = keycloakProperties.realm
+                authServerUrl = keycloakProperties.url
+            }
+        )
 }
