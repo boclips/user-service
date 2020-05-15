@@ -1,4 +1,0 @@
-keycloak:
-  configurationFile: 'classpath:keycloak-testing.json'
-hubspot:
-  marketingSubscriptionId: 5911726
