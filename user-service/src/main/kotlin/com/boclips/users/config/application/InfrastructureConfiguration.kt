@@ -1,7 +1,6 @@
 package com.boclips.users.config.application
 
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.config.security.AppKeycloakConfigResolver
 import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.organisation.AmericanSchoolsProvider
 import com.boclips.users.domain.service.user.IdentityProvider
@@ -47,9 +46,6 @@ class InfrastructureConfiguration(
     private val hubspotProperties: HubSpotProperties,
     private val tracer: Tracer
 ) {
-    @Profile("!test")
-    @Bean
-    fun keycloakResolver() = AppKeycloakConfigResolver(keycloakProperties)
 
     @Profile("!test")
     @Bean
