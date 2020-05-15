@@ -1,6 +1,7 @@
 package com.boclips.users.config.application
 
 import com.boclips.users.application.CaptchaProvider
+import com.boclips.users.config.security.AppKeycloakConfigResolver
 import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.organisation.AmericanSchoolsProvider
 import com.boclips.users.domain.service.user.IdentityProvider
@@ -27,6 +28,7 @@ import com.mongodb.MongoClientOptions
 import com.mongodb.MongoClientURI
 import io.opentracing.Tracer
 import io.opentracing.contrib.mongo.common.TracingCommandListener
+import org.keycloak.adapters.KeycloakConfigResolver
 import org.keycloak.admin.client.Keycloak
 import org.litote.kmongo.KMongo
 import org.springframework.boot.autoconfigure.mongo.MongoProperties
@@ -58,6 +60,12 @@ class InfrastructureConfiguration(
             keycloakWrapper(),
             KeycloakUserToAccountConverter()
         )
+
+    @Profile("!test")
+    @Bean
+    fun keycloakConfigResolver(): KeycloakConfigResolver {
+        return AppKeycloakConfigResolver(keycloakProperties)
+    }
 
     @Profile("!test")
     @Bean
