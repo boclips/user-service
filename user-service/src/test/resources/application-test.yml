@@ -29,3 +29,9 @@ oauth2:
   token-url: 'https://api-gateway/v1/token'
   client-id: 'user-service-client-id'
   client-secret: 'user-service-client-secret'
+
+keycloak:
+  realm: boclips
+  url: http://localhost
+  username: bla
+  password: blub
