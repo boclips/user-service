@@ -15,6 +15,7 @@ sealed class UserUpdate {
     data class ReplaceOrganisation(val organisation: Organisation) : UserUpdate()
     data class ReplaceProfileSchool(val school: School) : UserUpdate()
     data class ReplaceRole(val role: String) : UserUpdate()
+    data class ReplaceEmail(val email: String) : UserUpdate()
     data class ReplaceMarketingTracking(
         val utmCampaign: String?,
         val utmSource: String?,
