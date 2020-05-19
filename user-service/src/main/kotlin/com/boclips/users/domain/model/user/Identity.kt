@@ -6,9 +6,15 @@ import java.time.ZonedDateTime
 data class Identity(
     val id: UserId,
     val username: String,
+    val idpEmail: String? = null,
     val roles: List<String> = emptyList(),
     val createdAt: ZonedDateTime
 ) {
     fun isBoclipsEmployee() = this.username.endsWith("@boclips.com")
-    val email get() = if (EmailValidator.getInstance().isValid(this.username)) this.username else null
+    val email
+        get() = when {
+            EmailValidator.getInstance().isValid(this.username) -> this.username
+            EmailValidator.getInstance().isValid(this.idpEmail) -> this.idpEmail
+            else -> null
+        }
 }

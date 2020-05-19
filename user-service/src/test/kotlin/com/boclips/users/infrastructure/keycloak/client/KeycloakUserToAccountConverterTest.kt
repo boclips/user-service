@@ -10,7 +10,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.UUID
 
-class KeycloakUserToIdentityConverterTest {
+class KeycloakUserToAccountConverterTest {
     lateinit var keycloakUser: UserRepresentation
     lateinit var userConverter: KeycloakUserToAccountConverter
 
@@ -68,5 +68,39 @@ class KeycloakUserToIdentityConverterTest {
 
         assertThatThrownBy { userConverter.convert(keycloakUser) }
             .isInstanceOf(IllegalStateException::class.java)
+    }
+
+    @Test
+    fun `use email if username is not a valid email`() {
+        val user = UserRepresentation().apply {
+            this.id = UUID.randomUUID().toString()
+            this.email = "test@gmail.com"
+            this.username = "somethingnotvalidemail"
+            this.isEmailVerified = true
+            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
+            this.createdTimestamp = Instant.now().toEpochMilli()
+        }
+
+        val convertedUser = userConverter.convert(user)
+
+        assertThat(convertedUser.email).isEqualTo(user.email)
+        assertThat(convertedUser.username).isEqualTo(user.username)
+    }
+
+    @Test
+    fun `username takes precedence over email if username is valid email`() {
+        val user = UserRepresentation().apply {
+            this.id = UUID.randomUUID().toString()
+            this.email = "ignorethis@gmail.com"
+            this.username = "test@gmail.com"
+            this.isEmailVerified = true
+            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
+            this.createdTimestamp = Instant.now().toEpochMilli()
+        }
+
+        val convertedUser = userConverter.convert(user)
+
+        assertThat(convertedUser.email).isEqualTo(user.username)
+        assertThat(convertedUser.username).isEqualTo(user.username)
     }
 }
