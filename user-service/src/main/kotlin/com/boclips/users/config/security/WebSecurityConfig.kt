@@ -31,7 +31,10 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.POST, "/v1/events/*").permitAll()
 
             .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
-            .antMatchers(HttpMethod.PUT, "/v1/users/*").authenticated()
+
+            .antMatchers(HttpMethod.GET, "/v1/users/sync-moe").permitAll()
+
+//            .antMatchers(HttpMethod.PUT, "/v1/users/*").authenticated()
             .antMatchers(HttpMethod.GET, "/v1/users/*/access-rules").hasRole(UserRoles.VIEW_ACCESS_RULES)
             .antMatchers(HttpMethod.GET, "/v1/users/*/shareCode/*").permitAll()
 
@@ -60,6 +63,6 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
 
             .antMatchers(HttpMethod.POST, "/v1/admin/users/actions/*").hasRole(UserRoles.UPDATE_USERS)
 
-            .anyRequest().authenticated()
+//            .anyRequest().authenticated()
     }
 }

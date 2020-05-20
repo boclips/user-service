@@ -22,22 +22,14 @@ data class UserDocumentConverter(
             identity = Identity(
                 id = UserId(value = userDocument._id),
                 username = userDocument.username ?: userDocument.email.orEmpty(),
+                boclipsEmail = userDocument.email.orEmpty(),
                 createdAt = ZonedDateTime.ofInstant(userDocument.createdAt, ZoneOffset.UTC)
             ),
             profile = Profile(
                 firstName = userDocument.firstName.orEmpty(),
                 lastName = userDocument.lastName.orEmpty(),
                 hasOptedIntoMarketing = userDocument.hasOptedIntoMarketing ?: false,
-                subjects = userDocument.subjectIds.orEmpty().map {
-                    SubjectId(
-                        value = it
-                    )
-                }.takeIf { it.isNotEmpty() }
-                    ?.let {
-                        subjectService.getSubjectsById(
-                            it
-                        )
-                    } ?: emptyList(),
+                subjects = emptyList(),
                 ages = userDocument.ageRange.orEmpty(),
                 role = userDocument.role,
                 school = userDocument.profileSchool?.let { OrganisationDocumentConverter.fromDocument(it) as? School? }

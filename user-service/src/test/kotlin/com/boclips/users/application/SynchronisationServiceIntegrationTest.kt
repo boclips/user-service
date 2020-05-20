@@ -42,4 +42,36 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
             ), UserId("dog")
         )
     }
+
+    @Test
+    fun `migrates MOE users with emails for firstnames to have an email instead`() {
+        val existingIdentity = IdentityFactory.sample(
+            id = "moeUser",
+            roles = listOf("ROLE_TEACHER", "ROLE_MOE_UAE"),
+            firstName = "first@name.com",
+            username = "1234",
+            idpEmail = ""
+        )
+        val nonMoeIdentity = IdentityFactory.sample(
+            id = "nonMoeUser",
+            firstName = "first@name.com",
+            roles = listOf("ROLE_TEACHER"),
+            username = "second@name.com"
+        )
+
+        keycloakClientFake.createAccount(existingIdentity)
+        keycloakClientFake.createAccount(nonMoeIdentity)
+        userRepository.create(UserFactory.sample(identity = existingIdentity))
+        userRepository.create(UserFactory.sample(identity = nonMoeIdentity))
+
+        assertThat(userRepository.findAll().map { it.identity.email }).containsExactly(
+            null,"second@name.com"
+        )
+        synchronisationService.synchroniseMoeAccountEmails()
+
+        assertThat(userRepository.findAll()).hasSize(2)
+        assertThat(userRepository.findAll().map { it.identity.email }).containsExactly(
+            "first@name.com","second@name.com"
+        )
+    }
 }

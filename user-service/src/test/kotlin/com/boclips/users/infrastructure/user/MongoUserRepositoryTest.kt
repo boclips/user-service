@@ -291,6 +291,20 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `updating user email`() {
+        val user = userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(username = "1234", idpEmail = "", id = "hello")
+            )
+        )
+        userRepository.update(user, UserUpdate.ReplaceEmail(email = "new@email.com"))
+
+        val updatedUser = userRepository.findById(user.id)!!
+
+        assertThat(updatedUser.identity.email).isEqualTo("new@email.com")
+    }
+
+    @Test
     fun `find users by organisation id`() {
         val organisation1 = OrganisationFactory.school()
         val organisation2 = OrganisationFactory.school()

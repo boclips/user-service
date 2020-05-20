@@ -94,4 +94,8 @@ class UserController(
         } else {
             ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
+
+    @GetMapping("/sync-moe")
+    fun syncMOE() =
+       synchronisationService.synchroniseMoeAccountEmails()
 }
