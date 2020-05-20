@@ -4,10 +4,8 @@ import com.boclips.users.domain.service.user.IdentityProvider
 import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.domain.model.user.UserRepository
-import com.boclips.users.domain.model.user.UserUpdate
 import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import mu.KLogging
-import org.apache.commons.validator.routines.EmailValidator
 import org.springframework.stereotype.Component
 
 @Component
@@ -52,23 +50,4 @@ class SynchronisationService(
             }
         }
     }
-
-    fun synchroniseMoeAccountEmails() {
-        val users = userRepository.findAll()
-
-        val allUserIds = users.map { it.id }.toSet()
-        logger.info { "Found ${allUserIds.size} users" }
-
-        identityProvider.getIdentity().forEach { userAccount ->
-            userAccount.firstName?.let { firstName ->
-                if (userAccount.roles.contains("ROLE_MOE_UAE") && EmailValidator.getInstance().isValid(firstName)) {
-                    userRepository.findById(userAccount.id)?.let { userToUpdate ->
-                        userRepository.update(userToUpdate, UserUpdate.ReplaceEmail(email = firstName))
-                    }
-                    logger.info { "setting of $userAccount email completed" }
-                }
-            }
-        }
-    }
 }
-

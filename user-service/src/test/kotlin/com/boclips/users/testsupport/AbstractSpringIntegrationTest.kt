@@ -180,7 +180,7 @@ abstract class AbstractSpringIntegrationTest {
         keycloakClientFake.createAccount(
             Identity(
                 id = user.id,
-                username = user.identity.username,
+                username = user.identity.email!!,
                 roles = listOf("ROLE_TEACHER"),
                 createdAt = user.identity.createdAt
             )

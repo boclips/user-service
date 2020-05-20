@@ -20,7 +20,6 @@ class KeycloakUserToAccountConverterTest {
         keycloakUser = UserRepresentation().apply {
             this.id = UUID.randomUUID().toString()
             this.username = "test@gmail.com"
-            this.firstName = "first@name.com"
             this.isEmailVerified = true
             this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
             this.createdTimestamp = Instant.now().toEpochMilli()
@@ -45,7 +44,6 @@ class KeycloakUserToAccountConverterTest {
                 ZoneOffset.UTC
             )
         )
-        assertThat(convertedUser.firstName).isEqualTo(keycloakUser.firstName)
     }
 
     @Test

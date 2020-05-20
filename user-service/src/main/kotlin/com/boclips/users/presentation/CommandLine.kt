@@ -23,11 +23,6 @@ class CommandLine(
                 synchronisationService.synchroniseUserAccounts()
                 exitProcess(0)
             }
-
-            "sync-moe-emails" -> {
-                synchronisationService.synchroniseMoeAccountEmails()
-                exitProcess(0)
-            }
         }
     }
 }

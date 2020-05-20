@@ -1,5 +1,6 @@
 package com.boclips.users.domain.service.marketing
 
+import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.boclips.users.testsupport.factories.UserSessionsFactory

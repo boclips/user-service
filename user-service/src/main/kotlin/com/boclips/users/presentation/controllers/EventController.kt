@@ -37,7 +37,7 @@ class EventController(
     fun trackPlatformInteractedWithEvent(@RequestParam(required = true) subtype: String?): ResponseEntity<Void> {
         val refererUrl = RefererHeaderExtractor.getReferer()
 
-        trackPlatformInteractedWithEvent(subtype!!, refererUrl)
+        trackPlatformInteractedWithEvent.invoke(subtype!!, refererUrl)
         return ResponseEntity(HttpStatus.CREATED)
     }
 }

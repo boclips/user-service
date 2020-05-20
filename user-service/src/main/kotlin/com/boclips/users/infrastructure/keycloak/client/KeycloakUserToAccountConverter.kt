@@ -18,7 +18,6 @@ class KeycloakUserToAccountConverter {
             username = userRepresentation.username,
             idpEmail = userRepresentation.email,
             roles = userRepresentation.realmRoles,
-            firstName = userRepresentation.firstName,
             createdAt = ZonedDateTime.ofInstant(
                 Instant.ofEpochMilli(userRepresentation.createdTimestamp),
                 ZoneOffset.UTC

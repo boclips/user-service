@@ -30,7 +30,7 @@ class UserDocumentConverterTest {
             firstName = "Bob",
             lastName = "Gog",
             username = "bob@gog.com",
-            email = "notbob@gog.com",
+            email = "bob@gog.com",
             analyticsId = "1233",
             referralCode = "code",
             shareCode = "EFG",
@@ -57,7 +57,7 @@ class UserDocumentConverterTest {
 
         assertThat(convertedUser.identity.id).isEqualTo(UserId("test-id"))
         assertThat(convertedUser.identity.username).isEqualTo("bob@gog.com")
-        assertThat(convertedUser.identity.email).isEqualTo("notbob@gog.com")
+        assertThat(convertedUser.identity.email).isEqualTo("bob@gog.com")
         assertThat(convertedUser.identity.createdAt).isNotNull()
         assertThat(convertedUser.profile!!.firstName).isEqualTo("Bob")
         assertThat(convertedUser.profile!!.lastName).isEqualTo("Gog")
