@@ -22,7 +22,8 @@ data class UserDocumentConverter(
             identity = Identity(
                 id = UserId(value = userDocument._id),
                 username = userDocument.username ?: userDocument.email.orEmpty(),
-                createdAt = ZonedDateTime.ofInstant(userDocument.createdAt, ZoneOffset.UTC)
+                createdAt = ZonedDateTime.ofInstant(userDocument.createdAt, ZoneOffset.UTC),
+                idpEmail = userDocument.email
             ),
             profile = Profile(
                 firstName = userDocument.firstName.orEmpty(),

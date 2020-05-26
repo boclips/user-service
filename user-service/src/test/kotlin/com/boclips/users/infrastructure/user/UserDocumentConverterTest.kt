@@ -77,6 +77,20 @@ class UserDocumentConverterTest {
     }
 
     @Test
+    fun `users with different usernames and emails are respected`() {
+        val document = UserDocumentFactory.sample(
+            username = "not a valid email",
+            email = "bob@gog.com"
+        )
+
+        val convertedUser = userDocumentConverter.convertToUser(document)
+
+        assertThat(convertedUser.identity.username).isEqualTo("not a valid email")
+        assertThat(convertedUser.identity.email).isEqualTo("bob@gog.com")
+        assertThat(convertedUser.identity.idpEmail).isEqualTo("bob@gog.com")
+    }
+
+    @Test
     fun `users missing optedIntoMarketing is defaulted to false`() {
         val convertedUser =
             userDocumentConverter.convertToUser(UserDocumentFactory.sample(hasOptedIntoMarketing = null))
