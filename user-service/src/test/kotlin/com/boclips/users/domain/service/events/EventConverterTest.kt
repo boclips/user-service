@@ -28,6 +28,7 @@ class EventConverterTest {
             profile = ProfileFactory.sample(
                 firstName = "John",
                 lastName = "Johnson",
+                    hasOptedIntoMarketing = false,
                 subjects = listOf(
                     Subject(
                         id = SubjectId(
@@ -46,6 +47,7 @@ class EventConverterTest {
         assertThat(eventUser.createdAt).isEqualTo("2020-03-20T10:11:12Z")
         assertThat(eventUser.profile.firstName).isEqualTo("John")
         assertThat(eventUser.profile.lastName).isEqualTo("Johnson")
+        assertThat(eventUser.profile.hasOptedIntoMarketing).isEqualTo(false)
         assertThat(eventUser.profile.subjects).containsExactly(EventSubject(EventSubjectId("subject-id"), "maths"))
         assertThat(eventUser.profile.role).isEqualTo("PARENT")
         assertThat(eventUser.profile.ages).containsExactly(5, 6, 7, 8)

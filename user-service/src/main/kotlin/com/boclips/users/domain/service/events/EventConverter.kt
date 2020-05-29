@@ -25,6 +25,7 @@ class EventConverter {
             .ages(user.profile?.ages?.toMutableList().orEmpty())
             .school(user.profile?.school?.let(this::toEventOrganisation))
             .role(user.profile?.role)
+                .hasOptedIntoMarketing(user.profile?.hasOptedIntoMarketing)
             .build()
 
         return EventUser.builder()
