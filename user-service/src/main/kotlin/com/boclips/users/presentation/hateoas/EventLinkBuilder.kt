@@ -20,4 +20,11 @@ class EventLinkBuilder {
                 .trackPlatformInteractedWithEvent(null)
         ).withRel("trackPlatformInteractedWith")
     }
+
+    fun trackPlatformInteractedWithAnonymouslyEventLink(): Link? {
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(EventController::class.java)
+                .trackAnonymousPlatformInteractedWithEvent(null)
+        ).withRel("trackPlatformInteractedWithAnonymously")
+    }
 }

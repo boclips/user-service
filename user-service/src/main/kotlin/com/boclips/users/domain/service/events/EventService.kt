@@ -38,4 +38,13 @@ class EventService(
                 .build()
         )
     }
+
+    fun publishPlatformInteractedWithAnonymously(subtype: String, url: String?) {
+        eventBus.publish(
+            PlatformInteractedWith.builder()
+                .subtype(subtype)
+                .url(url)
+                .build()
+        )
+    }
 }

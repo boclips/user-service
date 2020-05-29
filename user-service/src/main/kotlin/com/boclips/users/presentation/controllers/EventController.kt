@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.application.commands.TrackPageRenderedEvent
 import com.boclips.users.application.commands.TrackUserExpiredEvent
 import com.boclips.users.api.request.PageRenderedEventRequest
+import com.boclips.users.application.commands.TrackPlatformInteractedWithAnonymouslyEvent
 import com.boclips.users.application.commands.TrackPlatformInteractedWithEvent
 import com.boclips.users.presentation.support.RefererHeaderExtractor
 import org.springframework.http.HttpStatus
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 class EventController(
     val trackPageRenderedEvent: TrackPageRenderedEvent,
     val trackUserExpiredEvent: TrackUserExpiredEvent,
-    val trackPlatformInteractedWithEvent: TrackPlatformInteractedWithEvent
+    val trackPlatformInteractedWithEvent: TrackPlatformInteractedWithEvent,
+    val trackPlatformInteractedWithAnonymouslyEvent: TrackPlatformInteractedWithAnonymouslyEvent
 ) {
 
     @PostMapping("/events/page-render")
@@ -38,6 +40,14 @@ class EventController(
         val refererUrl = RefererHeaderExtractor.getReferer()
 
         trackPlatformInteractedWithEvent.invoke(subtype!!, refererUrl)
+        return ResponseEntity(HttpStatus.CREATED)
+    }
+
+    @PostMapping("/events/anonymous-platform-interaction")
+    fun trackAnonymousPlatformInteractedWithEvent(@RequestParam(required = true) subtype: String?): ResponseEntity<Void> {
+        val refererUrl = RefererHeaderExtractor.getReferer()
+
+        trackPlatformInteractedWithAnonymouslyEvent(subtype!!, refererUrl)
         return ResponseEntity(HttpStatus.CREATED)
     }
 }

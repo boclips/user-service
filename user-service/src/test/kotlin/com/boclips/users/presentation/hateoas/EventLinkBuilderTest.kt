@@ -29,4 +29,22 @@ class EventLinkBuilderTest : AbstractSpringIntegrationTest() {
         assertThat(trackPageRendered!!.href).endsWith("/events/page-render")
         assertThat(trackPageRendered.rel.value()).endsWith("trackPageRendered")
     }
+
+    @Test
+    fun `trackPlatformInteractedWith link provided`() {
+        val trackPlatformInteractedAnonymously = eventLinkBuilder.trackPlatformInteractedWithEventLink()
+
+        assertThat(trackPlatformInteractedAnonymously).isNotNull
+        assertThat(trackPlatformInteractedAnonymously!!.href).endsWith("/events/platform-interaction{?subtype}")
+        assertThat(trackPlatformInteractedAnonymously.rel.value()).endsWith("trackPlatformInteractedWith")
+    }
+
+    @Test
+    fun `trackPlatformInteractedWithAnonymously link provided`() {
+        val trackPlatformInteractedAnonymously = eventLinkBuilder.trackPlatformInteractedWithAnonymouslyEventLink()
+
+        assertThat(trackPlatformInteractedAnonymously).isNotNull
+        assertThat(trackPlatformInteractedAnonymously!!.href).endsWith("/events/anonymous-platform-interaction{?subtype}")
+        assertThat(trackPlatformInteractedAnonymously.rel.value()).endsWith("trackPlatformInteractedWithAnonymously")
+    }
 }
