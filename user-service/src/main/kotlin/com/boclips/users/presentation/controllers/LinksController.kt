@@ -48,6 +48,7 @@ class LinksController(
                 accessRuleLinkBuilder.searchAccessRules(),
                 eventLinkBuilder.logPageRenderedEventLink(),
                 eventLinkBuilder.trackPlatformInteractedWithEventLink(),
+                eventLinkBuilder.trackPlatformInteractedWithAnonymouslyEventLink(),
                 organisationLinkBuilder.getOrganisationsLink(),
                 organisationLinkBuilder.getOrganisationLink(),
                 userLinkBuilder.validateShareCodeLink()

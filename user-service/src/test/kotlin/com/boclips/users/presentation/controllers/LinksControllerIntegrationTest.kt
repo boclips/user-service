@@ -34,6 +34,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
+            .andExpect(jsonPath("$._links.trackPlatformInteractedWithAnonymously").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }
@@ -59,6 +60,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
+            .andExpect(jsonPath("$._links.trackPlatformInteractedWithAnonymously").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
     }
@@ -82,6 +84,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.activate.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.createAccount").doesNotExist())
             .andExpect(jsonPath("$._links.accessRules").doesNotExist())
+            .andExpect(jsonPath("$._links.trackPlatformInteractedWithAnonymously").exists())
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
@@ -110,6 +113,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.profile.href", endsWith("/users/a-user-id")))
             .andExpect(jsonPath("$._links.countries").exists())
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
+            .andExpect(jsonPath("$._links.trackPlatformInteractedWithAnonymously").exists())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.account").doesNotExist())
