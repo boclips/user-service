@@ -8,9 +8,12 @@ class TrackPlatformInteractedWithEvent(
     val eventService: EventService,
     val getTrackableUserId: GetTrackableUserId
 ) {
-
-    operator fun invoke(subtype: String, url: String?) {
-        val userId = getTrackableUserId()
-        eventService.publishPlatformInteractedWith(userId = userId, subtype = subtype, url = url)
+    operator fun invoke(subtype: String, url: String?, anonymous: Boolean?) {
+        if (anonymous != null && anonymous == true) {
+            eventService.publishPlatformInteractedWithAnonymously(subtype = subtype, url = url)
+        } else {
+            val userId = getTrackableUserId()
+            eventService.publishPlatformInteractedWith(userId = userId, subtype = subtype, url = url)
+        }
     }
 }

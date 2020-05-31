@@ -35,16 +35,7 @@ class EventLinkBuilderTest : AbstractSpringIntegrationTest() {
         val trackPlatformInteractedAnonymously = eventLinkBuilder.trackPlatformInteractedWithEventLink()
 
         assertThat(trackPlatformInteractedAnonymously).isNotNull
-        assertThat(trackPlatformInteractedAnonymously!!.href).endsWith("/events/platform-interaction{?subtype}")
+        assertThat(trackPlatformInteractedAnonymously!!.href).endsWith("/events/platform-interaction{?subtype,anonymous}")
         assertThat(trackPlatformInteractedAnonymously.rel.value()).endsWith("trackPlatformInteractedWith")
-    }
-
-    @Test
-    fun `trackPlatformInteractedWithAnonymously link provided`() {
-        val trackPlatformInteractedAnonymously = eventLinkBuilder.trackPlatformInteractedWithAnonymouslyEventLink()
-
-        assertThat(trackPlatformInteractedAnonymously).isNotNull
-        assertThat(trackPlatformInteractedAnonymously!!.href).endsWith("/events/anonymous-platform-interaction{?subtype}")
-        assertThat(trackPlatformInteractedAnonymously.rel.value()).endsWith("trackPlatformInteractedWithAnonymously")
     }
 }

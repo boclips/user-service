@@ -18,11 +18,24 @@ class TrackPlatformInteractedWithEventIntegrationTest : AbstractSpringIntegratio
         saveUser(UserFactory.sample(id = "testUser"))
         setSecurityContext("testUser")
 
-        trackPlatformInteractedWithEvent.invoke("HELP_CLICKED", "https://teachers.boclips.com")
+        trackPlatformInteractedWithEvent.invoke("HELP_CLICKED", "https://teachers.boclips.com", false)
 
         val event = eventBus.getEventOfType(PlatformInteractedWith::class.java)
         Assertions.assertThat(event.subtype).isEqualTo("HELP_CLICKED")
         Assertions.assertThat(event.userId).isEqualTo("testUser")
+        Assertions.assertThat(event.url).isEqualTo("https://teachers.boclips.com")
+    }
+
+    @Test
+    fun `platform interacted with event is published with no user ID when anon`() {
+        saveUser(UserFactory.sample(id = "testUser"))
+        setSecurityContext("testUser")
+
+        trackPlatformInteractedWithEvent.invoke("HELP_CLICKED", "https://teachers.boclips.com", true)
+
+        val event = eventBus.getEventOfType(PlatformInteractedWith::class.java)
+        Assertions.assertThat(event.subtype).isEqualTo("HELP_CLICKED")
+        Assertions.assertThat(event.userId).isEqualTo(null)
         Assertions.assertThat(event.url).isEqualTo("https://teachers.boclips.com")
     }
 }
