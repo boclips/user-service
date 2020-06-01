@@ -4,6 +4,11 @@ spring:
       charset: UTF-8
       force: true
 
+server:
+  compression:
+    enabled: true
+    mime-types: application/hal+json
+
 app:
   registration-period-in-millis: 30000
 
