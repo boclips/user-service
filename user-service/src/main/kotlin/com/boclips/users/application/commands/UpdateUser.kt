@@ -42,8 +42,8 @@ class UpdateUser(
     companion object : KLogging() {
         const val DEFAULT_TRIAL_DAYS_LENGTH = 10L
 
-        // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-06-30
-        const val EXTENDED_TRIAL_END_DATE = "2020-06-30T00:00:00Z"
+        // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-08-31
+        const val EXTENDED_TRIAL_END_DATE = "2020-09-01T00:00:00Z"
     }
 
     operator fun invoke(userId: String, updateUserRequest: UpdateUserRequest): User {

@@ -352,14 +352,14 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @DisplayName("Access expiry")
     inner class accessExpiry {
 
-        // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-06-30
+        // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-08-31
         @Test
-        fun `accessExpiresOn logic starts after 30th June 2020`() {
+        fun `accessExpiresOn logic starts after 31th Aug 2020`() {
             setSecurityContext("new-user-id")
             val defaultExpectedExpiryDate = ZonedDateTime.now().plusDays(
                 UpdateUser.DEFAULT_TRIAL_DAYS_LENGTH + 1
             ).truncatedTo(ChronoUnit.DAYS)
-            val extendedTrialEndDate = Instant.parse("2020-06-30T00:00:00Z").atZone(ZoneId.systemDefault())
+            val extendedTrialEndDate = Instant.parse("2020-09-01T00:00:00Z").atZone(ZoneId.systemDefault())
 
             val expectedExpiryDate = if (defaultExpectedExpiryDate.isBefore(extendedTrialEndDate)) {
                 extendedTrialEndDate
