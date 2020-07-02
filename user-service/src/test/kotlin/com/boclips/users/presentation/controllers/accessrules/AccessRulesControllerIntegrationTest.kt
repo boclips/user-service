@@ -4,7 +4,7 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.CollectionId
-import com.boclips.users.domain.model.access.ContentPartnerId
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
@@ -213,7 +213,7 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val accessRule = accessRuleRepository.save(
                 AccessRuleFactory.sampleExcludedContentPartnersAccessRule(
                     name = "SomeBadCPs",
-                    contentPartnerIds = listOf(ContentPartnerId("A"), ContentPartnerId("B"))
+                    channelIds = listOf(ChannelId("A"), ChannelId("B"))
                 )
             )
 

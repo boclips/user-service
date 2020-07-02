@@ -39,7 +39,12 @@ class AccessRuleConverter(
             )
             is AccessRule.ExcludedContentPartners -> AccessRuleResource.ExcludedContentPartners(
                 name = accessRule.name,
-                contentPartnerIds = accessRule.contentPartnerIds.map { it.value },
+                contentPartnerIds = accessRule.channelIds.map { it.value },
+                _links = listOfNotNull(accessRuleLinkBuilder.self(accessRule.id)).map { it.rel.value() to it }.toMap()
+            )
+            is AccessRule.IncludedChannels -> AccessRuleResource.IncludedChannels(
+                name = accessRule.name,
+                channelIds = accessRule.channelIds.map { it.value },
                 _links = listOfNotNull(accessRuleLinkBuilder.self(accessRule.id)).map { it.rel.value() to it }.toMap()
             )
             is AccessRule.IncludedDistributionMethods -> AccessRuleResource.IncludedDistributionMethod(

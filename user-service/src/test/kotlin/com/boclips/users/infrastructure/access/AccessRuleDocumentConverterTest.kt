@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.access
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.CollectionId
-import com.boclips.users.domain.model.access.ContentPartnerId
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.service.UniqueId
@@ -45,8 +45,15 @@ class AccessRuleDocumentConverterTest {
             AccessRule.ExcludedContentPartners(
                 id = AccessRuleId(UniqueId()),
                 name = "excluded CPs",
-                contentPartnerIds = listOf(
-                    ContentPartnerId("cp-1")
+                channelIds = listOf(
+                    ChannelId("cp-1")
+                )
+            ),
+            AccessRule.IncludedChannels(
+                id = AccessRuleId(UniqueId()),
+                name = "included channels",
+                channelIds = listOf(
+                    ChannelId("channel-1")
                 )
             ),
             AccessRule.IncludedDistributionMethods(

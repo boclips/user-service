@@ -3,7 +3,7 @@ package com.boclips.users.testsupport.factories
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.CollectionId
-import com.boclips.users.domain.model.access.ContentPartnerId
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
@@ -37,8 +37,14 @@ class AccessRuleFactory {
         fun sampleExcludedContentPartnersAccessRule(
             id: AccessRuleId = AccessRuleId(),
             name: String = "Excluded Content Partners",
-            contentPartnerIds: List<ContentPartnerId> = emptyList()
-        ) = AccessRule.ExcludedContentPartners(id, name, contentPartnerIds)
+            channelIds: List<ChannelId> = emptyList()
+        ) = AccessRule.ExcludedContentPartners(id, name, channelIds)
+
+        fun sampleIncludedChannelsAccessRule(
+            id: AccessRuleId = AccessRuleId(),
+            name: String = "Included Channels",
+            channelIds: List<ChannelId> = emptyList()
+        ) = AccessRule.IncludedChannels(id, name, channelIds)
 
         fun sampleIncludedDistributionMethodAccessRule(
             id: AccessRuleId = AccessRuleId(),

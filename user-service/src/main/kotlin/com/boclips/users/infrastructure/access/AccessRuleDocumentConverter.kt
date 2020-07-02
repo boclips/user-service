@@ -3,7 +3,7 @@ package com.boclips.users.infrastructure.access
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.CollectionId
-import com.boclips.users.domain.model.access.ContentPartnerId
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
@@ -43,7 +43,12 @@ class AccessRuleDocumentConverter {
             AccessRuleDocument.TYPE_EXCLUDED_CONTENT_PARTNERS -> AccessRule.ExcludedContentPartners(
                 id = AccessRuleId(document._id.toHexString()),
                 name = document.name,
-                contentPartnerIds = document.contentPartnerIds?.map { ContentPartnerId(it) } ?: blowUp(document)
+                channelIds = document.contentPartnerIds?.map { ChannelId(it) } ?: blowUp(document)
+            )
+            AccessRuleDocument.TYPE_INCLUDED_CHANNELS -> AccessRule.IncludedChannels(
+                id = AccessRuleId(document._id.toHexString()),
+                name = document.name,
+                channelIds = document.channelIds?.map { ChannelId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_DISTRIBUTION_METHODS -> AccessRule.IncludedDistributionMethods(
                 id = AccessRuleId(document._id.toHexString()),
@@ -100,7 +105,13 @@ class AccessRuleDocumentConverter {
                 _id = ObjectId(accessRule.id.value),
                 _class = AccessRuleDocument.TYPE_EXCLUDED_CONTENT_PARTNERS,
                 name = accessRule.name,
-                contentPartnerIds = accessRule.contentPartnerIds.map { it.value }
+                contentPartnerIds = accessRule.channelIds.map { it.value }
+            )
+            is AccessRule.IncludedChannels -> AccessRuleDocument(
+                _id = ObjectId(accessRule.id.value),
+                _class = AccessRuleDocument.TYPE_INCLUDED_CHANNELS,
+                name = accessRule.name,
+                channelIds = accessRule.channelIds.map { it.value }
             )
             is AccessRule.IncludedDistributionMethods -> AccessRuleDocument(
                 _id = ObjectId(accessRule.id.value),

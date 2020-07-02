@@ -34,7 +34,13 @@ sealed class AccessRule {
     data class ExcludedContentPartners(
         override val id: AccessRuleId,
         override val name: String,
-        val contentPartnerIds: List<ContentPartnerId>
+        val channelIds: List<ChannelId>
+    ) : AccessRule()
+
+    data class IncludedChannels(
+        override val id: AccessRuleId,
+        override val name: String,
+        val channelIds: List<ChannelId>
     ) : AccessRule()
 
     abstract val id: AccessRuleId
