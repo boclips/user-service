@@ -41,12 +41,12 @@ sealed class AccessRuleResource(val type: String) {
         override val _links: Map<String, Link> = emptyMap()
     ) : AccessRuleResource(type = "ExcludedVideoTypes")
 
-    data class ExcludedContentPartners(
+    data class ExcludedChannels(
         override val name: String,
-        val contentPartnerIds: List<String>,
+        val channelIds: List<String>,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         override val _links: Map<String, Link> = emptyMap()
-    ) : AccessRuleResource(type = "ExcludedContentPartners")
+    ) : AccessRuleResource(type = "ExcludedChannels")
 
     data class IncludedChannels(
         override val name: String,

@@ -223,10 +223,10 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
-                .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedContentPartners")))
+                .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedChannels")))
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
-                .andExpect(jsonPath("$._embedded.accessRules[0].contentPartnerIds", hasSize<Int>(2)))
-                .andExpect(jsonPath("$._embedded.accessRules[0].contentPartnerIds[*]", containsInAnyOrder("A", "B")))
+                .andExpect(jsonPath("$._embedded.accessRules[0].channelIds", hasSize<Int>(2)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].channelIds[*]", containsInAnyOrder("A", "B")))
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[0]._links.self.href",

@@ -2,8 +2,8 @@ package com.boclips.users.infrastructure.access
 
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
-import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ChannelId
+import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
@@ -40,10 +40,10 @@ class AccessRuleDocumentConverter {
                     }
                 } ?: blowUp(document)
             )
-            AccessRuleDocument.TYPE_EXCLUDED_CONTENT_PARTNERS -> AccessRule.ExcludedContentPartners(
+            AccessRuleDocument.TYPE_EXCLUDED_CHANNELS -> AccessRule.ExcludedChannels(
                 id = AccessRuleId(document._id.toHexString()),
                 name = document.name,
-                channelIds = document.contentPartnerIds?.map { ChannelId(it) } ?: blowUp(document)
+                channelIds = document.channelIds?.map { ChannelId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_CHANNELS -> AccessRule.IncludedChannels(
                 id = AccessRuleId(document._id.toHexString()),
@@ -59,7 +59,7 @@ class AccessRuleDocumentConverter {
                         AccessRuleDocument.DISTRIBUTION_METHOD_STREAM -> DistributionMethod.STREAM
                         else -> blowUp(document)
                     }
-                }?.toSet()  ?: blowUp(document)
+                }?.toSet() ?: blowUp(document)
             )
             else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document._id}")
         }
@@ -101,11 +101,11 @@ class AccessRuleDocumentConverter {
                     }
                 }
             )
-            is AccessRule.ExcludedContentPartners -> AccessRuleDocument(
+            is AccessRule.ExcludedChannels -> AccessRuleDocument(
                 _id = ObjectId(accessRule.id.value),
-                _class = AccessRuleDocument.TYPE_EXCLUDED_CONTENT_PARTNERS,
+                _class = AccessRuleDocument.TYPE_EXCLUDED_CHANNELS,
                 name = accessRule.name,
-                contentPartnerIds = accessRule.channelIds.map { it.value }
+                channelIds = accessRule.channelIds.map { it.value }
             )
             is AccessRule.IncludedChannels -> AccessRuleDocument(
                 _id = ObjectId(accessRule.id.value),

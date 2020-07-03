@@ -42,7 +42,7 @@ class AccessRuleDocumentConverterTest {
                     VideoId("video-1")
                 )
             ),
-            AccessRule.ExcludedContentPartners(
+            AccessRule.ExcludedChannels(
                 id = AccessRuleId(UniqueId()),
                 name = "excluded CPs",
                 channelIds = listOf(

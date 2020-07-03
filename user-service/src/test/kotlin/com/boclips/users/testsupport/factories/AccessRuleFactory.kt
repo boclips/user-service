@@ -38,7 +38,7 @@ class AccessRuleFactory {
             id: AccessRuleId = AccessRuleId(),
             name: String = "Excluded Content Partners",
             channelIds: List<ChannelId> = emptyList()
-        ) = AccessRule.ExcludedContentPartners(id, name, channelIds)
+        ) = AccessRule.ExcludedChannels(id, name, channelIds)
 
         fun sampleIncludedChannelsAccessRule(
             id: AccessRuleId = AccessRuleId(),
