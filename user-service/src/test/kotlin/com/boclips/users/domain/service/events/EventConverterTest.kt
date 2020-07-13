@@ -6,11 +6,8 @@ import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
-import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.*
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
-import com.boclips.users.testsupport.factories.ProfileFactory
-import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
@@ -22,6 +19,13 @@ class EventConverterTest {
     @Test
     fun `converting user to event`() {
         val user = UserFactory.sample(
+                marketing = MarketingTrackingFactory.sample(
+                        utmCampaign = "click here",
+                        utmContent = "OMG you are falling behind your peers. Do you want a better life?",
+                        utmMedium = "telekinesis",
+                        utmSource = "AWS",
+                        utmTerm = "easy"
+                ),
             identity = IdentityFactory.sample(
                 createdAt = ZonedDateTime.parse("2020-03-20T10:11:12Z")
             ),
@@ -52,6 +56,11 @@ class EventConverterTest {
         assertThat(eventUser.profile.role).isEqualTo("PARENT")
         assertThat(eventUser.profile.ages).containsExactly(5, 6, 7, 8)
         assertThat(eventUser.profile.school?.name).isEqualTo("School name")
+        assertThat(eventUser.profile.marketingTracking?.utmCampaign).isEqualTo("click here")
+        assertThat(eventUser.profile.marketingTracking?.utmContent).isEqualTo("OMG you are falling behind your peers. Do you want a better life?")
+        assertThat(eventUser.profile.marketingTracking?.utmMedium).isEqualTo("telekinesis")
+        assertThat(eventUser.profile.marketingTracking?.utmSource).isEqualTo("AWS")
+        assertThat(eventUser.profile.marketingTracking?.utmTerm).isEqualTo("easy")
     }
 
     @Test

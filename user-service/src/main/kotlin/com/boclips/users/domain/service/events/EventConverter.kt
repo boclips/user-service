@@ -12,6 +12,8 @@ import com.boclips.eventbus.domain.user.Address as EventAddress
 import com.boclips.eventbus.domain.user.Deal as EventDeal
 import com.boclips.eventbus.domain.user.Organisation as EventOrganisation
 import com.boclips.eventbus.domain.user.User as EventUser
+import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.eventbus.domain.user.MarketingTracking as EventMarketingTracking
 
 class EventConverter {
 
@@ -26,6 +28,7 @@ class EventConverter {
             .school(user.profile?.school?.let(this::toEventOrganisation))
             .role(user.profile?.role)
                 .hasOptedIntoMarketing(user.profile?.hasOptedIntoMarketing)
+                .marketingTracking(user.marketingTracking?.let(this::toEventMarketingTracking))
             .build()
 
         return EventUser.builder()
@@ -73,5 +76,15 @@ class EventConverter {
         return (organisationDetails as? School?)
             ?.district
             ?.let(this::toEventOrganisation)
+    }
+
+    private fun toEventMarketingTracking(marketingTrackingDetails: MarketingTracking): EventMarketingTracking {
+        return EventMarketingTracking.builder()
+                .utmCampaign(marketingTrackingDetails.utmCampaign)
+                .utmSource(marketingTrackingDetails.utmSource)
+                .utmMedium(marketingTrackingDetails.utmMedium)
+                .utmTerm(marketingTrackingDetails.utmTerm)
+                .utmContent(marketingTrackingDetails.utmContent)
+                .build()
     }
 }
