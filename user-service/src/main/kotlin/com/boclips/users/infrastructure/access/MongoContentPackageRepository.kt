@@ -43,4 +43,8 @@ class MongoContentPackageRepository(
         return collection().findOne(ContentPackageDocument::name eq name)
             ?.let(ContentPackageDocumentConverter::fromDocument)
     }
+
+    override fun findAll(): List<ContentPackage> {
+        return collection().find().map(ContentPackageDocumentConverter::fromDocument).toList()
+    }
 }

@@ -1,7 +1,10 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.application.commands.GetContentPackage
 import com.boclips.users.api.response.accessrule.ContentPackageResource
+import com.boclips.users.api.response.accessrule.ContentPackagesResource
+import com.boclips.users.api.response.accessrule.ContentPackagesWrapperResource
+import com.boclips.users.application.commands.GetContentPackage
+import com.boclips.users.application.commands.GetContentPackages
 import com.boclips.users.presentation.converters.ContentPackageConverter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -9,14 +12,20 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/v1/content-packages")
+@RequestMapping("/v1")
 class ContentPackageController(
     private val contentPackageConverter: ContentPackageConverter,
-    private val getContentPackage: GetContentPackage
+    private val getContentPackage: GetContentPackage,
+    private val getContentPackages: GetContentPackages
 ) {
-    @GetMapping("/{id}")
+    @GetMapping("/content-packages")
+    fun fetchContentPackages(): ContentPackagesResource {
+        return contentPackageConverter.toContentPackagesResource(getContentPackages())
+    }
+
+    @GetMapping("/content-packages/{id}")
     fun fetchContentPackage(@PathVariable("id") id: String): ContentPackageResource {
-        return contentPackageConverter.toResource(
+        return contentPackageConverter.toContentPackageResource(
             getContentPackage(id)
         )
     }

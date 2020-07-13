@@ -1,9 +1,11 @@
 package com.boclips.users.presentation.converters
 
+import com.boclips.users.api.response.accessrule.ContentPackageResource
+import com.boclips.users.api.response.accessrule.ContentPackagesResource
+import com.boclips.users.api.response.accessrule.ContentPackagesWrapperResource
 import com.boclips.users.application.commands.GetAccessRuleById
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
-import com.boclips.users.api.response.accessrule.ContentPackageResource
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,7 +14,15 @@ class ContentPackageConverter(
     val accessRuleConverter: AccessRuleConverter,
     val contentPackageLinkBuilder: ContentPackageLinkBuilder
 ) {
-    fun toResource(contentPackage: ContentPackage): ContentPackageResource =
+    fun toContentPackagesResource(contentPackages: List<ContentPackage>): ContentPackagesResource =
+        ContentPackagesResource(
+            _embedded = ContentPackagesWrapperResource(
+                contentPackages = contentPackages.map { toContentPackageResource(it) }
+            ),
+            _links = null
+        )
+
+    fun toContentPackageResource(contentPackage: ContentPackage): ContentPackageResource =
         ContentPackageResource(
             id = contentPackage.id.value,
             name = contentPackage.name,

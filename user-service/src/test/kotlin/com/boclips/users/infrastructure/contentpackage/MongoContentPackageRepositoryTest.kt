@@ -25,4 +25,18 @@ class MongoContentPackageRepositoryTest : AbstractSpringIntegrationTest() {
 
         assertThat(contentPackage).isEqualTo(retrievedContentPackage)
     }
+
+    @Test
+    fun `can find all content packages`() {
+        val contentPackage1 = ContentPackageFactory.sample(name = "first cp")
+        val contentPackage2 = ContentPackageFactory.sample(name = "second cp")
+        contentPackageRepository.save(contentPackage1)
+        contentPackageRepository.save(contentPackage2)
+
+        val retrievedContentPackages = contentPackageRepository.findAll()
+
+        assertThat(retrievedContentPackages.size).isEqualTo(2)
+        assertThat(retrievedContentPackages[0]).isEqualTo(contentPackage1)
+        assertThat(retrievedContentPackages[1]).isEqualTo(contentPackage2)
+    }
 }

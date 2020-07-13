@@ -30,12 +30,40 @@ class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
                 accessRuleIds = listOf(collectionAccessRule.id)
             )
 
-        val convertedResource = contentPackageConverter.toResource(contentPackage)
+        val convertedResource = contentPackageConverter.toContentPackageResource(contentPackage)
 
         assertThat(convertedResource.id).isEqualTo(packageId)
         assertThat(convertedResource.name).isEqualTo("package")
         assertThat(convertedResource.accessRules).hasSize(1)
         assertThat(convertedResource.accessRules.first().name).isEqualTo("name of the accessRule")
+    }
+
+    @Test
+    fun `can convert a list of content packages`() {
+        val collectionAccessRule = AccessRuleFactory.sampleIncludedCollectionsAccessRule(
+            collectionIds = listOf(CollectionId("hello"), CollectionId("collection")),
+            name = "name of the accessRule"
+        )
+        accessRuleRepository.save(collectionAccessRule)
+
+        val contentPackage1 =
+            ContentPackageFactory.sample(
+                name = "package one",
+                accessRuleIds = listOf(collectionAccessRule.id)
+            )
+
+        val contentPackage2 =
+            ContentPackageFactory.sample(
+                name = "package two",
+                accessRuleIds = listOf(collectionAccessRule.id)
+            )
+
+        val convertedResource = contentPackageConverter.toContentPackagesResource(listOf(contentPackage1, contentPackage2))
+
+        assertThat(convertedResource._embedded.contentPackages).isNotNull
+        assertThat(convertedResource._embedded.contentPackages).hasSize(2)
+        assertThat(convertedResource._embedded.contentPackages[0].id).isEqualTo(contentPackage1.id.value)
+        assertThat(convertedResource._embedded.contentPackages[1].id).isEqualTo(contentPackage2.id.value)
     }
 }
 

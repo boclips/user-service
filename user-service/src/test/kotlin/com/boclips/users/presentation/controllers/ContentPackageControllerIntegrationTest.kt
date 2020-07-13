@@ -4,6 +4,7 @@ import com.boclips.users.config.security.UserRoles
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.ContentPackageFactory
+import org.bson.types.ObjectId
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -30,6 +31,24 @@ class ContentPackageControllerIntegrationTest : AbstractSpringIntegrationTest() 
             )
     }
 
+    @Test
+    fun `can get all content packages`() {
+        val contentPackageOne = ContentPackageFactory.sample(name = "My first content package")
+        val contentPackageTwo = ContentPackageFactory.sample(name = "My second content package")
+        saveContentPackage(contentPackageOne)
+        saveContentPackage(contentPackageTwo)
+
+        mvc.perform(
+            MockMvcRequestBuilders.get("/v1/content-packages")
+                .asUserWithRoles("contracts-viewer@hacker.com", UserRoles.VIEW_CONTENT_PACKAGES)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._embedded.contentPackages.length()", Matchers.equalTo(2)))
+            .andExpect(jsonPath("$._embedded.contentPackages[0].id", Matchers.equalTo(contentPackageOne.id.value)))
+            .andExpect(jsonPath("$._embedded.contentPackages[0].name", Matchers.equalTo("My first content package")))
+            .andExpect(jsonPath("$._embedded.contentPackages[1].id", Matchers.equalTo(contentPackageTwo.id.value)))
+            .andExpect(jsonPath("$._embedded.contentPackages[1].name", Matchers.equalTo("My second content package")))
+    }
     @Test
     fun `gets 403 without correct role`() {
         mvc.perform(
