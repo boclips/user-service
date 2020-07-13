@@ -77,5 +77,18 @@ class CreateAccessRuleRequestValidationTest {
             .contains("must not be empty")
     }
 
+    @Test
+    fun `validation fails for empty channel ids`() {
+        val request = CreateAccessRuleRequest.IncludedChannels().apply {
+            name = "A video type contract"
+            channelIds = emptyList()
+        }
+
+        assertThat(validator.validate(request))
+            .isNotEmpty
+            .extracting("message")
+            .contains("must not be empty")
+    }
+
     lateinit var validator: Validator
 }

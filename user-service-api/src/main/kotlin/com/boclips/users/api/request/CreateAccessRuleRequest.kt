@@ -8,7 +8,8 @@ import javax.validation.constraints.NotEmpty
 @JsonSubTypes(
     JsonSubTypes.Type(value = CreateAccessRuleRequest.IncludedCollections::class, name = "IncludedCollections"),
     JsonSubTypes.Type(value = CreateAccessRuleRequest.IncludedVideos::class, name = "IncludedVideos"),
-    JsonSubTypes.Type(value = CreateAccessRuleRequest.ExcludedVideoTypes::class, name = "ExcludedVideoTypes")
+    JsonSubTypes.Type(value = CreateAccessRuleRequest.ExcludedVideoTypes::class, name = "ExcludedVideoTypes"),
+    JsonSubTypes.Type(value = CreateAccessRuleRequest.IncludedChannels::class, name = "IncludedChannels")
 )
 sealed class CreateAccessRuleRequest {
     class IncludedCollections : CreateAccessRuleRequest() {
@@ -24,6 +25,11 @@ sealed class CreateAccessRuleRequest {
     class ExcludedVideoTypes : CreateAccessRuleRequest() {
         @field: NotEmpty
         var videoTypes: List<String>? = null
+    }
+
+    class IncludedChannels: CreateAccessRuleRequest() {
+        @field:NotEmpty
+        var channelIds: List<String>? = null
     }
 
     @field:NotEmpty

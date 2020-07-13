@@ -96,6 +96,26 @@ class AccessRuleTestSupportControllerIntegrationTest : AbstractSpringIntegration
         }
 
         @Test
+        fun `creates an IncludedChannels access rule` () {
+            mvc.perform(
+                post("/v1/access-rules")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                            "type": "IncludedChannels",
+                            "name": "Videos contract creation test",
+                            "channelIds": ["channel1", "channel2"]
+                        }
+                    """.trimIndent()
+                    )
+                    .asUserWithRoles("contract-creator@hacker.com", UserRoles.INSERT_ACCESS_RULES)
+            )
+                .andExpect(status().isCreated)
+                .andExpect(header().string("Location", containsString("/v1/access-rules/")))
+        }
+
+        @Test
         fun `returns a 400 response when IncludedCollections payload is invalid`() {
             mvc.perform(
                 post("/v1/access-rules")

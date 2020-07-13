@@ -5,10 +5,11 @@ import com.boclips.users.application.exceptions.AccessRuleExistsException
 import com.boclips.users.application.exceptions.InvalidVideoTypeException
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
+import com.boclips.users.domain.model.access.AccessRuleRepository
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
-import com.boclips.users.domain.model.access.AccessRuleRepository
 import com.boclips.users.domain.service.UniqueId
 import org.springframework.stereotype.Service
 
@@ -49,6 +50,11 @@ class CreateAccessRule(
                     }
                 )
             )
+            is CreateAccessRuleRequest.IncludedChannels -> accessRuleRepository.save(AccessRule.IncludedChannels(
+                id = id,
+                name = name,
+                channelIds = request.channelIds!!.map { ChannelId(it) }
+            ))
         }
     }
 
