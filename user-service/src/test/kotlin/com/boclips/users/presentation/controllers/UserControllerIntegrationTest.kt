@@ -2,23 +2,23 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.user.Identity
-import com.boclips.users.domain.model.user.User
-import com.boclips.users.domain.model.user.UserId
-import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoId
+import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asApiUser
-import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asBoclipsService
+import com.boclips.users.testsupport.asOperator
 import com.boclips.users.testsupport.asTeacher
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -514,7 +514,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class GetUser {
         @Test
         fun `get own profile as teacher`() {
-            val organisation = saveOrganisation(school(address = Address(country = Country.usa(), state = State.fromCode("WA"))))
+            val organisation =
+                saveOrganisation(school(address = Address(country = Country.usa(), state = State.fromCode("WA"))))
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
