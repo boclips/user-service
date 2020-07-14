@@ -4,11 +4,7 @@ import com.boclips.security.utils.UserExtractor
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.service.access.AccessExpiryService
 import com.boclips.users.domain.model.user.UserRepository
-import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
-import com.boclips.users.presentation.hateoas.CountryLinkBuilder
-import com.boclips.users.presentation.hateoas.EventLinkBuilder
-import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
-import com.boclips.users.presentation.hateoas.UserLinkBuilder
+import com.boclips.users.presentation.hateoas.*
 import org.springframework.hateoas.EntityModel
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -23,7 +19,8 @@ class LinksController(
     private val countryLinkBuilder: CountryLinkBuilder,
     private val accessRuleLinkBuilder: AccessRuleLinkBuilder,
     private val eventLinkBuilder: EventLinkBuilder,
-    private val organisationLinkBuilder: OrganisationLinkBuilder
+    private val organisationLinkBuilder: OrganisationLinkBuilder,
+    private val contentPackageLinkBuilder: ContentPackageLinkBuilder
 ) {
     @GetMapping
     fun getLinks(): EntityModel<String> {
@@ -50,7 +47,8 @@ class LinksController(
                 eventLinkBuilder.trackPlatformInteractedWithEventLink(),
                 organisationLinkBuilder.getOrganisationsLink(),
                 organisationLinkBuilder.getOrganisationLink(),
-                userLinkBuilder.validateShareCodeLink()
+                userLinkBuilder.validateShareCodeLink(),
+                contentPackageLinkBuilder.getContentPackagesLink()
             )
         )
     }

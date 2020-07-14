@@ -1,5 +1,7 @@
 package com.boclips.users.presentation.hateoas
 
+import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import org.assertj.core.api.Assertions
@@ -14,5 +16,14 @@ class ContentPackageLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         Assertions.assertThat(selfLink.rel.value()).isEqualTo("self")
         Assertions.assertThat(selfLink.href).endsWith("/v1/content-packages/$contentPackageId")
+    }
+    @Test
+    fun `creates a get all content packages link`() {
+        setSecurityContext("package-view", UserRoles.VIEW_CONTENT_PACKAGES)
+
+        val getAllLink = contentPackageLinkBuilder.getContentPackagesLink()
+
+        Assertions.assertThat(getAllLink?.rel?.value()).isEqualTo("contentPackages")
+        Assertions.assertThat(getAllLink?.href).endsWith("/v1/content-packages")
     }
 }

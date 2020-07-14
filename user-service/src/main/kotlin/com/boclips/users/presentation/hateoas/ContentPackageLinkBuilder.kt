@@ -1,5 +1,7 @@
 package com.boclips.users.presentation.hateoas
 
+import com.boclips.security.utils.UserExtractor
+import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.presentation.controllers.ContentPackageController
 import org.springframework.hateoas.Link
@@ -12,5 +14,15 @@ class ContentPackageLinkBuilder {
         return WebMvcLinkBuilder.linkTo(
             WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).fetchContentPackage(contentPackageId.value)
         ).withRel("self")
+    }
+
+    fun getContentPackagesLink(): Link? {
+        return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_CONTENT_PACKAGES)) {
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).fetchContentPackages()
+            ).withRel("contentPackages")
+        } else {
+            null
+        }
+
     }
 }

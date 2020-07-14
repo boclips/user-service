@@ -36,6 +36,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
+            .andExpect(jsonPath("$._links.contentPackages").doesNotExist())
     }
 
     @Test
@@ -61,6 +62,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
+            .andExpect(jsonPath("$._links.contentPackages").doesNotExist())
     }
 
     @Test
@@ -195,14 +197,15 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.searchAccessRules.href", endsWith("/access-rules{?name}")))
             .andExpect(jsonPath("$._links.searchAccessRules.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.accessRules.href", endsWith("/users/{id}/access-rules")))
+            .andExpect(jsonPath("$._links.accessRules.templated", equalTo(true)))
     }
 
     @Test
     fun `user with VIEW_CONTENT_PACKAGES role`() {
-        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ACCESS_RULES))
+        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_CONTENT_PACKAGES))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.accessRules.href", endsWith("/users/{id}/access-rules")))
-            .andExpect(jsonPath("$._links.accessRules.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.contentPackages.href", endsWith("/content-packages")))
     }
 
     @Test
