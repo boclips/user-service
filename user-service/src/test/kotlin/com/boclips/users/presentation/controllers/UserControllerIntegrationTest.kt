@@ -613,20 +613,17 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 collectionIds = listOf(CollectionId(("test-collection-id"))),
                 id = AccessRuleId(ObjectId.get().toHexString())
             )
-            accessRuleRepository.save(collectionsAccessRule)
-
             val videosAccessRule = AccessRule.IncludedVideos(
                 name = "Test videos contract",
                 videoIds = listOf(VideoId("test-video-id")),
                 id = AccessRuleId(ObjectId.get().toHexString())
             )
-            accessRuleRepository.save(videosAccessRule)
 
             val contentPackageId = ContentPackageId(ObjectId.get().toHexString())
             val contentPackage = ContentPackage(
                 name = "Package 1",
                 id = contentPackageId,
-                accessRuleIds = listOf(collectionsAccessRule.id, videosAccessRule.id)
+                accessRules = listOf(collectionsAccessRule, videosAccessRule)
             )
 
             saveContentPackage(contentPackage)
@@ -653,15 +650,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     jsonPath(
                         "$._embedded.accessRules[*].name",
                         containsInAnyOrder("Test collections contract", "Test videos contract")
-                    )
-                )
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[*]._links.self.href",
-                        containsInAnyOrder(
-                            endsWith("/v1/access-rules/${collectionsAccessRule.id.value}"),
-                            endsWith("/v1/access-rules/${videosAccessRule.id.value}")
-                        )
                     )
                 )
         }

@@ -80,8 +80,7 @@ class UserController(
         return AccessRulesResource(
             _embedded = AccessRulesWrapper(
                 getAccessRulesOfUser(userId.value).map { accessRuleConverter.toResource(it) }
-            ),
-            _links = emptyMap()
+            )
         )
     }
 

@@ -7,30 +7,27 @@ import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
-import org.bson.types.ObjectId
-import org.springframework.stereotype.Service
 
-@Service
-class AccessRuleDocumentConverter {
+object AccessRuleDocumentConverter {
     fun fromDocument(document: AccessRuleDocument): AccessRule {
         return when (document._class) {
             AccessRuleDocument.TYPE_INCLUDED_COLLECTIONS -> AccessRule.IncludedCollections(
-                id = AccessRuleId(document._id.toHexString()),
+                id = AccessRuleId(document.id),
                 name = document.name,
                 collectionIds = document.collectionIds?.map { CollectionId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_VIDEOS -> AccessRule.IncludedVideos(
-                id = AccessRuleId(document._id.toHexString()),
+                id = AccessRuleId(document.id),
                 name = document.name,
                 videoIds = document.videoIds?.map { VideoId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_VIDEOS -> AccessRule.ExcludedVideos(
-                id = AccessRuleId(document._id.toHexString()),
+                id = AccessRuleId(document.id),
                 name = document.name,
                 videoIds = document.videoIds?.map { VideoId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_VIDEO_TYPES -> AccessRule.ExcludedVideoTypes(
-                id = AccessRuleId(document._id.toHexString()),
+                id = AccessRuleId(document.id),
                 name = document.name,
                 videoTypes = document.videoTypes?.map {
                     when (it) {
@@ -41,17 +38,17 @@ class AccessRuleDocumentConverter {
                 } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_CHANNELS -> AccessRule.ExcludedChannels(
-                id = AccessRuleId(document._id.toHexString()),
+                id = AccessRuleId(document.id),
                 name = document.name,
                 channelIds = document.channelIds?.map { ChannelId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_CHANNELS -> AccessRule.IncludedChannels(
-                id = AccessRuleId(document._id.toHexString()),
+                id = AccessRuleId(document.id),
                 name = document.name,
                 channelIds = document.channelIds?.map { ChannelId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_DISTRIBUTION_METHODS -> AccessRule.IncludedDistributionMethods(
-                id = AccessRuleId(document._id.toHexString()),
+                id = AccessRuleId(document.id),
                 name = document.name,
                 distributionMethods = document.distributionMethods?.map {
                     when (it) {
@@ -61,7 +58,7 @@ class AccessRuleDocumentConverter {
                     }
                 }?.toSet() ?: blowUp(document)
             )
-            else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document._id}")
+            else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document.id}")
         }
     }
 
@@ -72,25 +69,25 @@ class AccessRuleDocumentConverter {
     fun toDocument(accessRule: AccessRule): AccessRuleDocument {
         return when (accessRule) {
             is AccessRule.IncludedCollections -> AccessRuleDocument(
-                _id = ObjectId(accessRule.id.value),
+                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_COLLECTIONS,
                 name = accessRule.name,
                 collectionIds = accessRule.collectionIds.map { it.value }
             )
             is AccessRule.IncludedVideos -> AccessRuleDocument(
-                _id = ObjectId(accessRule.id.value),
+                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_VIDEOS,
                 name = accessRule.name,
                 videoIds = accessRule.videoIds.map { it.value }
             )
             is AccessRule.ExcludedVideos -> AccessRuleDocument(
-                _id = ObjectId(accessRule.id.value),
+                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_VIDEOS,
                 name = accessRule.name,
                 videoIds = accessRule.videoIds.map { it.value }
             )
             is AccessRule.ExcludedVideoTypes -> AccessRuleDocument(
-                _id = ObjectId(accessRule.id.value),
+                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_VIDEO_TYPES,
                 name = accessRule.name,
                 videoTypes = accessRule.videoTypes.map {
@@ -102,19 +99,19 @@ class AccessRuleDocumentConverter {
                 }
             )
             is AccessRule.ExcludedChannels -> AccessRuleDocument(
-                _id = ObjectId(accessRule.id.value),
+                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_CHANNELS,
                 name = accessRule.name,
                 channelIds = accessRule.channelIds.map { it.value }
             )
             is AccessRule.IncludedChannels -> AccessRuleDocument(
-                _id = ObjectId(accessRule.id.value),
+                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_CHANNELS,
                 name = accessRule.name,
                 channelIds = accessRule.channelIds.map { it.value }
             )
             is AccessRule.IncludedDistributionMethods -> AccessRuleDocument(
-                _id = ObjectId(accessRule.id.value),
+                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_DISTRIBUTION_METHODS,
                 name = accessRule.name,
                 distributionMethods = accessRule.distributionMethods.map {

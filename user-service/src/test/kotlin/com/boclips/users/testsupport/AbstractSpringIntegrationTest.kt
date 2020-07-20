@@ -4,30 +4,25 @@ import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.commands.AddCollectionToAccessRule
 import com.boclips.users.application.commands.GetOrImportUser
-import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.access.ContentPackage
+import com.boclips.users.domain.model.access.ContentPackageRepository
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.User
-import com.boclips.users.domain.model.access.AccessRule
-import com.boclips.users.domain.model.access.AccessRuleId
-import com.boclips.users.domain.model.access.ContentPackage
-import com.boclips.users.domain.model.access.VideoId
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.service.access.AccessExpiryService
-import com.boclips.users.domain.model.access.AccessRuleRepository
-import com.boclips.users.domain.model.access.ContentPackageRepository
-import com.boclips.users.domain.service.user.IdentityProvider
-import com.boclips.users.domain.service.marketing.MarketingService
-import com.boclips.users.domain.model.organisation.OrganisationRepository
-import com.boclips.users.domain.service.organisation.OrganisationService
-import com.boclips.users.domain.service.subject.SubjectService
 import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.service.access.AccessExpiryService
+import com.boclips.users.domain.service.marketing.MarketingService
+import com.boclips.users.domain.service.organisation.OrganisationService
+import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolver
+import com.boclips.users.domain.service.subject.SubjectService
+import com.boclips.users.domain.service.user.IdentityProvider
 import com.boclips.users.domain.service.user.UserCreationService
 import com.boclips.users.infrastructure.MongoDatabase
-import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolver
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
-import com.boclips.users.presentation.hateoas.AccessRuleLinkBuilder
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.boclips.videos.api.request.subject.CreateSubjectRequest
@@ -110,13 +105,7 @@ abstract class AbstractSpringIntegrationTest {
     lateinit var organisationResolver: OrganisationResolver
 
     @Autowired
-    lateinit var accessRuleRepository: AccessRuleRepository
-
-    @Autowired
     lateinit var fakeAmericanSchoolsProvider: FakeAmericanSchoolsProvider
-
-    @Autowired
-    lateinit var accessRuleLinkBuilder: AccessRuleLinkBuilder
 
     @Autowired
     lateinit var contentPackageLinkBuilder: ContentPackageLinkBuilder
@@ -199,11 +188,6 @@ abstract class AbstractSpringIntegrationTest {
 
     fun <T : Organisation> saveOrganisation(organisation: T): T {
         return organisationRepository.save(organisation)
-    }
-
-    fun saveIncludedVideosAccessRule(name: String, videoIds: List<VideoId>): AccessRule.IncludedVideos {
-        return AccessRule.IncludedVideos(id = AccessRuleId(), name = name, videoIds = videoIds)
-            .let(accessRuleRepository::save)
     }
 
     fun saveSubject(name: String): Subject {

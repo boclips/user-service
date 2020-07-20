@@ -1,6 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
@@ -15,8 +16,8 @@ class GetAccessRulesOfUserTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `can get the access rules of a user`() {
-        val videoAccessRule = saveIncludedVideosAccessRule(name = "Video access rule", videoIds = emptyList())
-        val contentPackage = ContentPackageFactory.sample(accessRuleIds = listOf(videoAccessRule.id))
+        val videoAccessRule = AccessRuleFactory.sampleIncludedVideosAccessRule(name = "Video access rule", videoIds = emptyList())
+        val contentPackage = ContentPackageFactory.sample(accessRules = listOf(videoAccessRule))
 
         saveContentPackage(contentPackage)
 

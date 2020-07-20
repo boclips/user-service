@@ -1,7 +1,9 @@
 package com.boclips.users.domain.service.access
 
+import com.boclips.users.api.factories.AccessRulesResourceFactory
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
@@ -22,20 +24,20 @@ class AccessRuleServiceTest : AbstractSpringIntegrationTest() {
         @BeforeEach
         fun `set up default content package`() {
             defaultAccessRules = listOf(
-                saveIncludedVideosAccessRule(name = "Included video access rule", videoIds = emptyList())
+                AccessRuleFactory.sampleIncludedVideosAccessRule(name = "Included video access rule", videoIds = emptyList())
             )
 
             saveContentPackage(
                 ContentPackageFactory.sample(
                     name = AccessRuleService.DEFAULT_CONTENT_PACKAGE_NAME,
-                    accessRuleIds = defaultAccessRules.map { it.id })
+                    accessRules = defaultAccessRules.map { it })
             )
         }
 
         @Test
         fun `can look up access rules for an existing organisation (necessary for api integrations)`() {
-            val accessRule = saveIncludedVideosAccessRule(name = "great rule", videoIds = listOf())
-            val contentPackage = saveContentPackage(ContentPackageFactory.sample(accessRuleIds = listOf(accessRule.id)))
+            val accessRule = AccessRuleFactory.sampleIncludedVideosAccessRule(name = "great rule", videoIds = listOf())
+            val contentPackage = saveContentPackage(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
             val organisation = saveOrganisation(
                 apiIntegration(
                     deal = deal(

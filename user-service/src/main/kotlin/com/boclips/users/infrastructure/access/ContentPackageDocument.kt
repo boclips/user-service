@@ -5,5 +5,5 @@ import org.bson.types.ObjectId
 class ContentPackageDocument(
     val _id: ObjectId,
     val name: String,
-    val accessRuleIds: List<String>
+    val accessRules: List<AccessRuleDocument>
 )

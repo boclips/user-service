@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import javax.validation.Validation
 import javax.validation.Validator
 
-class CreateAccessRuleRequestValidationTest {
+class AccessRuleRequestValidationTest {
     @BeforeEach
     fun setupValidator() {
         validator = Validation.buildDefaultValidatorFactory().validator
@@ -14,7 +14,7 @@ class CreateAccessRuleRequestValidationTest {
 
     @Test
     fun `validation fails for empty name`() {
-        val request = CreateAccessRuleRequest.IncludedCollections().apply {
+        val request = AccessRuleRequest.IncludedCollections().apply {
             name = ""
             collectionIds = listOf("A", "B", "C")
         }
@@ -27,7 +27,7 @@ class CreateAccessRuleRequestValidationTest {
 
     @Test
     fun `validation fails for null name`() {
-        val request = CreateAccessRuleRequest.IncludedCollections().apply {
+        val request = AccessRuleRequest.IncludedCollections().apply {
             name = null
             collectionIds = listOf("A", "B", "C")
         }
@@ -40,7 +40,7 @@ class CreateAccessRuleRequestValidationTest {
 
     @Test
     fun `validation fails for empty list of collectionIds`() {
-        val request = CreateAccessRuleRequest.IncludedCollections().apply {
+        val request = AccessRuleRequest.IncludedCollections().apply {
             name = "The best contract ever"
             collectionIds = emptyList()
         }
@@ -53,7 +53,7 @@ class CreateAccessRuleRequestValidationTest {
 
     @Test
     fun `validation fails for null list of collectionIds`() {
-        val request = CreateAccessRuleRequest.IncludedCollections().apply {
+        val request = AccessRuleRequest.IncludedCollections().apply {
             name = "The best contract ever"
             collectionIds = null
         }
@@ -66,7 +66,7 @@ class CreateAccessRuleRequestValidationTest {
 
     @Test
     fun `validation fails for empty types`() {
-        val request = CreateAccessRuleRequest.ExcludedVideoTypes().apply {
+        val request = AccessRuleRequest.ExcludedVideoTypes().apply {
             name = "A video type contract"
             videoTypes = emptyList()
         }
@@ -79,7 +79,7 @@ class CreateAccessRuleRequestValidationTest {
 
     @Test
     fun `validation fails for empty channel ids`() {
-        val request = CreateAccessRuleRequest.IncludedChannels().apply {
+        val request = AccessRuleRequest.IncludedChannels().apply {
             name = "A video type contract"
             channelIds = emptyList()
         }

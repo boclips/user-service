@@ -12,6 +12,7 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.AccessRuleFactory
+import com.boclips.users.testsupport.factories.ContentPackageFactory
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -38,7 +39,8 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns given access rule on the list when the name matches`() {
             val accessRuleName = "Super contract"
-            val accessRule = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = accessRuleName, collectionIds = listOf(CollectionId("A"))))
+            val accessRule = AccessRule.IncludedCollections(id = AccessRuleId(), name = accessRuleName, collectionIds = listOf(CollectionId("A")));
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
                     get(
@@ -56,72 +58,26 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRuleName)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].collectionIds", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].collectionIds[0]", equalTo("A")))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[0]._links.addCollection.href",
-                        endsWith("/v1/included-content-access-rules/${accessRule.id.value}/collections/{collectionId}")
-                    )
-                )
-                .andExpect(jsonPath("$._embedded.accessRules[0]._links.addCollection.templated", equalTo(true)))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[0]._links.removeCollection.href",
-                        endsWith("/v1/included-content-access-rules/${accessRule.id.value}/collections/{collectionId}")
-                    )
-                )
-                .andExpect(jsonPath("$._embedded.accessRules[0]._links.removeCollection.templated", equalTo(true)))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[0]._links.self.href",
-                        endsWith("/v1/access-rules/${accessRule.id.value}")
-                    )
-                )
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules?name=Super%20contract")))
-        }
-
-        @Test
-        fun `returns an empty list when access rule is not found by name`() {
-            accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = "Super contract", collectionIds = listOf(CollectionId("A"))))
-
-            mvc.perform(
-                    get(
-                        UriComponentsBuilder.fromUriString("/v1/access-rules")
-                            .queryParam("name", "this does not exist")
-                            .build()
-                            .toUri()
-                    )
-                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-                )
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(0)))
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules?name=this%20does%20not%20exist")))
-        }
-
-        @Test
-        fun `returns an empty list when lookup is done with a blank parameter`() {
-            accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = "Super contract", collectionIds = listOf(CollectionId("A"))))
-
-            mvc.perform(
-                    get(
-                        UriComponentsBuilder.fromUriString("/v1/access-rules")
-                            .queryParam("name", "")
-                            .build()
-                            .toUri()
-                    )
-                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-                )
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(0)))
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules?name=")))
         }
 
         @Test
         fun `can fetch all access rules in the system when name query parameter is not provided`() {
             val firstAccessRuleName = "first"
-            val firstAccessRule = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = firstAccessRuleName, collectionIds = listOf(CollectionId("A"))))
+            val firstAccessRule = AccessRule.IncludedCollections(
+                id = AccessRuleId(),
+                name = firstAccessRuleName,
+                collectionIds = listOf(CollectionId("A"))
+            );
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(firstAccessRule)))
 
             val secondAccessRuleName = "second"
-            val secondAccessRule = accessRuleRepository.save(AccessRule.IncludedCollections(id = AccessRuleId(), name = secondAccessRuleName, collectionIds = listOf(CollectionId("B"))))
+            val secondAccessRule = AccessRule.IncludedCollections(
+                id = AccessRuleId(),
+                name = secondAccessRuleName,
+                collectionIds = listOf(CollectionId("B"))
+            );
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(secondAccessRule)))
+
 
             mvc.perform(
                     get("/v1/access-rules")
@@ -133,33 +89,21 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(firstAccessRuleName)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].collectionIds", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].collectionIds[0]", equalTo("A")))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[0]._links.self.href",
-                        endsWith("/v1/access-rules/${firstAccessRule.id.value}")
-                    )
-                )
+
                 .andExpect(jsonPath("$._embedded.accessRules[1].type", equalTo("IncludedCollections")))
                 .andExpect(jsonPath("$._embedded.accessRules[1].name", equalTo(secondAccessRuleName)))
                 .andExpect(jsonPath("$._embedded.accessRules[1].collectionIds", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[1].collectionIds[0]", equalTo("B")))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[1]._links.self.href",
-                        endsWith("/v1/access-rules/${secondAccessRule.id.value}")
-                    )
-                )
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules{?name}")))
         }
 
         @Test
         fun `can fetch ExcludedVideos access rules`() {
-            val accessRule = accessRuleRepository.save(
-                AccessRuleFactory.sampleExcludedVideosAccessRule(
-                    name = "BadVideos",
-                    videoIds = listOf(VideoId("A"), VideoId("B"))
-                )
-            )
+            val accessRule = AccessRule.ExcludedVideos(
+                id = AccessRuleId(),
+                name = "BadVideos",
+                videoIds = listOf(VideoId("A"), VideoId("B"))
+            );
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
                     get("/v1/access-rules")
@@ -171,23 +115,16 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].videoIds", hasSize<Int>(2)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].videoIds[*]", containsInAnyOrder("A", "B")))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[0]._links.self.href",
-                        endsWith("/v1/access-rules/${accessRule.id.value}")
-                    )
-                )
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules{?name}")))
         }
 
         @Test
         fun `can fetch ExcludedVideoTypes access rules`() {
-            val accessRule = accessRuleRepository.save(
-                AccessRuleFactory.sampleExcludedVideoTypesAccessRule(
-                    name = "BadVideos",
-                    videoTypes = listOf(VideoType.STOCK, VideoType.NEWS)
-                )
+            val accessRule = AccessRuleFactory.sampleExcludedVideoTypesAccessRule(
+                name = "BadVideos",
+                videoTypes = listOf(VideoType.STOCK, VideoType.NEWS)
             )
+
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
                     get("/v1/access-rules")
@@ -199,23 +136,15 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].videoTypes", hasSize<Int>(2)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].videoTypes[*]", containsInAnyOrder("STOCK", "NEWS")))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[0]._links.self.href",
-                        endsWith("/v1/access-rules/${accessRule.id.value}")
-                    )
-                )
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules{?name}")))
         }
 
         @Test
         fun `can fetch ExcludedContentPartners access rules`() {
-            val accessRule = accessRuleRepository.save(
-                AccessRuleFactory.sampleExcludedContentPartnersAccessRule(
-                    name = "SomeBadCPs",
-                    channelIds = listOf(ChannelId("A"), ChannelId("B"))
-                )
+            val accessRule = AccessRuleFactory.sampleExcludedContentPartnersAccessRule(
+                name = "SomeBadCPs",
+                channelIds = listOf(ChannelId("A"), ChannelId("B"))
             )
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
                     get("/v1/access-rules")
@@ -227,23 +156,15 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].channelIds", hasSize<Int>(2)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].channelIds[*]", containsInAnyOrder("A", "B")))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[0]._links.self.href",
-                        endsWith("/v1/access-rules/${accessRule.id.value}")
-                    )
-                )
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules{?name}")))
         }
 
         @Test
         fun `can fetch IncludedDistributionMethods access rules`() {
-            val accessRule = accessRuleRepository.save(
-                AccessRuleFactory.sampleIncludedDistributionMethodAccessRule(
-                    name = "Stream only",
-                    distributionMethods = setOf(DistributionMethod.STREAM)
-                )
+            val accessRule = AccessRuleFactory.sampleIncludedDistributionMethodAccessRule(
+                name = "Stream only",
+                distributionMethods = setOf(DistributionMethod.STREAM)
             )
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
                     get("/v1/access-rules")
@@ -255,13 +176,6 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].distributionMethods", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].distributionMethods[*]", containsInAnyOrder("STREAM")))
-                .andExpect(
-                    jsonPath(
-                        "$._embedded.accessRules[0]._links.self.href",
-                        endsWith("/v1/access-rules/${accessRule.id.value}")
-                    )
-                )
-                .andExpect(jsonPath("$._links.self.href", endsWith("/v1/access-rules{?name}")))
         }
     }
 }

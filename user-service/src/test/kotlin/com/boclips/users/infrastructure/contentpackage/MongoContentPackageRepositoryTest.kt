@@ -1,6 +1,9 @@
 package com.boclips.users.infrastructure.contentpackage
 
+import com.boclips.users.domain.model.access.CollectionId
+import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -38,5 +41,28 @@ class MongoContentPackageRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(retrievedContentPackages.size).isEqualTo(2)
         assertThat(retrievedContentPackages[0]).isEqualTo(contentPackage1)
         assertThat(retrievedContentPackages[1]).isEqualTo(contentPackage2)
+    }
+
+    @Test
+    fun `can save a content package with access rules`() {
+        val firstAccessRuleName = "firstAccessRuleName"
+        val secondAccessRuleName = "secondAccessRuleName"
+        val firstAccessRule = AccessRuleFactory.sampleExcludedVideosAccessRule(
+            name = firstAccessRuleName,
+            videoIds = listOf(VideoId("video-1"))
+        )
+        val secondAccessRule = AccessRuleFactory.sampleIncludedCollectionsAccessRule(
+            name = secondAccessRuleName,
+            collectionIds = listOf(CollectionId("collection-1"))
+        )
+        val contentPackage = ContentPackageFactory.sample(accessRules = listOf(firstAccessRule, secondAccessRule))
+        contentPackageRepository.save(contentPackage)
+
+        val retrievedContentPackage = contentPackageRepository.findById(contentPackage.id)
+
+        assertThat(contentPackage).isEqualTo(retrievedContentPackage)
+        assertThat(contentPackage.accessRules).hasSize(2)
+        assertThat(contentPackage.accessRules.first().name).isEqualTo(firstAccessRuleName)
+        assertThat(contentPackage.accessRules[1].name).isEqualTo(secondAccessRuleName)
     }
 }

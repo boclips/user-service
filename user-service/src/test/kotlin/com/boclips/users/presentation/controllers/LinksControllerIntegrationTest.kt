@@ -195,10 +195,8 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `user with VIEW_ACCESS_RULES role`() {
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ACCESS_RULES))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.searchAccessRules.href", endsWith("/access-rules{?name}")))
-            .andExpect(jsonPath("$._links.searchAccessRules.templated", equalTo(true)))
-            .andExpect(jsonPath("$._links.accessRules.href", endsWith("/users/{id}/access-rules")))
-            .andExpect(jsonPath("$._links.accessRules.templated", equalTo(true)))
+            .andExpect(jsonPath("$._links.searchAccessRules.href", endsWith("/access-rules")))
+            .andExpect(jsonPath("$._links.searchAccessRules.templated").doesNotExist())
     }
 
     @Test

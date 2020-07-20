@@ -1,8 +1,7 @@
 package com.boclips.users.infrastructure.access
-import org.bson.types.ObjectId
 
 data class AccessRuleDocument(
-    var _id: ObjectId,
+    var id: String,
     var name: String,
     var _class: String,
     var collectionIds: List<String>? = null,

@@ -21,13 +21,12 @@ class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
             collectionIds = listOf(CollectionId("hello"), CollectionId("collection")),
             name = "name of the accessRule"
         )
-        accessRuleRepository.save(collectionAccessRule)
 
         val contentPackage =
             ContentPackageFactory.sample(
                 name = "package",
                 id = packageId,
-                accessRuleIds = listOf(collectionAccessRule.id)
+                accessRules = listOf(collectionAccessRule)
             )
 
         val convertedResource = contentPackageConverter.toContentPackageResource(contentPackage)
@@ -44,18 +43,17 @@ class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
             collectionIds = listOf(CollectionId("hello"), CollectionId("collection")),
             name = "name of the accessRule"
         )
-        accessRuleRepository.save(collectionAccessRule)
 
         val contentPackage1 =
             ContentPackageFactory.sample(
                 name = "package one",
-                accessRuleIds = listOf(collectionAccessRule.id)
+                accessRules = listOf(collectionAccessRule)
             )
 
         val contentPackage2 =
             ContentPackageFactory.sample(
                 name = "package two",
-                accessRuleIds = listOf(collectionAccessRule.id)
+                accessRules = listOf(collectionAccessRule)
             )
 
         val convertedResource = contentPackageConverter.toContentPackagesResource(listOf(contentPackage1, contentPackage2))

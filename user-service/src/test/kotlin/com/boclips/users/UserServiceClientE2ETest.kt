@@ -7,6 +7,7 @@ import com.boclips.users.api.httpclient.helper.TestTokenFactory
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.user.Profile
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -58,10 +59,10 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `can fetch access rules of a user`() {
-            val accessRule = saveIncludedVideosAccessRule("Rule", emptyList())
+            val accessRule = AccessRuleFactory.sampleIncludedVideosAccessRule(name = "Rule", videoIds =  emptyList())
             val contentPackage = saveContentPackage(
                 ContentPackageFactory.sample(
-                    accessRuleIds = listOf(accessRule.id)
+                    accessRules = listOf(accessRule)
                 )
             )
             val organisation = saveOrganisation(

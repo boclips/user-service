@@ -1,8 +1,6 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.access.VideoId
-import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -10,6 +8,7 @@ import com.boclips.users.testsupport.factories.ContentPackageFactory
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.empty
+import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -19,7 +18,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can create a content package`() {
-        val accessRule = saveIncludedVideosAccessRule(name = "video-access-rule", videoIds = listOf(VideoId("video-1")))
+        val accessRuleType = "IncludedVideos"
+        val accessRuleName = "video-access-rule"
+        val includedVideoId = "video-1"
 
         val userId = "operator@boclips.com"
         mvc.perform(
@@ -27,7 +28,13 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
                     """
                     {
                         "name": "content-package-name",
-                        "accessRuleIds": ["${accessRule.id.value}"]
+                        "accessRules": [
+                            {
+                                "type":"$accessRuleType",
+                                "name":"$accessRuleName",
+                                "videoIds":["$includedVideoId"]
+                            }
+                        ]
                     }
                     """.trimIndent()
                 ).asUserWithRoles(
@@ -47,18 +54,21 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
                     .andExpect(status().isOk)
                     .andExpect(jsonPath("$.name", equalTo("content-package-name")))
                     .andExpect(jsonPath("$.accessRules", not(empty<Any>())))
+                    .andExpect(jsonPath("$.accessRules[0].type", equalTo(accessRuleType)))
+                    .andExpect(jsonPath("$.accessRules[0].name", equalTo(accessRuleName)))
+                    .andExpect(jsonPath("$.accessRules[0].videoIds", hasSize<Any>(1)))
+                    .andExpect(jsonPath("$.accessRules[0].videoIds[0]", equalTo(includedVideoId)))
             }
     }
 
     @Test
     fun `cannot create a content package without correct roles`() {
-        val accessRule = saveIncludedVideosAccessRule(name = "video-access-rule", videoIds = listOf(VideoId("video-1")))
         mvc.perform(
             post("/v1/content-packages").content(
                 """
                     {
                         "name": "content-package-name",
-                        "accessRuleIds": ["${accessRule.id.value}"]
+                        "accessRules": []
                     }
                     """.trimIndent()
             ).asUser("hax0rr@gimmeaccess.gov")
@@ -66,29 +76,8 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
     }
 
     @Test
-    fun `returns a 400 response when non-existent access rule is specified`() {
-        val invalidId = UniqueId()
-        mvc.perform(
-                post("/v1/content-packages").content(
-                    """
-                    {
-                        "name": "content-package-name",
-                        "accessRuleIds": ["$invalidId"]
-                    }
-                    """.trimIndent()
-                ).asUserWithRoles(
-                    "test-user@boclips.com",
-                    UserRoles.INSERT_CONTENT_PACKAGES
-                )
-            )
-            .andExpect(status().isBadRequest)
-            .andExpectApiErrorPayload()
-    }
-
-    @Test
     fun `returns conflict when trying to create a pre-existing content package`() {
         saveContentPackage(ContentPackageFactory.sample(name = "pre-existing content package"))
-        val accessRule = saveIncludedVideosAccessRule(name = "video-access-rule", videoIds = listOf(VideoId("video-1")))
 
         val userId = "operator@boclips.com"
         mvc.perform(
@@ -96,7 +85,7 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
                 """
                     {
                         "name": "pre-existing content package",
-                        "accessRuleIds": ["${accessRule.id.value}"]
+                        "accessRules": []
                     }
                     """.trimIndent()
             ).asUserWithRoles(
@@ -104,7 +93,6 @@ class ContentPackageTestSupportControllerIntegrationTest : AbstractSpringIntegra
                 UserRoles.INSERT_CONTENT_PACKAGES
             )
         ).andExpect(status().isConflict)
-
     }
 
 }

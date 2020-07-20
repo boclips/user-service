@@ -17,8 +17,6 @@ import java.util.stream.Stream
 
 class AccessRuleDocumentConverterTest {
 
-    private val converter = AccessRuleDocumentConverter()
-
     class AccessRuleProvider : ArgumentsProvider {
         override fun provideArguments(context: ExtensionContext?) = Stream.of(
             AccessRule.IncludedCollections(
@@ -68,8 +66,8 @@ class AccessRuleDocumentConverterTest {
     @ArgumentsSource(AccessRuleProvider::class)
     fun `convert an access rule to document and back`(originalRule: AccessRule) {
         val retrievedRule = originalRule
-            .let(converter::toDocument)
-            .let(converter::fromDocument)
+            .let(AccessRuleDocumentConverter::toDocument)
+            .let(AccessRuleDocumentConverter::fromDocument)
 
         assertThat(retrievedRule).isEqualTo(originalRule)
     }

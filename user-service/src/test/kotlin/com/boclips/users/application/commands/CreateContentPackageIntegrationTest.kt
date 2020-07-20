@@ -15,25 +15,13 @@ class CreateContentPackageIntegrationTest : AbstractSpringIntegrationTest() {
     lateinit var createContentPackage: CreateContentPackage
 
     @Test
-    fun `throws when trying to create a content package with non existent access rules`() {
-        assertThrows<InvalidCreateContentPackageException> {
-            createContentPackage(
-                CreateContentPackageRequest(
-                    name = "content-package-name",
-                    accessRuleIds = listOf(AccessRuleId().value)
-                )
-            )
-        }
-    }
-
-    @Test
     fun `throws when trying to create a duplicate content package`() {
         saveContentPackage(ContentPackageFactory.sample(name = "hello"))
         assertThrows<DuplicateContentPackageException> {
             createContentPackage(
                 CreateContentPackageRequest(
                     name = "hello",
-                    accessRuleIds = emptyList()
+                    accessRules = emptyList()
                 )
             )
         }

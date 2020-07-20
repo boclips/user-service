@@ -20,15 +20,15 @@ class IncludedContentAccessRuleController(
 ) {
     @PutMapping("/{accessRuleId}/collections/{collectionId}")
     fun addCollection(@PathVariable accessRuleId: String, @PathVariable collectionId: String?): ResponseEntity<Any> {
-        addCollectionToAccessRule(AccessRuleId(accessRuleId), CollectionId(collectionId!!))
+//        addCollectionToAccessRule(AccessRuleId(accessRuleId), CollectionId(collectionId!!))
 
-        return ResponseEntity(HttpStatus.NO_CONTENT)
+        return ResponseEntity(HttpStatus.BAD_REQUEST)
     }
 
     @DeleteMapping("/{accessRuleId}/collections/{collectionId}")
     fun removeCollection(@PathVariable accessRuleId: String, @PathVariable collectionId: String?): ResponseEntity<Any> {
-        removeCollectionFromAccessRule(AccessRuleId(accessRuleId), CollectionId(collectionId!!))
+//        removeCollectionFromAccessRule(AccessRuleId(accessRuleId), CollectionId(collectionId!!))
 
-        return ResponseEntity(HttpStatus.NO_CONTENT)
+        return ResponseEntity(HttpStatus.BAD_REQUEST)
     }
 }

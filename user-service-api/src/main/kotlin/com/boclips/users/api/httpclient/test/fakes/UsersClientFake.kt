@@ -43,8 +43,7 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
         val mergedRules = currentRules.plus(accessRulesResource._embedded.accessRules)
 
         val amendedResource = AccessRulesResource(
-            _embedded = AccessRulesWrapper(mergedRules),
-            _links = accessRulesResource._links
+            _embedded = AccessRulesWrapper(mergedRules)
         )
 
         accessRulesDatabase[userId] = amendedResource
