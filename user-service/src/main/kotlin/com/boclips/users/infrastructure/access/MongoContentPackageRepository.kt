@@ -47,4 +47,11 @@ class MongoContentPackageRepository(
     override fun findAll(): List<ContentPackage> {
         return collection().find().map(ContentPackageDocumentConverter::fromDocument).toList()
     }
+
+    override fun replaceContentPackage(contentPackage: ContentPackage): ContentPackage? {
+        return collection().replaceOne(ContentPackageDocument::_id eq ObjectId(contentPackage.id.value),
+            ContentPackageDocumentConverter.toDocument(contentPackage)).takeIf { it.wasAcknowledged() }?.let {
+            findById(contentPackage.id)
+        }
+    }
 }

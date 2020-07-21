@@ -13,32 +13,6 @@ class AccessRuleRequestValidationTest {
     }
 
     @Test
-    fun `validation fails for empty name`() {
-        val request = AccessRuleRequest.IncludedCollections().apply {
-            name = ""
-            collectionIds = listOf("A", "B", "C")
-        }
-
-        assertThat(validator.validate(request))
-            .isNotEmpty
-            .extracting("message")
-            .contains("must not be empty")
-    }
-
-    @Test
-    fun `validation fails for null name`() {
-        val request = AccessRuleRequest.IncludedCollections().apply {
-            name = null
-            collectionIds = listOf("A", "B", "C")
-        }
-
-        assertThat(validator.validate(request))
-            .isNotEmpty
-            .extracting("message")
-            .contains("must not be empty")
-    }
-
-    @Test
     fun `validation fails for empty list of collectionIds`() {
         val request = AccessRuleRequest.IncludedCollections().apply {
             name = "The best contract ever"

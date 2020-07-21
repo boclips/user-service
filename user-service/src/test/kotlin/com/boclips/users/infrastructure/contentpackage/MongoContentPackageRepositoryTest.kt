@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.contentpackage
 
+import com.boclips.users.application.exceptions.ContentPackageNotFoundException
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -7,6 +8,7 @@ import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class MongoContentPackageRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
@@ -64,5 +66,30 @@ class MongoContentPackageRepositoryTest : AbstractSpringIntegrationTest() {
         assertThat(contentPackage.accessRules).hasSize(2)
         assertThat(contentPackage.accessRules.first().name).isEqualTo(firstAccessRuleName)
         assertThat(contentPackage.accessRules[1].name).isEqualTo(secondAccessRuleName)
+    }
+
+    @Test
+    fun `can update a content package`() {
+        val firstAccessRule = AccessRuleFactory.sampleExcludedVideosAccessRule(
+            videoIds = listOf(VideoId("video-1"))
+        )
+
+        val contentPackage = ContentPackageFactory.sample(accessRules = listOf(firstAccessRule))
+        contentPackageRepository.save(contentPackage)
+
+        val newAccessRule = AccessRuleFactory.sampleIncludedCollectionsAccessRule(
+            name = "secondAccessRuleName",
+            collectionIds = listOf(CollectionId("collection-1"))
+        )
+
+        val updatedContentPackage = ContentPackageFactory.sample(
+            id = contentPackage.id.value,
+            name = "updated name",
+            accessRules = listOf(newAccessRule)
+        )
+
+        val afterUpdateContentPackage = contentPackageRepository.replaceContentPackage(updatedContentPackage)
+
+        assertThat(afterUpdateContentPackage).isEqualTo(updatedContentPackage)
     }
 }

@@ -50,6 +50,5 @@ sealed class AccessRuleRequest {
         var distributionMethods: List<String>? = null
     }
 
-    @field:NotEmpty
     var name: String? = null
 }
