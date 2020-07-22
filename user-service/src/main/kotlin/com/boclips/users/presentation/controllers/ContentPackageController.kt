@@ -23,9 +23,9 @@ class ContentPackageController(
     }
 
     @GetMapping("/content-packages/{id}")
-    fun fetchContentPackage(@PathVariable("id") id: String): ContentPackageResource {
+    fun fetchContentPackage(@PathVariable("id") id: String?): ContentPackageResource {
         return contentPackageConverter.toContentPackageResource(
-            getContentPackage(id)
+            getContentPackage(id!!)
         )
     }
 

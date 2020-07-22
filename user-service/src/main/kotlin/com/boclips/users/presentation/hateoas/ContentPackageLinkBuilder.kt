@@ -25,4 +25,13 @@ class ContentPackageLinkBuilder {
         }
 
     }
+    fun getContentPackageLink(): Link? {
+        return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_CONTENT_PACKAGES)) {
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).fetchContentPackage(null)
+            ).withRel("contentPackage")
+        } else {
+            null
+        }
+
+    }
 }
