@@ -151,6 +151,17 @@ class AccessRuleConverterTest {
             assertThat((convertedAccessRule as AccessRule.IncludedDistributionMethods).distributionMethods)
                 .containsExactlyInAnyOrderElementsOf(listOf(DistributionMethod.STREAM, DistributionMethod.DOWNLOAD))
         }
+
+        @Test
+        fun `converts nullable name to empty string`() {
+            val accessRule = AccessRuleRequestFactory.sampleIncludedDistributionMethodAccessRuleRequest(
+                name = null,
+                distributionMethods = listOf()
+            )
+            val convertedAccessRule = converter.fromRequest(accessRule)
+
+            assertThat(convertedAccessRule.name).isEqualTo("")
+        }
     }
 
     private val converter = AccessRuleConverter()

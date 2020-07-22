@@ -57,7 +57,7 @@ class AccessRuleConverter(
     }
 
     fun fromRequest(accessRuleRequest: AccessRuleRequest): AccessRule {
-        val name = accessRuleRequest.name!!
+        val name = accessRuleRequest.name ?: ""
         val id = AccessRuleId(UniqueId())
 
         return when (accessRuleRequest) {

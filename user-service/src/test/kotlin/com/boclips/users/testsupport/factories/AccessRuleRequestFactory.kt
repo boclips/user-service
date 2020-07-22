@@ -35,7 +35,7 @@ class AccessRuleRequestFactory {
         }
 
         fun sampleIncludedDistributionMethodAccessRuleRequest(
-            name: String = "included distribution method access rule",
+            name: String? = "included distribution method access rule",
             distributionMethods: List<String> = emptyList()
         ): AccessRuleRequest {
             val request = AccessRuleRequest.IncludedDistributionMethod()
