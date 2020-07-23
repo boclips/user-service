@@ -36,7 +36,9 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
-            .andExpect(jsonPath("$._links.contentPackages").doesNotExist())
+            .andExpect(jsonPath("$._links.getContentPackages").doesNotExist())
+            .andExpect(jsonPath("$._links.getContentPackage").doesNotExist())
+            .andExpect(jsonPath("$._links.updateContentPackage").doesNotExist())
     }
 
     @Test
@@ -62,7 +64,9 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
-            .andExpect(jsonPath("$._links.contentPackages").doesNotExist())
+            .andExpect(jsonPath("$._links.getContentPackages").doesNotExist())
+            .andExpect(jsonPath("$._links.getContentPackage").doesNotExist())
+            .andExpect(jsonPath("$._links.updateContentPackage").doesNotExist())
     }
 
     @Test
@@ -203,7 +207,16 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
     fun `user with VIEW_CONTENT_PACKAGES role`() {
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_CONTENT_PACKAGES))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$._links.contentPackages.href", endsWith("/content-packages")))
+            .andExpect(jsonPath("$._links.getContentPackages.href", endsWith("/content-packages")))
+            .andExpect(jsonPath("$._links.getContentPackage.href", endsWith("/content-packages/{id}")))
+    }
+
+    @Test
+    fun `user with UPDATE_CONTENT_PACKAGES role`() {
+        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.UPDATE_CONTENT_PACKAGES))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.updateContentPackage.href", endsWith("/content-packages/{id}")))
+
     }
 
     @Test

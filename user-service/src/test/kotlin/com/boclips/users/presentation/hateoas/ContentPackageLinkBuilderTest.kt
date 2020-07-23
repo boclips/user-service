@@ -23,7 +23,7 @@ class ContentPackageLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         val getAllLink = contentPackageLinkBuilder.getContentPackagesLink()
 
-        Assertions.assertThat(getAllLink?.rel?.value()).isEqualTo("contentPackages")
+        Assertions.assertThat(getAllLink?.rel?.value()).isEqualTo("getContentPackages")
         Assertions.assertThat(getAllLink?.href).endsWith("/v1/content-packages")
     }
 
@@ -33,7 +33,17 @@ class ContentPackageLinkBuilderTest : AbstractSpringIntegrationTest() {
 
         val getLink = contentPackageLinkBuilder.getContentPackageLink()
 
-        Assertions.assertThat(getLink?.rel?.value()).isEqualTo("contentPackage")
+        Assertions.assertThat(getLink?.rel?.value()).isEqualTo("getContentPackage")
+        Assertions.assertThat(getLink?.href).endsWith("/v1/content-packages/{id}")
+    }
+
+    @Test
+    fun `creates an update content package link`() {
+        setSecurityContext("package-view", UserRoles.UPDATE_CONTENT_PACKAGES)
+
+        val getLink = contentPackageLinkBuilder.updateContentPackageLink()
+
+        Assertions.assertThat(getLink?.rel?.value()).isEqualTo("updateContentPackage")
         Assertions.assertThat(getLink?.href).endsWith("/v1/content-packages/{id}")
     }
 }

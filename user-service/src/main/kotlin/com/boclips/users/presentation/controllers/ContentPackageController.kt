@@ -30,9 +30,9 @@ class ContentPackageController(
     }
 
     @PutMapping("/content-packages/{id}")
-    fun updatePackage(@PathVariable("id") id: String, @RequestBody contentPackageUpdateRequest: UpdateContentPackageRequest): ContentPackageResource {
+    fun updatePackage(@PathVariable("id") id: String?, @RequestBody contentPackageUpdateRequest: UpdateContentPackageRequest?): ContentPackageResource {
         return contentPackageConverter.toContentPackageResource(
-            updateContentPackage(id, contentPackageUpdateRequest)
+            updateContentPackage(id!!, contentPackageUpdateRequest!!)
         )
     }
 }
