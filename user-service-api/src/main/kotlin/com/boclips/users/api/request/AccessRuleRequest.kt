@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty
     JsonSubTypes.Type(value = AccessRuleRequest.ExcludedVideoTypes::class, name = "ExcludedVideoTypes"),
     JsonSubTypes.Type(value = AccessRuleRequest.IncludedChannels::class, name = "IncludedChannels"),
     JsonSubTypes.Type(value = AccessRuleRequest.ExcludedVideos::class, name = "ExcludedVideos"),
-    JsonSubTypes.Type(value = AccessRuleRequest.IncludedDistributionMethod::class, name = "IncludedDistributionMethod"),
+    JsonSubTypes.Type(value = AccessRuleRequest.IncludedDistributionMethods::class, name = "IncludedDistributionMethods"),
     JsonSubTypes.Type(value = AccessRuleRequest.ExcludedChannels::class, name = "ExcludedChannels")
 )
 sealed class AccessRuleRequest {
@@ -45,7 +45,7 @@ sealed class AccessRuleRequest {
         var channelIds: List<String>? = null
     }
 
-    class IncludedDistributionMethod: AccessRuleRequest() {
+    class IncludedDistributionMethods: AccessRuleRequest() {
         @field:NotEmpty
         var distributionMethods: List<String>? = null
     }

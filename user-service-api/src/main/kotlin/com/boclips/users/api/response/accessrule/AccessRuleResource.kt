@@ -16,7 +16,7 @@ sealed class AccessRuleResource(val type: String) {
         val videoIds: List<String>
     ) : AccessRuleResource(type = "IncludedVideos")
 
-    data class IncludedDistributionMethod(
+    data class IncludedDistributionMethods(
         override val id: String,
         override val name: String,
         val distributionMethods: List<String>

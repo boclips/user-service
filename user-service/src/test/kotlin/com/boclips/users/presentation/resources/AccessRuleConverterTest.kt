@@ -140,7 +140,7 @@ class AccessRuleConverterTest {
 
         @Test
         fun `converts included distribution methods request to access rule`() {
-            val accessRule = AccessRuleRequestFactory.sampleIncludedDistributionMethodAccessRuleRequest(
+            val accessRule = AccessRuleRequestFactory.sampleIncludedDistributionMethodsAccessRuleRequest(
                 name = "access-rule",
                 distributionMethods = listOf("STREAM", "DOWNLOAD")
             )
@@ -154,7 +154,7 @@ class AccessRuleConverterTest {
 
         @Test
         fun `converts nullable name to empty string`() {
-            val accessRule = AccessRuleRequestFactory.sampleIncludedDistributionMethodAccessRuleRequest(
+            val accessRule = AccessRuleRequestFactory.sampleIncludedDistributionMethodsAccessRuleRequest(
                 name = null,
                 distributionMethods = listOf()
             )

@@ -46,7 +46,7 @@ class AccessRuleFactory {
             channelIds: List<ChannelId> = emptyList()
         ) = AccessRule.IncludedChannels(id, name, channelIds)
 
-        fun sampleIncludedDistributionMethodAccessRule(
+        fun sampleIncludedDistributionMethodsAccessRule(
             id: AccessRuleId = AccessRuleId(),
             name: String = "Included Distribution Methods",
             distributionMethods: Set<DistributionMethod>

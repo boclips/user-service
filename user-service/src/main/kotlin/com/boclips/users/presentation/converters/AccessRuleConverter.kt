@@ -48,7 +48,7 @@ class AccessRuleConverter(
                 name = accessRule.name,
                 channelIds = accessRule.channelIds.map { it.value }
             )
-            is AccessRule.IncludedDistributionMethods -> AccessRuleResource.IncludedDistributionMethod(
+            is AccessRule.IncludedDistributionMethods -> AccessRuleResource.IncludedDistributionMethods(
                 id = accessRule.id.value,
                 name = accessRule.name,
                 distributionMethods = accessRule.distributionMethods.map { it.name }
@@ -100,7 +100,7 @@ class AccessRuleConverter(
                 channelIds = accessRuleRequest.channelIds!!.map { ChannelId(it) }
             )
 
-            is AccessRuleRequest.IncludedDistributionMethod -> AccessRule.IncludedDistributionMethods(
+            is AccessRuleRequest.IncludedDistributionMethods -> AccessRule.IncludedDistributionMethods(
                 id = id,
                 name = name,
                 distributionMethods = accessRuleRequest.distributionMethods?.mapTo(HashSet()) { DistributionMethod.valueOf(it) } ?: emptySet()

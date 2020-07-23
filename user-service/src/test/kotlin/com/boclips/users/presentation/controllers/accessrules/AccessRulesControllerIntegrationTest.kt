@@ -160,7 +160,7 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `can fetch IncludedDistributionMethods access rules`() {
-            val accessRule = AccessRuleFactory.sampleIncludedDistributionMethodAccessRule(
+            val accessRule = AccessRuleFactory.sampleIncludedDistributionMethodsAccessRule(
                 name = "Stream only",
                 distributionMethods = setOf(DistributionMethod.STREAM)
             )
