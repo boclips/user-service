@@ -7,7 +7,6 @@ import com.boclips.users.api.response.accessrule.ContentPackagesWrapperResource
 import com.boclips.users.application.exceptions.InvalidContentPackageRequestException
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageId
-import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
 import org.springframework.stereotype.Service
 
@@ -40,7 +39,7 @@ class ContentPackageConverter(
             id = ContentPackageId(id),
             accessRules = contentPackageRequest.accessRules?.map { it -> accessRuleConverter.fromRequest(it) }
                 ?: emptyList(),
-            name = contentPackageRequest.title
+            name = contentPackageRequest.name
                 ?: throw InvalidContentPackageRequestException("Content package name must be supplied")
         )
 }

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty
 
 class UpdateContentPackageRequest (
     @field:NotEmpty
-    var title: String? = null,
+    var name: String? = null,
     var id: String? = null,
     @JsonSetter(contentNulls = Nulls.FAIL)
     var accessRules: Set<AccessRuleRequest>? = null

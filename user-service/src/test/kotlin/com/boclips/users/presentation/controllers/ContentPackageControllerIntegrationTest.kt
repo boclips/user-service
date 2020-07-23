@@ -74,7 +74,7 @@ class ContentPackageControllerIntegrationTest : AbstractSpringIntegrationTest() 
 
         val content =
             """{
-                    "title" : "my new title",
+                    "name" : "my new title",
                     "accessRules": [
                         {
                             "type": "IncludedVideos",

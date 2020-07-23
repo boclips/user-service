@@ -32,7 +32,7 @@ class UpdateContentPackageIntegrationTest : AbstractSpringIntegrationTest() {
         )
 
         val updatedContentPackage = UpdateContentPackageRequest(
-            title = "hello",
+            name = "hello",
             accessRules = setOf(
                 sampleIncludedVideosAccessRuleRequest(
                     name = "access rule name",
@@ -53,7 +53,7 @@ class UpdateContentPackageIntegrationTest : AbstractSpringIntegrationTest() {
             updateContentPackage(
                 id = ObjectId().toHexString(),
                 updateContentPackageRequest = UpdateContentPackageRequest(
-                    title = "hello",
+                    name = "hello",
                     accessRules = setOf(
                         sampleIncludedVideosAccessRuleRequest(
                             name = "access rule name",
