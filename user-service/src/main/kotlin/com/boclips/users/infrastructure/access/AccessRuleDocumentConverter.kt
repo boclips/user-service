@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
+import com.boclips.users.domain.model.access.VideoVoiceType
 
 object AccessRuleDocumentConverter {
     fun fromDocument(document: AccessRuleDocument): AccessRule {
@@ -57,6 +58,17 @@ object AccessRuleDocumentConverter {
                         else -> blowUp(document)
                     }
                 }?.toSet() ?: blowUp(document)
+            )
+            AccessRuleDocument.TYPE_INCLUDED_VIDEO_VOICE_TYPES -> AccessRule.IncludedVideoVoiceTypes(
+                id = AccessRuleId(document.id),
+                name = document.name,
+                voiceTypes = document.voiceTypes?.map {
+                    when (it) {
+                        VideoVoiceTypeDocument.UNKNOWN_VOICE -> VideoVoiceType.UNKNOWN_VOICE
+                        VideoVoiceTypeDocument.WITH_VOICE -> VideoVoiceType.WITH_VOICE
+                        VideoVoiceTypeDocument.WITHOUT_VOICE -> VideoVoiceType.WITHOUT_VOICE
+                    }
+                } ?: blowUp(document)
             )
             else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document.id}")
         }
@@ -118,6 +130,18 @@ object AccessRuleDocumentConverter {
                     when (it) {
                         DistributionMethod.DOWNLOAD -> AccessRuleDocument.DISTRIBUTION_METHOD_DOWNLOAD
                         DistributionMethod.STREAM -> AccessRuleDocument.DISTRIBUTION_METHOD_STREAM
+                    }
+                }
+            )
+            is AccessRule.IncludedVideoVoiceTypes -> AccessRuleDocument(
+                id = accessRule.id.value,
+                name = accessRule.name,
+                _class = AccessRuleDocument.TYPE_INCLUDED_VIDEO_VOICE_TYPES,
+                voiceTypes = accessRule.voiceTypes.map {
+                    when (it) {
+                        VideoVoiceType.UNKNOWN_VOICE -> VideoVoiceTypeDocument.UNKNOWN_VOICE
+                        VideoVoiceType.WITH_VOICE -> VideoVoiceTypeDocument.WITH_VOICE
+                        VideoVoiceType.WITHOUT_VOICE -> VideoVoiceTypeDocument.WITHOUT_VOICE
                     }
                 }
             )

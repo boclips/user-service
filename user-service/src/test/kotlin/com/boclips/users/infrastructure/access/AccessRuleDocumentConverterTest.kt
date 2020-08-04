@@ -2,10 +2,11 @@ package com.boclips.users.infrastructure.access
 
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
-import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ChannelId
+import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
+import com.boclips.users.domain.model.access.VideoVoiceType
 import com.boclips.users.domain.service.UniqueId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.ExtensionContext
@@ -58,6 +59,15 @@ class AccessRuleDocumentConverterTest {
                 id = AccessRuleId(UniqueId()),
                 name = "included distr methods",
                 distributionMethods = setOf(DistributionMethod.DOWNLOAD, DistributionMethod.STREAM)
+            ),
+            AccessRule.IncludedVideoVoiceTypes(
+                id = AccessRuleId(UniqueId()),
+                name = "voice types",
+                voiceTypes = listOf(
+                    VideoVoiceType.UNKNOWN_VOICE,
+                    VideoVoiceType.WITHOUT_VOICE,
+                    VideoVoiceType.WITH_VOICE
+                )
             )
         ).map { accessRule -> Arguments.of(accessRule) }
     }

@@ -43,6 +43,13 @@ sealed class AccessRule {
         val channelIds: List<ChannelId>
     ) : AccessRule()
 
+    data class IncludedVideoVoiceTypes(
+        override val id: AccessRuleId,
+        override val name: String,
+        val voiceTypes: List<VideoVoiceType>
+
+    ) : AccessRule()
+
     abstract val id: AccessRuleId
     abstract val name: String
 }

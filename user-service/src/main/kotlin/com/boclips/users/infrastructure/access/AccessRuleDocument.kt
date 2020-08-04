@@ -8,7 +8,8 @@ data class AccessRuleDocument(
     var videoIds: List<String>? = null,
     var videoTypes: List<VideoTypeDocument>? = null,
     var distributionMethods: List<String>? = null,
-    var channelIds: List<String>? = null
+    var channelIds: List<String>? = null,
+    var voiceTypes: List<VideoVoiceTypeDocument>? = null
 ) {
 
     companion object {
@@ -19,6 +20,7 @@ data class AccessRuleDocument(
         const val TYPE_EXCLUDED_CHANNELS = "ExcludedChannels"
         const val TYPE_INCLUDED_DISTRIBUTION_METHODS = "IncludedDistributionMethods"
         const val TYPE_INCLUDED_CHANNELS = "IncludedChannels"
+        const val TYPE_INCLUDED_VIDEO_VOICE_TYPES = "ExcludedVideoVoiceTypes"
 
         const val DISTRIBUTION_METHOD_STREAM = "STREAM"
         const val DISTRIBUTION_METHOD_DOWNLOAD = "DOWNLOAD"

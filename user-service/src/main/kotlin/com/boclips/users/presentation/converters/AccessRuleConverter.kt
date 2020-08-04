@@ -53,6 +53,11 @@ class AccessRuleConverter(
                 name = accessRule.name,
                 distributionMethods = accessRule.distributionMethods.map { it.name }
             )
+            is AccessRule.IncludedVideoVoiceTypes -> AccessRuleResource.IncludedVideoVoiceTypes(
+                id = accessRule.id.value,
+                name = accessRule.name,
+                voiceTypes = accessRule.voiceTypes.map { it.name }
+            )
         }
     }
 
@@ -72,16 +77,16 @@ class AccessRuleConverter(
                 videoIds = accessRuleRequest.videoIds!!.map { VideoId(it) }
             )
             is AccessRuleRequest.ExcludedVideoTypes -> AccessRule.ExcludedVideoTypes(
-                    id = id,
-                    name = name,
-                    videoTypes = accessRuleRequest.videoTypes!!.map {
-                        when (it.toUpperCase()) {
-                            "NEWS" -> VideoType.NEWS
-                            "INSTRUCTIONAL" -> VideoType.INSTRUCTIONAL
-                            "STOCK" -> VideoType.STOCK
-                            else -> throw InvalidVideoTypeException(it)
-                        }
+                id = id,
+                name = name,
+                videoTypes = accessRuleRequest.videoTypes!!.map {
+                    when (it.toUpperCase()) {
+                        "NEWS" -> VideoType.NEWS
+                        "INSTRUCTIONAL" -> VideoType.INSTRUCTIONAL
+                        "STOCK" -> VideoType.STOCK
+                        else -> throw InvalidVideoTypeException(it)
                     }
+                }
             )
 
             is AccessRuleRequest.IncludedChannels -> AccessRule.IncludedChannels(
@@ -94,7 +99,7 @@ class AccessRuleConverter(
                 name = name,
                 videoIds = accessRuleRequest.videoIds!!.map { VideoId(it) }
             )
-            is AccessRuleRequest.ExcludedChannels  -> AccessRule.ExcludedChannels(
+            is AccessRuleRequest.ExcludedChannels -> AccessRule.ExcludedChannels(
                 id = id,
                 name = name,
                 channelIds = accessRuleRequest.channelIds!!.map { ChannelId(it) }
@@ -103,7 +108,11 @@ class AccessRuleConverter(
             is AccessRuleRequest.IncludedDistributionMethods -> AccessRule.IncludedDistributionMethods(
                 id = id,
                 name = name,
-                distributionMethods = accessRuleRequest.distributionMethods?.mapTo(HashSet()) { DistributionMethod.valueOf(it) } ?: emptySet()
+                distributionMethods = accessRuleRequest.distributionMethods?.mapTo(HashSet()) {
+                    DistributionMethod.valueOf(
+                        it
+                    )
+                } ?: emptySet()
             )
         }
     }

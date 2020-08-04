@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
+import com.boclips.users.domain.model.access.VideoVoiceType
 import com.boclips.users.presentation.converters.AccessRuleConverter
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.AccessRuleRequestFactory
@@ -49,6 +50,21 @@ class AccessRuleConverterTest {
             val resource = converter.toResource(accessRule) as AccessRuleResource.IncludedChannels
 
             assertThat(resource.channelIds).containsExactly("A")
+        }
+
+        @Test
+        fun `converts included video voice access rule`() {
+            val accessRule = AccessRuleFactory.sampleIncludedVideoVoiceTypeAccessRule(
+                videoVoiceTypes = listOf(
+                    VideoVoiceType.UNKNOWN_VOICE,
+                    VideoVoiceType.WITHOUT_VOICE,
+                    VideoVoiceType.WITH_VOICE
+                )
+            )
+
+            val resource = converter.toResource(accessRule) as AccessRuleResource.IncludedVideoVoiceTypes
+
+            assertThat(resource.voiceTypes).containsExactlyInAnyOrder("UNKNOWN_VOICE", "WITHOUT_VOICE", "WITH_VOICE")
         }
     }
 

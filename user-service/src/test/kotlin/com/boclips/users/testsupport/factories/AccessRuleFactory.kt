@@ -2,11 +2,12 @@ package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
-import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ChannelId
+import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
+import com.boclips.users.domain.model.access.VideoVoiceType
 
 class AccessRuleFactory {
     companion object {
@@ -52,5 +53,12 @@ class AccessRuleFactory {
             distributionMethods: Set<DistributionMethod>
         ): AccessRule.IncludedDistributionMethods =
             AccessRule.IncludedDistributionMethods(id, name, distributionMethods)
+
+        fun sampleIncludedVideoVoiceTypeAccessRule(
+            id: AccessRuleId = AccessRuleId(),
+            name: String = "Included Video Voice Types",
+            videoVoiceTypes: List<VideoVoiceType>
+        ): AccessRule.IncludedVideoVoiceTypes =
+            AccessRule.IncludedVideoVoiceTypes(id = id, name = name, voiceTypes = videoVoiceTypes)
     }
 }

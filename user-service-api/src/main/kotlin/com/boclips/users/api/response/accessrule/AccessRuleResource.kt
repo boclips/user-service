@@ -46,6 +46,12 @@ sealed class AccessRuleResource(val type: String) {
         val channelIds: List<String>
     ) : AccessRuleResource(type = "IncludedChannel")
 
+    data class IncludedVideoVoiceTypes(
+        override val id: String,
+        override val name: String,
+        val voiceTypes: List<String>
+    ) : AccessRuleResource(type = "IncludedVideoVoiceTypes")
+
     abstract val id: String
     abstract val name: String
 }
