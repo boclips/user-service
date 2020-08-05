@@ -30,13 +30,12 @@ object AccessRuleDocumentConverter {
             AccessRuleDocument.TYPE_EXCLUDED_VIDEO_TYPES -> AccessRule.ExcludedVideoTypes(
                 id = AccessRuleId(document.id),
                 name = document.name,
-                videoTypes = document.videoTypes?.map {
-                    when (it) {
-                        VideoTypeDocument.INSTRUCTIONAL -> VideoType.INSTRUCTIONAL
-                        VideoTypeDocument.NEWS -> VideoType.NEWS
-                        VideoTypeDocument.STOCK -> VideoType.STOCK
-                    }
-                } ?: blowUp(document)
+                videoTypes = convertToVideoTypes(document.videoTypes) ?: blowUp(document)
+            )
+            AccessRuleDocument.TYPE_INCLUDED_VIDEO_TYPES -> AccessRule.IncludedVideoTypes(
+                id = AccessRuleId(document.id),
+                name = document.name,
+                videoTypes = convertToVideoTypes(document.videoTypes) ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_CHANNELS -> AccessRule.ExcludedChannels(
                 id = AccessRuleId(document.id),
@@ -74,6 +73,16 @@ object AccessRuleDocumentConverter {
         }
     }
 
+    private fun convertToVideoTypes(videoTypes: List<VideoTypeDocument>?): List<VideoType>? {
+        return videoTypes?.map {
+            when (it) {
+                VideoTypeDocument.INSTRUCTIONAL -> VideoType.INSTRUCTIONAL
+                VideoTypeDocument.NEWS -> VideoType.NEWS
+                VideoTypeDocument.STOCK -> VideoType.STOCK
+            }
+        }
+    }
+
     private fun blowUp(document: AccessRuleDocument): Nothing {
         throw IllegalStateException("Invalid Access Rule document: $document")
     }
@@ -102,13 +111,13 @@ object AccessRuleDocumentConverter {
                 id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_VIDEO_TYPES,
                 name = accessRule.name,
-                videoTypes = accessRule.videoTypes.map {
-                    when (it) {
-                        VideoType.INSTRUCTIONAL -> VideoTypeDocument.INSTRUCTIONAL
-                        VideoType.NEWS -> VideoTypeDocument.NEWS
-                        VideoType.STOCK -> VideoTypeDocument.STOCK
-                    }
-                }
+                videoTypes = convertFromVideoTypes(accessRule.videoTypes)
+            )
+            is AccessRule.IncludedVideoTypes -> AccessRuleDocument(
+                id = accessRule.id.value,
+                _class = AccessRuleDocument.TYPE_INCLUDED_VIDEO_TYPES,
+                name = accessRule.name,
+                videoTypes = convertFromVideoTypes(accessRule.videoTypes)
             )
             is AccessRule.ExcludedChannels -> AccessRuleDocument(
                 id = accessRule.id.value,
@@ -145,6 +154,16 @@ object AccessRuleDocumentConverter {
                     }
                 }
             )
+        }
+    }
+
+    private fun convertFromVideoTypes(videoTypes: List<VideoType>): List<VideoTypeDocument> {
+        return videoTypes.map {
+            when (it) {
+                VideoType.INSTRUCTIONAL -> VideoTypeDocument.INSTRUCTIONAL
+                VideoType.NEWS -> VideoTypeDocument.NEWS
+                VideoType.STOCK -> VideoTypeDocument.STOCK
+            }
         }
     }
 }

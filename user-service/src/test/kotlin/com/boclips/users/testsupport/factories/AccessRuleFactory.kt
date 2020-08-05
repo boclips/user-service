@@ -35,6 +35,12 @@ class AccessRuleFactory {
             videoTypes: List<VideoType> = emptyList()
         ) = AccessRule.ExcludedVideoTypes(id, name, videoTypes)
 
+        fun sampleIncludedVideoTypesAccessRule(
+            id: AccessRuleId = AccessRuleId(),
+            name: String = "Included Types",
+            videoTypes: List<VideoType> = emptyList()
+        ) = AccessRule.IncludedVideoTypes(id, name, videoTypes)
+
         fun sampleExcludedContentPartnersAccessRule(
             id: AccessRuleId = AccessRuleId(),
             name: String = "Excluded Content Partners",

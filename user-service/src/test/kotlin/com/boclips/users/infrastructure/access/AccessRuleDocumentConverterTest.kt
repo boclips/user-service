@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
+import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.access.VideoVoiceType
 import com.boclips.users.domain.service.UniqueId
 import org.assertj.core.api.Assertions.assertThat
@@ -47,6 +48,16 @@ class AccessRuleDocumentConverterTest {
                 channelIds = listOf(
                     ChannelId("cp-1")
                 )
+            ),
+            AccessRule.ExcludedVideoTypes(
+                id = AccessRuleId(UniqueId()),
+                name = "excluded CPs",
+                videoTypes = listOf(VideoType.STOCK, VideoType.NEWS, VideoType.INSTRUCTIONAL)
+            ),
+            AccessRule.IncludedVideoTypes(
+                id = AccessRuleId(UniqueId()),
+                name = "excluded CPs",
+                videoTypes = listOf(VideoType.STOCK, VideoType.NEWS, VideoType.INSTRUCTIONAL)
             ),
             AccessRule.IncludedChannels(
                 id = AccessRuleId(UniqueId()),

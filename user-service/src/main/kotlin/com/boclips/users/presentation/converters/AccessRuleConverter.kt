@@ -38,6 +38,11 @@ class AccessRuleConverter(
                 name = accessRule.name,
                 videoTypes = accessRule.videoTypes.map { it.name }
             )
+            is AccessRule.IncludedVideoTypes -> AccessRuleResource.IncludedVideoTypes(
+                id = accessRule.id.value,
+                name = accessRule.name,
+                videoTypes = accessRule.videoTypes.map { it.name }
+            )
             is AccessRule.ExcludedChannels -> AccessRuleResource.ExcludedChannels(
                 id = accessRule.id.value,
                 name = accessRule.name,

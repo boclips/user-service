@@ -44,6 +44,18 @@ class AccessRuleConverterTest {
         }
 
         @Test
+        fun `converts included video types access rule`() {
+            val accessRule = AccessRuleFactory.sampleIncludedVideoTypesAccessRule(
+                videoTypes = listOf(VideoType.INSTRUCTIONAL, VideoType.NEWS, VideoType.STOCK)
+            )
+
+            val resource = converter.toResource(accessRule) as AccessRuleResource.IncludedVideoTypes
+
+            assertThat(resource.name).isEqualTo(accessRule.name)
+            assertThat(resource.videoTypes).containsExactlyInAnyOrder("INSTRUCTIONAL", "NEWS", "STOCK")
+        }
+
+        @Test
         fun `converts included channel access rule`() {
             val accessRule = AccessRuleFactory.sampleIncludedChannelsAccessRule(channelIds = listOf(ChannelId("A")))
 

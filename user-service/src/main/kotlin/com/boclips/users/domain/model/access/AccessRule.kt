@@ -31,6 +31,13 @@ sealed class AccessRule {
         val videoTypes: List<VideoType>
     ) : AccessRule()
 
+
+    data class IncludedVideoTypes(
+        override val id: AccessRuleId,
+        override val name: String,
+        val videoTypes: List<VideoType>
+    ) : AccessRule()
+
     data class ExcludedChannels(
         override val id: AccessRuleId,
         override val name: String,
