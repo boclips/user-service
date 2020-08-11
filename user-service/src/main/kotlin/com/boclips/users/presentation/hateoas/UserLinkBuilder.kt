@@ -100,4 +100,12 @@ class UserLinkBuilder :
             )
         ).withRel("validateShareCode")
     }
+
+    fun isUserActiveLink(): Link? {
+        return WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(UserController::class.java).getIsUserActive(
+                null
+            )
+        ).withRel("isUserActive")
+    }
 }

@@ -259,4 +259,12 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         assertThat(validateShareCodeLink).isNotNull
         assertThat(validateShareCodeLink!!.href).endsWith("/users/{id}/shareCode/{shareCode}")
     }
+
+    @Test
+    fun `isUserActive link`() {
+        val isUserActive = userLinkBuilder.isUserActiveLink()
+
+        assertThat(isUserActive).isNotNull
+        assertThat(isUserActive!!.href).endsWith("/users/{id}/active")
+    }
 }

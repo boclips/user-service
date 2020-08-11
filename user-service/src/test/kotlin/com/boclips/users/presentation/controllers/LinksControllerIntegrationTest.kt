@@ -36,6 +36,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
+            .andExpect(jsonPath("$._links.isUserActive").exists())
             .andExpect(jsonPath("$._links.getContentPackages").doesNotExist())
             .andExpect(jsonPath("$._links.getContentPackage").doesNotExist())
             .andExpect(jsonPath("$._links.updateContentPackage").doesNotExist())
@@ -64,6 +65,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.trackPlatformInteractedWith").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
+            .andExpect(jsonPath("$._links.isUserActive").exists())
             .andExpect(jsonPath("$._links.getContentPackages").doesNotExist())
             .andExpect(jsonPath("$._links.getContentPackage").doesNotExist())
             .andExpect(jsonPath("$._links.updateContentPackage").doesNotExist())
@@ -92,6 +94,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
+            .andExpect(jsonPath("$._links.isUserActive").exists())
     }
 
     @Test
@@ -120,6 +123,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.organisations").doesNotExist())
             .andExpect(jsonPath("$._links.account").doesNotExist())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
+            .andExpect(jsonPath("$._links.isUserActive").exists())
     }
 
     @Test
@@ -185,6 +189,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.searchAccessRules").doesNotExist())
             .andExpect(jsonPath("$._links.trackPageRendered").exists())
             .andExpect(jsonPath("$._links.validateShareCode").exists())
+            .andExpect(jsonPath("$._links.isUserActive").exists())
     }
 
     @Test

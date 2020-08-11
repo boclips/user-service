@@ -48,6 +48,7 @@ class LinksController(
                 organisationLinkBuilder.getOrganisationsLink(),
                 organisationLinkBuilder.getOrganisationLink(),
                 userLinkBuilder.validateShareCodeLink(),
+                userLinkBuilder.isUserActiveLink(),
                 contentPackageLinkBuilder.getContentPackagesLink(),
                 contentPackageLinkBuilder.getContentPackageLink(),
                 contentPackageLinkBuilder.updateContentPackageLink()

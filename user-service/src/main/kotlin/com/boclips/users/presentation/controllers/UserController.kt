@@ -8,6 +8,7 @@ import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.application.commands.CreateTeacher
 import com.boclips.users.application.commands.GetAccessRulesOfUser
 import com.boclips.users.application.commands.GetUser
+import com.boclips.users.application.commands.IsUserActive
 import com.boclips.users.application.commands.UpdateUser
 import com.boclips.users.application.commands.ValidateShareCode
 import com.boclips.users.domain.model.user.UserId
@@ -39,6 +40,7 @@ class UserController(
     private val userLinkBuilder: UserLinkBuilder,
     private val withProjection: WithProjection,
     private val validateShareCode: ValidateShareCode,
+    private val isUserActive: IsUserActive,
     private val accessRuleConverter: AccessRuleConverter,
     private val getAccessRulesOfUser: GetAccessRulesOfUser
 ) {
@@ -87,6 +89,14 @@ class UserController(
     @GetMapping("/{id}/shareCode/{shareCode}")
     fun getShareCode(@PathVariable id: String?, @PathVariable shareCode: String?): ResponseEntity<Any> =
         if (validateShareCode(id!!, shareCode!!)) {
+            ResponseEntity.status(HttpStatus.OK).build()
+        } else {
+            ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+        }
+
+    @GetMapping("/{id}/active")
+    fun getIsUserActive(@PathVariable id: String?): ResponseEntity<Any> =
+        if (isUserActive(id!!)) {
             ResponseEntity.status(HttpStatus.OK).build()
         } else {
             ResponseEntity.status(HttpStatus.FORBIDDEN).build()

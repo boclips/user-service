@@ -740,4 +740,23 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             mvc.perform(get("/v1/users/${user.id.value}/shareCode/ABCD")).andExpect(status().isNotFound)
         }
     }
+
+    @Nested
+    inner class IsUserActive {
+        @Test
+        fun `returns 200 when user is active`() {
+            val inTenMinuts = ZonedDateTime.now().plusMinutes(10)
+            val user = saveUser(UserFactory.sample(accessExpiresOn = inTenMinuts))
+
+            mvc.perform(get("/v1/users/${user.id.value}/active")).andExpect(status().isOk)
+        }
+
+        @Test
+        fun `returns 403 when user is inactive`() {
+            val tenMinutesAgo = ZonedDateTime.now().minusMinutes(10)
+            val user = saveUser(UserFactory.sample(accessExpiresOn = tenMinutesAgo))
+
+            mvc.perform(get("/v1/users/${user.id.value}/active")).andExpect(status().isForbidden)
+        }
+    }
 }

@@ -34,6 +34,7 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.PUT, "/v1/users/*").authenticated()
             .antMatchers(HttpMethod.GET, "/v1/users/*/access-rules").hasRole(UserRoles.VIEW_ACCESS_RULES)
             .antMatchers(HttpMethod.GET, "/v1/users/*/shareCode/*").permitAll()
+            .antMatchers(HttpMethod.GET, "/v1/users/*/active").permitAll()
 
             .antMatchers(HttpMethod.POST, "/v1/e2e-users").authenticated()
 
