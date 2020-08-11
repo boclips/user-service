@@ -1,6 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -17,6 +18,16 @@ class IsUserActiveTest : AbstractSpringIntegrationTest() {
     fun `active user`() {
         val inTenMinutes = ZonedDateTime.now().plusMinutes(10);
         val user = saveUser(UserFactory.sample(accessExpiresOn = inTenMinutes))
+        assertTrue(isUserActive(user.id.value))
+    }
+
+    @Test
+    fun `active user when trial finished but has lifetime access`() {
+        val tenMinutesAgo = ZonedDateTime.now().minusMinutes(10);
+        val user = saveUser(UserFactory.sample(
+            accessExpiresOn = tenMinutesAgo,
+            teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(hasLifetimeAccess = true)
+        ))
         assertTrue(isUserActive(user.id.value))
     }
 

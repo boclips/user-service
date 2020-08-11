@@ -11,9 +11,10 @@ class IsUserActive(
     private val userRepository: UserRepository
 ) {
     operator fun invoke(userId: String): Boolean {
-        return userRepository.findById(UserId(userId)).let {user ->
+        return userRepository.findById(UserId(userId)).let { user ->
             when (user) {
-                is User -> user.accessExpiresOn?.let { ZonedDateTime.now().isBefore(it) } ?: false
+                is User -> user.teacherPlatformAttributes?.hasLifetimeAccess ?: false
+                    || user.accessExpiresOn?.let { ZonedDateTime.now().isBefore(it) } ?: false
                 else -> false
             }
         }
