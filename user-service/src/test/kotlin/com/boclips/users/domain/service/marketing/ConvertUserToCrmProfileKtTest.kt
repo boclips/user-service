@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
+import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -46,6 +47,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
         val expiryDate = ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1)
         val user = UserFactory.sample(
             identity = IdentityFactory.sample(id = "lovely-user-id", username = "lovely-user@boclips.com"),
+            teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(hasLifetimeAccess = true),
             profile = ProfileFactory.sample(
                 firstName = "First",
                 lastName = "Last",
@@ -80,6 +82,7 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
         assertThat(crmProfile.email).isEqualTo("lovely-user@boclips.com")
         assertThat(crmProfile.activated).isTrue()
         assertThat(crmProfile.hasOptedIntoMarketing).isTrue()
+        assertThat(crmProfile.hasLifetimeAccess).isTrue()
         assertThat(crmProfile.ageRange).containsExactly(1, 2, 3, 4)
         assertThat(crmProfile.subjects).hasSize(1)
         assertThat(crmProfile.subjects.first().name).isEqualTo("Subject Name")

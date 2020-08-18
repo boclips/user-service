@@ -14,6 +14,7 @@ class CrmProfile(
     val email: String,
     val role: String,
     val hasOptedIntoMarketing: Boolean,
+    val hasLifetimeAccess: Boolean,
     val lastLoggedIn: Instant?,
     val marketingTracking: MarketingTracking,
     val accessExpiresOn: Instant?

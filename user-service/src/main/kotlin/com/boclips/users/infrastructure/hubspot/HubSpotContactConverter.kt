@@ -35,7 +35,8 @@ class HubSpotContactConverter {
                 HubSpotProperty("b2t_utm_medium", crmProfile.marketingTracking.utmMedium),
                 HubSpotProperty("b2t_utm_campaign", crmProfile.marketingTracking.utmCampaign),
                 HubSpotProperty("b2t_last_logged_in", convertToInstantAtMidnight(crmProfile.lastLoggedIn)),
-                HubSpotProperty("b2t_access_expiry", convertToInstantAtMidnight(crmProfile.accessExpiresOn))
+                HubSpotProperty("b2t_access_expiry", convertToInstantAtMidnight(crmProfile.accessExpiresOn)),
+                HubSpotProperty("b2t_has_lifetime_access", crmProfile.hasLifetimeAccess.toString())
             )
         )
     }

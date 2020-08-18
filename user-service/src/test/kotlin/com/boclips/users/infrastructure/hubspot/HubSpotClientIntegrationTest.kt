@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.hubspot
 
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.model.user.TeacherPlatformAttributes
 import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -71,6 +72,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                     identity = IdentityFactory.sample(
                         username = "jane@doe.com"
                     ),
+                    teacherPlatformAttributes = TeacherPlatformAttributes(shareCode = "test", hasLifetimeAccess = false),
                     marketing = MarketingTrackingFactory.sample(
                         utmContent = "utm-content-1",
                         utmTerm = "utm-term-1",

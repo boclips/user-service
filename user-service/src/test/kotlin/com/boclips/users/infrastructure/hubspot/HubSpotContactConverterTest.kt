@@ -55,6 +55,18 @@ class HubSpotContactConverterTest {
     }
 
     @Test
+    fun `hasLifetimeAccess is converted`() {
+        val hubSpotContact = HubSpotContactConverter().convert(
+            CrmProfileFactory.sample(
+                hasLifetimeAccess = true
+            )
+        )
+
+        val hasLifetimeAccess = hubSpotContact.properties.first { it.property == "b2t_has_lifetime_access" }
+        assertThat(hasLifetimeAccess.value).isEqualTo("true")
+    }
+
+    @Test
     fun `access expiry date is an instant`() {
         val hubSpotContact = HubSpotContactConverter().convert(
             CrmProfileFactory.sample(

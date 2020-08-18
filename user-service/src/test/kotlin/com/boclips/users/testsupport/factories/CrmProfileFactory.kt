@@ -12,7 +12,8 @@ class CrmProfileFactory {
             subjects: List<Subject> = emptyList(),
             lastLoggedIn: Instant? = Instant.now(),
             accessExpiresOn: Instant? = Instant.now(),
-            role: String = ""
+            role: String = "",
+            hasLifetimeAccess: Boolean = false
         ): CrmProfile {
             return CrmProfile(
                 id = UserId(value = "some-id"),
@@ -25,6 +26,7 @@ class CrmProfileFactory {
                 email = "email@internet.com",
                 role = role,
                 hasOptedIntoMarketing = true,
+                hasLifetimeAccess = hasLifetimeAccess,
                 marketingTracking = MarketingTrackingFactory.sample(),
                 accessExpiresOn = accessExpiresOn
             )

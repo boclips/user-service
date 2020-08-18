@@ -56,6 +56,10 @@
       {
         "property": "b2t_access_expiry",
         "value": "1502150400000"
+      },
+      {
+        "property" : "b2t_has_lifetime_access",
+        "value" : "false"
       }
     ]
   }
