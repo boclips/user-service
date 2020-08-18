@@ -31,8 +31,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.time.Instant
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -352,26 +350,21 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
     @DisplayName("Access expiry")
     inner class accessExpiry {
 
-        // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-08-31
         @Test
-        fun `accessExpiresOn logic starts after 31th Aug 2020`() {
+        fun `accessExpiresOn 90 days after account creation`() {
             setSecurityContext("new-user-id")
-            val defaultExpectedExpiryDate = ZonedDateTime.now().plusDays(
+            val creationDate = ZonedDateTime.now()
+
+            val expiryDate = creationDate.plusDays(
                 UpdateUser.DEFAULT_TRIAL_DAYS_LENGTH + 1
             ).truncatedTo(ChronoUnit.DAYS)
-            val extendedTrialEndDate = Instant.parse("2020-09-01T00:00:00Z").atZone(ZoneId.systemDefault())
 
-            val expectedExpiryDate = if (defaultExpectedExpiryDate.isBefore(extendedTrialEndDate)) {
-                extendedTrialEndDate
-            } else {
-                defaultExpectedExpiryDate
-            }
 
             val newUser =
                 UserFactory.sample(
                     identity = IdentityFactory.sample(
                         id = "new-user-id",
-                        createdAt = ZonedDateTime.parse("2020-10-10T00:00:00Z")
+                        createdAt = creationDate
                     ),
                     profile = ProfileFactory.sample(
                         firstName = ""
@@ -383,7 +376,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
 
             val updatedUser = updateUser("new-user-id", UpdateUserRequestFactory.sample(firstName = "Joesph"))
 
-            assertThat(updatedUser.accessExpiresOn).isEqualTo(expectedExpiryDate)
+            assertThat(updatedUser.accessExpiresOn).isEqualTo(expiryDate)
         }
 
         @Test

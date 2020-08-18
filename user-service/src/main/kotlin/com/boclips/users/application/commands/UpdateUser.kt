@@ -25,7 +25,6 @@ import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import mu.KLogging
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -40,10 +39,7 @@ class UpdateUser(
     private val generateShareCode: GenerateTeacherShareCode
 ) {
     companion object : KLogging() {
-        const val DEFAULT_TRIAL_DAYS_LENGTH = 10L
-
-        // This part added because we provide extended trial during the COVID-19 situation, can be removed after 2020-08-31
-        const val EXTENDED_TRIAL_END_DATE = "2020-09-01T00:00:00Z"
+        const val DEFAULT_TRIAL_DAYS_LENGTH = 90L
     }
 
     operator fun invoke(userId: String, updateUserRequest: UpdateUserRequest): User {
@@ -83,12 +79,7 @@ class UpdateUser(
     }
 
     private fun calculateAccessExpiryDate(): ZonedDateTime {
-        val defaultAccessExpiry =
-            ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
-
-        val extendedTrialEndDate = Instant.parse(EXTENDED_TRIAL_END_DATE).atZone(ZoneId.systemDefault())
-
-        return if (defaultAccessExpiry.isBefore(extendedTrialEndDate)) extendedTrialEndDate else defaultAccessExpiry
+        return ZonedDateTime.now().plusDays(DEFAULT_TRIAL_DAYS_LENGTH + 1).truncatedTo(ChronoUnit.DAYS)
     }
 
     private fun findOrCreateSchool(updateUserRequest: UpdateUserRequest): School? {
