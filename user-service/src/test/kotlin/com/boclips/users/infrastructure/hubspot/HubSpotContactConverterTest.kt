@@ -81,13 +81,13 @@ class HubSpotContactConverterTest {
     @Nested
     internal class UserRole {
         @Test
-        fun `converting Teacher role`() = assertRoleConversion("TEACHER", "Teacher/Professor")
+        fun `converting Teacher role`() = assertRoleConversion("TEACHER", "Teachers")
 
         @Test
-        fun `converting Parent role`() = assertRoleConversion("PARENT", "Parent")
+        fun `converting Parent role`() = assertRoleConversion("PARENT", "Other")
 
         @Test
-        fun `converting School Administrator role`() = assertRoleConversion("SCHOOLADMIN", "School Administrator")
+        fun `converting School Administrator role`() = assertRoleConversion("SCHOOLADMIN", "Administrator")
 
         @Test
         fun `converting Other role`() = assertRoleConversion("OTHER", "Other")
@@ -100,7 +100,7 @@ class HubSpotContactConverterTest {
                 )
             )
 
-            val role = hubSpotContact.properties.firstOrNull { it.property == "role" }
+            val role = hubSpotContact.properties.firstOrNull { it.property == "b2t_role" }
             assertThat(role).isNull()
         }
 
@@ -112,7 +112,7 @@ class HubSpotContactConverterTest {
                 )
             )
 
-            val role = hubSpotContact.properties.firstOrNull { it.property == "role" }
+            val role = hubSpotContact.properties.firstOrNull { it.property == "b2t_role" }
             assertThat(role).isNull()
         }
 
@@ -123,7 +123,7 @@ class HubSpotContactConverterTest {
                 )
             )
 
-            val role = hubSpotContact.properties.first { it.property == "role" }
+            val role = hubSpotContact.properties.first { it.property == "b2t_role" }
             assertThat(role.value).isEqualTo(expectedConversion)
         }
     }

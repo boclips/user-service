@@ -9,10 +9,10 @@ class HubSpotContactConverter {
 
     companion object {
         val roleMap = mapOf(
-            "TEACHER" to "Teacher/Professor",
+            "TEACHER" to "Teachers",
             "OTHER" to "Other",
-            "PARENT" to "Parent",
-            "SCHOOLADMIN" to "School Administrator"
+            "PARENT" to "Other",
+            "SCHOOLADMIN" to "Administrator"
         )
     }
 
@@ -28,7 +28,7 @@ class HubSpotContactConverter {
                 HubSpotProperty("b2t_is_activated", crmProfile.activated.toString()),
                 HubSpotProperty("subjects_taught", crmProfile.subjects.joinToString { it.name }),
                 HubSpotProperty("age_range", crmProfile.ageRange.joinToString()),
-                role?.let { HubSpotProperty("role", it) },
+                role?.let { HubSpotProperty("b2t_role", it) },
                 HubSpotProperty("b2t_utm_source", crmProfile.marketingTracking.utmSource),
                 HubSpotProperty("b2t_utm_term", crmProfile.marketingTracking.utmTerm),
                 HubSpotProperty("b2t_utm_content", crmProfile.marketingTracking.utmContent),
