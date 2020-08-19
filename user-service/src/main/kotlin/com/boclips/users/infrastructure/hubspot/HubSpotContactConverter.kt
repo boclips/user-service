@@ -9,7 +9,7 @@ class HubSpotContactConverter {
 
     companion object {
         val roleMap = mapOf(
-            "TEACHER" to "Teachers",
+            "TEACHER" to "Teacher",
             "OTHER" to "Other",
             "PARENT" to "Other",
             "SCHOOLADMIN" to "Administrator"

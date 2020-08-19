@@ -81,7 +81,7 @@ class HubSpotContactConverterTest {
     @Nested
     internal class UserRole {
         @Test
-        fun `converting Teacher role`() = assertRoleConversion("TEACHER", "Teachers")
+        fun `converting Teacher role`() = assertRoleConversion("TEACHER", "Teacher")
 
         @Test
         fun `converting Parent role`() = assertRoleConversion("PARENT", "Other")
