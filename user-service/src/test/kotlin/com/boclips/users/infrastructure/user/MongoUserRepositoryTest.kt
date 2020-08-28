@@ -66,19 +66,31 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can find all teachers`() {
         val school = organisationRepository.save(OrganisationFactory.school())
+        val district = organisationRepository.save(OrganisationFactory.district())
         val apiOrganisation = saveOrganisation(OrganisationFactory.apiIntegration())
 
         listOf(
             saveUser(
                 UserFactory.sample(
-                    identity = IdentityFactory.sample(id = "1"),
+                    profile = ProfileFactory.sample(firstName = "school-teacher"),
                     organisation = school
                 )
             ),
-            saveUser(UserFactory.sample(identity = IdentityFactory.sample(id = "4"), organisation = null)),
             saveUser(
                 UserFactory.sample(
-                    identity = IdentityFactory.sample(id = "5"),
+                    profile = ProfileFactory.sample(firstName = "district-teacher"),
+                    organisation = district
+                )
+            ),
+            saveUser(
+                UserFactory.sample(
+                    profile = ProfileFactory.sample(firstName = "null-teacher"),
+                    organisation = null
+                )
+            ),
+            saveUser(
+                UserFactory.sample(
+                    profile = ProfileFactory.sample(firstName = "api-user"),
                     organisation = apiOrganisation
                 )
             )
@@ -86,8 +98,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val users = userRepository.findAllTeachers()
 
-        assertThat(users).hasSize(2)
-        assertThat(users.map { it.id.value }).containsExactly("1", "4")
+        assertThat(users.map { it.getContactDetails()!!.firstName })
+            .containsExactly("school-teacher", "district-teacher", "null-teacher")
     }
 
     @Test

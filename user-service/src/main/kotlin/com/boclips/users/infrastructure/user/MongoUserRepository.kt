@@ -100,6 +100,7 @@ class MongoUserRepository(
             .find(
                 or(
                     UserDocument::organisation / OrganisationDocument::type eq OrganisationType.SCHOOL,
+                    UserDocument::organisation / OrganisationDocument::type eq OrganisationType.DISTRICT,
                     UserDocument::organisation eq null
                 )
             )
@@ -147,4 +148,3 @@ class MongoUserRepository(
             .toList()
     }
 }
-
