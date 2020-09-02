@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.Organisation
 import java.time.ZonedDateTime
 
-data class User(
+class User(
     val identity: Identity,
     val profile: Profile?,
     val teacherPlatformAttributes: TeacherPlatformAttributes?,
@@ -13,9 +13,16 @@ data class User(
     val referralCode: String?,
     val analyticsId: AnalyticsId? = null,
     val organisation: Organisation? = null,
-    val accessExpiresOn: ZonedDateTime?
+    accessExpiresOn: ZonedDateTime?
 ) {
     val id get() = this.identity.id
+
+    val accessExpiresOn: ZonedDateTime? = accessExpiresOn
+        get() {
+            val organizationExpiryDate = organisation?.accessExpiryDate ?: return field
+
+            return field?.let { if (it.isAfter(organizationExpiryDate)) it else organizationExpiryDate }
+        }
 
     fun hasOnboarded(): Boolean {
         return isActivated()
@@ -40,6 +47,35 @@ data class User(
             )
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as User
+
+        if (identity != other.identity) return false
+        if (profile != other.profile) return false
+        if (teacherPlatformAttributes != other.teacherPlatformAttributes) return false
+        if (marketingTracking != other.marketingTracking) return false
+        if (referralCode != other.referralCode) return false
+        if (analyticsId != other.analyticsId) return false
+        if (organisation != other.organisation) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = identity.hashCode()
+        result = 31 * result + (profile?.hashCode() ?: 0)
+        result = 31 * result + (teacherPlatformAttributes?.hashCode() ?: 0)
+        result = 31 * result + marketingTracking.hashCode()
+        result = 31 * result + (referralCode?.hashCode() ?: 0)
+        result = 31 * result + (analyticsId?.hashCode() ?: 0)
+        result = 31 * result + (organisation?.hashCode() ?: 0)
+        return result
+    }
+
 
     data class ContactDetails(
         val firstName: String,

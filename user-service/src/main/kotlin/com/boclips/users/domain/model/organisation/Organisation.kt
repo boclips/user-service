@@ -1,5 +1,7 @@
 package com.boclips.users.domain.model.organisation
 
+import java.time.ZonedDateTime
+
 enum class OrganisationType {
     API, SCHOOL, DISTRICT
 }
@@ -14,6 +16,7 @@ sealed class Organisation(
     open val domain: String?
 ) {
     abstract fun type(): OrganisationType
+    abstract val accessExpiryDate: ZonedDateTime?
 }
 
 data class School(
@@ -38,6 +41,9 @@ data class School(
     override fun type(): OrganisationType {
         return OrganisationType.SCHOOL
     }
+
+    override val accessExpiryDate: ZonedDateTime?
+        get() = this.district?.deal?.accessExpiresOn ?: this.deal.accessExpiresOn
 }
 
 data class District(
@@ -61,6 +67,9 @@ data class District(
     override fun type(): OrganisationType {
         return OrganisationType.DISTRICT
     }
+
+    override val accessExpiryDate: ZonedDateTime?
+        get() = this.deal.accessExpiresOn
 }
 
 data class ApiIntegration(
@@ -84,4 +93,7 @@ data class ApiIntegration(
     override fun type(): OrganisationType {
         return OrganisationType.API
     }
+
+    override val accessExpiryDate: ZonedDateTime?
+        get() = this.deal.accessExpiresOn
 }

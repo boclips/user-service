@@ -1,9 +1,12 @@
 package com.boclips.users.domain.model
 
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.time.ZonedDateTime
 
 class UserTest {
     @Test
@@ -40,5 +43,62 @@ class UserTest {
         )
 
         assertThat(user.isActivated()).isFalse()
+    }
+
+    @Nested
+    inner class AccessExpiresOn {
+        @Test
+        fun `it takes the furthest date in the future when both user and organisation have an expiry date`() {
+            val userAccess = ZonedDateTime.now()
+            val orgAccess = ZonedDateTime.now().plusDays(10)
+
+            val user = UserFactory.sample(
+                organisation = OrganisationFactory.school(deal = OrganisationFactory.deal(accessExpiresOn = orgAccess)),
+                accessExpiresOn = userAccess
+            )
+
+            assertThat(user.accessExpiresOn).isEqualTo(orgAccess)
+        }
+
+        @Test
+        fun `district deal expiry date takes precedent over school expiry date`() {
+            val userAccess = ZonedDateTime.now()
+            val schoolAccess = ZonedDateTime.now().plusDays(10)
+            val districtAccess = ZonedDateTime.now().plusDays(15)
+
+            val user = UserFactory.sample(
+                organisation = OrganisationFactory.school(
+                    district = OrganisationFactory.district(deal = OrganisationFactory.deal(accessExpiresOn = districtAccess)),
+                    deal = OrganisationFactory.deal(accessExpiresOn = schoolAccess)
+                ),
+                accessExpiresOn = userAccess
+            )
+
+            assertThat(user.accessExpiresOn).isEqualTo(districtAccess)
+        }
+
+        @Test
+        fun `it takes the user expiry date when user has no organisation`() {
+            val userAccess = ZonedDateTime.now().plusDays(10)
+
+            val user = UserFactory.sample(
+                organisation = null,
+                accessExpiresOn = userAccess
+            )
+
+            assertThat(user.accessExpiresOn).isEqualTo(userAccess)
+        }
+
+        @Test
+        fun `it returns null when user has no expiry date`() {
+            val userAccess = ZonedDateTime.now().plusDays(10)
+
+            val user = UserFactory.sample(
+                organisation = null,
+                accessExpiresOn = userAccess
+            )
+
+            assertThat(user.accessExpiresOn).isEqualTo(userAccess)
+        }
     }
 }
