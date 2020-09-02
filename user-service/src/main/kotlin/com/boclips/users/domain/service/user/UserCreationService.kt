@@ -1,11 +1,11 @@
 package com.boclips.users.domain.service.user
 
+import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.NewTeacher
 import com.boclips.users.domain.model.user.TeacherPlatformAttributes
 import com.boclips.users.domain.model.user.User
-import com.boclips.users.domain.model.marketing.MarketingTracking
-import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolver
 import mu.KLogging
@@ -34,14 +34,17 @@ class UserCreationService(
         )
 
         return create(identity) {
-            it.copy(
+            User(
                 teacherPlatformAttributes = TeacherPlatformAttributes(
                     shareCode = newTeacher.shareCode,
                     hasLifetimeAccess = false
                 ),
                 analyticsId = newTeacher.analyticsId,
                 referralCode = newTeacher.referralCode,
-                marketingTracking = newTeacher.marketingTracking
+                marketingTracking = newTeacher.marketingTracking,
+                accessExpiresOn = it.accessExpiresOn,
+                identity = it.identity,
+                profile = it.profile
             )
         }
     }
