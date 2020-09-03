@@ -1,6 +1,7 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.Deal
@@ -39,7 +40,8 @@ class OrganisationFactory {
             role: String? = null,
             domain: String? = null,
             tags: Set<OrganisationTag> = emptySet(),
-            externalId: ExternalOrganisationId? = null
+            externalId: ExternalOrganisationId? = null,
+            features: Map<Feature, Boolean>? = null
         ): District {
             return District(
                 id = id,
@@ -49,7 +51,8 @@ class OrganisationFactory {
                 tags = tags,
                 role = role,
                 externalId = externalId,
-                domain = domain
+                domain = domain,
+                features = features
             )
         }
 
@@ -62,7 +65,8 @@ class OrganisationFactory {
             tags: Set<OrganisationTag> = emptySet(),
             domain: String? = null,
             district: District? = null,
-            externalId: ExternalOrganisationId? = null
+            externalId: ExternalOrganisationId? = null,
+            features: Map<Feature, Boolean>? = null
         ): School {
             return School(
                 id = id,
@@ -73,7 +77,8 @@ class OrganisationFactory {
                 role = role,
                 externalId = externalId,
                 domain = domain,
-                district = district
+                district = district,
+                features = features
             )
         }
 
@@ -85,7 +90,8 @@ class OrganisationFactory {
             tags: Set<OrganisationTag> = emptySet(),
             role: String? = null,
             domain: String? = null,
-            allowsOverridingUserId: Boolean = false
+            allowsOverridingUserId: Boolean = false,
+            features: Map<Feature, Boolean>? = null
         ): ApiIntegration {
             return ApiIntegration(
                 id = id,
@@ -95,7 +101,8 @@ class OrganisationFactory {
                 tags = tags,
                 role = role,
                 domain = domain,
-                allowsOverridingUserIds = allowsOverridingUserId
+                allowsOverridingUserIds = allowsOverridingUserId,
+                features = features
             )
         }
     }

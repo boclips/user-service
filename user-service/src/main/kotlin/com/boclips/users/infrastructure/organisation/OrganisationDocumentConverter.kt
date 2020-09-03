@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.Deal
@@ -54,7 +55,8 @@ object OrganisationDocumentConverter : KLogging() {
                 tags = tags,
                 domain = organisationDocument.domain,
                 allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false,
-                role = organisationDocument.role
+                role = organisationDocument.role,
+                features = organisationDocument.features?.mapKeys { pair -> Feature.valueOf(pair.key) }
             )
 
             OrganisationType.SCHOOL -> School(
@@ -66,7 +68,8 @@ object OrganisationDocumentConverter : KLogging() {
                 domain = organisationDocument.domain,
                 district = organisationDocument.parent?.let { fromDocument(it) as? District? },
                 externalId = externalId,
-                role = organisationDocument.role
+                role = organisationDocument.role,
+                features = organisationDocument.features?.mapKeys { pair -> Feature.valueOf(pair.key) }
             )
 
             OrganisationType.DISTRICT -> District(
@@ -77,7 +80,8 @@ object OrganisationDocumentConverter : KLogging() {
                 tags = tags,
                 domain = organisationDocument.domain,
                 externalId = externalId,
-                role = organisationDocument.role
+                role = organisationDocument.role,
+                features = organisationDocument.features?.mapKeys { pair -> Feature.valueOf(pair.key) }
             )
         }
 
@@ -108,8 +112,8 @@ object OrganisationDocumentConverter : KLogging() {
             accessExpiresOn = organisation.deal.accessExpiresOn?.toInstant(),
             tags = organisation.tags.map { it.name }.toSet(),
             billing = organisation.deal.billing,
-            contentPackageId = organisation.deal.contentPackageId?.value
+            contentPackageId = organisation.deal.contentPackageId?.value,
+            features = organisation.features?.mapKeys { pair -> pair.key.toString() }
         )
     }
 }
-

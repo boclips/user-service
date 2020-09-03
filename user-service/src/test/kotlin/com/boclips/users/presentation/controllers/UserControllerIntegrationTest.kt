@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.Address
@@ -18,7 +19,6 @@ import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asApiUser
 import com.boclips.users.testsupport.asBoclipsService
-import com.boclips.users.testsupport.asOperator
 import com.boclips.users.testsupport.asTeacher
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -594,6 +594,51 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
                 .andExpect(jsonPath("$._links.self.href", endsWith("users/${user.id.value}")))
                 .andExpect(jsonPath("$._links.profile.href", endsWith("users/${user.id.value}")))
+        }
+    }
+
+    @Nested
+    inner class Features {
+
+        @Test
+        fun `can retrieve all features related to a user`() {
+            val organisation = saveOrganisation(OrganisationFactory.district(
+                features = mapOf(Feature.LTI_COPY_RESOURCE_LINK to true)
+            ))
+            val user = saveUser(UserFactory.sample(organisation = organisation))
+
+            mvc.perform(get("/v1/users/${user.id.value}/features"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk)
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.features.LTI_COPY_RESOURCE_LINK", equalTo(true)
+                    )
+                )
+        }
+
+        @Test
+        fun `set of features with default values is returned for a user with no features assigned`() {
+            val organisation = saveOrganisation(OrganisationFactory.district(
+                features = emptyMap()
+            ))
+            val user = saveUser(UserFactory.sample(organisation = organisation))
+
+            mvc.perform(get("/v1/users/${user.id.value}/features"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk)
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.features.LTI_COPY_RESOURCE_LINK", equalTo(false)
+                    )
+                )
+        }
+
+        @Test
+        fun `returns 404 when fetching features for non existing user`() {
+            mvc.perform(get("/v1/users/some-fake-user/features"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound)
         }
     }
 

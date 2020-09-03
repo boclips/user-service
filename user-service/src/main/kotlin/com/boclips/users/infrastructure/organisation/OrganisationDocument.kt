@@ -19,7 +19,8 @@ data class OrganisationDocument(
     val accessExpiresOn: Instant? = null,
     val tags: Set<String>? = null,
     val billing: Boolean? = null,
-    val contentPackageId: String? = null
+    val contentPackageId: String? = null,
+    val features: Map<String, Boolean>?
 )
 
 data class LocationDocument(

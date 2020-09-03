@@ -34,7 +34,8 @@ class CreateApiIntegration(
             tags = emptySet(),
             role = request.role,
             domain = null,
-            allowsOverridingUserIds = false
+            allowsOverridingUserIds = false,
+            features = null
         )
 
         return repository.save(organisation)

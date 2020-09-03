@@ -53,7 +53,8 @@ class OrganisationService(
                 tags = emptySet(),
                 district = externalInfo.district?.let(this::getOrCreateDistrict),
                 externalId = externalInfo.school.id,
-                domain = null
+                domain = null,
+                features = null
             )
         )
     }
@@ -72,7 +73,8 @@ class OrganisationService(
                 tags = emptySet(),
                 role = null,
                 externalId = externalInfo.id,
-                domain = null
+                domain = null,
+                features = null
             )
         )
     }

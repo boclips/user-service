@@ -22,7 +22,8 @@ class OrganisationDocumentFactory {
             allowsOverridingUserIds: Boolean? = null,
             parent: OrganisationDocument? = null,
             billing: Boolean? = null,
-            accessExpiresOn: ZonedDateTime? = null
+            accessExpiresOn: ZonedDateTime? = null,
+            features: Map<String, Boolean>? = null
         ) = OrganisationDocument(
             _id = id,
             name = name,
@@ -37,7 +38,8 @@ class OrganisationDocumentFactory {
             allowsOverridingUserIds = allowsOverridingUserIds,
             parent = parent,
             billing = billing,
-            accessExpiresOn = accessExpiresOn?.toInstant()
+            accessExpiresOn = accessExpiresOn?.toInstant(),
+            features = features
         )
     }
 }

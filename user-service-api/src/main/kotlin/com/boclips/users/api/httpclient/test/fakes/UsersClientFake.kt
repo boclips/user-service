@@ -3,11 +3,14 @@ package com.boclips.users.api.httpclient.test.fakes
 import com.boclips.users.api.httpclient.UsersClient
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
+import com.boclips.users.api.response.feature.FeaturesResource
+import com.boclips.users.api.response.feature.FeaturesWrapper
 import com.boclips.users.api.response.user.UserResource
 
 class UsersClientFake : UsersClient, FakeClient<UserResource> {
     private val userDatabase: MutableMap<String, UserResource> = LinkedHashMap()
     private val accessRulesDatabase: MutableMap<String, AccessRulesResource> = LinkedHashMap()
+    private val featuresDatabase: MutableMap<String, FeaturesResource> = LinkedHashMap()
 
     override fun getUser(id: String): UserResource {
         return userDatabase[id] ?: throw FakeClient.notFoundException("User not found")
@@ -21,6 +24,10 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
         if (userDatabase[id]?.teacherPlatformAttributes?.shareCode != shareCode) {
             throw FakeClient.forbiddenException("Invalid share code")
         }
+    }
+
+    override fun getUserFeatures(id: String): FeaturesResource {
+        return featuresDatabase[id] ?: FeaturesResource(FeaturesWrapper(emptyMap()))
     }
 
     override fun add(element: UserResource): UserResource {
@@ -49,5 +56,9 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
         accessRulesDatabase[userId] = amendedResource
 
         return amendedResource
+    }
+
+    fun addUserFeatures(userId: String, featuresResource: FeaturesResource) {
+        featuresDatabase[userId] = featuresResource
     }
 }

@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
@@ -106,7 +107,8 @@ class OrganisationDocumentConverterTest {
             tags = setOf(OrganisationTag.DESIGN_PARTNER),
             deal = deal(
                 billing = true
-            )
+            ),
+            features = mapOf(Pair(Feature.LTI_COPY_RESOURCE_LINK, true))
         )
         val organisation = OrganisationFactory.school(
             district = parentOrganisation

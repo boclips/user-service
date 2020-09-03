@@ -4,17 +4,21 @@ import com.boclips.users.api.request.user.CreateTeacherRequest
 import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
+import com.boclips.users.api.response.feature.FeaturesResource
 import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.application.commands.CreateTeacher
 import com.boclips.users.application.commands.GetAccessRulesOfUser
+import com.boclips.users.application.commands.GetFeaturesOfUser
 import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.commands.IsUserActive
 import com.boclips.users.application.commands.UpdateUser
 import com.boclips.users.application.commands.ValidateShareCode
+import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.user.UserId
+import com.boclips.users.presentation.converters.AccessRuleConverter
+import com.boclips.users.presentation.converters.FeatureConverter
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.presentation.projections.WithProjection
-import com.boclips.users.presentation.converters.AccessRuleConverter
 import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.server.ExposesResourceFor
 import org.springframework.http.HttpHeaders
@@ -42,7 +46,9 @@ class UserController(
     private val validateShareCode: ValidateShareCode,
     private val isUserActive: IsUserActive,
     private val accessRuleConverter: AccessRuleConverter,
-    private val getAccessRulesOfUser: GetAccessRulesOfUser
+    private val getAccessRulesOfUser: GetAccessRulesOfUser,
+    private val getFeaturesOfUser: GetFeaturesOfUser,
+    private val featureConverter: FeatureConverter
 ) {
 
     @PostMapping
@@ -101,4 +107,13 @@ class UserController(
         } else {
             ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
+
+    @GetMapping("/{id}/features")
+    fun fetchFeaturesForUser(@PathVariable id: String?): ResponseEntity<FeaturesResource> {
+        return try {
+            ResponseEntity.ok(featureConverter.toResource(getFeaturesOfUser(UserId(id!!))))
+        } catch (e: UserNotFoundException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+    }
 }

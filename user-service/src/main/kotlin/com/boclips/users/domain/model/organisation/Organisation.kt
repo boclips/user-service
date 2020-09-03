@@ -1,5 +1,7 @@
 package com.boclips.users.domain.model.organisation
 
+import com.boclips.users.domain.model.feature.Feature
+
 import java.time.ZonedDateTime
 
 enum class OrganisationType {
@@ -13,7 +15,8 @@ sealed class Organisation(
     open val deal: Deal,
     open val role: String?,
     open val tags: Set<OrganisationTag>,
-    open val domain: String?
+    open val domain: String?,
+    open val features: Map<Feature, Boolean>?
 ) {
     abstract fun type(): OrganisationType
     abstract val accessExpiryDate: ZonedDateTime?
@@ -27,6 +30,7 @@ data class School(
     override val role: String?,
     override val tags: Set<OrganisationTag>,
     override val domain: String?,
+    override val features: Map<Feature, Boolean>?,
     val district: District?,
     val externalId: ExternalOrganisationId?
 ) : Organisation(
@@ -36,7 +40,8 @@ data class School(
     deal = deal,
     role = role,
     tags = tags,
-    domain = domain
+    domain = domain,
+    features = features
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.SCHOOL
@@ -54,6 +59,7 @@ data class District(
     override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
+    override val features: Map<Feature, Boolean>?,
     val externalId: ExternalOrganisationId?
 ) : Organisation(
     id = id,
@@ -62,7 +68,8 @@ data class District(
     deal = deal,
     tags = tags,
     role = role,
-    domain = domain
+    domain = domain,
+    features = features
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.DISTRICT
@@ -80,6 +87,7 @@ data class ApiIntegration(
     override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
+    override val features: Map<Feature, Boolean>?,
     val allowsOverridingUserIds: Boolean
 ) : Organisation(
     id = id,
@@ -88,7 +96,8 @@ data class ApiIntegration(
     deal = deal,
     tags = tags,
     role = role,
-    domain = domain
+    domain = domain,
+    features = features
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.API

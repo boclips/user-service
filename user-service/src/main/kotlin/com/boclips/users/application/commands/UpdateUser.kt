@@ -106,7 +106,8 @@ class UpdateUser(
                             district = null,
                             externalId = null,
                             role = null,
-                            domain = null
+                            domain = null,
+                            features = null
                         )
                     )
             }
