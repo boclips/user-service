@@ -16,13 +16,47 @@ sealed class Organisation(
     open val role: String?,
     open val tags: Set<OrganisationTag>,
     open val domain: String?,
-    open val features: Map<Feature, Boolean>?
+    features: Map<Feature, Boolean>?
 ) {
+
+    val features: Map<Feature, Boolean>? = features
+        get() = Feature.withAllFeatures(field)
+
     abstract fun type(): OrganisationType
     abstract val accessExpiryDate: ZonedDateTime?
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Organisation
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (address != other.address) return false
+        if (deal != other.deal) return false
+        if (role != other.role) return false
+        if (tags != other.tags) return false
+        if (domain != other.domain) return false
+        if (accessExpiryDate != other.accessExpiryDate) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + address.hashCode()
+        result = 31 * result + deal.hashCode()
+        result = 31 * result + (role?.hashCode() ?: 0)
+        result = 31 * result + tags.hashCode()
+        result = 31 * result + (domain?.hashCode() ?: 0)
+        result = 31 * result + (accessExpiryDate?.hashCode() ?: 0)
+        return result
+    }
 }
 
-data class School(
+class School(
     override val id: OrganisationId,
     override val name: String,
     override val address: Address,
@@ -30,9 +64,9 @@ data class School(
     override val role: String?,
     override val tags: Set<OrganisationTag>,
     override val domain: String?,
-    override val features: Map<Feature, Boolean>?,
     val district: District?,
-    val externalId: ExternalOrganisationId?
+    val externalId: ExternalOrganisationId?,
+    features: Map<Feature, Boolean>?
 ) : Organisation(
     id = id,
     name = name,
@@ -51,7 +85,7 @@ data class School(
         get() = this.district?.deal?.accessExpiresOn ?: this.deal.accessExpiresOn
 }
 
-data class District(
+class District(
     override val id: OrganisationId,
     override val name: String,
     override val address: Address,
@@ -59,7 +93,7 @@ data class District(
     override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
-    override val features: Map<Feature, Boolean>?,
+    features: Map<Feature, Boolean>?,
     val externalId: ExternalOrganisationId?
 ) : Organisation(
     id = id,
@@ -79,7 +113,7 @@ data class District(
         get() = this.deal.accessExpiresOn
 }
 
-data class ApiIntegration(
+class ApiIntegration(
     override val id: OrganisationId,
     override val name: String,
     override val address: Address,
@@ -87,7 +121,7 @@ data class ApiIntegration(
     override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
-    override val features: Map<Feature, Boolean>?,
+    features: Map<Feature, Boolean>?,
     val allowsOverridingUserIds: Boolean
 ) : Organisation(
     id = id,

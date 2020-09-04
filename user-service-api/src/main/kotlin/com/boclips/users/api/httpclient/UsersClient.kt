@@ -3,7 +3,7 @@ package com.boclips.users.api.httpclient
 import com.boclips.users.api.httpclient.helper.ObjectMapperDefinition
 import com.boclips.users.api.httpclient.helper.TokenFactory
 import com.boclips.users.api.response.accessrule.AccessRulesResource
-import com.boclips.users.api.response.feature.FeaturesResource
+import com.boclips.users.api.response.feature.FeaturesEmbeddedResource
 import com.boclips.users.api.response.user.UserResource
 import com.fasterxml.jackson.databind.ObjectMapper
 import feign.Feign
@@ -27,7 +27,7 @@ interface UsersClient {
     fun getShareCode(@Param("id") id: String, @Param("shareCode") shareCode: String)
 
     @RequestLine("GET /v1/users/{id}/features")
-    fun getUserFeatures(@Param("id") id: String): FeaturesResource
+    fun getUserFeatures(@Param("id") id: String): FeaturesEmbeddedResource
 
     companion object {
         @JvmStatic

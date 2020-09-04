@@ -5,7 +5,7 @@ import com.boclips.users.api.factories.UserResourceFactory
 import com.boclips.users.api.response.accessrule.AccessRuleResource
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
-import com.boclips.users.api.response.feature.FeaturesResource
+import com.boclips.users.api.response.feature.FeaturesEmbeddedResource
 import com.boclips.users.api.response.feature.FeaturesWrapper
 import feign.FeignException
 import org.assertj.core.api.Assertions.assertThat
@@ -78,7 +78,7 @@ class UsersClientFakeTest {
     fun `can fetch user's features`() {
         val fake = UsersClientFake()
 
-        fake.addUserFeatures("user-id", FeaturesResource(FeaturesWrapper(mapOf( "feature" to true))))
+        fake.addUserFeatures("user-id", FeaturesEmbeddedResource(FeaturesWrapper(mapOf( "feature" to true))))
 
         val featuresResource = fake.getUserFeatures("user-id")
         assertThat(featuresResource._embedded.features).hasSize(1)

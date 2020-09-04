@@ -3,8 +3,9 @@ package com.boclips.users.api.response.user
 import com.boclips.users.api.BoclipsServiceProjection
 import com.boclips.users.api.TeacherProjection
 import com.boclips.users.api.UserProjection
-import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.SubjectResource
+import com.boclips.users.api.response.feature.FeaturesResource
+import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonView
 import org.springframework.hateoas.Link
@@ -30,6 +31,8 @@ data class UserResource(
     val organisation: OrganisationDetailsResource?,
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
     val school: OrganisationDetailsResource?,
+    @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
+    val features: FeaturesResource?,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var _links: Map<String, Link>? = null
 )

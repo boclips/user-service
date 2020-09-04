@@ -3,14 +3,14 @@ package com.boclips.users.api.httpclient.test.fakes
 import com.boclips.users.api.httpclient.UsersClient
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
-import com.boclips.users.api.response.feature.FeaturesResource
+import com.boclips.users.api.response.feature.FeaturesEmbeddedResource
 import com.boclips.users.api.response.feature.FeaturesWrapper
 import com.boclips.users.api.response.user.UserResource
 
 class UsersClientFake : UsersClient, FakeClient<UserResource> {
     private val userDatabase: MutableMap<String, UserResource> = LinkedHashMap()
     private val accessRulesDatabase: MutableMap<String, AccessRulesResource> = LinkedHashMap()
-    private val featuresDatabase: MutableMap<String, FeaturesResource> = LinkedHashMap()
+    private val featuresDatabase: MutableMap<String, FeaturesEmbeddedResource> = LinkedHashMap()
 
     override fun getUser(id: String): UserResource {
         return userDatabase[id] ?: throw FakeClient.notFoundException("User not found")
@@ -26,8 +26,8 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
         }
     }
 
-    override fun getUserFeatures(id: String): FeaturesResource {
-        return featuresDatabase[id] ?: FeaturesResource(FeaturesWrapper(emptyMap()))
+    override fun getUserFeatures(id: String): FeaturesEmbeddedResource {
+        return featuresDatabase[id] ?: FeaturesEmbeddedResource(FeaturesWrapper(emptyMap()))
     }
 
     override fun add(element: UserResource): UserResource {
@@ -58,7 +58,7 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
         return amendedResource
     }
 
-    fun addUserFeatures(userId: String, featuresResource: FeaturesResource) {
-        featuresDatabase[userId] = featuresResource
+    fun addUserFeatures(userId: String, featuresEmbeddedResource: FeaturesEmbeddedResource) {
+        featuresDatabase[userId] = featuresEmbeddedResource
     }
 }

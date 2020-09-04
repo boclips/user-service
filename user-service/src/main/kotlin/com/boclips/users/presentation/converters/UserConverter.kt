@@ -34,6 +34,7 @@ class UserConverter(
                     shareCode = user.teacherPlatformAttributes.shareCode
                 )
             },
+            features = user.organisation?.features?.let { FeatureConverter().toFeatureResource(it)},
             _links = listOfNotNull(
                 userLinkBuilder.profileSelfLink(UserId(user.id.value)),
                 userLinkBuilder.profileLink(UserId(user.id.value)),

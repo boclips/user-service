@@ -4,7 +4,7 @@ import com.boclips.users.api.request.user.CreateTeacherRequest
 import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
-import com.boclips.users.api.response.feature.FeaturesResource
+import com.boclips.users.api.response.feature.FeaturesEmbeddedResource
 import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.application.commands.CreateTeacher
 import com.boclips.users.application.commands.GetAccessRulesOfUser
@@ -109,9 +109,9 @@ class UserController(
         }
 
     @GetMapping("/{id}/features")
-    fun fetchFeaturesForUser(@PathVariable id: String?): ResponseEntity<FeaturesResource> {
+    fun fetchFeaturesForUser(@PathVariable id: String?): ResponseEntity<FeaturesEmbeddedResource> {
         return try {
-            ResponseEntity.ok(featureConverter.toResource(getFeaturesOfUser(UserId(id!!))))
+            ResponseEntity.ok(featureConverter.toFeaturesResource(getFeaturesOfUser(UserId(id!!))))
         } catch (e: UserNotFoundException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }

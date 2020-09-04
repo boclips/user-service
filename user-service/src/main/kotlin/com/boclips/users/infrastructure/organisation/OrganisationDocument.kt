@@ -20,8 +20,16 @@ data class OrganisationDocument(
     val tags: Set<String>? = null,
     val billing: Boolean? = null,
     val contentPackageId: String? = null,
-    val features: Map<String, Boolean>?
+    val features: Map<FeatureDocument, Boolean>?
 )
+
+enum class FeatureDocument {
+    LTI_COPY_RESOURCE_LINK,
+    TEACHERS_HOME_BANNER,
+    TEACHERS_HOME_SUGGESTED_VIDEOS,
+    TEACHERS_HOME_PROMOTED_COLLECTIONS,
+    TEACHERS_SUBJECTS
+}
 
 data class LocationDocument(
     val code: String
