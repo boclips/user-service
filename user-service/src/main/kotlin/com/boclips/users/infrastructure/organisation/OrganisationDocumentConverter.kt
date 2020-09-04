@@ -46,6 +46,16 @@ object OrganisationDocumentConverter : KLogging() {
 
         val externalId = organisationDocument.externalId?.let(::ExternalOrganisationId)
 
+        val features = organisationDocument.features?.mapKeys {
+            when (it.key) {
+                FeatureDocument.LTI_COPY_RESOURCE_LINK -> Feature.LTI_COPY_RESOURCE_LINK
+                FeatureDocument.TEACHERS_HOME_BANNER -> Feature.TEACHERS_HOME_BANNER
+                FeatureDocument.TEACHERS_HOME_SUGGESTED_VIDEOS -> Feature.TEACHERS_HOME_SUGGESTED_VIDEOS
+                FeatureDocument.TEACHERS_HOME_PROMOTED_COLLECTIONS -> Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS
+                FeatureDocument.TEACHERS_SUBJECTS -> Feature.TEACHERS_SUBJECTS
+            }
+        }
+
         return when (organisationDocument.type) {
             OrganisationType.API -> ApiIntegration(
                 id = id,
@@ -56,7 +66,7 @@ object OrganisationDocumentConverter : KLogging() {
                 domain = organisationDocument.domain,
                 allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false,
                 role = organisationDocument.role,
-                features = organisationDocument.features?.mapKeys { pair -> Feature.valueOf(pair.key) }
+                features = features
             )
 
             OrganisationType.SCHOOL -> School(
@@ -69,7 +79,7 @@ object OrganisationDocumentConverter : KLogging() {
                 district = organisationDocument.parent?.let { fromDocument(it) as? District? },
                 externalId = externalId,
                 role = organisationDocument.role,
-                features = organisationDocument.features?.mapKeys { pair -> Feature.valueOf(pair.key) }
+                features = features
             )
 
             OrganisationType.DISTRICT -> District(
@@ -81,10 +91,9 @@ object OrganisationDocumentConverter : KLogging() {
                 domain = organisationDocument.domain,
                 externalId = externalId,
                 role = organisationDocument.role,
-                features = organisationDocument.features?.mapKeys { pair -> Feature.valueOf(pair.key) }
+                features = features
             )
         }
-
     }
 
     fun toDocument(organisation: Organisation): OrganisationDocument {
@@ -113,7 +122,15 @@ object OrganisationDocumentConverter : KLogging() {
             tags = organisation.tags.map { it.name }.toSet(),
             billing = organisation.deal.billing,
             contentPackageId = organisation.deal.contentPackageId?.value,
-            features = organisation.features?.mapKeys { pair -> pair.key.toString() }
+            features = organisation.features?.mapKeys {
+                when (it.key) {
+                    Feature.LTI_COPY_RESOURCE_LINK -> FeatureDocument.LTI_COPY_RESOURCE_LINK
+                    Feature.TEACHERS_HOME_BANNER -> FeatureDocument.TEACHERS_HOME_BANNER
+                    Feature.TEACHERS_HOME_SUGGESTED_VIDEOS -> FeatureDocument.TEACHERS_HOME_SUGGESTED_VIDEOS
+                    Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS -> FeatureDocument.TEACHERS_HOME_PROMOTED_COLLECTIONS
+                    Feature.TEACHERS_SUBJECTS -> FeatureDocument.TEACHERS_SUBJECTS
+                }
+            }
         )
     }
 }

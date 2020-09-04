@@ -1,6 +1,7 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.infrastructure.organisation.FeatureDocument
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import org.bson.types.ObjectId
@@ -23,7 +24,7 @@ class OrganisationDocumentFactory {
             parent: OrganisationDocument? = null,
             billing: Boolean? = null,
             accessExpiresOn: ZonedDateTime? = null,
-            features: Map<String, Boolean>? = null
+            features: Map<FeatureDocument, Boolean>? = null
         ) = OrganisationDocument(
             _id = id,
             name = name,

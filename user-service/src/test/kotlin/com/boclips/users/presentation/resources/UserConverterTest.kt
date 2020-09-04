@@ -4,6 +4,7 @@ import com.boclips.users.api.response.SubjectResource
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
@@ -58,7 +59,8 @@ class UserConverterTest {
 
                             state = State.fromCode("NY"),
                             country = Country.fromCode("USA")
-                        )
+                        ),
+                        features = mapOf(Feature.TEACHERS_HOME_BANNER to true)
                     )
                 )
             )
@@ -81,6 +83,7 @@ class UserConverterTest {
         assertThat(userResource.organisation!!.state!!.id).isEqualTo("NY")
         assertThat(userResource.organisation!!.country!!.name).isEqualTo("United States")
         assertThat(userResource.organisation!!.country!!.id).isEqualTo("USA")
+        assertThat(userResource.features!!["TEACHERS_HOME_BANNER"]).isEqualTo("true")
     }
 
     @Test

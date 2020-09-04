@@ -529,6 +529,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.organisation.name").exists())
                 .andExpect(jsonPath("$.organisation.state").exists())
                 .andExpect(jsonPath("$.organisation.country").exists())
+                .andExpect(jsonPath("$.features").exists())
                 .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
                 .andExpect(jsonPath("$._links.accessRules").doesNotExist())
         }
@@ -545,6 +546,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.analyticsId").doesNotExist())
                 .andExpect(jsonPath("$.organisation").doesNotExist())
                 .andExpect(jsonPath("$.teacherPlatformAttributes").doesNotExist())
+                .andExpect(jsonPath("$.features").doesNotExist())
         }
 
         @Test
