@@ -52,13 +52,15 @@ import java.time.ZonedDateTime
 
 class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
-    @Test
-    fun `can create a new user with valid request`() {
-        mvc.perform(
-            post("/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
+    @Nested
+    inner class CreateUserScenarios {
+        @Test
+        fun `can create a new user with valid request`() {
+            mvc.perform(
+                    post("/v1/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                    """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
@@ -67,34 +69,34 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                )
-        )
-            .andExpect(status().isCreated)
-            .andExpect(header().exists("Location"))
-    }
+                            )
+            )
+                    .andExpect(status().isCreated)
+                    .andExpect(header().exists("Location"))
+        }
 
-    @Test
-    fun `can create a new user without optional fields`() {
-        mvc.perform(
-            post("/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
+        @Test
+        fun `can create a new user without optional fields`() {
+            mvc.perform(
+                    post("/v1/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                    """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                )
-        )
-            .andExpect(status().isCreated)
-            .andExpect(header().exists("Location"))
-    }
+                            )
+            )
+                    .andExpect(status().isCreated)
+                    .andExpect(header().exists("Location"))
+        }
 
-    @Test
-    fun `can handle conflicts with valid request`() {
-        val payload = """
+        @Test
+        fun `can handle conflicts with valid request`() {
+            val payload = """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
@@ -104,47 +106,47 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      }
                     """.trimIndent()
 
-        mvc.perform(
-            post("/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(payload)
-        )
-            .andExpect(status().isCreated)
+            mvc.perform(
+                    post("/v1/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(payload)
+            )
+                    .andExpect(status().isCreated)
 
-        mvc.perform(
-            post("/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(payload)
-        )
-            .andExpect(status().isConflict)
-    }
+            mvc.perform(
+                    post("/v1/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(payload)
+            )
+                    .andExpect(status().isConflict)
+        }
 
-    @Test
-    fun `cannot create account with invalid request`() {
-        mvc.perform(
-            post("/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
+        @Test
+        fun `cannot create account with invalid request`() {
+            mvc.perform(
+                    post("/v1/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                    """
                     {
                      "email": "jane@doe.com"
                      }
                     """.trimIndent()
-                )
-        )
-            .andExpect(status().isBadRequest)
-            .andExpectApiErrorPayload()
-    }
+                            )
+            )
+                    .andExpect(status().isBadRequest)
+                    .andExpectApiErrorPayload()
+        }
 
-    @Test
-    fun `cannot create account as a robot`() {
-        whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
+        @Test
+        fun `cannot create account as a robot`() {
+            whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
 
-        mvc.perform(
-            post("/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
+            mvc.perform(
+                    post("/v1/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                    """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
@@ -153,9 +155,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                )
-        )
-            .andExpect(status().isBadRequest)
+                            )
+            )
+                    .andExpect(status().isBadRequest)
+        }
     }
 
     @Nested
@@ -512,6 +515,33 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Nested
     inner class GetUser {
+        @Test
+        fun `should extract logged in user`() {
+            val organisation =
+                saveOrganisation(school(address = Address(country = Country.usa(), state = State.fromCode("WA"))))
+            val user = saveUser(UserFactory.sample(organisation = organisation))
+
+            mvc.perform(
+                get("/v1/users/_self").asTeacher(user.id.value)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id", equalTo(user.id.value)))
+                .andExpect(jsonPath("$.firstName").exists())
+                .andExpect(jsonPath("$.lastName").exists())
+                .andExpect(jsonPath("$.analyticsId").exists())
+                .andExpect(jsonPath("$.organisation.name").exists())
+                .andExpect(jsonPath("$.organisation.state").exists())
+                .andExpect(jsonPath("$.organisation.country").exists())
+                .andExpect(jsonPath("$._links.self.href", endsWith("/users/${user.id.value}")))
+                .andExpect(jsonPath("$._links.accessRules").doesNotExist())
+        }
+
+        @Test
+        fun `should return 403 logged in user`() {
+            mvc.perform(get("/v1/users/_self"))
+                    .andExpect(status().isForbidden)
+        }
+
         @Test
         fun `get own profile as teacher`() {
             val organisation =

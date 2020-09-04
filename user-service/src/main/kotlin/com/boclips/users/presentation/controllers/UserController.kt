@@ -6,13 +6,7 @@ import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
 import com.boclips.users.api.response.feature.FeaturesEmbeddedResource
 import com.boclips.users.api.response.user.UserResource
-import com.boclips.users.application.commands.CreateTeacher
-import com.boclips.users.application.commands.GetAccessRulesOfUser
-import com.boclips.users.application.commands.GetFeaturesOfUser
-import com.boclips.users.application.commands.GetUser
-import com.boclips.users.application.commands.IsUserActive
-import com.boclips.users.application.commands.UpdateUser
-import com.boclips.users.application.commands.ValidateShareCode
+import com.boclips.users.application.commands.*
 import com.boclips.users.application.exceptions.UserNotFoundException
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.presentation.converters.AccessRuleConverter
@@ -25,13 +19,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.json.MappingJacksonValue
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -48,7 +36,8 @@ class UserController(
     private val accessRuleConverter: AccessRuleConverter,
     private val getAccessRulesOfUser: GetAccessRulesOfUser,
     private val getFeaturesOfUser: GetFeaturesOfUser,
-    private val featureConverter: FeatureConverter
+    private val featureConverter: FeatureConverter,
+    private val getSelfUser: GetSelfUser
 ) {
 
     @PostMapping
@@ -68,6 +57,15 @@ class UserController(
     ): ResponseEntity<MappingJacksonValue> {
         updateUser(id, updateUserRequest)
         return getAUser(id)
+    }
+
+    @GetMapping("/_self")
+    fun getSelf(): ResponseEntity<MappingJacksonValue> {
+        return ResponseEntity(
+                withProjection(getSelfUser()),
+                HttpHeaders(),
+                HttpStatus.OK
+        )
     }
 
     @GetMapping("/{id}")
