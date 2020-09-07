@@ -5,8 +5,6 @@ import com.boclips.users.api.factories.UserResourceFactory
 import com.boclips.users.api.response.accessrule.AccessRuleResource
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
-import com.boclips.users.api.response.feature.FeaturesEmbeddedResource
-import com.boclips.users.api.response.feature.FeaturesWrapper
 import feign.FeignException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -75,25 +73,20 @@ class UsersClientFakeTest {
     }
 
     @Test
-    fun `can fetch user's features`() {
-        val fake = UsersClientFake()
-
-        fake.addUserFeatures("user-id", FeaturesEmbeddedResource(FeaturesWrapper(mapOf( "feature" to true))))
-
-        val featuresResource = fake.getUserFeatures("user-id")
-        assertThat(featuresResource._embedded.features).hasSize(1)
-        assertThat(featuresResource._embedded.features["feature"]).isTrue()
-    }
-
-    @Test
     fun `can fetch logged in user`() {
         val fake = UsersClientFake()
 
-        fake.setLoggedInUser(UserResourceFactory.sample(firstName = "John", lastName = "Doe", id = "123"))
+        fake.setLoggedInUser(UserResourceFactory.sample(
+            firstName = "John",
+            lastName = "Doe",
+            id = "123",
+            features = mapOf("LTI_COPY_RESOURCE_LINK" to true)
+        ))
 
         val loggedInUser = fake.getLoggedInUser()
         assertThat(loggedInUser.id).isEqualTo("123")
         assertThat(loggedInUser.firstName).isEqualTo("John")
         assertThat(loggedInUser.lastName).isEqualTo("Doe")
+        assertThat(loggedInUser.features!!["LTI_COPY_RESOURCE_LINK"]).isEqualTo(true)
     }
 }

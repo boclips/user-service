@@ -4,10 +4,14 @@ import com.boclips.users.api.request.user.CreateTeacherRequest
 import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
-import com.boclips.users.api.response.feature.FeaturesEmbeddedResource
 import com.boclips.users.api.response.user.UserResource
-import com.boclips.users.application.commands.*
-import com.boclips.users.application.exceptions.UserNotFoundException
+import com.boclips.users.application.commands.CreateTeacher
+import com.boclips.users.application.commands.GetAccessRulesOfUser
+import com.boclips.users.application.commands.GetSelfUser
+import com.boclips.users.application.commands.GetUser
+import com.boclips.users.application.commands.IsUserActive
+import com.boclips.users.application.commands.UpdateUser
+import com.boclips.users.application.commands.ValidateShareCode
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.presentation.converters.AccessRuleConverter
 import com.boclips.users.presentation.converters.FeatureConverter
@@ -19,7 +23,13 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.json.MappingJacksonValue
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
@@ -35,8 +45,6 @@ class UserController(
     private val isUserActive: IsUserActive,
     private val accessRuleConverter: AccessRuleConverter,
     private val getAccessRulesOfUser: GetAccessRulesOfUser,
-    private val getFeaturesOfUser: GetFeaturesOfUser,
-    private val featureConverter: FeatureConverter,
     private val getSelfUser: GetSelfUser
 ) {
 
@@ -105,13 +113,4 @@ class UserController(
         } else {
             ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
-
-    @GetMapping("/{id}/features")
-    fun fetchFeaturesForUser(@PathVariable id: String?): ResponseEntity<FeaturesEmbeddedResource> {
-        return try {
-            ResponseEntity.ok(featureConverter.toFeaturesResource(getFeaturesOfUser(UserId(id!!))))
-        } catch (e: UserNotFoundException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-        }
-    }
 }
