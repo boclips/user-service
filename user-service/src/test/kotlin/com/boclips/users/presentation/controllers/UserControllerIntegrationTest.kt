@@ -574,6 +574,19 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
+        fun `get default features when user has no organisation`() {
+            val user = saveUser(UserFactory.sample())
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}").asTeacher(user.id.value)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.features").exists())
+                .andExpect(jsonPath("$.features.TEACHERS_HOME_BANNER").isBoolean())
+
+        }
+
+        @Test
         fun `get own profile as api user`() {
             val user = saveUser(UserFactory.sample())
 

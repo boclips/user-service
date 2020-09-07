@@ -38,6 +38,14 @@ class FeatureServiceIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `should return all features with default values when user has no organisation`() {
+        val user = saveUser(UserFactory.sample())
+
+        val features = featureService.getFeatures(user.id)
+        assertFalse(features[Feature.LTI_COPY_RESOURCE_LINK]!!)
+    }
+
+    @Test
     fun `should throw UserNotFoundException when no user found`() {
         assertThrows<UserNotFoundException> { featureService.getFeatures(UserId("non-existing-id")) }
     }
