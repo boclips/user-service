@@ -84,4 +84,16 @@ class UsersClientFakeTest {
         assertThat(featuresResource._embedded.features).hasSize(1)
         assertThat(featuresResource._embedded.features["feature"]).isTrue()
     }
+
+    @Test
+    fun `can fetch logged in user`() {
+        val fake = UsersClientFake()
+
+        fake.setLoggedInUser(UserResourceFactory.sample(firstName = "John", lastName = "Doe", id = "123"))
+
+        val loggedInUser = fake.getLoggedInUser()
+        assertThat(loggedInUser.id).isEqualTo("123")
+        assertThat(loggedInUser.firstName).isEqualTo("John")
+        assertThat(loggedInUser.lastName).isEqualTo("Doe")
+    }
 }

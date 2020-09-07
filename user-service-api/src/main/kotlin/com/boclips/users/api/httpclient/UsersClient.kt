@@ -29,6 +29,9 @@ interface UsersClient {
     @RequestLine("GET /v1/users/{id}/features")
     fun getUserFeatures(@Param("id") id: String): FeaturesEmbeddedResource
 
+    @RequestLine("GET /v1/users/_self")
+    fun getLoggedInUser(): UserResource
+
     companion object {
         @JvmStatic
         fun create(

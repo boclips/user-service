@@ -11,6 +11,7 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
     private val userDatabase: MutableMap<String, UserResource> = LinkedHashMap()
     private val accessRulesDatabase: MutableMap<String, AccessRulesResource> = LinkedHashMap()
     private val featuresDatabase: MutableMap<String, FeaturesEmbeddedResource> = LinkedHashMap()
+    private var loggedUser: UserResource? = null
 
     override fun getUser(id: String): UserResource {
         return userDatabase[id] ?: throw FakeClient.notFoundException("User not found")
@@ -28,6 +29,10 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
 
     override fun getUserFeatures(id: String): FeaturesEmbeddedResource {
         return featuresDatabase[id] ?: FeaturesEmbeddedResource(FeaturesWrapper(emptyMap()))
+    }
+
+    override fun getLoggedInUser(): UserResource {
+        return loggedUser ?: throw FakeClient.forbiddenException("Access Denied")
     }
 
     override fun add(element: UserResource): UserResource {
@@ -60,5 +65,9 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
 
     fun addUserFeatures(userId: String, featuresEmbeddedResource: FeaturesEmbeddedResource) {
         featuresDatabase[userId] = featuresEmbeddedResource
+    }
+
+    fun setLoggedInUser(user: UserResource) {
+        loggedUser = user
     }
 }

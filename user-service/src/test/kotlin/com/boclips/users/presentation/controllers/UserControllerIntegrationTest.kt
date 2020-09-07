@@ -517,8 +517,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class GetUser {
         @Test
         fun `should extract logged in user`() {
-            val organisation =
-                saveOrganisation(school(address = Address(country = Country.usa(), state = State.fromCode("WA"))))
+            val organisation = saveOrganisation(school(
+                address = Address(country = Country.usa(), state = State.fromCode("WA")),
+                features = mapOf(Feature.LTI_COPY_RESOURCE_LINK to true)
+                ))
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
@@ -526,6 +528,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", equalTo(user.id.value)))
+                .andExpect(jsonPath("$.features.LTI_COPY_RESOURCE_LINK", equalTo(true)))
                 .andExpect(jsonPath("$.firstName").exists())
                 .andExpect(jsonPath("$.lastName").exists())
                 .andExpect(jsonPath("$.analyticsId").exists())
@@ -537,9 +540,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `should return 403 logged in user`() {
+        fun `should return 403 when trying to fetch logged in user as unauthenticated`() {
             mvc.perform(get("/v1/users/_self"))
-                    .andExpect(status().isForbidden)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isForbidden)
         }
 
         @Test
