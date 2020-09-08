@@ -41,13 +41,20 @@ class AssignUsersByOrganisationDomain(
     }
 
     private fun handleHierarchicalOrganisation(organisation: Organisation): List<User> {
+        logger.info {">>handleHierarchicalOrganisation"}
         val childOrganisations = organisationRepository.findOrganisationsByParentId(organisation.id)
 
         val domain = organisation.domain
+        logger.info { "Found organisation with id ${organisation.id} and domain: ${organisation.domain}" }
         val orphanUsers = domain?.let { userRepository.findOrphans(it, organisation.id) } ?: emptyList()
+        logger.info { "Found orphan users size: ${orphanUsers.size}, ids: ${orphanUsers.map { it.id.value }}" }
 
-        return orphanUsers.filter { user ->
+        logger.info { "Found child organisations: ${childOrganisations.map { it.id.value }}"}
+        val finalUsers = orphanUsers.filter { user ->
             !childOrganisations.map { it.id }.contains(user.organisation?.id)
         }
+
+        logger.info {"Filtered users size: ${finalUsers.size}, ids: ${finalUsers.map { it.id.value }}"}
+        return finalUsers
     }
 }

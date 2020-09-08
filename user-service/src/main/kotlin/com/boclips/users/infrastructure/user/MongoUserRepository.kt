@@ -15,6 +15,7 @@ import com.mongodb.MongoWriteException
 import com.mongodb.client.FindIterable
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.and
+import mu.KLogging
 import org.bson.types.ObjectId
 import org.litote.kmongo.`in`
 import org.litote.kmongo.div
@@ -31,6 +32,7 @@ class MongoUserRepository(
     private val mongoClient: MongoClient,
     private val userDocumentConverter: UserDocumentConverter
 ) : UserRepository {
+    companion object : KLogging()
 
     private fun getUsersCollection(): MongoCollection<UserDocument> {
         return mongoClient.getDatabase(MongoDatabase.DB_NAME).getCollection<UserDocument>("users")
@@ -108,12 +110,15 @@ class MongoUserRepository(
     }
 
     override fun findOrphans(domain: String, organisationId: OrganisationId): List<User> {
-        return getUsersCollection().find(
-            and(
-                UserDocument::email regex ".+@${Pattern.quote(domain)}$",
-                UserDocument::organisation / OrganisationDocument::_id ne ObjectId(organisationId.value)
-            )
+        logger.info { ">> findOrphans" }
+
+        val query = and(
+            UserDocument::email regex ".+@${Pattern.quote(domain)}$",
+            UserDocument::organisation / OrganisationDocument::_id ne ObjectId(organisationId.value)
         )
+
+        logger.info { "query: $query"  }
+        return getUsersCollection().find(query)
             .convert()
     }
 
