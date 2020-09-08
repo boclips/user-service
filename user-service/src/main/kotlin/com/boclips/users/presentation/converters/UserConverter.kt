@@ -7,14 +7,12 @@ import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.user.UserId
-import com.boclips.users.domain.service.feature.FeatureService
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import org.springframework.stereotype.Component
 
 @Component
 class UserConverter(
-    private val userLinkBuilder: UserLinkBuilder,
-    private val featureService: FeatureService
+    private val userLinkBuilder: UserLinkBuilder
 ) {
     fun toUserResource(user: User): UserResource {
         return UserResource(
@@ -36,8 +34,7 @@ class UserConverter(
                     shareCode = user.teacherPlatformAttributes.shareCode
                 )
             },
-            //FIXME - Shouldn't leak the user repository into a converter
-            features = FeatureConverter().toFeatureResource(features = featureService.getFeatures(user.id)),
+            features = FeatureConverter().toFeatureResource(features = user.features),
             _links = listOfNotNull(
                 userLinkBuilder.profileSelfLink(UserId(user.id.value)),
                 userLinkBuilder.profileLink(UserId(user.id.value)),

@@ -1,6 +1,7 @@
 package com.boclips.users.domain.model.user
 
 import com.boclips.users.domain.model.analytics.AnalyticsId
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.Organisation
 import java.time.ZonedDateTime
@@ -23,6 +24,8 @@ class User(
 
             return field?.let { if (it.isAfter(organizationExpiryDate)) it else organizationExpiryDate }
         }
+
+    val features get() = organisation?.features ?: Feature.DEFAULT_VALUES
 
     fun hasOnboarded(): Boolean {
         return isActivated()

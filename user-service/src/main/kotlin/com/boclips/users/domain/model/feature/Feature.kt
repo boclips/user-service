@@ -8,7 +8,10 @@ enum class Feature(val defaultValue: Boolean) {
     TEACHERS_SUBJECTS(true);
 
     companion object {
-        fun withAllFeatures(features: Map<Feature, Boolean>?) = values().map {
+
+        val DEFAULT_VALUES: Map<Feature, Boolean> = values().map { it to it.defaultValue }.toMap()
+
+        fun withAllFeatures(features: Map<Feature, Boolean>?): Map<Feature, Boolean> = values().map {
             it to (features?.get(it) ?: it.defaultValue)
         }.toMap()
     }

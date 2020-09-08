@@ -9,7 +9,6 @@ import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.service.feature.FeatureService
 import com.boclips.users.presentation.converters.UserConverter
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -28,7 +27,7 @@ class UserConverterTest : AbstractSpringIntegrationTest(){
     @BeforeEach()
     fun setUp() {
         userConverter =
-            UserConverter(UserLinkBuilder(), FeatureService(userRepository))
+            UserConverter(UserLinkBuilder())
     }
 
     @Test
@@ -123,5 +122,6 @@ class UserConverterTest : AbstractSpringIntegrationTest(){
                 user = user
             )
         assertThat(userResource.organisation).isNull()
+        assertThat(userResource.features).isNotNull
     }
 }
