@@ -31,7 +31,7 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
         }
 
         val domainUpdate = request?.domain?.let { domain ->
-            ReplaceDomain(domain)
+            ReplaceDomain(domain.trim())
         }
 
         organisationRepository.update(organisationId, *listOfNotNull(expiryUpdate, domainUpdate).toTypedArray())

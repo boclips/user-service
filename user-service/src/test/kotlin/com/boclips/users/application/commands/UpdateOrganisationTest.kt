@@ -11,6 +11,7 @@ import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +19,7 @@ import org.junit.jupiter.api.assertThrows
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class UpdateIdentityTest : AbstractSpringIntegrationTest() {
+class UpdateOrganisationTest : AbstractSpringIntegrationTest() {
     lateinit var updateOrganisation: UpdateOrganisation
 
     @BeforeEach
@@ -74,5 +75,13 @@ class UpdateIdentityTest : AbstractSpringIntegrationTest() {
                 request = UpdateOrganisationRequest(accessExpiresOn = "invalid-date")
             )
         }
+    }
+
+    @Test
+    fun `trims domain`() {
+        val organisation = organisationRepository.save(OrganisationFactory.district())
+
+        val updated = updateOrganisation.invoke(organisation.id.value, UpdateOrganisationRequest(" domain.com "))
+        Assertions.assertThat(updated.domain).isEqualTo("domain.com")
     }
 }
