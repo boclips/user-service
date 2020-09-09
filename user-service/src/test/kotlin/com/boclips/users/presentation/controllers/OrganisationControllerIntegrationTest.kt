@@ -23,6 +23,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.ZonedDateTime
@@ -41,7 +42,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `lists all independent US schools and organisations`() {
+        fun `lists US schools and organisations with and without parent districts`() {
             val expiryTime = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
 
             val district = organisationRepository.save(
@@ -88,19 +89,19 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     UserRoles.VIEW_ORGANISATIONS
                 )
             )
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name").exists())
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.type").exists())
                 .andExpect(jsonPath("$._embedded.organisations[0].accessExpiresOn").exists())
-                .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(
                     jsonPath(
                         "$._embedded.organisations[0]._links.edit.href",
                         endsWith("/v1/organisations/${district.id.value}")
                     )
                 )
-                .andExpect(jsonPath("$.page.totalElements", equalTo(2)))
-                .andExpect(jsonPath("$.page.totalPages", equalTo(2)))
+                .andExpect(jsonPath("$.page.totalElements", equalTo(3)))
+                .andExpect(jsonPath("$.page.totalPages", equalTo(3)))
                 .andExpect(jsonPath("$.page.size", equalTo(1)))
         }
 

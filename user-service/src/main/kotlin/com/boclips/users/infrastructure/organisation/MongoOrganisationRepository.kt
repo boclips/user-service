@@ -178,8 +178,7 @@ class MongoOrganisationRepository(
             },
             types?.let {
                 OrganisationDocument::type `in` it
-            },
-            OrganisationDocument::parent eq null
+            }
         ))
     }
 

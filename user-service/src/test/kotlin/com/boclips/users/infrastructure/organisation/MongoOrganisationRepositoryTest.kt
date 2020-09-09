@@ -7,18 +7,15 @@ import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationTag.DEFAULT_ORGANISATION
 import com.boclips.users.domain.model.organisation.OrganisationTag.DESIGN_PARTNER
 import com.boclips.users.domain.model.organisation.OrganisationType
-import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.AddTag
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceBilling
-import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
+import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.apiIntegration
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.district
@@ -220,6 +217,33 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
+        fun `allows for finding organisations that have parent district`() {
+            val parentDistrict = organisationRepository.save(
+                district(name = "api-name")
+            )
+
+            val correctSchool = organisationRepository.save(
+                school(
+                    name = "happy school",
+                    address = Address(
+                        country = Country.fromCode("GBR")
+                    ),
+                    district = parentDistrict
+                )
+            )
+
+            val schools = organisationRepository.findOrganisations(
+                name = "happy",
+                page = 0,
+                size = 10,
+                types = null
+            )
+
+            assertThat(schools).hasSize(1)
+            assertThat(schools.first().id).isEqualTo(correctSchool.id)
+        }
+
+        @Test
         fun `looks up an api integration by name`() {
             val organisation = organisationRepository.save(
                 apiIntegration(name = "api-name")
@@ -252,7 +276,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
-        fun `find independent schools and districts by country code`() {
+        fun `find schools and districts by country code`() {
             val district = organisationRepository.save(district())
 
             val schoolUsaNoDistrict = organisationRepository.save(
@@ -264,7 +288,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            organisationRepository.save(
+            val schoolUsaWithDistrict = organisationRepository.save(
                 school(
                     district = district,
                     address = Address(
@@ -297,8 +321,8 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                     size = 10,
                     types = listOf(OrganisationType.SCHOOL, OrganisationType.DISTRICT)
                 )
-            assertThat(independentOrganisations).containsExactly(district, schoolUsaNoDistrict)
-            assertThat(independentOrganisations).hasSize(2)
+            assertThat(independentOrganisations).containsExactly(district, schoolUsaNoDistrict, schoolUsaWithDistrict)
+            assertThat(independentOrganisations).hasSize(3)
 
             assertThat(
                 organisationRepository.findOrganisations(

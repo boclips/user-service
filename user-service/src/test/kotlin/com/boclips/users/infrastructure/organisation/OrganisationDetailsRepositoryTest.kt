@@ -108,7 +108,7 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `findOrganisations retrieves parent organisations only`() {
+    fun `findOrganisations retrieves both child and parent organisations`() {
         val persistedParent = organisationRepository.save(OrganisationFactory.district(name = "parent"))
         organisationRepository.save(
             OrganisationFactory.school(
@@ -125,7 +125,7 @@ class OrganisationDetailsRepositoryTest : AbstractSpringIntegrationTest() {
             size = 6
         )
 
-        assertThat(results.map { it.name }).containsExactly("parent")
+        assertThat(results.map { it.name }).containsExactly("child", "parent")
     }
 
     @Test
