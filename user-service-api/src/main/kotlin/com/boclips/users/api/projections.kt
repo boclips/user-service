@@ -4,3 +4,4 @@ interface UserProjection
 interface TeacherProjection : UserProjection
 interface ApiUserProjection : UserProjection
 interface BoclipsServiceProjection : UserProjection
+interface LtiProjection : UserProjection

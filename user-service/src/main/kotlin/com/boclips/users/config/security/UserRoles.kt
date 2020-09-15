@@ -4,6 +4,7 @@ object UserRoles {
     const val ROLE_API = "API"
     const val ROLE_TEACHER = "TEACHER"
     const val ROLE_BOCLIPS_SERVICE = "BOCLIPS_SERVICE"
+    const val ROLE_LTI = "LTI"
 
     const val INSERT_ACCESS_RULES = "INSERT_ACCESS_RULES"
     const val VIEW_ACCESS_RULES = "VIEW_ACCESS_RULES"
