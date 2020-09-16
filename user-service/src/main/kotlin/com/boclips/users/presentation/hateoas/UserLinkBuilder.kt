@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.utils.UserExtractor.currentUserHasAnyRole
-import com.boclips.security.utils.UserExtractor.getCurrentUserIfNotAnonymous
+import com.boclips.security.utils.UserExtractor.getCurrentUser
 import com.boclips.security.utils.UserExtractor.getIfAuthenticated
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.user.User
@@ -28,7 +28,7 @@ class UserLinkBuilder :
     }
 
     fun createUserLink(): Link? {
-        return if (getCurrentUserIfNotAnonymous() == null)
+        return if (getCurrentUser() == null)
             WebMvcLinkBuilder.linkTo(
                 WebMvcLinkBuilder.methodOn(UserController::class.java)
                     .createAUser(null)
@@ -37,7 +37,7 @@ class UserLinkBuilder :
     }
 
     fun profileLink(overrideUserId: UserId? = null): Link? {
-        return getCurrentUserIfNotAnonymous()?.let {
+        return getCurrentUser()?.let {
             val userId = overrideUserId?.value ?: it.id
             WebMvcLinkBuilder.linkTo(
                 WebMvcLinkBuilder.methodOn(UserController::class.java).getAUser(userId)

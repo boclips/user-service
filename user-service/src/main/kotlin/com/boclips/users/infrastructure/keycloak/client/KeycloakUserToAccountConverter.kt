@@ -10,12 +10,14 @@ import java.time.ZonedDateTime
 class KeycloakUserToAccountConverter {
     fun convert(userRepresentation: UserRepresentation): Identity {
         val userId = userRepresentation.id
+        val userName = userRepresentation.username
 
-        check(userId.isNotEmpty())
+        check(userId != null && userId.isNotEmpty())
+        check(userName != null && userName.isNotEmpty())
 
         return Identity(
             id = UserId(value = userId),
-            username = userRepresentation.username,
+            username = userName,
             idpEmail = userRepresentation.email,
             roles = userRepresentation.realmRoles,
             createdAt = ZonedDateTime.ofInstant(
