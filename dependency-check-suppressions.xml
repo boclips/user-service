@@ -16,4 +16,11 @@
         <packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/kotlin\-.+$</packageUrl>
         <cve>CVE-2020-15824</cve>
     </suppress>
+    <suppress until="2020-12-01">
+        <notes>
+            Latest keycloak client using older resteasy-multipart-provider and resteasy-jaxb-provider
+        </notes>
+        <packageUrl regex="true">^pkg:maven/org\.jboss\.resteasy/resteasy\-.+$</packageUrl>
+        <cve>CVE-2020-1695</cve>
+    </suppress>
 </suppressions>
