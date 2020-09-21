@@ -1,18 +1,19 @@
 package com.boclips.users.presentation.controllers
 
+import com.boclips.users.api.request.CreateDistrictRequest
 import com.boclips.users.api.response.organisation.OrganisationResource
 import com.boclips.users.api.response.organisation.OrganisationsResource
-import com.boclips.users.application.commands.AssignUsersByOrganisationDomain
-import com.boclips.users.application.commands.GetOrganisationById
-import com.boclips.users.application.commands.GetOrganisations
-import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.api.request.OrganisationFilterRequest
 import com.boclips.users.api.request.UpdateOrganisationRequest
 import com.boclips.users.api.response.user.UserResourceWrapper
 import com.boclips.users.api.response.user.UsersResource
+import com.boclips.users.application.commands.*
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.presentation.converters.OrganisationConverter
 import com.boclips.users.presentation.converters.UserConverter
+import com.boclips.web.exceptions.ExceptionDetails
+import com.boclips.web.exceptions.InvalidRequestApiException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -30,9 +31,24 @@ class OrganisationController(
     private val organisationConverter: OrganisationConverter,
     private val userConverter: UserConverter,
     private val updateOrganisation: UpdateOrganisation,
+    private val createDistrict: CreateDistrict,
     private val getOrganisations: GetOrganisations,
     private val assignUsersByOrganisationDomain: AssignUsersByOrganisationDomain
 ) {
+
+    @PostMapping("/organisations")
+    fun create(
+        @Valid @RequestBody createDistrictRequest: CreateDistrictRequest
+    ): OrganisationResource {
+        val newOrganisation = when (createDistrictRequest.type) {
+            OrganisationType.DISTRICT.toString() -> createDistrict(createDistrictRequest)
+            else -> throw InvalidRequestApiException(ExceptionDetails(
+                error = "Invalid organisation type",
+                message = "Only DISTRICT organisation is allowed"
+            ))
+        }
+        return organisationConverter.toResource(newOrganisation)
+    }
 
     @GetMapping("/organisations/{id}")
     fun fetchOrganisationById(@PathVariable("id") id: String?): OrganisationResource {

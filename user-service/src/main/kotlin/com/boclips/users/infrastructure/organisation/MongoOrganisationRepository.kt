@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.Page
 import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -154,6 +155,16 @@ class MongoOrganisationRepository(
             and(
                 OrganisationDocument::name eq name,
                 OrganisationDocument::type eq OrganisationType.API
+            )
+        )
+            ?.convert()
+    }
+
+    override fun findDistrictByName(name: String): District? {
+        return collection().findOne(
+            and(
+                OrganisationDocument::name eq name,
+                OrganisationDocument::type eq OrganisationType.DISTRICT
             )
         )
             ?.convert()

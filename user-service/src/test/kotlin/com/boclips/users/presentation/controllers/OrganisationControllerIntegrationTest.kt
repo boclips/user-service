@@ -1,5 +1,6 @@
 package com.boclips.users.presentation.controllers
 
+import com.boclips.users.api.request.CreateDistrictRequest
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
@@ -381,6 +382,99 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name", equalTo("pamdale")))
+        }
+    }
+
+    @Nested
+    inner class CreatingOrganisations {
+        @Test
+        fun `creates a district organisation with given name and content package`() {
+            val name = "the_district_name"
+            val contentPackage = ContentPackageFactory.sample()
+            contentPackageRepository.save(contentPackage)
+
+            val request = CreateDistrictRequest()
+            request.name = name
+            request.contentPackageId = contentPackage.id.value
+            request.type = "DISTRICT"
+
+            mvc
+                .perform(
+                    post("/v1/organisations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """{
+                                "name": "the_district_name",
+                                "type": "DISTRICT",
+                                "contentPackageId": "${contentPackage.id.value}"
+                                }"""
+                        )
+                        .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
+                )
+                .andExpect(jsonPath("$.organisationDetails.name", equalTo("the_district_name")))
+                .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
+        }
+
+        @Test
+        fun `returns 409 when organisation with given name already exists`() {
+            saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
+            val contentPackage = ContentPackageFactory.sample()
+            contentPackageRepository.save(contentPackage)
+            mvc
+                .perform(
+                    post("/v1/organisations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """{
+                                "name": "the_district_name",
+                                "type": "DISTRICT",
+                                "contentPackageId": "${contentPackage.id.value}"
+                                }"""
+                        )
+                        .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
+                )
+                .andExpect(status().isConflict)
+        }
+
+        @Test
+        fun `returns 400 when organisation type is not district`() {
+            saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
+            val contentPackage = ContentPackageFactory.sample()
+            contentPackageRepository.save(contentPackage)
+            mvc
+                .perform(
+                    post("/v1/organisations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """{
+                                "name": "the_district_name",
+                                "type": "SCHOOL",
+                                "contentPackageId": "${contentPackage.id.value}"
+                                }"""
+                        )
+                        .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
+                )
+                .andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `returns 403 when called without INSERT_ORGANISATIONS role`() {
+            saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
+            val contentPackage = ContentPackageFactory.sample()
+            contentPackageRepository.save(contentPackage)
+            mvc
+                .perform(
+                    post("/v1/organisations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            """{
+                                "name": "the_district_name",
+                                "type": "SCHOOL",
+                                "contentPackageId": "${contentPackage.id.value}"
+                                }"""
+                        )
+                )
+                .andExpect(status().isForbidden)
         }
     }
 }

@@ -22,6 +22,7 @@ interface OrganisationRepository {
     fun findByTag(tag: OrganisationTag): List<Organisation>
     fun findByEmailDomain(domain: String) : List<Organisation>
     fun findApiIntegrationByName(name: String): ApiIntegration?
+    fun findDistrictByName(name: String): District?
 
     fun lookupSchools(schoolName: String, countryCode: String): List<School>
     fun findSchoolById(id: OrganisationId): School?

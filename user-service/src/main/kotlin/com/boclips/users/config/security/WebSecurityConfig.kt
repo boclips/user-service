@@ -55,6 +55,7 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.PUT, "/v1/accounts/*").hasRole(UserRoles.UPDATE_ORGANISATIONS)
 
             .antMatchers(HttpMethod.GET, "/v1/organisations").hasRole(UserRoles.VIEW_ORGANISATIONS)
+            .antMatchers(HttpMethod.POST, "/v1/organisations").hasRole(UserRoles.INSERT_ORGANISATIONS)
             .antMatchers(HttpMethod.GET, "/v1/organisations/*").hasRole(UserRoles.VIEW_ORGANISATIONS)
             .antMatchers(HttpMethod.PUT, "/v1/organisations/*").hasRole(UserRoles.UPDATE_ORGANISATIONS)
             .antMatchers(HttpMethod.POST, "/v1/organisations/*").hasRole(UserRoles.UPDATE_ORGANISATIONS)
