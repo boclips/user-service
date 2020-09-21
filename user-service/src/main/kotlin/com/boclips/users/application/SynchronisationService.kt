@@ -1,16 +1,18 @@
 package com.boclips.users.application
 
-import com.boclips.users.domain.service.user.IdentityProvider
-import com.boclips.users.domain.service.marketing.MarketingService
-import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.service.access.AccessExpiryService
+import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
+import com.boclips.users.domain.service.user.IdentityProvider
+import com.boclips.users.domain.service.user.SessionProvider
 import mu.KLogging
 import org.springframework.stereotype.Component
 
 @Component
 class SynchronisationService(
     val marketingService: MarketingService,
+    val accessExpiryService: AccessExpiryService,
     val sessionProvider: SessionProvider,
     val userImportService: UserImportService,
     val identityProvider: IdentityProvider,
@@ -20,7 +22,8 @@ class SynchronisationService(
 
     fun synchroniseCrmProfiles() {
         val teacherUsers = userRepository.findAllTeachers()
-        logger.info { "Found ${teacherUsers.size} teacher users to be synchronised" }
+            .filter { user -> !user.identity.isBoclipsEmployee() && accessExpiryService.userHasAccess(user) }
+        logger.info { "Found ${teacherUsers.size} active teacher users to be synchronised" }
 
         val allCrmProfiles = teacherUsers
             .map { user ->

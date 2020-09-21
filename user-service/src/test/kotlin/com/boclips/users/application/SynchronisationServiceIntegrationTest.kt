@@ -15,6 +15,7 @@ import org.mockito.ArgumentCaptor
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
@@ -32,7 +33,7 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `updates CRM with correct expiry date`() {
         val userAccess = LocalDate.of(2015, 1, 1).atStartOfDay(ZoneId.systemDefault())
-        val orgAccess = LocalDate.of(2020, 1, 1).atStartOfDay(ZoneId.systemDefault())
+        val orgAccess = ZonedDateTime.now().plusDays(10)
 
         saveUser(
             UserFactory.sample(
@@ -50,6 +51,39 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         val argument = ArgumentCaptor.forClass(List::class.java) as ArgumentCaptor<List<CrmProfile>>
         verify(marketingService).updateProfile(capture(argument))
         assertThat(argument.value.first().accessExpiresOn).isEqualTo(orgAccess.toInstant())
+    }
+
+    @Test
+    fun `does not try to sync expired teachers or boclipper users`() {
+        saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(username = "teacher@test.com"),
+                accessExpiresOn = ZonedDateTime.now().plusDays(1),
+                organisation = OrganisationFactory.school()
+            )
+        )
+
+        saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(username = "expired_teacher@test.com"),
+                organisation = OrganisationFactory.school(),
+                accessExpiresOn = ZonedDateTime.now().minusDays(1)
+            )
+        )
+
+        saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(username = "boclipper@boclips.com"),
+                organisation = OrganisationFactory.school(),
+            )
+        )
+
+        synchronisationService.synchroniseCrmProfiles()
+
+        val argument = ArgumentCaptor.forClass(List::class.java) as ArgumentCaptor<List<CrmProfile>>
+        verify(marketingService).updateProfile(capture(argument))
+        assertThat(argument.value.size).isEqualTo(1)
+        assertThat(argument.value.first().email).isEqualTo("teacher@test.com")
     }
 
     @Test
