@@ -17,7 +17,7 @@ class IntegrationController(
 ) {
 
     @PutMapping("/deployments/{deploymentId}/users/{externalUserId}")
-    fun synchroniseUsers(
+    fun synchroniseUser(
         @PathVariable deploymentId: String,
         @PathVariable externalUserId: String,
     ): ResponseEntity<SynchUserResource> {

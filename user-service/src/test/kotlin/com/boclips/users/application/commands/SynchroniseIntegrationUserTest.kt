@@ -57,7 +57,7 @@ class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `only creates user when organisation already exists`() {
+    fun `creates only user when organisation already exists`() {
         saveOrganisation(OrganisationFactory.ltiDeployment(
             name = "lti-deployment-organisation",
             deploymentId = "deployment-id",
@@ -101,5 +101,32 @@ class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
         assertThat(organisationRepository.findOrganisationsByParentId(baseLtiOrganisation.id).size).isEqualTo(1)
         assertThat(userRepository.findAllByOrganisationId(ltiDeploymentOrganisation.id).size).isEqualTo(1)
         assertThat(user.id.value).isEqualTo("internal-user-id")
+    }
+
+    @Test
+    fun `it creates a new user when external id already exists in another deployment`() {
+        val ltiDeploymentOrganisation = saveOrganisation(OrganisationFactory.ltiDeployment(
+            name = "lti-deployment-organisation",
+            deploymentId = "deployment-id",
+            parent = baseLtiOrganisation
+        ))
+
+        saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(
+                    username = "external-user-id",
+                    id = "internal-user-id"
+                ),
+                organisation = ltiDeploymentOrganisation
+            )
+        )
+
+        synchroniseIntegrationUser("deployment-id-1", "external-user-id")
+
+
+        val users = userRepository.findAll().filter { it.identity.username == "external-user-id" }
+        assertThat(users.size).isEqualTo(2)
+
+        assertThat(users[0].organisation?.id?.value).isNotEqualTo(users[1].organisation?.id?.value)
     }
 }
