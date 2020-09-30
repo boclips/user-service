@@ -1,10 +1,13 @@
 package com.boclips.users.domain.service.organisation
 
+import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.ExternalOrganisationInformation
 import com.boclips.users.domain.model.organisation.ExternalSchoolInformation
+import com.boclips.users.domain.model.organisation.LtiDeployment
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.organisation.School
@@ -27,6 +30,11 @@ class OrganisationService(
 
         return createSchool(externalSchoolInfo)
     }
+
+    fun findOrCreateLtiDeployment(topLevelOrganisationId: OrganisationId, deploymentId: String): Organisation {
+        return organisationRepository.findOrganisationsByParentId(topLevelOrganisationId)
+            .find { organisation -> (organisation as LtiDeployment).deploymentId == deploymentId }
+            ?: saveDeploymentOrganisation(deploymentId, topLevelOrganisationId)    }
 
     private fun getOrCreateDistrict(externalInfo: ExternalOrganisationInformation): District? {
         val existingOrganisation = organisationRepository.findOrganisationByExternalId(externalInfo.id)
@@ -77,5 +85,26 @@ class OrganisationService(
                 features = null
             )
         )
+    }
+
+    private fun saveDeploymentOrganisation(deploymentId: String, topLevelOrganisationId: OrganisationId): Organisation {
+        val integrationOrganisation = organisationRepository.findOrganisationById(topLevelOrganisationId)!!
+        val organisation = LtiDeployment(
+            id = OrganisationId(),
+            name = deploymentId,
+            address = Address(),
+            deal = Deal(
+                contentPackageId = null,
+                billing = false,
+                accessExpiresOn = null
+            ),
+            tags = emptySet(),
+            role = "LTI_DEPLOYMENT",
+            domain = null,
+            features = null,
+            deploymentId = deploymentId,
+            parent = integrationOrganisation
+        )
+        return organisationRepository.save(organisation)
     }
 }

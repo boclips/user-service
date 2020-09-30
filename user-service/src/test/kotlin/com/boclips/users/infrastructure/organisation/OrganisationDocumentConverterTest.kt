@@ -131,4 +131,16 @@ class OrganisationDocumentConverterTest {
         assertThat(schoolDocument.parent).isNotNull
         assertThat(schoolDocument.parent?._id?.toHexString()).isEqualTo(districtId.value)
     }
+
+    @Test
+    fun `lti deployment symmetrical conversion`() {
+        val ltiDeploymentId = OrganisationId()
+        val ltiOrganisation = OrganisationFactory.ltiDeployment(id = ltiDeploymentId)
+        val ltiDeployment = OrganisationFactory.ltiDeployment(id = ltiDeploymentId, parent = ltiOrganisation)
+
+        val ltiDeploymentDocument = OrganisationDocumentConverter.toDocument(ltiDeployment)
+        val ltiDeploymentConverted = OrganisationDocumentConverter.fromDocument(ltiDeploymentDocument)
+        
+        assertThat(ltiDeploymentConverted).isEqualTo(ltiDeployment)
+    }
 }

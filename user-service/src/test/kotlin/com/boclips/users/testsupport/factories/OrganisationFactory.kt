@@ -7,6 +7,8 @@ import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
+import com.boclips.users.domain.model.organisation.LtiDeployment
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.School
@@ -53,6 +55,32 @@ class OrganisationFactory {
                 externalId = externalId,
                 domain = domain,
                 features = features
+            )
+        }
+
+        fun ltiDeployment(
+            id: OrganisationId = OrganisationId(),
+            name: String = "lti deployment",
+            address: Address = address(country = Country.usa()),
+            deal: Deal = deal(),
+            role: String? = null,
+            domain: String? = null,
+            tags: Set<OrganisationTag> = emptySet(),
+            deploymentId: String = "deployment-id",
+            features: Map<Feature, Boolean>? = null,
+            parent: Organisation = apiIntegration()
+        ): LtiDeployment {
+            return LtiDeployment(
+                id = id,
+                name = name,
+                address = address,
+                deal = deal,
+                tags = tags,
+                role = role,
+                deploymentId = deploymentId,
+                domain = domain,
+                features = features,
+                parent = parent
             )
         }
 

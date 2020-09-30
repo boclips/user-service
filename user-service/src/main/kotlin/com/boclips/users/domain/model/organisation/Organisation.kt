@@ -5,7 +5,7 @@ import com.boclips.users.domain.model.feature.Feature
 import java.time.ZonedDateTime
 
 enum class OrganisationType {
-    API, SCHOOL, DISTRICT
+    API, SCHOOL, DISTRICT, LTI_DEPLOYMENT
 }
 
 sealed class Organisation(
@@ -135,6 +135,35 @@ class ApiIntegration(
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.API
+    }
+
+    override val accessExpiryDate: ZonedDateTime?
+        get() = this.deal.accessExpiresOn
+}
+
+class LtiDeployment(
+    override val id: OrganisationId,
+    override val name: String,
+    override val address: Address,
+    override val deal: Deal,
+    override val tags: Set<OrganisationTag>,
+    override val role: String?,
+    override val domain: String?,
+    features: Map<Feature, Boolean>?,
+    val deploymentId: String,
+    val parent: Organisation
+) : Organisation(
+    id = id,
+    name = name,
+    address = address,
+    deal = deal,
+    tags = tags,
+    role = role,
+    domain = domain,
+    features = features
+) {
+    override fun type(): OrganisationType {
+        return OrganisationType.LTI_DEPLOYMENT
     }
 
     override val accessExpiryDate: ZonedDateTime?

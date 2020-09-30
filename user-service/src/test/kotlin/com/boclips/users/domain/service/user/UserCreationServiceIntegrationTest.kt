@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZoneOffset
@@ -70,5 +71,26 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.marketingTracking.utmContent).isBlank()
         assertThat(persistedUser.marketingTracking.utmTerm).isBlank()
         assertThat(persistedUser.marketingTracking.utmMedium).isBlank()
+    }
+
+    @Test
+    fun `synchronise a user`() {
+        val organisation = organisationRepository.save(
+            OrganisationFactory.ltiDeployment(role = "ROLE_CLIENT_ORG",deploymentId = "deployment-id")
+        )
+
+        saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(
+                    username = "external-user-id",
+                    id = "internal-user-id"
+                ),
+                organisation = organisation
+            )
+        )
+
+        val user = userCreationService.synchroniseIntegrationUser("external-user-id", organisation)
+
+        assertThat(user.id.value).isEqualTo("internal-user-id")
     }
 }

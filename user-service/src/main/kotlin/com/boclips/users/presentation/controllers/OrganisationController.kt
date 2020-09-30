@@ -14,11 +14,13 @@ import com.boclips.users.presentation.converters.OrganisationConverter
 import com.boclips.users.presentation.converters.UserConverter
 import com.boclips.web.exceptions.ExceptionDetails
 import com.boclips.web.exceptions.InvalidRequestApiException
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -33,7 +35,8 @@ class OrganisationController(
     private val updateOrganisation: UpdateOrganisation,
     private val createDistrict: CreateDistrict,
     private val getOrganisations: GetOrganisations,
-    private val assignUsersByOrganisationDomain: AssignUsersByOrganisationDomain
+    private val assignUsersByOrganisationDomain: AssignUsersByOrganisationDomain,
+    private val synchroniseIntegrationUser: SynchroniseIntegrationUser
 ) {
 
     @PostMapping("/organisations")

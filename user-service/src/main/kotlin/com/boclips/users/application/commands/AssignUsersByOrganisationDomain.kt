@@ -4,6 +4,7 @@ import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.LtiDeployment
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.School
@@ -28,6 +29,7 @@ class AssignUsersByOrganisationDomain(
             is School -> handleFlatOrganisation(organisation)
             is District -> handleHierarchicalOrganisation(organisation)
             is ApiIntegration -> handleFlatOrganisation(organisation)
+            is LtiDeployment -> emptyList()
         }
 
         logger.info { "Identified ${orphanUsers.size} users not associate to organisation ${organisation.id} with domain ${organisation.domain}" }

@@ -10,6 +10,7 @@ data class OrganisationDocument(
     val role: String?,
     val domain: String?,
     val externalId: String?,
+    val deploymentId: String?,
     val type: OrganisationType,
     val country: LocationDocument?,
     val state: LocationDocument?,

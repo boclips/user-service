@@ -1,15 +1,18 @@
 package com.boclips.users.domain.service.user
 
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.NewTeacher
 import com.boclips.users.domain.model.user.TeacherPlatformAttributes
 import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolver
 import mu.KLogging
 import org.springframework.stereotype.Service
+import java.time.ZonedDateTime
 
 @Service
 class UserCreationService(
@@ -49,7 +52,26 @@ class UserCreationService(
         }
     }
 
+    fun synchroniseIntegrationUser(externalUserId: String, deploymentOrganisation: Organisation): User {
+        return userRepository.findAllByOrganisationId(deploymentOrganisation.id)
+            .find { user -> user.identity.username == externalUserId }
+            ?: createLtiDeploymentUser(externalUserId, deploymentOrganisation)
+    }
+
+    private fun createLtiDeploymentUser(externalUserId: String, organisation: Organisation): User {
+        return create(
+            Identity(id = UserId(), username = externalUserId, createdAt = ZonedDateTime.now()),
+            organisation
+        ) {
+            it
+        }
+    }
+
     private fun create(identity: Identity, setup: (defaults: User) -> User): User {
+        return create(identity, organisationResolver.resolve(identity), setup)
+    }
+
+    private fun create(identity: Identity, organisation: Organisation?, setup: (defaults: User) -> User): User {
         logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]" }
 
         return User(
@@ -59,7 +81,7 @@ class UserCreationService(
             marketingTracking = MarketingTracking(),
             referralCode = null,
             analyticsId = null,
-            organisation = organisationResolver.resolve(identity),
+            organisation = organisation,
             accessExpiresOn = null
         )
             .let(setup)
