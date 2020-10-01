@@ -519,7 +519,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `should extract logged in user`() {
             val organisation = saveOrganisation(school(
                 address = Address(country = Country.usa(), state = State.fromCode("WA")),
-                features = mapOf(Feature.LTI_COPY_RESOURCE_LINK to true)
+                features = mapOf(Feature.LTI_COPY_RESOURCE_LINK to true, Feature.LTI_SLS_TERMS_BUTTON to true)
                 ))
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
@@ -529,6 +529,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", equalTo(user.id.value)))
                 .andExpect(jsonPath("$.features.LTI_COPY_RESOURCE_LINK", equalTo(true)))
+                .andExpect(jsonPath("$.features.LTI_SLS_TERMS_BUTTON", equalTo(true)))
                 .andExpect(jsonPath("$.firstName").exists())
                 .andExpect(jsonPath("$.lastName").exists())
                 .andExpect(jsonPath("$.analyticsId").exists())
