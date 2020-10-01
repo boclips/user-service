@@ -45,6 +45,14 @@ class UserLinkBuilder :
         }
     }
 
+    fun currentUserLink(): Link? {
+        return getCurrentUser()?.let {
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserController::class.java).getSelf()
+            ).withRel("currentUser")
+        }
+    }
+
     fun newUserProfileLink(userId: UserId): Link? =
         WebMvcLinkBuilder.linkTo(
             WebMvcLinkBuilder

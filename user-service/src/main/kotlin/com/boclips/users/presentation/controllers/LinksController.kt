@@ -40,6 +40,7 @@ class LinksController(
                 },
                 userLinkBuilder.profileLink(user?.id),
                 userLinkBuilder.userLink(),
+                userLinkBuilder.currentUserLink(),
                 userLinkBuilder.accessRulesLink(),
                 countryLinkBuilder.getCountriesLink(),
                 accessRuleLinkBuilder.searchAccessRules(),
