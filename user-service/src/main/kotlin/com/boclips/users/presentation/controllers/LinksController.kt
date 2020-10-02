@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.service.access.AccessExpiryService
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.presentation.hateoas.*
+import org.springframework.hateoas.CollectionModel
 import org.springframework.hateoas.EntityModel
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -23,13 +24,13 @@ class LinksController(
     private val contentPackageLinkBuilder: ContentPackageLinkBuilder
 ) {
     @GetMapping
-    fun getLinks(): EntityModel<String> {
+    fun getLinks(): EntityModel<CollectionModel<String>> {
         val user = UserExtractor.getCurrentUser()?.let {
             userRepository.findById(UserId(value = it.id))
         }
 
-        return EntityModel(
-            "", listOfNotNull(
+        return EntityModel.of(
+            CollectionModel.of(emptyList()), listOfNotNull(
                 userLinkBuilder.createUserLink(),
                 userLinkBuilder.activateUserLink(user),
                 user?.let {
