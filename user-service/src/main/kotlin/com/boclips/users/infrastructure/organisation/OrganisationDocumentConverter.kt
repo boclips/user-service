@@ -55,6 +55,7 @@ object OrganisationDocumentConverter : KLogging() {
                 FeatureDocument.TEACHERS_HOME_SUGGESTED_VIDEOS -> Feature.TEACHERS_HOME_SUGGESTED_VIDEOS
                 FeatureDocument.TEACHERS_HOME_PROMOTED_COLLECTIONS -> Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS
                 FeatureDocument.TEACHERS_SUBJECTS -> Feature.TEACHERS_SUBJECTS
+                FeatureDocument.USER_DATA_HIDDEN -> Feature.USER_DATA_HIDDEN
             }
         }
 
@@ -151,6 +152,7 @@ object OrganisationDocumentConverter : KLogging() {
                     Feature.TEACHERS_HOME_SUGGESTED_VIDEOS -> FeatureDocument.TEACHERS_HOME_SUGGESTED_VIDEOS
                     Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS -> FeatureDocument.TEACHERS_HOME_PROMOTED_COLLECTIONS
                     Feature.TEACHERS_SUBJECTS -> FeatureDocument.TEACHERS_SUBJECTS
+                    Feature.USER_DATA_HIDDEN -> FeatureDocument.USER_DATA_HIDDEN
                 }
             }
         )

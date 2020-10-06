@@ -6,7 +6,8 @@ enum class Feature(val defaultValue: Boolean) {
     TEACHERS_HOME_BANNER(true),
     TEACHERS_HOME_SUGGESTED_VIDEOS(true),
     TEACHERS_HOME_PROMOTED_COLLECTIONS(true),
-    TEACHERS_SUBJECTS(true);
+    TEACHERS_SUBJECTS(true),
+    USER_DATA_HIDDEN(false);
 
     companion object {
 
