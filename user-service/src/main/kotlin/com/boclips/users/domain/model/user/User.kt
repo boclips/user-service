@@ -35,6 +35,10 @@ class User(
         return profile?.firstName?.isNotEmpty() ?: false
     }
 
+    fun hasDetailsHidden(): Boolean {
+        return features.getOrDefault(Feature.USER_DATA_HIDDEN, Feature.USER_DATA_HIDDEN.defaultValue)
+    }
+
     fun isReferral(): Boolean {
         return !referralCode.isNullOrEmpty()
     }

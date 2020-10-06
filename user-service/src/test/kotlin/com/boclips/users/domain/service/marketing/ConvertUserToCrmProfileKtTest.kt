@@ -1,5 +1,6 @@
 package com.boclips.users.domain.service.marketing
 
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.domain.model.user.UserSessions
@@ -7,6 +8,7 @@ import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -40,6 +42,14 @@ class ConvertUserToCrmProfileKtTest : AbstractSpringIntegrationTest() {
         )!!
 
         assertThat(crmProfile.activated).isFalse()
+    }
+
+    @Test
+    fun `returns null if user data should be hidden`() {
+        val user = UserFactory.sample(organisation = OrganisationFactory.school(features = mapOf(Feature.USER_DATA_HIDDEN to true)))
+        val crmProfile: CrmProfile? = convertUserToCrmProfile(user, UserSessions(Instant.now()))
+
+        assertThat(crmProfile).isNull()
     }
 
     @Test

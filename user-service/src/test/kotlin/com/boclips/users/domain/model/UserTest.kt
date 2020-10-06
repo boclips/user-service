@@ -1,5 +1,6 @@
 package com.boclips.users.domain.model
 
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
@@ -34,6 +35,20 @@ class UserTest {
         )
 
         assertThat(user.isActivated()).isTrue()
+    }
+
+    @Test
+    fun `user data should be hidden if USER_DATA_HIDDEN is set`() {
+        val user = UserFactory.sample(organisation = OrganisationFactory.school(features = mapOf(Feature.USER_DATA_HIDDEN to true)))
+
+        assertThat(user.hasDetailsHidden()).isTrue()
+    }
+
+    @Test
+    fun `user data is not hidden by default`() {
+        val user = UserFactory.sample()
+
+        assertThat(user.hasDetailsHidden()).isFalse()
     }
 
     @Test
