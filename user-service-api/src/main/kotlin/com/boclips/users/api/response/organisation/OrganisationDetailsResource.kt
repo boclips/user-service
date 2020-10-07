@@ -10,5 +10,6 @@ data class OrganisationDetailsResource(
     val type: String?,
     val state: StateResource?,
     val country: CountryResource?,
-    val allowsOverridingUserIds: Boolean?
+    val allowsOverridingUserIds: Boolean?,
+    val features: Map<String, Boolean>?
 )

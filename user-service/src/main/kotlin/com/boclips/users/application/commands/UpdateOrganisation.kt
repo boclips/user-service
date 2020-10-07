@@ -1,16 +1,19 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
+import com.boclips.users.api.request.UpdateOrganisationRequest
 import com.boclips.users.application.exceptions.InvalidDateException
+import com.boclips.users.application.exceptions.InvalidFeatureException
 import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
-import com.boclips.users.domain.model.organisation.OrganisationRepository
-import com.boclips.users.api.request.UpdateOrganisationRequest
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceFeatures
 import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -34,7 +37,15 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
             ReplaceDomain(domain.trim())
         }
 
-        organisationRepository.update(organisationId, *listOfNotNull(expiryUpdate, domainUpdate).toTypedArray())
+        val featuresUpdate = request?.features?.let { features ->
+            val convertedFeatures = convertToFeatures(features)
+            ReplaceFeatures(convertedFeatures)
+        }
+
+        organisationRepository.update(
+            organisationId,
+            *listOfNotNull(expiryUpdate, domainUpdate, featuresUpdate).toTypedArray()
+        )
             ?: throw OrganisationNotFoundException(id)
 
         return organisationRepository.findOrganisationById(organisationId)
@@ -47,5 +58,12 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
         } catch (e: DateTimeParseException) {
             throw InvalidDateException(date)
         }
+    }
+
+    private fun convertToFeatures(features: Map<String, Boolean>): Map<Feature, Boolean> {
+        val invalidFeatures = features.filterKeys { !Feature.isValid(it) }
+        if (invalidFeatures.isNotEmpty()) throw InvalidFeatureException(invalidFeatures.keys)
+
+        return features.mapKeys { Feature.valueOf(it.key) }
     }
 }

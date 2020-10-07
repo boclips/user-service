@@ -16,5 +16,9 @@ enum class Feature(val defaultValue: Boolean) {
         fun withAllFeatures(features: Map<Feature, Boolean>?): Map<Feature, Boolean> = values().map {
             it to (features?.get(it) ?: it.defaultValue)
         }.toMap()
+
+        fun isValid(value: String): Boolean {
+            return values().any { it.name == value }
+        }
     }
 }

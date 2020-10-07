@@ -2,10 +2,9 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.api.request.CreateDistrictRequest
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
-import com.boclips.users.domain.model.organisation.LtiDeployment
-import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UniqueId
@@ -17,14 +16,12 @@ import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import com.boclips.users.testsupport.factories.UserFactory
-import org.assertj.core.api.Assertions
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -191,7 +188,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     externalId = ExternalOrganisationId("123"),
                     address = Address(
                         state = State(id = "FL", name = "Florida")
-                    )
+                    ),
+                    features = mapOf(Feature.TEACHERS_HOME_BANNER to false)
                 )
             )
 
@@ -208,6 +206,70 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", equalTo(district.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.domain", equalTo(givenDomain)))
+                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_BANNER", equalTo(false)))
+        }
+
+        @Test
+        fun `updating organization features`() {
+            val org = organisationRepository.save(
+                OrganisationFactory.apiIntegration(
+                    name = "Integration X",
+                    features = mapOf(Feature.USER_DATA_HIDDEN to false)
+                )
+            )
+
+            mvc.perform(
+                post("/v1/organisations/${org.id.value}").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.UPDATE_ORGANISATIONS
+                )
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """ {"features":  { 
+                                "LTI_COPY_RESOURCE_LINK" : "false",
+                                "LTI_SLS_TERMS_BUTTON" : "false",
+                                "TEACHERS_HOME_BANNER" : "false",
+                                "TEACHERS_HOME_SUGGESTED_VIDEOS" : "false",
+                                "TEACHERS_HOME_PROMOTED_COLLECTIONS" : "false",
+                                "TEACHERS_SUBJECTS" : "false",
+                                "USER_DATA_HIDDEN" : "true" }
+                            } """.trimIndent()
+                    )
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id", equalTo(org.id.value)))
+                .andExpect(jsonPath("$.organisationDetails.features.LTI_COPY_RESOURCE_LINK", equalTo(false)))
+                .andExpect(jsonPath("$.organisationDetails.features.LTI_SLS_TERMS_BUTTON", equalTo(false)))
+                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_BANNER", equalTo(false)))
+                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_SUGGESTED_VIDEOS", equalTo(false)))
+                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_PROMOTED_COLLECTIONS", equalTo(false)))
+                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_SUBJECTS", equalTo(false)))
+                .andExpect(jsonPath("$.organisationDetails.features.USER_DATA_HIDDEN", equalTo(true)))
+        }
+
+        @Test
+        fun `bad request if trying to set invalid feature`() {
+            val org = organisationRepository.save(
+                OrganisationFactory.apiIntegration(
+                    name = "Integration X",
+                    features = mapOf(Feature.USER_DATA_HIDDEN to false)
+                )
+            )
+
+            mvc.perform(
+                post("/v1/organisations/${org.id.value}").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.UPDATE_ORGANISATIONS
+                )
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """ {"features":  { 
+                                "NONEXISTENTFEATURE" : "false",
+                                "USER_DATA_HIDDEN" : "true" }
+                            } """.trimIndent()
+                    )
+            )
+                .andExpect(status().isBadRequest)
         }
 
         @Test

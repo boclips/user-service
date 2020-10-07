@@ -32,7 +32,8 @@ class OrganisationDetailsConverter {
             allowsOverridingUserIds = when (organisation) {
                 is ApiIntegration -> organisation.allowsOverridingUserIds
                 else -> null
-            }
+            },
+            features = organisation.features?.map { it.key.name to it.value }?.toMap()
         )
     }
 }

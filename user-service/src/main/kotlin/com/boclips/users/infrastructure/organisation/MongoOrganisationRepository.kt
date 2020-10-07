@@ -6,13 +6,13 @@ import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.model.organisation.OrganisationType
-import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
-import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.organisation.OrganisationTag
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.OrganisationUpdate
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter.fromDocument
 import com.mongodb.MongoClient
@@ -99,6 +99,9 @@ class MongoOrganisationRepository(
                 is ReplaceDomain -> accumulator.copy(domain = update.domain)
                 is OrganisationUpdate.AddTag -> accumulator.copy(tags = accumulator.tags.orEmpty() + update.tag.name)
                 is OrganisationUpdate.ReplaceBilling -> accumulator.copy(billing = update.billing)
+                is OrganisationUpdate.ReplaceFeatures ->
+                    accumulator.copy(features = update.features.mapKeys { FeatureDocumentConverter.toDocument(it.key)
+                })
             }
         })
 

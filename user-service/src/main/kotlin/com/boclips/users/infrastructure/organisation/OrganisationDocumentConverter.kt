@@ -1,7 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.access.ContentPackageId
-import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.Deal
@@ -47,17 +46,7 @@ object OrganisationDocumentConverter : KLogging() {
 
         val externalId = organisationDocument.externalId?.let(::ExternalOrganisationId)
 
-        val features = organisationDocument.features?.mapKeys {
-            when (it.key) {
-                FeatureDocument.LTI_COPY_RESOURCE_LINK -> Feature.LTI_COPY_RESOURCE_LINK
-                FeatureDocument.LTI_SLS_TERMS_BUTTON -> Feature.LTI_SLS_TERMS_BUTTON
-                FeatureDocument.TEACHERS_HOME_BANNER -> Feature.TEACHERS_HOME_BANNER
-                FeatureDocument.TEACHERS_HOME_SUGGESTED_VIDEOS -> Feature.TEACHERS_HOME_SUGGESTED_VIDEOS
-                FeatureDocument.TEACHERS_HOME_PROMOTED_COLLECTIONS -> Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS
-                FeatureDocument.TEACHERS_SUBJECTS -> Feature.TEACHERS_SUBJECTS
-                FeatureDocument.USER_DATA_HIDDEN -> Feature.USER_DATA_HIDDEN
-            }
-        }
+        val features = organisationDocument.features?.mapKeys { FeatureDocumentConverter.fromDocument(it.key) }
 
         return when (organisationDocument.type) {
             OrganisationType.API -> ApiIntegration(
@@ -144,17 +133,7 @@ object OrganisationDocumentConverter : KLogging() {
             tags = organisation.tags.map { it.name }.toSet(),
             billing = organisation.deal.billing,
             contentPackageId = organisation.deal.contentPackageId?.value,
-            features = organisation.features?.mapKeys {
-                when (it.key) {
-                    Feature.LTI_COPY_RESOURCE_LINK -> FeatureDocument.LTI_COPY_RESOURCE_LINK
-                    Feature.LTI_SLS_TERMS_BUTTON -> FeatureDocument.LTI_SLS_TERMS_BUTTON
-                    Feature.TEACHERS_HOME_BANNER -> FeatureDocument.TEACHERS_HOME_BANNER
-                    Feature.TEACHERS_HOME_SUGGESTED_VIDEOS -> FeatureDocument.TEACHERS_HOME_SUGGESTED_VIDEOS
-                    Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS -> FeatureDocument.TEACHERS_HOME_PROMOTED_COLLECTIONS
-                    Feature.TEACHERS_SUBJECTS -> FeatureDocument.TEACHERS_SUBJECTS
-                    Feature.USER_DATA_HIDDEN -> FeatureDocument.USER_DATA_HIDDEN
-                }
-            }
+            features = organisation.features?.mapKeys { FeatureDocumentConverter.toDocument(it.key) }
         )
     }
 }

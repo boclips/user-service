@@ -33,7 +33,8 @@ class OrganisationResourceFactory {
             type: String? = "API",
             state: StateResource? = null,
             country: CountryResource? = null,
-            allowsOverridingUserIds: Boolean? = null
+            allowsOverridingUserIds: Boolean? = null,
+            features: Map<String, Boolean> = emptyMap()
         ) = OrganisationDetailsResource(
             id = id,
             name = name,
@@ -41,7 +42,8 @@ class OrganisationResourceFactory {
             type = type,
             state = state,
             country = country,
-            allowsOverridingUserIds = allowsOverridingUserIds
+            allowsOverridingUserIds = allowsOverridingUserIds,
+            features = features
         )
     }
 }

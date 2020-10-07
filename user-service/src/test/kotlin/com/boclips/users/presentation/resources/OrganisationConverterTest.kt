@@ -3,6 +3,7 @@ package com.boclips.users.presentation.resources
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -45,7 +46,8 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
                 contentPackageId = ContentPackageId("content-package-id"),
                 billing = false,
                 accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
-            )
+            ),
+            features = mapOf(Feature.USER_DATA_HIDDEN to true)
         )
 
         val organisationResource = organisationConverter.toResource(originalOrganisation)
@@ -59,6 +61,7 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
         assertThat(organisationResource.organisationDetails.type).isEqualTo(
             originalOrganisation.type().toString()
         )
+        assertThat(organisationResource.organisationDetails.features!![Feature.USER_DATA_HIDDEN.name]).isTrue()
         assertThat(organisationResource._links?.map { it.key }).containsExactlyInAnyOrder(
             "self",
             "edit",
