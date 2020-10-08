@@ -2,15 +2,18 @@ package com.boclips.users.presentation.hateoas
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.keycloak.common.Profile
 import org.springframework.security.core.context.SecurityContextHolder
 
 class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
@@ -42,6 +45,24 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         assertThat(activateUserLink).isNotNull()
         assertThat(activateUserLink!!.href).endsWith("/users/lovely-user")
         assertThat(activateUserLink.rel.value()).isEqualTo("activate")
+    }
+
+    @Test
+    fun `no activate link when USER_DATA_HIDDEN feature set to true`() {
+        setSecurityContext("lovely-user")
+
+        val activateUserLink =
+            userLinkBuilder.activateUserLink(
+                UserFactory.sample(
+                    profile = null,
+                    identity = IdentityFactory.sample(id = "lovely-user"),
+                    organisation = OrganisationFactory.district(
+                        features = mapOf(Feature.USER_DATA_HIDDEN to true)
+                    )
+                )
+            )
+
+        assertThat(activateUserLink).isNull()
     }
 
     @Test

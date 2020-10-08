@@ -19,7 +19,7 @@ class UserLinkBuilder :
 
     fun activateUserLink(user: User?): Link? {
         return getIfAuthenticated {
-            if (user?.hasOnboarded() == true)
+            if (user?.hasDetailsHidden() == true || user?.hasOnboarded() == true)
                 null
             else {
                 profileLink(user?.id)?.withRel("activate")
