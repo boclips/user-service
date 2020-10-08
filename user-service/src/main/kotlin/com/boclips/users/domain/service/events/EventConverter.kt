@@ -3,16 +3,13 @@ package com.boclips.users.domain.service.events
 import com.boclips.eventbus.domain.Subject
 import com.boclips.eventbus.domain.SubjectId
 import com.boclips.eventbus.domain.user.UserProfile
-import com.boclips.users.domain.model.organisation.Address
-import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.user.User
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.School
 import com.boclips.eventbus.domain.user.Address as EventAddress
 import com.boclips.eventbus.domain.user.Deal as EventDeal
 import com.boclips.eventbus.domain.user.Organisation as EventOrganisation
 import com.boclips.eventbus.domain.user.User as EventUser
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.organisation.*
 import com.boclips.eventbus.domain.user.MarketingTracking as EventMarketingTracking
 
 class EventConverter {
@@ -73,9 +70,11 @@ class EventConverter {
     }
 
     private fun parentOrganisation(organisationDetails: Organisation): EventOrganisation? {
-        return (organisationDetails as? School?)
-            ?.district
-            ?.let(this::toEventOrganisation)
+        return when (organisationDetails) {
+            is School -> organisationDetails.district?.let(this::toEventOrganisation)
+            is LtiDeployment -> organisationDetails.parent.let(this::toEventOrganisation)
+            else -> null
+        }
     }
 
     private fun toEventMarketingTracking(marketingTrackingDetails: MarketingTracking): EventMarketingTracking {

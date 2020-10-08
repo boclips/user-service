@@ -2,6 +2,7 @@ package com.boclips.users.domain.service.events
 
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationTag
+import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.model.subject.Subject
@@ -90,5 +91,21 @@ class EventConverterTest {
         assertThat(eventOrganisation.deal.expiresAt).isEqualTo(now)
         assertThat(eventOrganisation.deal.billing).isTrue()
         assertThat(eventOrganisation.tags).containsExactly("DESIGN_PARTNER")
+    }
+
+    @Test
+    fun `convert LTI deployment organisation to event`() {
+        val now = ZonedDateTime.now()
+        val organisation = OrganisationFactory.ltiDeployment(
+            tags = setOf(OrganisationTag.DEFAULT_ORGANISATION),
+            name = "my-deployment",
+            parent = OrganisationFactory.apiIntegration(name = "top-level-lti-organisation")
+        )
+
+        val eventOrganisation = EventConverter().toEventOrganisation(organisation)
+
+        assertThat(eventOrganisation.parent?.name).isEqualTo("top-level-lti-organisation")
+        assertThat(eventOrganisation.name).isEqualTo("my-deployment")
+        assertThat(eventOrganisation.type).isEqualTo(OrganisationType.LTI_DEPLOYMENT.toString())
     }
 }
