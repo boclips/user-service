@@ -47,6 +47,7 @@ fun MockHttpServletRequestBuilder.asOperator() =
         SecurityMockMvcRequestPostProcessors
             .user("operator")
             .roles(
-                UserRoles.UPDATE_USERS
+                UserRoles.UPDATE_USERS,
+                UserRoles.BROADCAST_EVENTS
             )
     )

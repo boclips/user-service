@@ -1,5 +1,6 @@
 package com.boclips.users.domain.service.events
 
+import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
@@ -91,6 +92,19 @@ class EventConverterTest {
         assertThat(eventOrganisation.deal.expiresAt).isEqualTo(now)
         assertThat(eventOrganisation.deal.billing).isTrue()
         assertThat(eventOrganisation.tags).containsExactly("DESIGN_PARTNER")
+    }
+
+    @Test
+    fun `convert content package to event`() {
+        val contentPackage = ContentPackageFactory.sample(
+            id = "content-package-id",
+            name = "content package name"
+        )
+
+        val event = EventConverter().toEventContentPackage(contentPackage)
+
+        assertThat(event.id.value).isEqualTo("content-package-id")
+        assertThat(event.name).isEqualTo("content package name")
     }
 
     @Test

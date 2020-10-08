@@ -69,7 +69,7 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .antMatchers(HttpMethod.PUT, "/v1/content-packages/*").hasRole(UserRoles.UPDATE_CONTENT_PACKAGES)
             .antMatchers(HttpMethod.GET, "/v1/content-packages").hasRole(UserRoles.VIEW_CONTENT_PACKAGES)
 
-            .antMatchers(HttpMethod.POST, "/v1/admin/users/actions/*").hasRole(UserRoles.UPDATE_USERS)
+            .antMatchers(HttpMethod.POST, "/v1/admin/users/actions/*").hasRole(UserRoles.BROADCAST_EVENTS)
 
             .anyRequest().authenticated()
     }
