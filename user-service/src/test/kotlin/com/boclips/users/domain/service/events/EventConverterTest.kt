@@ -1,6 +1,5 @@
 package com.boclips.users.domain.service.events
 
-import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
@@ -8,8 +7,13 @@ import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
-import com.boclips.users.testsupport.factories.*
+import com.boclips.users.testsupport.factories.ContentPackageFactory
+import com.boclips.users.testsupport.factories.IdentityFactory
+import com.boclips.users.testsupport.factories.MarketingTrackingFactory
+import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
+import com.boclips.users.testsupport.factories.ProfileFactory
+import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
@@ -21,20 +25,20 @@ class EventConverterTest {
     @Test
     fun `converting user to event`() {
         val user = UserFactory.sample(
-                marketing = MarketingTrackingFactory.sample(
-                        utmCampaign = "click here",
-                        utmContent = "OMG you are falling behind your peers. Do you want a better life?",
-                        utmMedium = "telekinesis",
-                        utmSource = "AWS",
-                        utmTerm = "easy"
-                ),
+            marketing = MarketingTrackingFactory.sample(
+                utmCampaign = "click here",
+                utmContent = "OMG you are falling behind your peers. Do you want a better life?",
+                utmMedium = "telekinesis",
+                utmSource = "AWS",
+                utmTerm = "easy"
+            ),
             identity = IdentityFactory.sample(
                 createdAt = ZonedDateTime.parse("2020-03-20T10:11:12Z")
             ),
             profile = ProfileFactory.sample(
                 firstName = "John",
                 lastName = "Johnson",
-                    hasOptedIntoMarketing = false,
+                hasOptedIntoMarketing = false,
                 subjects = listOf(
                     Subject(
                         id = SubjectId(

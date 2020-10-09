@@ -1,9 +1,9 @@
 package com.boclips.users.domain.service.user
 
-import com.boclips.users.domain.model.user.NewTeacher
-import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.user.NewTeacher
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -76,7 +76,7 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `synchronise a user`() {
         val organisation = organisationRepository.save(
-            OrganisationFactory.ltiDeployment(role = "ROLE_CLIENT_ORG",deploymentId = "deployment-id")
+            OrganisationFactory.ltiDeployment(role = "ROLE_CLIENT_ORG", deploymentId = "deployment-id")
         )
 
         saveUser(

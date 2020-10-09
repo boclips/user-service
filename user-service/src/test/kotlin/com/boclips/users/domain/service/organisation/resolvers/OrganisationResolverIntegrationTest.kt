@@ -12,24 +12,30 @@ class OrganisationResolverIntegrationTest : AbstractSpringIntegrationTest() {
 
     @BeforeEach
     fun setUp() {
-        saveOrganisation(district(
-            name = "Email",
-            role = null,
-            domain = "example.com",
-            tags = emptySet()
-        ))
-        saveOrganisation(district(
-            name = "Role",
-            role = "ROLE_X",
-            domain = null,
-            tags = emptySet()
-        ))
-        saveOrganisation(district(
-            name = "Default",
-            role = null,
-            domain = null,
-            tags = setOf(OrganisationTag.DEFAULT_ORGANISATION)
-        ))
+        saveOrganisation(
+            district(
+                name = "Email",
+                role = null,
+                domain = "example.com",
+                tags = emptySet()
+            )
+        )
+        saveOrganisation(
+            district(
+                name = "Role",
+                role = "ROLE_X",
+                domain = null,
+                tags = emptySet()
+            )
+        )
+        saveOrganisation(
+            district(
+                name = "Default",
+                role = null,
+                domain = null,
+                tags = setOf(OrganisationTag.DEFAULT_ORGANISATION)
+            )
+        )
     }
 
     @Test
@@ -64,5 +70,4 @@ class OrganisationResolverIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(organisationResolver.resolve(identity)).isNotNull
         assertThat(organisationResolver.resolve(identity)?.name).isEqualTo("Default")
     }
-
 }

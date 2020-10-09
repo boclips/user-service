@@ -3,8 +3,8 @@ package com.boclips.users.presentation.controllers.accessrules
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
-import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ChannelId
+import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
@@ -14,7 +14,6 @@ import com.boclips.users.testsupport.asUserWithRoles
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import org.hamcrest.Matchers.containsInAnyOrder
-import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
@@ -30,27 +29,31 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns a 403 response when caller does not have a VIEW_ACCESS_RULES role`() {
             mvc.perform(
-                    get("/v1/access-rules?name=Super+Contract")
-                        .asUser("cant-view-access-rules@hacker.com")
-                )
+                get("/v1/access-rules?name=Super+Contract")
+                    .asUser("cant-view-access-rules@hacker.com")
+            )
                 .andExpect(status().isForbidden)
         }
 
         @Test
         fun `returns given access rule on the list when the name matches`() {
             val accessRuleName = "Super contract"
-            val accessRule = AccessRule.IncludedCollections(id = AccessRuleId(), name = accessRuleName, collectionIds = listOf(CollectionId("A")));
+            val accessRule = AccessRule.IncludedCollections(
+                id = AccessRuleId(),
+                name = accessRuleName,
+                collectionIds = listOf(CollectionId("A"))
+            );
             contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
-                    get(
-                        UriComponentsBuilder.fromUriString("/v1/access-rules")
-                            .queryParam("name", accessRuleName)
-                            .build()
-                            .toUri()
-                    )
-                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+                get(
+                    UriComponentsBuilder.fromUriString("/v1/access-rules")
+                        .queryParam("name", accessRuleName)
+                        .build()
+                        .toUri()
                 )
+                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("IncludedCollections")))
@@ -80,9 +83,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
 
             mvc.perform(
-                    get("/v1/access-rules")
-                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-                )
+                get("/v1/access-rules")
+                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(2)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("IncludedCollections")))
@@ -106,9 +109,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
-                    get("/v1/access-rules")
-                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-                )
+                get("/v1/access-rules")
+                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedVideos")))
@@ -127,9 +130,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
-                    get("/v1/access-rules")
-                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-                )
+                get("/v1/access-rules")
+                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedVideoTypes")))
@@ -147,9 +150,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
-                    get("/v1/access-rules")
-                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-                )
+                get("/v1/access-rules")
+                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedChannels")))
@@ -167,9 +170,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
             contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
-                    get("/v1/access-rules")
-                        .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
-                )
+                get("/v1/access-rules")
+                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+            )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("IncludedDistributionMethods")))

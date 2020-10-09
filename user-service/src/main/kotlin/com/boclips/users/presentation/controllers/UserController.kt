@@ -69,9 +69,9 @@ class UserController(
     @GetMapping("/_self")
     fun getSelf(): ResponseEntity<MappingJacksonValue> {
         return ResponseEntity(
-                withProjection(getSelfUser()),
-                HttpHeaders(),
-                HttpStatus.OK
+            withProjection(getSelfUser()),
+            HttpHeaders(),
+            HttpStatus.OK
         )
     }
 

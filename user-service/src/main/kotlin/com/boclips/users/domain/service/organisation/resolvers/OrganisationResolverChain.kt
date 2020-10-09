@@ -9,7 +9,7 @@ class OrganisationResolverChain(private vararg val resolvers: OrganisationResolv
     override fun resolve(identity: Identity): Organisation? {
         resolvers.forEach { resolver ->
             val organisation = resolver.resolve(identity)
-            if(organisation != null) {
+            if (organisation != null) {
                 return organisation
             }
         }

@@ -4,8 +4,8 @@ import com.boclips.users.api.response.country.CountriesResource
 import com.boclips.users.api.response.state.StatesResource
 import com.boclips.users.application.commands.GetCountries
 import com.boclips.users.application.commands.GetUsStates
-import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.boclips.users.presentation.converters.StateConverter
+import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -30,6 +30,6 @@ class CountryController(
     fun getAllUsStates(): StatesResource {
         val states = getUsStates()
 
-        return   stateConverter.toStatesResource(states)
+        return stateConverter.toStatesResource(states)
     }
 }

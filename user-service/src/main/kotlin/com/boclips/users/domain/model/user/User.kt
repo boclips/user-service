@@ -83,7 +83,6 @@ class User(
         return result
     }
 
-
     data class ContactDetails(
         val firstName: String,
         val lastName: String,

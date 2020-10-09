@@ -72,7 +72,10 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                     identity = IdentityFactory.sample(
                         username = "jane@doe.com"
                     ),
-                    teacherPlatformAttributes = TeacherPlatformAttributes(shareCode = "test", hasLifetimeAccess = false),
+                    teacherPlatformAttributes = TeacherPlatformAttributes(
+                        shareCode = "test",
+                        hasLifetimeAccess = false
+                    ),
                     marketing = MarketingTrackingFactory.sample(
                         utmContent = "utm-content-1",
                         utmTerm = "utm-term-1",
@@ -106,7 +109,8 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             convertUserToCrmProfile(
                 user,
                 UserSessionsFactory.sample()
-            )!!)
+            )!!
+        )
 
         wireMockServer.verify(
             putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.identity.email}.*"))
@@ -137,7 +141,8 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             convertUserToCrmProfile(
                 user,
                 UserSessionsFactory.sample()
-            )!!)
+            )!!
+        )
 
         wireMockServer.verify(
             putRequestedFor(urlMatching(".*/email/public/v1/subscriptions/${user.identity.email}.*"))

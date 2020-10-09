@@ -1,11 +1,8 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.events.contentpackage.ContentPackageUpdated
-import com.boclips.eventbus.events.organisation.OrganisationUpdated
-import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.ContentPackageFactory
-import com.boclips.users.testsupport.factories.OrganisationFactory
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

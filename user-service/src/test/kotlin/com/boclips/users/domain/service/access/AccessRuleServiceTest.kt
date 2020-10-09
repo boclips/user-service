@@ -1,6 +1,5 @@
 package com.boclips.users.domain.service.access
 
-import com.boclips.users.api.factories.AccessRulesResourceFactory
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccessRuleFactory
@@ -24,7 +23,10 @@ class AccessRuleServiceTest : AbstractSpringIntegrationTest() {
         @BeforeEach
         fun `set up default content package`() {
             defaultAccessRules = listOf(
-                AccessRuleFactory.sampleIncludedVideosAccessRule(name = "Included video access rule", videoIds = emptyList())
+                AccessRuleFactory.sampleIncludedVideosAccessRule(
+                    name = "Included video access rule",
+                    videoIds = emptyList()
+                )
             )
 
             saveContentPackage(

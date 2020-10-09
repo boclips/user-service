@@ -18,30 +18,31 @@ class ContentPackageLinkBuilder {
 
     fun getContentPackagesLink(): Link? {
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_CONTENT_PACKAGES)) {
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).fetchContentPackages()
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).fetchContentPackages()
             ).withRel("getContentPackages")
         } else {
             null
         }
-
     }
+
     fun getContentPackageLink(): Link? {
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.VIEW_CONTENT_PACKAGES)) {
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).fetchContentPackage(null)
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).fetchContentPackage(null)
             ).withRel("getContentPackage")
         } else {
             null
         }
-
     }
 
     fun updateContentPackageLink(): Link? {
         return if (UserExtractor.currentUserHasAnyRole(UserRoles.UPDATE_CONTENT_PACKAGES)) {
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).updatePackage(null, null)
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(ContentPackageController::class.java).updatePackage(null, null)
             ).withRel("updateContentPackage")
         } else {
             null
         }
-
     }
 }

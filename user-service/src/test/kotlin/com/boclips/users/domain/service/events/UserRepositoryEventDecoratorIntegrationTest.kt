@@ -3,9 +3,9 @@ package com.boclips.users.domain.service.events
 import com.boclips.eventbus.events.user.UserCreated
 import com.boclips.eventbus.events.user.UserUpdated
 import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.domain.model.user.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory

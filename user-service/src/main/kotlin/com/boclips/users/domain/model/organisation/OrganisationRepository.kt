@@ -20,7 +20,7 @@ interface OrganisationRepository {
 
     fun findByRoleIn(roles: List<String>): List<Organisation>
     fun findByTag(tag: OrganisationTag): List<Organisation>
-    fun findByEmailDomain(domain: String) : List<Organisation>
+    fun findByEmailDomain(domain: String): List<Organisation>
     fun findApiIntegrationByName(name: String): ApiIntegration?
     fun findDistrictByName(name: String): District?
 

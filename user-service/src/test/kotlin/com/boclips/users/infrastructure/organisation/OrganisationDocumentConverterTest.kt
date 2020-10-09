@@ -140,7 +140,7 @@ class OrganisationDocumentConverterTest {
 
         val ltiDeploymentDocument = OrganisationDocumentConverter.toDocument(ltiDeployment)
         val ltiDeploymentConverted = OrganisationDocumentConverter.fromDocument(ltiDeploymentDocument)
-        
+
         assertThat(ltiDeploymentConverted).isEqualTo(ltiDeployment)
     }
 }

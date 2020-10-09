@@ -27,21 +27,27 @@ class EmailDomainOrganisationResolverTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `returns the organisation when only one matches`() {
-        val organisation = organisationRepository.save(OrganisationFactory.district(
-            domain = "example.com"
-        ))
+        val organisation = organisationRepository.save(
+            OrganisationFactory.district(
+                domain = "example.com"
+            )
+        )
 
         assertThat(resolver.resolve(identity)).isEqualTo(organisation)
     }
 
     @Test
     fun `returns null when more than one organisation matches`() {
-        organisationRepository.save(OrganisationFactory.district(
-            domain = "example.com"
-        ))
-        organisationRepository.save(OrganisationFactory.district(
-            domain = "example.com"
-        ))
+        organisationRepository.save(
+            OrganisationFactory.district(
+                domain = "example.com"
+            )
+        )
+        organisationRepository.save(
+            OrganisationFactory.district(
+                domain = "example.com"
+            )
+        )
 
         assertThat(resolver.resolve(identity)).isNull()
     }

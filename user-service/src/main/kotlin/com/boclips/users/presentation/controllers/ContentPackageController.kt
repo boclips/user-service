@@ -7,7 +7,12 @@ import com.boclips.users.application.commands.GetContentPackage
 import com.boclips.users.application.commands.GetContentPackages
 import com.boclips.users.application.commands.UpdateContentPackage
 import com.boclips.users.presentation.converters.ContentPackageConverter
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/v1")
@@ -30,7 +35,10 @@ class ContentPackageController(
     }
 
     @PutMapping("/content-packages/{id}")
-    fun updatePackage(@PathVariable("id") id: String?, @RequestBody contentPackageUpdateRequest: UpdateContentPackageRequest?): ContentPackageResource {
+    fun updatePackage(
+        @PathVariable("id") id: String?,
+        @RequestBody contentPackageUpdateRequest: UpdateContentPackageRequest?
+    ): ContentPackageResource {
         return contentPackageConverter.toContentPackageResource(
             updateContentPackage(id!!, contentPackageUpdateRequest!!)
         )

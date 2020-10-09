@@ -22,7 +22,7 @@ class OrganisationService(
         val existingOrganisation = organisationRepository
             .findOrganisationByExternalId(externalSchoolId)
 
-        if(existingOrganisation != null) {
+        if (existingOrganisation != null) {
             return existingOrganisation as School
         }
 
@@ -34,12 +34,13 @@ class OrganisationService(
     fun findOrCreateLtiDeployment(topLevelOrganisationId: OrganisationId, deploymentId: String): Organisation {
         return organisationRepository.findOrganisationsByParentId(topLevelOrganisationId)
             .find { organisation -> (organisation as LtiDeployment).deploymentId == deploymentId }
-            ?: saveDeploymentOrganisation(deploymentId, topLevelOrganisationId)    }
+            ?: saveDeploymentOrganisation(deploymentId, topLevelOrganisationId)
+    }
 
     private fun getOrCreateDistrict(externalInfo: ExternalOrganisationInformation): District? {
         val existingOrganisation = organisationRepository.findOrganisationByExternalId(externalInfo.id)
 
-        if(existingOrganisation != null) {
+        if (existingOrganisation != null) {
             return existingOrganisation as District
         }
 

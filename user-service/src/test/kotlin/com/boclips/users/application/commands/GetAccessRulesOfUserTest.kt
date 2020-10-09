@@ -16,7 +16,8 @@ class GetAccessRulesOfUserTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `can get the access rules of a user`() {
-        val videoAccessRule = AccessRuleFactory.sampleIncludedVideosAccessRule(name = "Video access rule", videoIds = emptyList())
+        val videoAccessRule =
+            AccessRuleFactory.sampleIncludedVideosAccessRule(name = "Video access rule", videoIds = emptyList())
         val contentPackage = ContentPackageFactory.sample(accessRules = listOf(videoAccessRule))
 
         saveContentPackage(contentPackage)

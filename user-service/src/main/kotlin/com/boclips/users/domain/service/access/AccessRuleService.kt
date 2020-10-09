@@ -32,5 +32,4 @@ class AccessRuleService(
             logger.warn { "Cannot find default content package '$DEFAULT_CONTENT_PACKAGE_NAME'." }
         }
     }
-
 }

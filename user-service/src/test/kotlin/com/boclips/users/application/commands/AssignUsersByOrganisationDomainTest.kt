@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory

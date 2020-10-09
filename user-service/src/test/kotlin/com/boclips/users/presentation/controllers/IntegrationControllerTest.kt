@@ -16,14 +16,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 
-
-class IntegrationControllerTest: AbstractSpringIntegrationTest() {
+class IntegrationControllerTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `creates user and deploymentOrganisation if didn't exist and returns the internal userId`() {
-        val baseLtiOrganisation = saveOrganisation(OrganisationFactory.apiIntegration(
-            name = "lti-integration-organisation"
-        ))
+        val baseLtiOrganisation = saveOrganisation(
+            OrganisationFactory.apiIntegration(
+                name = "lti-integration-organisation"
+            )
+        )
 
         saveUser(
             UserFactory.sample(

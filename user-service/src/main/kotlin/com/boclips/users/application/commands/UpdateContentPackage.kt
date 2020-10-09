@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 class UpdateContentPackage(
     private val contentPackageRepository: ContentPackageRepository,
-private val contentPackageConverter: ContentPackageConverter
+    private val contentPackageConverter: ContentPackageConverter
 ) {
     operator fun invoke(id: String, updateContentPackageRequest: UpdateContentPackageRequest): ContentPackage {
         val updatedPackage = contentPackageConverter.toContentPackage(id, updateContentPackageRequest)

@@ -7,7 +7,11 @@ import com.boclips.users.application.commands.TrackUserExpiredEvent
 import com.boclips.users.presentation.support.RefererHeaderExtractor
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/v1", "/v1/")
@@ -30,7 +34,10 @@ class EventController(
     }
 
     @PostMapping("/events/platform-interaction")
-    fun trackPlatformInteractedWithEvent(@RequestParam(required = true) subtype: String?, @RequestParam(required = false) anonymous: Boolean?): ResponseEntity<Void> {
+    fun trackPlatformInteractedWithEvent(
+        @RequestParam(required = true) subtype: String?,
+        @RequestParam(required = false) anonymous: Boolean?
+    ): ResponseEntity<Void> {
         val refererUrl = RefererHeaderExtractor.getReferer()
         trackPlatformInteractedWithEvent(subtype!!, refererUrl, anonymous)
         return ResponseEntity(HttpStatus.CREATED)

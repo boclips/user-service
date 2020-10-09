@@ -8,14 +8,14 @@ import com.boclips.users.application.UserUpdatesCommandFactory
 import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.application.exceptions.UserNotFoundException
-import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.marketing.CrmProfile
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.service.marketing.MarketingService
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.service.UniqueId
+import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -358,7 +358,6 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             val expiryDate = creationDate.plusDays(
                 UpdateUser.DEFAULT_TRIAL_DAYS_LENGTH + 1
             ).truncatedTo(ChronoUnit.DAYS)
-
 
             val newUser =
                 UserFactory.sample(

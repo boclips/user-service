@@ -1,14 +1,14 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.user.Identity
-import com.boclips.users.domain.model.user.Profile
-import com.boclips.users.domain.model.subject.SubjectId
-import com.boclips.users.domain.model.user.TeacherPlatformAttributes
-import com.boclips.users.domain.model.user.User
-import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.Profile
+import com.boclips.users.domain.model.user.TeacherPlatformAttributes
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.service.subject.SubjectService
 import com.boclips.users.infrastructure.organisation.OrganisationDocumentConverter
 import java.time.ZoneOffset

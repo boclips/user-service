@@ -25,9 +25,10 @@
       {
         "property": "age_range",
         "value": "3, 4, 5, 6"
-      }, {
-        "property" : "b2t_role",
-        "value" : "Teacher"
+      },
+      {
+        "property": "b2t_role",
+        "value": "Teacher"
       },
       {
         "property": "b2t_utm_source",
@@ -58,8 +59,8 @@
         "value": "1502150400000"
       },
       {
-        "property" : "b2t_has_lifetime_access",
-        "value" : "false"
+        "property": "b2t_has_lifetime_access",
+        "value": "false"
       }
     ]
   }

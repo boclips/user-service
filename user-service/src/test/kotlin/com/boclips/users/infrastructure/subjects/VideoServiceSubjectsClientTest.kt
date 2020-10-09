@@ -36,22 +36,28 @@ class VideoServiceSubjectsClientTest {
         subjectsClient.add(SubjectResource(id = "1", name = "maths"))
 
         val subjects =
-            videoServiceSubjectsClient.getSubjectsById(listOf(
-                SubjectId(
-                    value = "1"
-                ), SubjectId(value = "2")
-            ))
+            videoServiceSubjectsClient.getSubjectsById(
+                listOf(
+                    SubjectId(
+                        value = "1"
+                    ), SubjectId(value = "2")
+                )
+            )
         assertThat(subjects).hasSize(1)
         assertThat(subjects.first().id.value).isEqualTo("1")
     }
 
     @Test
     fun `returns empty list of cannot for missing ids`() {
-        assertThat(videoServiceSubjectsClient.getSubjectsById(listOf(
-            SubjectId(
-                value = "1"
+        assertThat(
+            videoServiceSubjectsClient.getSubjectsById(
+                listOf(
+                    SubjectId(
+                        value = "1"
+                    )
+                )
             )
-        ))).isEmpty()
+        ).isEmpty()
     }
 
     @Test
@@ -65,11 +71,13 @@ class VideoServiceSubjectsClientTest {
         subjectsClient.add(SubjectResource(id = "2", name = "french"))
 
         assertThat(
-            videoServiceSubjectsClient.allSubjectsExist(listOf(
-                SubjectId(
-                    value = "1"
-                ), SubjectId(value = "2")
-            ))
+            videoServiceSubjectsClient.allSubjectsExist(
+                listOf(
+                    SubjectId(
+                        value = "1"
+                    ), SubjectId(value = "2")
+                )
+            )
         ).isTrue()
     }
 

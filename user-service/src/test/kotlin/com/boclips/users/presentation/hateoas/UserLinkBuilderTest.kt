@@ -13,7 +13,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.keycloak.common.Profile
 import org.springframework.security.core.context.SecurityContextHolder
 
 class UserLinkBuilderTest : AbstractSpringIntegrationTest() {

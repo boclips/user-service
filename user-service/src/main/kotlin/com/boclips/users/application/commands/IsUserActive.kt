@@ -11,7 +11,7 @@ class IsUserActive(
     private val accessExpiryService: AccessExpiryService
 ) {
     operator fun invoke(userId: String): Boolean {
-        return userRepository.findById(UserId(userId))?.let {user ->
+        return userRepository.findById(UserId(userId))?.let { user ->
             accessExpiryService.userHasAccess(user)
         } ?: false;
     }

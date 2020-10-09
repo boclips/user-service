@@ -33,7 +33,7 @@ import org.litote.kmongo.save
 import org.litote.kmongo.setValue
 import java.util.regex.Pattern
 
-class  MongoOrganisationRepository(
+class MongoOrganisationRepository(
     private val mongoClient: MongoClient
 ) : OrganisationRepository {
 
@@ -100,8 +100,9 @@ class  MongoOrganisationRepository(
                 is OrganisationUpdate.AddTag -> accumulator.copy(tags = accumulator.tags.orEmpty() + update.tag.name)
                 is OrganisationUpdate.ReplaceBilling -> accumulator.copy(billing = update.billing)
                 is OrganisationUpdate.ReplaceFeatures ->
-                    accumulator.copy(features = update.features.mapKeys { FeatureDocumentConverter.toDocument(it.key)
-                })
+                    accumulator.copy(features = update.features.mapKeys {
+                        FeatureDocumentConverter.toDocument(it.key)
+                    })
             }
         })
 

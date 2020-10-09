@@ -1,13 +1,13 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.api.request.UpdateOrganisationRequest
 import com.boclips.users.application.exceptions.InvalidDateException
 import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.school.State
-import com.boclips.users.api.request.UpdateOrganisationRequest
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
+import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory

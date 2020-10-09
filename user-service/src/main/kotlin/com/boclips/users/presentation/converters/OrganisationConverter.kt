@@ -3,9 +3,9 @@ package com.boclips.users.presentation.converters
 import com.boclips.users.api.response.organisation.OrganisationResource
 import com.boclips.users.api.response.organisation.OrganisationsResource
 import com.boclips.users.api.response.organisation.OrganisationsWrapper
+import com.boclips.users.domain.model.Page
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
-import com.boclips.users.domain.model.Page
 import org.springframework.hateoas.PagedModel
 import org.springframework.stereotype.Component
 

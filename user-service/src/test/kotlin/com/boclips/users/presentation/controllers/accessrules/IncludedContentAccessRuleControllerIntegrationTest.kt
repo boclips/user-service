@@ -1,20 +1,7 @@
 package com.boclips.users.presentation.controllers.accessrules
 
-import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.access.AccessRule
-import com.boclips.users.domain.model.access.AccessRuleId
-import com.boclips.users.domain.model.access.CollectionId
-import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.asUser
-import com.boclips.users.testsupport.asUserWithRoles
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @Ignore
 class IncludedContentAccessRuleControllerIntegrationTest : AbstractSpringIntegrationTest() {

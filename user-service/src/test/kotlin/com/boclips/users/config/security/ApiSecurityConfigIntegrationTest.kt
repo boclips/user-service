@@ -1,7 +1,6 @@
 package com.boclips.users.config.security
 
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.asBackofficeUser
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.BaseMatcher

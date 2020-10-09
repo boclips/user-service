@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test
 class ContentPackageDocumentConverterTest {
     @Test
     fun `document conversion is symmetrical`() {
-        val contentPackage = ContentPackageFactory.sample(accessRules = listOf(AccessRuleFactory.sampleIncludedCollectionsAccessRule()));
+        val contentPackage =
+            ContentPackageFactory.sample(accessRules = listOf(AccessRuleFactory.sampleIncludedCollectionsAccessRule()));
         val convertedDocument = ContentPackageDocumentConverter.toDocument(contentPackage)
         val convertedPackage = ContentPackageDocumentConverter.fromDocument(convertedDocument)
 

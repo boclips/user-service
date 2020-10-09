@@ -4,7 +4,11 @@ import com.boclips.users.api.request.CreateDistrictRequest
 import com.boclips.users.application.exceptions.OrganisationAlreadyExistsException
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.ContentPackageRepository
-import com.boclips.users.domain.model.organisation.*
+import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.Deal
+import com.boclips.users.domain.model.organisation.District
+import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationRepository
 import org.springframework.stereotype.Service
 
 @Service

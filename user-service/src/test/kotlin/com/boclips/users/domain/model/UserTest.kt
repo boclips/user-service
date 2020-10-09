@@ -39,7 +39,8 @@ class UserTest {
 
     @Test
     fun `user data should be hidden if USER_DATA_HIDDEN is set`() {
-        val user = UserFactory.sample(organisation = OrganisationFactory.school(features = mapOf(Feature.USER_DATA_HIDDEN to true)))
+        val user =
+            UserFactory.sample(organisation = OrganisationFactory.school(features = mapOf(Feature.USER_DATA_HIDDEN to true)))
 
         assertThat(user.hasDetailsHidden()).isTrue()
     }

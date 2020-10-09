@@ -8,19 +8,19 @@ image_resource:
     tag: 8-jdk-stretch
 
 inputs:
-- name: source
-- name: version
+  - name: source
+  - name: version
 
 outputs:
-- name: dist
+  - name: dist
 
 params:
   KEYCLOAK_USERNAME:
   KEYCLOAK_PASSWORD:
 
 caches:
-- path: .gradle/
-- path: source/dependency-check-cache
+  - path: .gradle/
+  - path: source/dependency-check-cache
 
 run:
   path: source/user-service/pipeline/scripts/build.sh

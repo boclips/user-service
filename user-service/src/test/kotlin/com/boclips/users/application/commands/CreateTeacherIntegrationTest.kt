@@ -1,10 +1,10 @@
 package com.boclips.users.application.commands
 
+import com.boclips.users.api.factories.CreateUserRequestFactory
 import com.boclips.users.api.request.user.CreateTeacherRequest
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.api.factories.CreateUserRequestFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify

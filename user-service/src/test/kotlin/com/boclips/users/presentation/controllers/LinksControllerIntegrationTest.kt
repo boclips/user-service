@@ -225,7 +225,6 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.UPDATE_CONTENT_PACKAGES))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.updateContentPackage.href", endsWith("/content-packages/{id}")))
-
     }
 
     @Test

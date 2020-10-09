@@ -4,8 +4,8 @@ import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
-import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
 class UserTest {
@@ -13,15 +13,18 @@ class UserTest {
     @Test
     fun `returns features assigned to organisation`() {
         // given
-        val user = UserFactory.sample(organisation = OrganisationFactory.school(
+        val user = UserFactory.sample(
+            organisation = OrganisationFactory.school(
                 features = mapOf(Feature.TEACHERS_HOME_BANNER to false)
-        ))
+            )
+        )
 
         // when
         val features = user.features
 
         // then
-        assertThat(features).isEqualTo(mapOf(
+        assertThat(features).isEqualTo(
+            mapOf(
                 Feature.LTI_COPY_RESOURCE_LINK to false,
                 Feature.LTI_SLS_TERMS_BUTTON to false,
                 Feature.TEACHERS_HOME_BANNER to false,
@@ -29,7 +32,8 @@ class UserTest {
                 Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS to true,
                 Feature.TEACHERS_SUBJECTS to true,
                 Feature.USER_DATA_HIDDEN to false
-        ))
+            )
+        )
     }
 
     @Test
@@ -72,10 +76,10 @@ class UserTest {
     fun `organisation expiration date takes precedence over the date explicitly assigned to a user`() {
         // given
         val user = UserFactory.sample(
-                accessExpiresOn = YESTERDAY,
-                organisation = OrganisationFactory.district(
-                    deal = Deal(billing = true, accessExpiresOn = REFERENCE_NOW)
-                )
+            accessExpiresOn = YESTERDAY,
+            organisation = OrganisationFactory.district(
+                deal = Deal(billing = true, accessExpiresOn = REFERENCE_NOW)
+            )
         )
 
         // when
@@ -89,10 +93,10 @@ class UserTest {
     fun `returns null when expiration date is set neither for the user nor for the organisation`() {
         // given
         val user = UserFactory.sample(
-                accessExpiresOn = null,
-                organisation = OrganisationFactory.district(
-                    deal = Deal(billing = true, accessExpiresOn = null)
-                )
+            accessExpiresOn = null,
+            organisation = OrganisationFactory.district(
+                deal = Deal(billing = true, accessExpiresOn = null)
+            )
         )
 
         // when

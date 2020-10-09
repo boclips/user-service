@@ -30,7 +30,8 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `existing district new school searches them first time only and links both`() {
-        val district = organisationRepository.save(district(externalId = ExternalOrganisationId("external-district-id")))
+        val district =
+            organisationRepository.save(district(externalId = ExternalOrganisationId("external-district-id")))
         fakeAmericanSchoolsProvider.createSchoolAndDistrict(
             ExternalSchoolInformation(
                 school = ExternalOrganisationInformation(
@@ -46,7 +47,8 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val schoolAccount = organisationService.findOrCreateSchooldiggerSchool(ExternalOrganisationId("external-school-id"))!!
+        val schoolAccount =
+            organisationService.findOrCreateSchooldiggerSchool(ExternalOrganisationId("external-school-id"))!!
 
         assertThat(schoolAccount.externalId?.value).isEqualTo("external-school-id")
         assertThat(schoolAccount.district).isEqualTo(district)
@@ -70,7 +72,8 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
             )
         )
 
-        val schoolAccount = organisationService.findOrCreateSchooldiggerSchool(ExternalOrganisationId("external-school-id"))!!
+        val schoolAccount =
+            organisationService.findOrCreateSchooldiggerSchool(ExternalOrganisationId("external-school-id"))!!
 
         assertThat(schoolAccount.externalId?.value).isEqualTo("external-school-id")
         assertThat(schoolAccount.district?.externalId?.value).isEqualTo("external-district-id")
@@ -81,7 +84,8 @@ class OrganisationServiceTest : AbstractSpringIntegrationTest() {
     fun `when american school provider cannot find school returns null`() {
         fakeAmericanSchoolsProvider.createSchoolAndDistrict(null)
 
-        val schoolAccount = organisationService.findOrCreateSchooldiggerSchool(ExternalOrganisationId("external-school-id"))
+        val schoolAccount =
+            organisationService.findOrCreateSchooldiggerSchool(ExternalOrganisationId("external-school-id"))
 
         assertThat(schoolAccount).isNull()
     }

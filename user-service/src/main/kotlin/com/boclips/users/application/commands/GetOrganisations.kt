@@ -1,9 +1,9 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.application.model.OrganisationFilter
+import com.boclips.users.domain.model.Page
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationRepository
-import com.boclips.users.domain.model.Page
 import org.springframework.stereotype.Component
 
 @Component

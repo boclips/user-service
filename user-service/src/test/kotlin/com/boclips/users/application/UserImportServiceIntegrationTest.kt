@@ -54,11 +54,13 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
         saveAccount(UserFactory.sample(id = userId1))
         saveAccount(UserFactory.sample(id = userId2))
 
-        userImportService.importFromIdentityProvider(listOf(
-            UserId(
-                userId1
-            ), UserId(userId2)
-        ))
+        userImportService.importFromIdentityProvider(
+            listOf(
+                UserId(
+                    userId1
+                ), UserId(userId2)
+            )
+        )
 
         val users = userRepository.findAll()
 
@@ -69,10 +71,12 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
     fun `throws if account does not exist`() {
         setSecurityContext("test-user")
 
-        assertThrows<IdentityNotFoundException> { userImportService.importFromIdentityProvider(
-            UserId(
-                value = "test"
+        assertThrows<IdentityNotFoundException> {
+            userImportService.importFromIdentityProvider(
+                UserId(
+                    value = "test"
+                )
             )
-        ) }
+        }
     }
 }

@@ -64,11 +64,13 @@ class ContentPackageControllerIntegrationTest : AbstractSpringIntegrationTest() 
     fun `can update a content package's name and its access rules`() {
         val contentPackage = ContentPackageFactory.sample(
             name = "My first content package",
-            accessRules = listOf(AccessRuleFactory.sampleIncludedVideosAccessRule(
-                id = AccessRuleId("access-rule-1"),
-                name = "My access rule for content package",
-                videoIds = listOf(VideoId("123"))
-            ))
+            accessRules = listOf(
+                AccessRuleFactory.sampleIncludedVideosAccessRule(
+                    id = AccessRuleId("access-rule-1"),
+                    name = "My access rule for content package",
+                    videoIds = listOf(VideoId("123"))
+                )
+            )
         )
         saveContentPackage(contentPackage)
 
@@ -100,8 +102,23 @@ class ContentPackageControllerIntegrationTest : AbstractSpringIntegrationTest() 
             .andExpect(jsonPath("$._embedded.contentPackages.length()", Matchers.equalTo(1)))
             .andExpect(jsonPath("$._embedded.contentPackages[0].id", Matchers.equalTo(contentPackage.id.value)))
             .andExpect(jsonPath("$._embedded.contentPackages[0].name", Matchers.equalTo("my new title")))
-            .andExpect(jsonPath("$._embedded.contentPackages[0].accessRules[0].name", Matchers.equalTo("updated access rule")))
-            .andExpect(jsonPath("$._embedded.contentPackages[0].accessRules[0].type", Matchers.equalTo("IncludedVideos")))
-            .andExpect(jsonPath("$._embedded.contentPackages[0].accessRules[0].videoIds", Matchers.containsInAnyOrder("123", "345")))
+            .andExpect(
+                jsonPath(
+                    "$._embedded.contentPackages[0].accessRules[0].name",
+                    Matchers.equalTo("updated access rule")
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.contentPackages[0].accessRules[0].type",
+                    Matchers.equalTo("IncludedVideos")
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$._embedded.contentPackages[0].accessRules[0].videoIds",
+                    Matchers.containsInAnyOrder("123", "345")
+                )
+            )
     }
 }

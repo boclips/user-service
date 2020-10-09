@@ -1,7 +1,6 @@
 package com.boclips.users.domain.service.organisation.resolvers
 
 import com.boclips.users.domain.model.organisation.OrganisationTag.DEFAULT_ORGANISATION
-import com.boclips.users.domain.service.organisation.resolvers.FallbackOrganisationResolver
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.district

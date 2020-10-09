@@ -2,9 +2,9 @@ package com.boclips.users.config.application
 
 import com.boclips.eventbus.EventBus
 import com.boclips.users.domain.model.access.ContentPackageRepository
-import com.boclips.users.domain.service.events.ContentPackageRepositoryEventDecorator
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.service.events.ContentPackageRepositoryEventDecorator
 import com.boclips.users.domain.service.events.EventConverter
 import com.boclips.users.domain.service.events.OrganisationRepositoryEventDecorator
 import com.boclips.users.domain.service.events.UserRepositoryEventDecorator

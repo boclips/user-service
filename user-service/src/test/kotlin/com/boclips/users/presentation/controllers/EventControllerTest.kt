@@ -9,10 +9,8 @@ import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.school
 import com.boclips.users.testsupport.factories.UserFactory
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
@@ -111,7 +109,6 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
         assertThat(event.user.id).isEqualTo("expired-user-id")
     }
 
-
     @Test
     fun `platform interaction is tracked and sets url from referer`() {
         saveUser(UserFactory.sample(id = "testUser"))
@@ -135,7 +132,8 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
         saveUser(UserFactory.sample(id = "testUser"))
 
         mvc.perform(
-            MockMvcRequestBuilders.post("/v1/events/platform-interaction?subtype=HELP_CLICKED&anonymous=true").asUser("testUser")
+            MockMvcRequestBuilders.post("/v1/events/platform-interaction?subtype=HELP_CLICKED&anonymous=true")
+                .asUser("testUser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Referer", "https://teachers.boclips.com")
         )

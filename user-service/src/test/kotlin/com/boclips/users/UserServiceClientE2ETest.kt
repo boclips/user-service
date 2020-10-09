@@ -16,7 +16,6 @@ import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import feign.FeignException
 import org.assertj.core.api.Assertions.assertThat
-import org.bson.types.ObjectId
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -61,7 +60,7 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `can fetch access rules of a user`() {
-            val accessRule = AccessRuleFactory.sampleIncludedVideosAccessRule(name = "Rule", videoIds =  emptyList())
+            val accessRule = AccessRuleFactory.sampleIncludedVideosAccessRule(name = "Rule", videoIds = emptyList())
             val contentPackage = saveContentPackage(
                 ContentPackageFactory.sample(
                     accessRules = listOf(accessRule)

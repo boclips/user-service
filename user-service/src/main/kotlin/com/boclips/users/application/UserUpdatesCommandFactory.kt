@@ -1,13 +1,13 @@
 package com.boclips.users.application
 
+import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.application.exceptions.InvalidSubjectException
+import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.service.subject.SubjectService
 import com.boclips.users.domain.model.user.UserUpdate
-import com.boclips.users.api.request.user.UpdateUserRequest
-import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.service.subject.SubjectService
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,7 +36,7 @@ class UserUpdatesCommandFactory(private val subjectService: SubjectService) {
                     utmSource = it.source
                 )
             },
-            updateUserRequest.role?.let { UserUpdate.ReplaceRole(role = it)},
+            updateUserRequest.role?.let { UserUpdate.ReplaceRole(role = it) },
             organisation?.let { (it as? School?) }?.let(UserUpdate::ReplaceProfileSchool)
         )
     }

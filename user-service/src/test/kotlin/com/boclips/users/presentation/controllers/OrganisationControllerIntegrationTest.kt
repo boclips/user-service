@@ -242,7 +242,12 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.organisationDetails.features.LTI_SLS_TERMS_BUTTON", equalTo(false)))
                 .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_BANNER", equalTo(false)))
                 .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_SUGGESTED_VIDEOS", equalTo(false)))
-                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_PROMOTED_COLLECTIONS", equalTo(false)))
+                .andExpect(
+                    jsonPath(
+                        "$.organisationDetails.features.TEACHERS_HOME_PROMOTED_COLLECTIONS",
+                        equalTo(false)
+                    )
+                )
                 .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_SUBJECTS", equalTo(false)))
                 .andExpect(jsonPath("$.organisationDetails.features.USER_DATA_HIDDEN", equalTo(true)))
         }

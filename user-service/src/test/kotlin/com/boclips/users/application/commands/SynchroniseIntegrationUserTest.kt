@@ -1,7 +1,6 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.testing.setSecurityContext
-import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.organisation.LtiDeployment
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationType
@@ -13,7 +12,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.util.*
+import java.util.UUID
 
 class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
 
@@ -27,9 +26,11 @@ class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
-        baseLtiOrganisation = saveOrganisation(OrganisationFactory.apiIntegration(
-            name = "lti-integration-organisation"
-        ))
+        baseLtiOrganisation = saveOrganisation(
+            OrganisationFactory.apiIntegration(
+                name = "lti-integration-organisation"
+            )
+        )
         saveUser(
             UserFactory.sample(
                 identity = IdentityFactory.sample(
@@ -58,11 +59,13 @@ class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `creates only user when organisation already exists`() {
-        saveOrganisation(OrganisationFactory.ltiDeployment(
-            name = "lti-deployment-organisation",
-            deploymentId = "deployment-id",
-            parent = baseLtiOrganisation
-        ))
+        saveOrganisation(
+            OrganisationFactory.ltiDeployment(
+                name = "lti-deployment-organisation",
+                deploymentId = "deployment-id",
+                parent = baseLtiOrganisation
+            )
+        )
 
         assertThat(organisationRepository.findOrganisationsByParentId(baseLtiOrganisation.id).size).isEqualTo(1)
 
@@ -77,11 +80,13 @@ class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `creates neither organisation nor user when both exist`() {
-        val ltiDeploymentOrganisation = saveOrganisation(OrganisationFactory.ltiDeployment(
-            name = "lti-deployment-organisation",
-            deploymentId = "deployment-id",
-            parent = baseLtiOrganisation
-        ))
+        val ltiDeploymentOrganisation = saveOrganisation(
+            OrganisationFactory.ltiDeployment(
+                name = "lti-deployment-organisation",
+                deploymentId = "deployment-id",
+                parent = baseLtiOrganisation
+            )
+        )
 
         saveUser(
             UserFactory.sample(
@@ -105,11 +110,13 @@ class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `it creates a new user when external id already exists in another deployment`() {
-        val ltiDeploymentOrganisation = saveOrganisation(OrganisationFactory.ltiDeployment(
-            name = "lti-deployment-organisation",
-            deploymentId = "deployment-id",
-            parent = baseLtiOrganisation
-        ))
+        val ltiDeploymentOrganisation = saveOrganisation(
+            OrganisationFactory.ltiDeployment(
+                name = "lti-deployment-organisation",
+                deploymentId = "deployment-id",
+                parent = baseLtiOrganisation
+            )
+        )
 
         saveUser(
             UserFactory.sample(
@@ -122,7 +129,6 @@ class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
         )
 
         synchroniseIntegrationUser("deployment-id-1", "external-user-id")
-
 
         val users = userRepository.findAll().filter { it.identity.username == "external-user-id" }
         assertThat(users.size).isEqualTo(2)

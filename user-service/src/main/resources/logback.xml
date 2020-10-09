@@ -18,7 +18,9 @@
             <evaluator>
                 <matcher>
                     <Name>HttpClientAbortErrors</Name>
-                    <regex>.*org.apache.catalina.connector.ClientAbortException: java.io.EOFException: Unexpected EOF read on the socket.*</regex>
+                    <regex>.*org.apache.catalina.connector.ClientAbortException: java.io.EOFException: Unexpected EOF
+                        read on the socket.*
+                    </regex>
                 </matcher>
                 <expression>HttpClientAbortErrors.matches(formattedMessage)</expression>
             </evaluator>
@@ -44,10 +46,10 @@
         </filter>
     </appender>
 
-    <logger name="io.jaegertracing" level="ERROR" />
+    <logger name="io.jaegertracing" level="ERROR"/>
 
     <root level="INFO">
-        <appender-ref ref="Console" />
-        <appender-ref ref="Sentry" />
+        <appender-ref ref="Console"/>
+        <appender-ref ref="Sentry"/>
     </root>
 </configuration>

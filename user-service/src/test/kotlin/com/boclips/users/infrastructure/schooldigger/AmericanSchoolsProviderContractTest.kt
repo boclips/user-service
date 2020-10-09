@@ -55,8 +55,16 @@ class AmericanSchoolsProviderContractTest {
                     FakeAmericanSchoolsProvider().apply {
                         createLookupEntries(
                             "NY",
-                            ExternalOrganisationInformation(ExternalOrganisationId("id-1"), "Abraham Lincoln High School, Brooklyn", Address()),
-                            ExternalOrganisationInformation(ExternalOrganisationId("id-2"), "Stella K Abraham High School For Girls, Hewlett", Address())
+                            ExternalOrganisationInformation(
+                                ExternalOrganisationId("id-1"),
+                                "Abraham Lincoln High School, Brooklyn",
+                                Address()
+                            ),
+                            ExternalOrganisationInformation(
+                                ExternalOrganisationId("id-2"),
+                                "Stella K Abraham High School For Girls, Hewlett",
+                                Address()
+                            )
                         )
                     },
                     {})
@@ -72,8 +80,16 @@ class AmericanSchoolsProviderContractTest {
         val schools = client.lookupSchools(stateId = "NY", schoolName = "Abraham")
 
         assertThat(schools).containsExactly(
-            ExternalOrganisationInformation(ExternalOrganisationId("id-1"), "Abraham Lincoln High School, Brooklyn", Address()),
-            ExternalOrganisationInformation(ExternalOrganisationId("id-2"), "Stella K Abraham High School For Girls, Hewlett", Address())
+            ExternalOrganisationInformation(
+                ExternalOrganisationId("id-1"),
+                "Abraham Lincoln High School, Brooklyn",
+                Address()
+            ),
+            ExternalOrganisationInformation(
+                ExternalOrganisationId("id-2"),
+                "Stella K Abraham High School For Girls, Hewlett",
+                Address()
+            )
         )
     }
 }

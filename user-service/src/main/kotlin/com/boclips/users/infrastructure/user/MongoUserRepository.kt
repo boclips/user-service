@@ -1,9 +1,9 @@
 package com.boclips.users.infrastructure.user
 
-import com.boclips.users.domain.model.user.User
-import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.user.User
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.model.user.UserUpdate
 import com.boclips.users.infrastructure.MongoDatabase

@@ -1,14 +1,14 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.api.response.SubjectResource
-import com.boclips.users.domain.model.subject.Subject
-import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.domain.model.subject.Subject
+import com.boclips.users.domain.model.subject.SubjectId
 import com.boclips.users.presentation.converters.UserConverter
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -21,7 +21,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class UserConverterTest : AbstractSpringIntegrationTest(){
+class UserConverterTest : AbstractSpringIntegrationTest() {
     private lateinit var userConverter: UserConverter
 
     @BeforeEach()
@@ -61,7 +61,8 @@ class UserConverterTest : AbstractSpringIntegrationTest(){
                     country = Country.fromCode("USA")
                 ),
                 features = mapOf(Feature.TEACHERS_HOME_BANNER to true)
-            ))
+            )
+        )
 
         saveUser(user)
 

@@ -56,7 +56,8 @@ class ContentPackageConverterTest : AbstractSpringIntegrationTest() {
                 accessRules = listOf(collectionAccessRule)
             )
 
-        val convertedResource = contentPackageConverter.toContentPackagesResource(listOf(contentPackage1, contentPackage2))
+        val convertedResource =
+            contentPackageConverter.toContentPackagesResource(listOf(contentPackage1, contentPackage2))
 
         assertThat(convertedResource._embedded.contentPackages).isNotNull
         assertThat(convertedResource._embedded.contentPackages).hasSize(2)

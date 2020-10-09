@@ -1,15 +1,7 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.application.exceptions.AccessRuleNotFoundException
-import com.boclips.users.domain.model.access.AccessRule
-import com.boclips.users.domain.model.access.AccessRuleId
-import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.springframework.beans.factory.annotation.Autowired
 
 @Ignore
 class RemoveCollectionFromAccessRuleIntegrationTest : AbstractSpringIntegrationTest() {

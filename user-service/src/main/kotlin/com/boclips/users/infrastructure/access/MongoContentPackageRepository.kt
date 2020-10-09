@@ -11,7 +11,6 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import org.litote.kmongo.save
-import org.springframework.stereotype.Repository
 
 class MongoContentPackageRepository(
     private val mongoClient: MongoClient
@@ -48,8 +47,10 @@ class MongoContentPackageRepository(
     }
 
     override fun replace(contentPackage: ContentPackage): ContentPackage? {
-        return collection().replaceOne(ContentPackageDocument::_id eq ObjectId(contentPackage.id.value),
-            ContentPackageDocumentConverter.toDocument(contentPackage)).takeIf { it.wasAcknowledged() }?.let {
+        return collection().replaceOne(
+            ContentPackageDocument::_id eq ObjectId(contentPackage.id.value),
+            ContentPackageDocumentConverter.toDocument(contentPackage)
+        ).takeIf { it.wasAcknowledged() }?.let {
             findById(contentPackage.id)
         }
     }

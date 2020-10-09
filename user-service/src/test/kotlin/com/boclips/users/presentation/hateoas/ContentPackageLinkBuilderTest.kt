@@ -17,6 +17,7 @@ class ContentPackageLinkBuilderTest : AbstractSpringIntegrationTest() {
         Assertions.assertThat(selfLink.rel.value()).isEqualTo("self")
         Assertions.assertThat(selfLink.href).endsWith("/v1/content-packages/$contentPackageId")
     }
+
     @Test
     fun `creates a get all content packages link`() {
         setSecurityContext("package-view", UserRoles.VIEW_CONTENT_PACKAGES)

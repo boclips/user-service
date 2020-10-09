@@ -8,8 +8,8 @@ import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.converters.OrganisationConverter
+import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.nhaarman.mockitokotlin2.mock

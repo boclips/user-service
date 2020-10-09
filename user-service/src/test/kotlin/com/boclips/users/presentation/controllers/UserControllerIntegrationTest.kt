@@ -57,10 +57,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `can create a new user with valid request`() {
             mvc.perform(
-                    post("/v1/users")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(
-                                    """
+                post("/v1/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
@@ -69,29 +69,29 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                            )
+                    )
             )
-                    .andExpect(status().isCreated)
-                    .andExpect(header().exists("Location"))
+                .andExpect(status().isCreated)
+                .andExpect(header().exists("Location"))
         }
 
         @Test
         fun `can create a new user without optional fields`() {
             mvc.perform(
-                    post("/v1/users")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(
-                                    """
+                post("/v1/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                            )
+                    )
             )
-                    .andExpect(status().isCreated)
-                    .andExpect(header().exists("Location"))
+                .andExpect(status().isCreated)
+                .andExpect(header().exists("Location"))
         }
 
         @Test
@@ -107,35 +107,35 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     """.trimIndent()
 
             mvc.perform(
-                    post("/v1/users")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(payload)
+                post("/v1/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(payload)
             )
-                    .andExpect(status().isCreated)
+                .andExpect(status().isCreated)
 
             mvc.perform(
-                    post("/v1/users")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(payload)
+                post("/v1/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(payload)
             )
-                    .andExpect(status().isConflict)
+                .andExpect(status().isConflict)
         }
 
         @Test
         fun `cannot create account with invalid request`() {
             mvc.perform(
-                    post("/v1/users")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(
-                                    """
+                post("/v1/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                     {
                      "email": "jane@doe.com"
                      }
                     """.trimIndent()
-                            )
+                    )
             )
-                    .andExpect(status().isBadRequest)
-                    .andExpectApiErrorPayload()
+                .andExpect(status().isBadRequest)
+                .andExpectApiErrorPayload()
         }
 
         @Test
@@ -143,10 +143,10 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
 
             mvc.perform(
-                    post("/v1/users")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(
-                                    """
+                post("/v1/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
                     {
                      "email": "jane@doe.com",
                      "password": "Champagn3",
@@ -155,9 +155,9 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "recaptchaToken": "captcha-123"
                      }
                     """.trimIndent()
-                            )
+                    )
             )
-                    .andExpect(status().isBadRequest)
+                .andExpect(status().isBadRequest)
         }
     }
 
@@ -517,10 +517,12 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class GetUser {
         @Test
         fun `should extract logged in user`() {
-            val organisation = saveOrganisation(school(
-                address = Address(country = Country.usa(), state = State.fromCode("WA")),
-                features = mapOf(Feature.LTI_COPY_RESOURCE_LINK to true, Feature.LTI_SLS_TERMS_BUTTON to true)
-                ))
+            val organisation = saveOrganisation(
+                school(
+                    address = Address(country = Country.usa(), state = State.fromCode("WA")),
+                    features = mapOf(Feature.LTI_COPY_RESOURCE_LINK to true, Feature.LTI_SLS_TERMS_BUTTON to true)
+                )
+            )
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
@@ -584,7 +586,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.features").exists())
                 .andExpect(jsonPath("$.features.TEACHERS_HOME_BANNER").isBoolean())
-
         }
 
         @Test

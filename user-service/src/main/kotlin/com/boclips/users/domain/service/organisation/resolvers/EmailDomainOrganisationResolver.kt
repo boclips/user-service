@@ -5,7 +5,8 @@ import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.Identity
 import mu.KLogging
 
-class EmailDomainOrganisationResolver(private val organisationRepository: OrganisationRepository) : OrganisationResolver {
+class EmailDomainOrganisationResolver(private val organisationRepository: OrganisationRepository) :
+    OrganisationResolver {
 
     companion object : KLogging()
 
@@ -14,7 +15,7 @@ class EmailDomainOrganisationResolver(private val organisationRepository: Organi
 
         val organisations = organisationRepository.findByEmailDomain(domain)
 
-        if(organisations.size > 1) {
+        if (organisations.size > 1) {
             logger.warn { "Multiple organisations have email domain $domain" }
             return null
         }

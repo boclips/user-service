@@ -29,12 +29,14 @@ class GetSelfUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UUID.randomUUID().toString()
         setSecurityContext(userId)
 
-        val school = saveOrganisation(school(
-            address = Address(
-                country = Country.usa(),
-                state = State.fromCode("CA")
+        val school = saveOrganisation(
+            school(
+                address = Address(
+                    country = Country.usa(),
+                    state = State.fromCode("CA")
+                )
             )
-        ))
+        )
         saveUser(
             UserFactory.sample(
                 identity = IdentityFactory.sample(
