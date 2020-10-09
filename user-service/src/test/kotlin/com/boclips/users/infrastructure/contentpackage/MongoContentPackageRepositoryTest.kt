@@ -1,6 +1,5 @@
 package com.boclips.users.infrastructure.contentpackage
 
-import com.boclips.users.application.exceptions.ContentPackageNotFoundException
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -8,7 +7,6 @@ import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class MongoContentPackageRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
@@ -88,7 +86,7 @@ class MongoContentPackageRepositoryTest : AbstractSpringIntegrationTest() {
             accessRules = listOf(newAccessRule)
         )
 
-        val afterUpdateContentPackage = contentPackageRepository.replaceContentPackage(updatedContentPackage)
+        val afterUpdateContentPackage = contentPackageRepository.replace(updatedContentPackage)
 
         assertThat(afterUpdateContentPackage).isEqualTo(updatedContentPackage)
     }

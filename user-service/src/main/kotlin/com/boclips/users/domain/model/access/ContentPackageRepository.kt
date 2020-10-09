@@ -5,5 +5,5 @@ interface ContentPackageRepository {
     fun findById(id: ContentPackageId): ContentPackage?
     fun findByName(name: String): ContentPackage?
     fun findAll(): List<ContentPackage>
-    fun replaceContentPackage(contentPackage: ContentPackage): ContentPackage?
+    fun replace(contentPackage: ContentPackage): ContentPackage?
 }

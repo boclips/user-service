@@ -6,6 +6,7 @@ import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.organisation.AmericanSchoolsProvider
 import com.boclips.users.domain.service.user.IdentityProvider
 import com.boclips.users.domain.service.user.SessionProvider
+import com.boclips.users.infrastructure.access.MongoContentPackageRepository
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
@@ -130,6 +131,10 @@ class InfrastructureConfiguration(
     fun mongoOrganisationAccountRepository(): MongoOrganisationRepository {
         return MongoOrganisationRepository(mongoClient())
     }
+
+    @Bean
+    fun mongoContentPackageRepository(): MongoContentPackageRepository =
+        MongoContentPackageRepository(mongoClient())
 
     @Bean
     fun mongoClient(): MongoClient {

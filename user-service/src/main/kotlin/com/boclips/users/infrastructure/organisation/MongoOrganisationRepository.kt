@@ -33,7 +33,7 @@ import org.litote.kmongo.save
 import org.litote.kmongo.setValue
 import java.util.regex.Pattern
 
-class MongoOrganisationRepository(
+class  MongoOrganisationRepository(
     private val mongoClient: MongoClient
 ) : OrganisationRepository {
 

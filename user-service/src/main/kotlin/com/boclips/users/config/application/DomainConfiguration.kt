@@ -1,12 +1,15 @@
 package com.boclips.users.config.application
 
 import com.boclips.eventbus.EventBus
+import com.boclips.users.domain.model.access.ContentPackageRepository
+import com.boclips.users.domain.service.events.ContentPackageRepositoryEventDecorator
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.events.EventConverter
 import com.boclips.users.domain.service.events.OrganisationRepositoryEventDecorator
 import com.boclips.users.domain.service.events.UserRepositoryEventDecorator
 import com.boclips.users.domain.service.organisation.resolvers.OrganisationResolver
+import com.boclips.users.infrastructure.access.MongoContentPackageRepository
 import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
 import com.boclips.users.infrastructure.user.MongoUserRepository
 import org.springframework.context.annotation.Bean
@@ -17,7 +20,8 @@ import org.springframework.context.annotation.Primary
 class DomainConfiguration(
     private val eventBus: EventBus,
     private val mongoUserRepository: MongoUserRepository,
-    private val mongoOrganisationRepository: MongoOrganisationRepository
+    private val mongoOrganisationRepository: MongoOrganisationRepository,
+    private val mongoContentPackageRepository: MongoContentPackageRepository
 ) {
     @Primary
     @Bean
@@ -26,6 +30,7 @@ class DomainConfiguration(
             mongoUserRepository,
             organisationRepository(),
             eventConverter(),
+
             eventBus
         )
     }
@@ -39,6 +44,15 @@ class DomainConfiguration(
             eventConverter = eventConverter()
         )
     }
+
+    @Primary
+    @Bean
+    fun contentPackageRepository(): ContentPackageRepository =
+        ContentPackageRepositoryEventDecorator(
+            repository = mongoContentPackageRepository,
+            eventBus = eventBus,
+            eventConverter = eventConverter()
+        )
 
     @Bean
     fun eventConverter(): EventConverter {
