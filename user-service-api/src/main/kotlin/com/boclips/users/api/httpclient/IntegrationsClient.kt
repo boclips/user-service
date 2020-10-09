@@ -2,11 +2,11 @@ package com.boclips.users.api.httpclient
 
 import com.boclips.users.api.httpclient.helper.ObjectMapperDefinition
 import com.boclips.users.api.httpclient.helper.TokenFactory
+import com.boclips.users.api.request.SynchroniseIntegrationUserRequest
 import com.boclips.users.api.response.integration.SynchUserResource
 import com.fasterxml.jackson.databind.ObjectMapper
 import feign.Feign
 import feign.Logger
-import feign.Param
 import feign.RequestLine
 import feign.RequestTemplate
 import feign.jackson.JacksonDecoder
@@ -15,11 +15,8 @@ import feign.okhttp.OkHttpClient
 import feign.slf4j.Slf4jLogger
 
 interface IntegrationsClient {
-    @RequestLine("PUT /v1/integrations/deployments/{deploymentId}/users/{externalUserId}")
-    fun synchroniseUser (
-        @Param("deploymentId") deploymentId: String,
-        @Param("externalUserId") externalUserId: String,
-    ): SynchUserResource
+    @RequestLine("PUT /v1/integrations/deployments")
+    fun synchroniseUser (request: SynchroniseIntegrationUserRequest): SynchUserResource
 
     companion object {
         @JvmStatic

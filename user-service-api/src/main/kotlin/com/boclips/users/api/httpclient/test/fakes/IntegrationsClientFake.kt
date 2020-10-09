@@ -1,14 +1,15 @@
 package com.boclips.users.api.httpclient.test.fakes
 
 import com.boclips.users.api.httpclient.IntegrationsClient
+import com.boclips.users.api.request.SynchroniseIntegrationUserRequest
 import com.boclips.users.api.response.integration.SynchUserResource
 
 class IntegrationsClientFake : IntegrationsClient, FakeClient<Pair<String,String>> {
     private val database: MutableMap<String, MutableSet<String>> = LinkedHashMap()
 
-    override fun synchroniseUser(deploymentId: String, externalUserId: String): SynchUserResource {
-        add(deploymentId to externalUserId)
-        return SynchUserResource(deploymentId + externalUserId)
+    override fun synchroniseUser(request: SynchroniseIntegrationUserRequest): SynchUserResource {
+        add(request.deploymentId to request.externalUserId)
+        return SynchUserResource(request.deploymentId + request.externalUserId)
     }
 
     override fun clear() {
