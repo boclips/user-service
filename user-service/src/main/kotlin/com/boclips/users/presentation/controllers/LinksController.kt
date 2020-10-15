@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.security.utils.UserExtractor
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.access.AccessExpiryService
@@ -10,6 +11,7 @@ import com.boclips.users.presentation.hateoas.CountryLinkBuilder
 import com.boclips.users.presentation.hateoas.EventLinkBuilder
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
+import mu.KLogging
 import org.springframework.hateoas.CollectionModel
 import org.springframework.hateoas.EntityModel
 import org.springframework.web.bind.annotation.GetMapping
@@ -28,10 +30,15 @@ class LinksController(
     private val organisationLinkBuilder: OrganisationLinkBuilder,
     private val contentPackageLinkBuilder: ContentPackageLinkBuilder
 ) {
+    companion object : KLogging()
     @GetMapping
     fun getLinks(): EntityModel<CollectionModel<String>> {
         val user = UserExtractor.getCurrentUser()?.let {
-            userRepository.findById(UserId(value = it.id))
+            val mongoUser: User? = userRepository.findById(UserId(value = it.id))
+            if(mongoUser == null) {
+                logger.info { "getLinks: userRepo.findById returned null for id=${it.id} " }
+            }
+            mongoUser
         }
 
         return EntityModel.of(
