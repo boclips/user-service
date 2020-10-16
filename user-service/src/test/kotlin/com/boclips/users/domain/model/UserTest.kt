@@ -34,7 +34,7 @@ class UserTest {
             profile = ProfileFactory.sample(firstName = "Dummy")
         )
 
-        assertThat(user.isActivated()).isTrue()
+        assertThat(user.hasOnboarded()).isTrue()
     }
 
     @Test
@@ -58,7 +58,7 @@ class UserTest {
             profile = ProfileFactory.sample(firstName = "")
         )
 
-        assertThat(user.isActivated()).isFalse()
+        assertThat(user.hasOnboarded()).isFalse()
     }
 
     @Nested

@@ -198,6 +198,11 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `user with VIEW_USERS role`() {
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "a-user-id")
+            )
+        )
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_USERS))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.user.href", containsString("/users/{id}")))
@@ -206,6 +211,12 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `user with VIEW_ACCESS_RULES role`() {
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "a-user-id")
+            )
+        )
+
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ACCESS_RULES))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.searchAccessRules.href", endsWith("/access-rules")))
@@ -214,6 +225,11 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `user with VIEW_CONTENT_PACKAGES role`() {
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "a-user-id")
+            )
+        )
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_CONTENT_PACKAGES))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.getContentPackages.href", endsWith("/content-packages")))
@@ -222,6 +238,11 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `user with UPDATE_CONTENT_PACKAGES role`() {
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "a-user-id")
+            )
+        )
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.UPDATE_CONTENT_PACKAGES))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.updateContentPackage.href", endsWith("/content-packages/{id}")))
@@ -229,6 +250,11 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `user with VIEW_ORGANISATIONS role`() {
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "a-user-id")
+            )
+        )
         mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ORGANISATIONS))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.organisations").exists())

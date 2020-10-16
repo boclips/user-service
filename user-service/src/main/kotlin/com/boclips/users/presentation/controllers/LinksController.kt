@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.security.utils.UserExtractor
-import com.boclips.users.domain.model.user.User
+import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.access.AccessExpiryService
@@ -28,17 +28,15 @@ class LinksController(
     private val accessRuleLinkBuilder: AccessRuleLinkBuilder,
     private val eventLinkBuilder: EventLinkBuilder,
     private val organisationLinkBuilder: OrganisationLinkBuilder,
-    private val contentPackageLinkBuilder: ContentPackageLinkBuilder
+    private val contentPackageLinkBuilder: ContentPackageLinkBuilder,
+    private val getOrImportUser: GetOrImportUser
 ) {
     companion object : KLogging()
+
     @GetMapping
     fun getLinks(): EntityModel<CollectionModel<String>> {
         val user = UserExtractor.getCurrentUser()?.let {
-            val mongoUser: User? = userRepository.findById(UserId(value = it.id))
-            if(mongoUser == null) {
-                logger.info { "getLinks: userRepo.findById returned null for id=${it.id} " }
-            }
-            mongoUser
+            getOrImportUser(UserId(value = it.id))
         }
 
         return EntityModel.of(

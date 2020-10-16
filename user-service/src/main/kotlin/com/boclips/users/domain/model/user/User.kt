@@ -28,10 +28,6 @@ class User(
     val features get() = organisation?.features ?: Feature.DEFAULT_VALUES
 
     fun hasOnboarded(): Boolean {
-        return isActivated()
-    }
-
-    fun isActivated(): Boolean {
         return profile?.firstName?.isNotEmpty() ?: false
     }
 
