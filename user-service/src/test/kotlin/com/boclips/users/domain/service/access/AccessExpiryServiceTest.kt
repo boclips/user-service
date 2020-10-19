@@ -36,6 +36,15 @@ class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `it disallows a user with expiry date in the past and nullable organisation's expiry date`() {
+        val user = UserFactory.sample(
+            accessExpiresOn = ZonedDateTime.now().minusDays(1),
+            organisation = district(deal = deal(accessExpiresOn = null))
+        )
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(false)
+    }
+
+    @Test
     fun `it allows a user with expiry date in the past, but district expiry in the future`() {
         val district = organisationRepository.save(
             district(
@@ -55,7 +64,7 @@ class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `it allows a user with expiry date in the future, but district expiry in the past`() {
+    fun `it disallows a user with expiry date in the future, but district expiry in the past`() {
         val district = organisationRepository.save(
             district(
                 deal = deal(
@@ -72,7 +81,7 @@ class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
             accessExpiresOn = ZonedDateTime.now().plusDays(10)
         )
 
-        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(true)
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(false)
     }
 
     @Test
@@ -113,5 +122,25 @@ class AccessExpiryServiceTest : AbstractSpringIntegrationTest() {
         )
 
         assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(false)
+    }
+
+    @Test
+    fun `it allows a user with all possible expiry dates set to null`() {
+        val district = organisationRepository.save(
+            district(
+                deal = deal(
+                    accessExpiresOn = null
+                )
+            )
+        )
+        val school = OrganisationFactory.school(district = district, deal = deal(accessExpiresOn = null))
+        val schoolAccount = organisationRepository.save(school)
+
+        val user = UserFactory.sample(
+            organisation = schoolAccount,
+            accessExpiresOn = null
+        )
+
+        assertThat(accessExpiryService.userHasAccess(user)).isEqualTo(true)
     }
 }

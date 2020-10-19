@@ -82,7 +82,11 @@ class School(
     }
 
     override val accessExpiryDate: ZonedDateTime?
-        get() = this.district?.deal?.accessExpiresOn ?: this.deal.accessExpiresOn
+        get() = this.district?.deal?.accessExpiresOn?.let { districtAccessExpiresOn ->
+            this.deal.accessExpiresOn?.let { schoolAccessExpiresOn ->
+                return if (districtAccessExpiresOn.isAfter(schoolAccessExpiresOn)) districtAccessExpiresOn else schoolAccessExpiresOn
+            } ?: districtAccessExpiresOn
+        } ?: this.deal.accessExpiresOn
 }
 
 class District(

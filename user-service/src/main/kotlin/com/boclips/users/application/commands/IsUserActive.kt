@@ -13,6 +13,6 @@ class IsUserActive(
     operator fun invoke(userId: String): Boolean {
         return userRepository.findById(UserId(userId))?.let { user ->
             accessExpiryService.userHasAccess(user)
-        } ?: false;
+        } ?: false
     }
 }

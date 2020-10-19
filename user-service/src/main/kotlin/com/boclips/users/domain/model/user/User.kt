@@ -20,9 +20,8 @@ class User(
 
     val accessExpiresOn: ZonedDateTime? = accessExpiresOn
         get() {
-            val organizationExpiryDate = organisation?.accessExpiryDate ?: return field
-
-            return field?.let { if (it.isAfter(organizationExpiryDate)) it else organizationExpiryDate }
+            val hasLifetimeAccess = field == null
+            return if (hasLifetimeAccess) field else { organisation?.accessExpiryDate ?: field }
         }
 
     val features get() = organisation?.features ?: Feature.DEFAULT_VALUES

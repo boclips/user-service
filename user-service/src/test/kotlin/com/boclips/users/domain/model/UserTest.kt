@@ -64,9 +64,9 @@ class UserTest {
     @Nested
     inner class AccessExpiresOn {
         @Test
-        fun `it takes the furthest date in the future when both user and organisation have an expiry date`() {
-            val userAccess = ZonedDateTime.now()
-            val orgAccess = ZonedDateTime.now().plusDays(10)
+        fun `it takes organisation's date when both user and organisation have an expiry date`() {
+            val userAccess = ZonedDateTime.now().plusDays(10)
+            val orgAccess = ZonedDateTime.now()
 
             val user = UserFactory.sample(
                 organisation = OrganisationFactory.school(deal = OrganisationFactory.deal(accessExpiresOn = orgAccess)),
@@ -77,10 +77,10 @@ class UserTest {
         }
 
         @Test
-        fun `district deal expiry date takes precedent over school expiry date`() {
+        fun `it takes the furthest date in the future when both district and school have an expiry date`() {
             val userAccess = ZonedDateTime.now()
-            val schoolAccess = ZonedDateTime.now().plusDays(10)
-            val districtAccess = ZonedDateTime.now().plusDays(15)
+            val schoolAccess = ZonedDateTime.now().plusDays(15)
+            val districtAccess = ZonedDateTime.now().plusDays(10)
 
             val user = UserFactory.sample(
                 organisation = OrganisationFactory.school(
@@ -90,7 +90,7 @@ class UserTest {
                 accessExpiresOn = userAccess
             )
 
-            assertThat(user.accessExpiresOn).isEqualTo(districtAccess)
+            assertThat(user.accessExpiresOn).isEqualTo(schoolAccess)
         }
 
         @Test
@@ -115,6 +115,18 @@ class UserTest {
             )
 
             assertThat(user.accessExpiresOn).isEqualTo(userAccess)
+        }
+
+        @Test
+        fun `it ignores organisation's expiry date when user has lifetime access`() {
+            val orgAccess = ZonedDateTime.now()
+
+            val user = UserFactory.sample(
+                organisation = OrganisationFactory.school(deal = OrganisationFactory.deal(accessExpiresOn = orgAccess)),
+                accessExpiresOn = null
+            )
+
+            assertThat(user.accessExpiresOn).isNull()
         }
     }
 }

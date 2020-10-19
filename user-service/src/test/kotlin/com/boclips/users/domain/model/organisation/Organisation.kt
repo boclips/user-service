@@ -24,7 +24,7 @@ class OrganisationTest {
         }
 
         @Test
-        fun `district access expiry date takes precedence over school expiry date`() {
+        fun `the one further in the future is used when both district and school access expiry dates are set`() {
             val schoolExpiryDate = LocalDate.of(2020, 10, 10).atStartOfDay(ZoneId.systemDefault())
             val districtExpiryDate = LocalDate.of(2010, 5, 5).atStartOfDay(ZoneId.systemDefault())
 
@@ -35,7 +35,7 @@ class OrganisationTest {
                 district = OrganisationFactory.district(deal = OrganisationFactory.deal(accessExpiresOn = districtExpiryDate))
             )
 
-            assertThat(school.accessExpiryDate).isEqualTo(districtExpiryDate)
+            assertThat(school.accessExpiryDate).isEqualTo(schoolExpiryDate)
         }
     }
 
