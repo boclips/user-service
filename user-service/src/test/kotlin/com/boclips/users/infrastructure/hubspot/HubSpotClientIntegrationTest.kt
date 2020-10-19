@@ -15,6 +15,8 @@ import com.boclips.users.testsupport.loadWireMockStub
 import com.boclips.videos.api.response.subject.SubjectResource
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.delete
+import com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.post
@@ -160,6 +162,28 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                         """.trimIndent()
                     )
                 )
+        )
+    }
+
+    @Test
+    fun `a contact can be deleted`() {
+        val user = UserFactory.sample(profile = ProfileFactory.sample(hasOptedIntoMarketing = true))
+
+        wireMockServer.stubFor(
+            delete(
+                urlPathEqualTo("/contacts/v1/contact/vid/${user.id.value}")
+            )
+                .willReturn(aResponse().withStatus(200))
+        )
+
+        hubSpotClient.deleteContact(
+            user.id.value
+        )
+
+        wireMockServer.verify(
+            deleteRequestedFor(
+                urlMatching(".*/contacts/v1/contact/vid/${user.id.value}.*")
+            ).withQueryParam("hapikey", matching("some-api-key"))
         )
     }
 

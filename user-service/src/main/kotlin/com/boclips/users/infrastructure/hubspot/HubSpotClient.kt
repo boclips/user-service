@@ -53,6 +53,12 @@ class HubSpotClient(
         }
     }
 
+    override fun deleteContact(id:String) {
+        restTemplate.delete(
+            getDeleteContactEndpoint(id)
+        )
+    }
+
     private fun updateContacts(batchOfUsers: List<CrmProfile>): List<HubSpotContact> {
         val contacts = batchOfUsers.map { crmProfile ->
             return@map HubSpotContactConverter().convert(crmProfile)
@@ -78,6 +84,14 @@ class HubSpotClient(
     private fun getContactsEndpoint(): URI {
         return UriComponentsBuilder
             .fromUriString("${hubspotProperties.host}/contacts/v1/contact/batch")
+            .queryParam("hapikey", hubspotProperties.apiKey)
+            .build()
+            .toUri()
+    }
+
+    private fun getDeleteContactEndpoint(id: String) : URI {
+        return UriComponentsBuilder
+            .fromUriString("${hubspotProperties.host}/contacts/v1/contact/vid/${id}")
             .queryParam("hapikey", hubspotProperties.apiKey)
             .build()
             .toUri()
