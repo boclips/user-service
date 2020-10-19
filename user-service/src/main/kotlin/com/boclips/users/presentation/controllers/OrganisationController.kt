@@ -106,4 +106,10 @@ class OrganisationController(
 
         return organisationConverter.toResource(organisations)
     }
+
+    // @GetMapping("/wipe-organisation-pii/{id}")
+    // fun deletePII(@PathVariable id: String):  ResponseEntity<String>{
+    //     val organisation = getOrganisationById(id = id)
+    //
+    // }
 }

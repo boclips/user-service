@@ -15,6 +15,7 @@ import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -546,6 +547,45 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         )
                 )
                 .andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `wipes PII of all organisation's users`() {
+            val org = saveOrganisation(OrganisationFactory.apiIntegration())
+            saveUser(
+                UserFactory.sample(
+                    identity = keycloakClientFake.createAccount(
+                        IdentityFactory.sample(username = "email1@organisation.com"),
+                    ),
+                    profile = ProfileFactory.sample(
+                        firstName = "hi",
+                        lastName = "there"
+                    ),
+                    organisation = org,
+                )
+            )
+            saveUser(
+                UserFactory.sample(
+                    identity = keycloakClientFake.createAccount(
+                        IdentityFactory.sample(username = "email2@organisation.com")
+                    ),
+                    profile = ProfileFactory.sample(
+                        firstName = "delete",
+                        lastName = "this"
+                    ), organisation = org
+                )
+            )
+            saveUser(
+                UserFactory.sample(
+                    identity = keycloakClientFake.createAccount(
+                        IdentityFactory.sample(username = "email3@organisation.com")
+                    ),
+                    profile = ProfileFactory.sample(
+                        firstName = "other",
+                        lastName = "name"
+                    ), organisation = org
+                )
+            )
         }
     }
 }

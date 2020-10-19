@@ -15,6 +15,8 @@ import com.boclips.users.testsupport.loadWireMockStub
 import com.boclips.videos.api.response.subject.SubjectResource
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.delete
+import com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.post
@@ -23,6 +25,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.put
 import com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestTemplate
@@ -163,6 +166,23 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         )
     }
 
+    @Test
+    fun `a contact can be deleted`() {
+        setUpHubSpotStub()
+
+        val user = UserFactory.sample(profile = ProfileFactory.sample(hasOptedIntoMarketing = true))
+
+        hubSpotClient.deleteContact(
+            user.id.value
+        )
+
+        wireMockServer.verify(
+            deleteRequestedFor(
+                urlMatching(".*/contacts/v1/contact/vid/${user.id.value}.*")
+            ).withQueryParam("hapikey", matching("some-api-key"))
+        )
+    }
+
     private fun setUpHubSpotStub() {
         wireMockServer.stubFor(
             post(urlPathEqualTo("/contacts/v1/contact/batch"))
@@ -172,6 +192,13 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
         wireMockServer.stubFor(
             put(urlPathEqualTo("/email/public/v1/subscriptions/"))
                 .willReturn(aResponse().withStatus(202))
+        )
+
+        wireMockServer.stubFor(
+            delete(
+                urlPathMatching("\\/contacts\\/v1\\/contact\\/vid\\/.*(?=\\?)")
+            )
+                .willReturn(aResponse().withStatus(200))
         )
     }
 }
