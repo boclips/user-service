@@ -46,6 +46,10 @@ class KeycloakClientFake : IdentityProvider, SessionProvider {
         return session
     }
 
+    override fun deleteIdentity(id: UserId) {
+        fakeUsers.remove(id.value)
+    }
+
     @Synchronized
     fun clear() {
         fakeUsers.clear()

@@ -26,4 +26,5 @@ sealed class UserUpdate {
     data class ReplaceAccessExpiresOn(val accessExpiresOn: ZonedDateTime) : UserUpdate()
     data class ReplaceHasLifetimeAccess(val hasLifetimeAccess: Boolean) : UserUpdate()
     data class ReplaceShareCode(val shareCode: String) : UserUpdate()
+    data class ReplaceEmail(val email: String) : UserUpdate()
 }

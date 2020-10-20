@@ -80,6 +80,10 @@ class MongoUserRepository(
                 is UserUpdate.ReplaceProfileSchool -> userDocument.apply {
                     profileSchool = OrganisationDocumentConverter.toDocument(updateCommand.school)
                 }
+                is UserUpdate.ReplaceEmail -> userDocument.apply {
+                    username = updateCommand.email
+                    email = updateCommand.email
+                }
             }
         }
 

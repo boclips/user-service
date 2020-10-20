@@ -122,6 +122,25 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `updating user email field only replaces email`() {
+        val user = userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(
+                    id = "user-1",
+                    username = "blah@blah.com"
+                ),
+                profile = ProfileFactory.sample(firstName = "Ada", lastName = "Lovelace")
+            )
+        )
+
+        userRepository.update(user, UserUpdate.ReplaceEmail(""))
+
+        val updatedUser = userRepository.findById(user.id)!!
+
+        assertThat(updatedUser.identity!!.email).isEqualTo(null)
+    }
+
+    @Test
     fun `updating multiple fields`() {
         val user = userRepository.create(
             UserFactory.sample(

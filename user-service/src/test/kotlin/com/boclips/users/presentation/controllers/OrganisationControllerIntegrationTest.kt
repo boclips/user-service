@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
@@ -15,12 +16,21 @@ import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
+import com.nhaarman.mockitokotlin2.capture
+import com.nhaarman.mockitokotlin2.firstValue
+import com.nhaarman.mockitokotlin2.lastValue
+import com.nhaarman.mockitokotlin2.secondValue
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentCaptor
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
@@ -546,6 +556,49 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         )
                 )
                 .andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `wipes PII of all organisation's users`() {
+            val org = saveOrganisation(OrganisationFactory.apiIntegration())
+            listOf("user-id-1", "user-id-2", "user-id-3").map { id ->
+                saveUser(
+                    UserFactory.sample(
+                        identity = keycloakClientFake.createAccount(
+                            IdentityFactory.sample(id = id, username = "${id}@organisation.com"),
+                        ),
+                        profile = ProfileFactory.sample(
+                            firstName = "delete",
+                            lastName = "this"
+                        ),
+                        organisation = org,
+                    )
+                )
+            }
+
+            mvc.perform(
+                get("/v1/wipe-organisation-pii/${org.id.value}")
+                    .asUserWithRoles("some-boclipper", UserRoles.UPDATE_USERS)
+            )
+                .andExpect(status().isOk)
+
+
+            listOf("user-id-1", "user-id-2", "user-id-3").map { id ->
+                val user = userRepository.findById(UserId(id))
+
+                assertThat(user?.profile?.firstName).isEmpty()
+                assertThat(user?.profile?.lastName).isEmpty()
+                assertThat(user?.identity?.email).isNullOrEmpty()
+                assertThat(user?.identity?.username).isNullOrEmpty()
+
+                assertThat(keycloakClientFake.getIdentitiesById(UserId(id))).isNull()
+            }
+
+            val argument = ArgumentCaptor.forClass(List::class.java) as ArgumentCaptor<String>
+            verify(marketingService, times(3)).deleteContact(capture(argument))
+            assertThat(argument.firstValue).isEqualTo("user-id-1")
+            assertThat(argument.secondValue).isEqualTo("user-id-2")
+            assertThat(argument.lastValue).isEqualTo("user-id-3")
         }
     }
 }

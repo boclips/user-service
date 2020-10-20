@@ -9,16 +9,22 @@ import com.boclips.users.api.response.user.UserResourceWrapper
 import com.boclips.users.api.response.user.UsersResource
 import com.boclips.users.application.commands.AssignUsersByOrganisationDomain
 import com.boclips.users.application.commands.CreateDistrict
+import com.boclips.users.application.commands.DeleteOrganisationPII
 import com.boclips.users.application.commands.GetOrganisationById
 import com.boclips.users.application.commands.GetOrganisations
 import com.boclips.users.application.commands.SynchroniseIntegrationUser
 import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.application.model.OrganisationFilter
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationType
+import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.model.user.UserUpdate
 import com.boclips.users.presentation.converters.OrganisationConverter
 import com.boclips.users.presentation.converters.UserConverter
 import com.boclips.web.exceptions.ExceptionDetails
 import com.boclips.web.exceptions.InvalidRequestApiException
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -39,7 +45,7 @@ class OrganisationController(
     private val createDistrict: CreateDistrict,
     private val getOrganisations: GetOrganisations,
     private val assignUsersByOrganisationDomain: AssignUsersByOrganisationDomain,
-    private val synchroniseIntegrationUser: SynchroniseIntegrationUser
+    private val deleteOrganisationPII: DeleteOrganisationPII
 ) {
 
     @PostMapping("/organisations")
@@ -105,5 +111,11 @@ class OrganisationController(
         val organisations = getOrganisations(filter)
 
         return organisationConverter.toResource(organisations)
+    }
+
+    @GetMapping("/wipe-organisation-pii/{id}")
+    fun deletePII(@PathVariable id: String): ResponseEntity<String> {
+        deleteOrganisationPII(organisationId = id)
+        return ResponseEntity(HttpStatus.OK)
     }
 }

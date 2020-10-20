@@ -197,5 +197,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
             put(urlPathEqualTo("/email/public/v1/subscriptions/"))
                 .willReturn(aResponse().withStatus(202))
         )
+
+
     }
 }
