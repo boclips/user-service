@@ -14,7 +14,7 @@ fun MockHttpServletRequestBuilder.asUserWithRoles(id: String, vararg roles: Stri
             .roles(*roles)
     )
 
-fun MockHttpServletRequestBuilder.asBackofficeUser() =
+fun MockHttpServletRequestBuilder.asHqUser() =
     this.with(
         SecurityMockMvcRequestPostProcessors
             .user("user-service")

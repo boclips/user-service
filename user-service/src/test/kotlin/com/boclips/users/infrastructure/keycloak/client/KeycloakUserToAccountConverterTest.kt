@@ -21,7 +21,7 @@ class KeycloakUserToAccountConverterTest {
             this.id = UUID.randomUUID().toString()
             this.username = "test@gmail.com"
             this.isEmailVerified = true
-            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
+            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_HQ", "uma_something")
             this.createdTimestamp = Instant.now().toEpochMilli()
         }
     }
@@ -35,7 +35,7 @@ class KeycloakUserToAccountConverterTest {
         assertThat(convertedUser.roles).containsExactly(
             "ROLE_VIEWSONIC",
             "ROLE_TEACHER",
-            "ROLE_BACKOFFICE",
+            "ROLE_HQ",
             "uma_something"
         )
         assertThat(convertedUser.createdAt).isEqualTo(
@@ -77,7 +77,7 @@ class KeycloakUserToAccountConverterTest {
             this.email = "test@gmail.com"
             this.username = "somethingnotvalidemail"
             this.isEmailVerified = true
-            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
+            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_HQ", "uma_something")
             this.createdTimestamp = Instant.now().toEpochMilli()
         }
 
@@ -94,7 +94,7 @@ class KeycloakUserToAccountConverterTest {
             this.email = "ignorethis@gmail.com"
             this.username = "test@gmail.com"
             this.isEmailVerified = true
-            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
+            this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_HQ", "uma_something")
             this.createdTimestamp = Instant.now().toEpochMilli()
         }
 
