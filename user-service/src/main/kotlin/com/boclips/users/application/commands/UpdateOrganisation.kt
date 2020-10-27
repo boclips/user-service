@@ -7,10 +7,12 @@ import com.boclips.users.application.exceptions.InvalidFeatureException
 import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.application.exceptions.PermissionDeniedException
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceContentPackageId
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceFeatures
@@ -37,6 +39,10 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
             ReplaceDomain(domain.trim())
         }
 
+        val contentPackageIdUpdate = request?.contentPackageId?.let { contentPackageId ->
+            ReplaceContentPackageId(ContentPackageId(contentPackageId))
+        }
+
         val featuresUpdate = request?.features?.let { features ->
             val convertedFeatures = convertToFeatures(features)
             ReplaceFeatures(convertedFeatures)
@@ -44,7 +50,7 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
 
         organisationRepository.update(
             organisationId,
-            *listOfNotNull(expiryUpdate, domainUpdate, featuresUpdate).toTypedArray()
+            *listOfNotNull(expiryUpdate, domainUpdate, featuresUpdate, contentPackageIdUpdate).toTypedArray()
         )
             ?: throw OrganisationNotFoundException(id)
 

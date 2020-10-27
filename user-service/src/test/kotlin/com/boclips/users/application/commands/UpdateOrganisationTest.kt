@@ -5,8 +5,10 @@ import com.boclips.users.api.request.UpdateOrganisationRequest
 import com.boclips.users.application.exceptions.InvalidDateException
 import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -54,6 +56,27 @@ class UpdateOrganisationTest : AbstractSpringIntegrationTest() {
         val updatedOrganisation = updateOrganisation(district.id.value, request)
 
         assertThat(updatedOrganisation.deal.accessExpiresOn).isEqualTo(updatedExpiryTime)
+    }
+
+    @Test
+    fun `Updates an organisation with a valid contentPackageId`() {
+
+        val oldContentPackageId = ContentPackageId("12345")
+
+        val organisation = organisationRepository.save(
+            OrganisationFactory.apiIntegration(
+                id = OrganisationId("5d43328744f0c2bd4574436a"),
+                deal = OrganisationFactory.deal(
+                    contentPackageId = oldContentPackageId
+                )
+            )
+        )
+
+        val newContentPackageId = ContentPackageId("678910")
+        val request = UpdateOrganisationRequest(contentPackageId = newContentPackageId.value)
+        val updatedOrganisation = updateOrganisation(organisation.id.value, request)
+
+        assertThat(updatedOrganisation.deal.contentPackageId).isEqualTo(newContentPackageId)
     }
 
     @Test
