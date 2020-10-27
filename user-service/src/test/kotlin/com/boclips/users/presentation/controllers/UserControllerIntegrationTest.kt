@@ -28,7 +28,6 @@ import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.school
 import com.boclips.users.testsupport.factories.ProfileFactory
-import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -535,6 +534,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.firstName").exists())
                 .andExpect(jsonPath("$.lastName").exists())
                 .andExpect(jsonPath("$.analyticsId").exists())
+                .andExpect(jsonPath("$.shareCode", equalTo(user.shareCode)))
                 .andExpect(jsonPath("$.organisation.name").exists())
                 .andExpect(jsonPath("$.organisation.state").exists())
                 .andExpect(jsonPath("$.organisation.country").exists())
@@ -599,8 +599,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.analyticsId").doesNotExist())
                 .andExpect(jsonPath("$.organisation").doesNotExist())
-                .andExpect(jsonPath("$.teacherPlatformAttributes").doesNotExist())
                 .andExpect(jsonPath("$.features").doesNotExist())
+                .andExpect(jsonPath("$.shareCode").doesNotExist())
         }
 
         @Test
@@ -619,8 +619,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.analyticsId").exists())
                 .andExpect(jsonPath("$.organisation").exists())
-                .andExpect(jsonPath("$.teacherPlatformAttributes").exists())
                 .andExpect(jsonPath("$.features").exists())
+                .andExpect(jsonPath("$.shareCode").exists())
         }
 
         @Test

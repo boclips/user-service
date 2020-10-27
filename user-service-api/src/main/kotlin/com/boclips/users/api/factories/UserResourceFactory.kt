@@ -2,7 +2,6 @@ package com.boclips.users.api.factories
 
 import com.boclips.users.api.response.SubjectResource
 import com.boclips.users.api.response.feature.FeaturesResource
-import com.boclips.users.api.response.user.TeacherPlatformAttributesResource
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.user.UserResource
 
@@ -17,10 +16,10 @@ class UserResourceFactory {
             subjects: List<SubjectResource> = emptyList(),
             email: String = "bo@clips.com",
             analyticsId: String = "321",
-            teacherPlatformAttributes: TeacherPlatformAttributesResource? = null,
             organisation: OrganisationDetailsResource? = null,
             school: OrganisationDetailsResource? = null,
-            features: FeaturesResource? = null
+            features: FeaturesResource? = null,
+            shareCode: String? = "ABCD"
         ): UserResource =
             UserResource(
                 id = id,
@@ -30,7 +29,7 @@ class UserResourceFactory {
                 subjects = subjects,
                 email = email,
                 analyticsId = analyticsId,
-                teacherPlatformAttributes = teacherPlatformAttributes,
+                shareCode = shareCode,
                 organisation = organisation,
                 school = school,
                 features = features

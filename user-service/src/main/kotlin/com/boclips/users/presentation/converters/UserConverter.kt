@@ -2,7 +2,6 @@ package com.boclips.users.presentation.converters
 
 import com.boclips.users.api.response.SubjectResource
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
-import com.boclips.users.api.response.user.TeacherPlatformAttributesResource
 import com.boclips.users.api.response.user.UserResource
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.user.User
@@ -29,11 +28,7 @@ class UserConverter(
             analyticsId = user.analyticsId?.value,
             organisation = user.organisation?.let(this::toOrganisationResource),
             school = user.profile?.school?.let(this::toOrganisationResource),
-            teacherPlatformAttributes = user.teacherPlatformAttributes?.let {
-                TeacherPlatformAttributesResource(
-                    shareCode = user.shareCode
-                )
-            },
+            shareCode = user.shareCode,
             features = FeatureConverter().toFeatureResource(features = user.features),
             _links = listOfNotNull(
                 userLinkBuilder.profileSelfLink(UserId(user.id.value)),

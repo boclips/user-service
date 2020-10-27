@@ -27,7 +27,7 @@ data class UserResource(
     @get:JsonView(TeacherProjection::class)
     val analyticsId: String?,
     @get:JsonView(TeacherProjection::class)
-    val teacherPlatformAttributes: TeacherPlatformAttributesResource?,
+    val shareCode: String?,
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
     val organisation: OrganisationDetailsResource?,
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)

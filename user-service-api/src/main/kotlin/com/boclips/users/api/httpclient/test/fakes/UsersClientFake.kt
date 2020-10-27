@@ -19,7 +19,7 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
     }
 
     override fun getShareCode(id: String, shareCode: String) {
-        if (userDatabase[id]?.teacherPlatformAttributes?.shareCode != shareCode) {
+        if (userDatabase[id]?.shareCode != shareCode) {
             throw FakeClient.forbiddenException("Invalid share code")
         }
     }

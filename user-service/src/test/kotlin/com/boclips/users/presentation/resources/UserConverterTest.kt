@@ -15,7 +15,6 @@ import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.ProfileFactory
-import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -61,7 +60,8 @@ class UserConverterTest : AbstractSpringIntegrationTest() {
                     country = Country.fromCode("USA")
                 ),
                 features = mapOf(Feature.TEACHERS_HOME_BANNER to true)
-            )
+            ),
+            shareCode = "1234"
         )
 
         saveUser(user)
@@ -87,28 +87,7 @@ class UserConverterTest : AbstractSpringIntegrationTest() {
         assertThat(userResource.organisation!!.country!!.name).isEqualTo("United States")
         assertThat(userResource.organisation!!.country!!.id).isEqualTo("USA")
         assertThat(userResource.features!!["TEACHERS_HOME_BANNER"]).isEqualTo(true)
-    }
-
-    @Test
-    fun `converts teachers platform specific fields`() {
-        val user = UserFactory.sample(
-            shareCode = "TRWN",
-            organisation = OrganisationFactory.school(
-                id = OrganisationId(),
-                name = "My school",
-                address = Address(
-                    state = State.fromCode("NY"),
-                    country = Country.fromCode("USA")
-                )
-            )
-        )
-
-        saveUser(user)
-
-        val userResource = userConverter.toUserResource(user)
-
-        assertThat(userResource.teacherPlatformAttributes).isNotNull
-        assertThat(userResource.teacherPlatformAttributes!!.shareCode).isEqualTo("TRWN")
+        assertThat(userResource.shareCode).isEqualTo("1234")
     }
 
     @Test
