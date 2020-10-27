@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 * to make sure that we do not create 'bad' words
 */
 @Component
-class GenerateTeacherShareCode {
+class GenerateShareCode {
     companion object {
         const val ALLOWED_CHARACTERS = "BCDFGHJKLMNPQRSTVWXYZ0123456789"
         const val LENGTH = 4

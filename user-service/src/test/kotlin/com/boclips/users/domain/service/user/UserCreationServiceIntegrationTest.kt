@@ -33,6 +33,7 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user.profile?.hasOptedIntoMarketing).isEqualTo(false)
         assertThat(user.teacherPlatformAttributes?.hasLifetimeAccess).isEqualTo(false)
         assertThat(user.accessExpiresOn).isNull()
+        assertThat(user.shareCode).isNotNull()
         assertThat(userRepository.findById(identity.id)).isEqualTo(user)
     }
 

@@ -49,7 +49,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
             organisationService = organisationService,
             userRepository = userRepository,
             userUpdatesCommandFactory = UserUpdatesCommandFactory(subjectService = subjectService),
-            generateShareCode = GenerateTeacherShareCode()
+            generateShareCode = GenerateShareCode()
         )
     }
 

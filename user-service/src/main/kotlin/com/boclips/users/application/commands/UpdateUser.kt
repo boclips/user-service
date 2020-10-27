@@ -36,7 +36,7 @@ class UpdateUser(
     private val organisationRepository: OrganisationRepository,
     private val organisationService: OrganisationService,
     private val getOrImportUser: GetOrImportUser,
-    private val generateShareCode: GenerateTeacherShareCode
+    private val generateShareCode: GenerateShareCode
 ) {
     companion object : KLogging() {
         const val DEFAULT_TRIAL_DAYS_LENGTH = 90L

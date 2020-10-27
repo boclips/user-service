@@ -1,5 +1,6 @@
 package com.boclips.users.domain.service.user
 
+import com.boclips.users.application.commands.GenerateShareCode
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationRepository
@@ -19,7 +20,8 @@ class UserCreationService(
     val userRepository: UserRepository,
     val organisationRepository: OrganisationRepository,
     val identityProvider: IdentityProvider,
-    val organisationResolver: OrganisationResolver
+    val organisationResolver: OrganisationResolver,
+    val generateShareCode: GenerateShareCode
 ) {
     companion object : KLogging() {
         const val TEACHER_ROLE = "ROLE_TEACHER"
@@ -82,7 +84,8 @@ class UserCreationService(
             referralCode = null,
             analyticsId = null,
             organisation = organisation,
-            accessExpiresOn = null
+            accessExpiresOn = null,
+            shareCode = generateShareCode()
         )
             .let(setup)
             .let(userRepository::create)
