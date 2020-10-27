@@ -36,8 +36,8 @@ class CreateTeacherIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(user!!.isReferral()).isFalse()
         assertThat(user.referralCode).isEmpty()
         assertTrue(
-            user.teacherPlatformAttributes!!.shareCode!!.matches(shareCodePattern),
-            "Expected ${user.teacherPlatformAttributes!!.shareCode!!} to be 4 characters long"
+            user.shareCode!!.matches(shareCodePattern),
+            "Expected ${user.shareCode!!} to be 4 characters long"
         )
         assertThat(user.analyticsId).isEqualTo(AnalyticsId(value = ""))
 

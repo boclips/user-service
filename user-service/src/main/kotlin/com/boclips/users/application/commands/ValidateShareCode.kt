@@ -13,8 +13,8 @@ class ValidateShareCode(
     operator fun invoke(userId: String, shareCode: String): Boolean {
         val user = userRepository.findById(UserId(userId))
         user?.let {
-            if (user.teacherPlatformAttributes?.shareCode != null) {
-                return user.teacherPlatformAttributes.shareCode.equals(shareCode, true)
+            if (user.shareCode != null) {
+                return user.shareCode.equals(shareCode, true)
             } else {
                 throw ShareCodeNotFoundException(user.id)
             }

@@ -23,21 +23,21 @@ class ValidateShareCodeTest : AbstractSpringIntegrationTest() {
     @Test
     fun `valid share code`() {
         val user =
-            saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CODE")))
+            saveUser(UserFactory.sample(shareCode = "CODE"))
         assertTrue(validateShareCode(user.id.value, "CODE"))
     }
 
     @Test
     fun `valid share code - case insensitive`() {
         val user =
-            saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CASE")))
+            saveUser(UserFactory.sample(shareCode = "CASE"))
         assertTrue(validateShareCode(user.id.value, "cAsE"))
     }
 
     @Test
     fun `invalid share code`() {
         val user =
-            saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "CODE")))
+            saveUser(UserFactory.sample(shareCode = "CODE"))
         assertFalse(validateShareCode(user.id.value, "BADCODE"))
     }
 
@@ -47,26 +47,9 @@ class ValidateShareCodeTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `user does not have teacher platform attributes`() {
-        val user = saveUser(
-            User(
-                identity = IdentityFactory.sample(),
-                profile = ProfileFactory.sample(),
-                analyticsId = null,
-                referralCode = null,
-                teacherPlatformAttributes = null,
-                marketingTracking = MarketingTrackingFactory.sample(),
-                organisation = null,
-                accessExpiresOn = null
-            )
-        )
-        assertThrows<ShareCodeNotFoundException> { validateShareCode(user.id.value, "CODE") }
-    }
-
-    @Test
     fun `user does not have a share code`() {
         val user =
-            saveUser(UserFactory.sample(teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null)))
+            saveUser(UserFactory.sample(shareCode = null))
         assertThrows<ShareCodeNotFoundException> { validateShareCode(user.id.value, "CODE") }
     }
 }

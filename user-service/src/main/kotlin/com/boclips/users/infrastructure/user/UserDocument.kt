@@ -34,7 +34,7 @@ data class UserDocument(
                 ageRange = user.profile?.ages,
                 analyticsId = user.analyticsId?.value,
                 referralCode = user.referralCode,
-                shareCode = user.teacherPlatformAttributes?.shareCode,
+                shareCode = user.shareCode,
                 firstName = user.profile?.firstName,
                 lastName = user.profile?.lastName,
                 email = user.identity.email,

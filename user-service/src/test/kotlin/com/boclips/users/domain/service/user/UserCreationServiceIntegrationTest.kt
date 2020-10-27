@@ -64,7 +64,7 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
         assertThat(persistedUser.identity.email).isEqualTo("joe@dough.com")
         assertThat(persistedUser.analyticsId).isEqualTo(AnalyticsId(value = "analytics"))
         assertThat(persistedUser.referralCode).isEqualTo("abc-a123")
-        assertThat(persistedUser.teacherPlatformAttributes!!.shareCode).isEqualTo("test")
+        assertThat(persistedUser.shareCode).isEqualTo("test")
         assertThat(persistedUser.teacherPlatformAttributes!!.hasLifetimeAccess).isEqualTo(false)
         assertThat(persistedUser.marketingTracking.utmSource).isBlank()
         assertThat(persistedUser.marketingTracking.utmCampaign).isBlank()

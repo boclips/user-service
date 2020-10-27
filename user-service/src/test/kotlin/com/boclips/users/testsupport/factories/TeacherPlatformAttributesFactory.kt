@@ -5,11 +5,9 @@ import com.boclips.users.domain.model.user.TeacherPlatformAttributes
 class TeacherPlatformAttributesFactory {
     companion object {
         fun sample(
-            shareCode: String? = "DFGY",
             hasLifetimeAccess: Boolean = false
         ): TeacherPlatformAttributes {
             return TeacherPlatformAttributes(
-                shareCode = shareCode,
                 hasLifetimeAccess = hasLifetimeAccess
             )
         }

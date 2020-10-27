@@ -54,13 +54,13 @@ data class UserDocumentConverter(
                 utmCampaign = userDocument.marketing?.utmCampaign ?: ""
             ),
             organisation = userDocument.organisation?.let(OrganisationDocumentConverter::fromDocument),
-            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
+            accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
+            shareCode = userDocument.shareCode
         )
     }
 
     private fun convertTeacherPlatformAttributes(userDocument: UserDocument): TeacherPlatformAttributes {
         return TeacherPlatformAttributes(
-            shareCode = userDocument.shareCode,
             hasLifetimeAccess = userDocument.hasLifetimeAccess
         )
     }

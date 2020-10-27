@@ -31,7 +31,7 @@ class UserConverter(
             school = user.profile?.school?.let(this::toOrganisationResource),
             teacherPlatformAttributes = user.teacherPlatformAttributes?.let {
                 TeacherPlatformAttributesResource(
-                    shareCode = user.teacherPlatformAttributes.shareCode
+                    shareCode = user.shareCode
                 )
             },
             features = FeatureConverter().toFeatureResource(features = user.features),

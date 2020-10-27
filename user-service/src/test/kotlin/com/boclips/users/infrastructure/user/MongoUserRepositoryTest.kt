@@ -277,7 +277,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
     fun `updating shareCode`() {
         val user = userRepository.create(
             UserFactory.sample(
-                teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null)
+                shareCode = null
             )
         )
 
@@ -285,7 +285,7 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val updatedUser = userRepository.findById(user.id)!!
 
-        assertThat(updatedUser.teacherPlatformAttributes!!.shareCode).isEqualTo("1234")
+        assertThat(updatedUser.shareCode).isEqualTo("1234")
     }
 
     @Test

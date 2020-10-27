@@ -92,7 +92,7 @@ class UserConverterTest : AbstractSpringIntegrationTest() {
     @Test
     fun `converts teachers platform specific fields`() {
         val user = UserFactory.sample(
-            teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "TRWN"),
+            shareCode = "TRWN",
             organisation = OrganisationFactory.school(
                 id = OrganisationId(),
                 name = "My school",

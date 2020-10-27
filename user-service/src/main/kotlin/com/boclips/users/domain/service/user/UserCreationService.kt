@@ -39,7 +39,6 @@ class UserCreationService(
         return create(identity) {
             User(
                 teacherPlatformAttributes = TeacherPlatformAttributes(
-                    shareCode = newTeacher.shareCode,
                     hasLifetimeAccess = false
                 ),
                 analyticsId = newTeacher.analyticsId,
@@ -47,7 +46,8 @@ class UserCreationService(
                 marketingTracking = newTeacher.marketingTracking,
                 accessExpiresOn = it.accessExpiresOn,
                 identity = it.identity,
-                profile = it.profile
+                profile = it.profile,
+                shareCode = newTeacher.shareCode,
             )
         }
     }

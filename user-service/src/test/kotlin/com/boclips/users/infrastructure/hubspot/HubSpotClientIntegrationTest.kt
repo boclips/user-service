@@ -75,7 +75,6 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                         username = "jane@doe.com"
                     ),
                     teacherPlatformAttributes = TeacherPlatformAttributes(
-                        shareCode = "test",
                         hasLifetimeAccess = false
                     ),
                     marketing = MarketingTrackingFactory.sample(
@@ -85,6 +84,7 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
                         utmSource = "utm-source-1",
                         utmCampaign = "utm-campaign-1"
                     ),
+                    shareCode = "test",
                     accessExpiresOn = ZonedDateTime.parse("2017-08-08T00:00:00Z")
                 ),
                 UserSessionsFactory.sample(lastAccess = Instant.parse("2017-08-08T00:00:00Z"))

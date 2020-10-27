@@ -72,6 +72,7 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.marketingTracking.utmSource).isEqualTo("utmSource")
         assertThat(convertedUser.marketingTracking.utmCampaign).isEqualTo("utmCampaign")
         assertThat(convertedUser.organisation?.name).isEqualTo("organisation name")
+        assertThat(convertedUser.shareCode).isEqualTo("EFG")
         assertThat(convertedUser.accessExpiresOn).isNull()
         assertThat(convertedUser.profile!!.role).isEqualTo("TEACHER")
     }

@@ -98,7 +98,7 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
                         firstName = "Mona",
                         lastName = "The Vampire"
                     ),
-                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "123")
+                    shareCode = "123"
                 )
             )
 

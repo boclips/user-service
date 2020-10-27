@@ -21,6 +21,7 @@ class UserFactory {
             profile: Profile? = ProfileFactory.sample(),
             teacherPlatformAttributes: TeacherPlatformAttributes? = TeacherPlatformAttributesFactory.sample(),
             organisation: Organisation? = null,
+            shareCode: String? = "DFGY",
             accessExpiresOn: ZonedDateTime? = null
         ) = User(
             identity = identity,
@@ -30,6 +31,7 @@ class UserFactory {
             teacherPlatformAttributes = teacherPlatformAttributes,
             marketingTracking = marketing,
             organisation = organisation,
+            shareCode = shareCode,
             accessExpiresOn = accessExpiresOn
         )
 

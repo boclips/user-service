@@ -338,7 +338,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 analyticsId = AnalyticsId(
                     value = "1234567"
                 ),
-                teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null),
+                shareCode = null,
                 identity = IdentityFactory.sample(id = "user-id"),
                 profile = null,
                 organisation = null,
@@ -361,7 +361,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             setSecurityContext("user-id")
 
             val userBeforeOnboarding = userRepository.findById(user.id)
-            assertThat(userBeforeOnboarding!!.teacherPlatformAttributes!!.shareCode).isNull()
+            assertThat(userBeforeOnboarding!!.shareCode).isNull()
 
             mvc.perform(
                 put("/v1/users/user-id").asUser("user-id")
@@ -382,7 +382,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
 
             val userAfterOnboarding = userRepository.findById(user.id)
-            assertThat(userAfterOnboarding!!.teacherPlatformAttributes!!.shareCode).isNotNull()
+            assertThat(userAfterOnboarding!!.shareCode).isNotNull()
         }
 
         @Test
@@ -391,7 +391,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 analyticsId = AnalyticsId(
                     value = "1234567"
                 ),
-                teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "HYML"),
+                shareCode = "HYML",
                 identity = IdentityFactory.sample(id = "user-id"),
                 profile = null,
                 organisation = null,
@@ -432,7 +432,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
 
             val userAfterOnboarding = userRepository.findById(user.id)
-            assertThat(userAfterOnboarding!!.teacherPlatformAttributes!!.shareCode).isEqualTo("HYML")
+            assertThat(userAfterOnboarding!!.shareCode).isEqualTo("HYML")
         }
 
         @Test
@@ -763,7 +763,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val validShareCode = "TEST"
             val user = saveUser(
                 UserFactory.sample(
-                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = validShareCode)
+                    shareCode = validShareCode
                 )
             )
 
@@ -775,7 +775,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val invalidShareCode = "TEST"
             val user = saveUser(
                 UserFactory.sample(
-                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = "ABCD")
+                    shareCode = "ABCD"
                 )
             )
 
@@ -791,7 +791,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `returns a 404 if user does not have shareCode set up`() {
             val user = saveUser(
                 UserFactory.sample(
-                    teacherPlatformAttributes = TeacherPlatformAttributesFactory.sample(shareCode = null)
+                    shareCode = null
                 )
             )
             mvc.perform(get("/v1/users/${user.id.value}/shareCode/ABCD")).andExpect(status().isNotFound)

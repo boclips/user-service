@@ -65,7 +65,7 @@ class UpdateUser(
         user: User
     ): List<UserUpdate> = userUpdatesCommandFactory.buildCommands(updateUserRequest, school) +
         listOfNotNull(
-            takeIf { user.teacherPlatformAttributes?.shareCode == null }?.let {
+            takeIf { user.shareCode == null }?.let {
                 UserUpdate.ReplaceShareCode(generateShareCode())
             },
             takeIf { shouldSetAccessExpiresOn(user) }?.let {
