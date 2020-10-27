@@ -13,7 +13,6 @@ import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.AddTag
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceBilling
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceContentPackageId
-import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceAllowsOverridingUserId
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.domain.model.school.Country
@@ -153,22 +152,6 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             assertThat(
                 organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentPackageId
             ).isEqualTo(ContentPackageId("5e6f91c75849165c9cfb2a38"))
-        }
-
-        @Test
-        fun `can update the allowsOverridingUserId field`() {
-            val apiCustomer = organisationRepository.save(
-                apiIntegration(allowsOverridingUserId = true)
-            )
-
-            organisationRepository.update(
-                apiCustomer.id,
-                ReplaceAllowsOverridingUserId(false)
-            )
-
-            assertThat(
-                organisationRepository.findApiIntegrationByName(apiCustomer.name)?.allowsOverridingUserIds
-            ).isEqualTo(false)
         }
     }
 

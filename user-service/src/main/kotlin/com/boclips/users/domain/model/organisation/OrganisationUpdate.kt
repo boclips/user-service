@@ -11,5 +11,4 @@ sealed class OrganisationUpdate {
     class AddTag(val tag: OrganisationTag) : OrganisationUpdate()
     class ReplaceBilling(val billing: Boolean) : OrganisationUpdate()
     class ReplaceContentPackageId(val contentPackageId: ContentPackageId) : OrganisationUpdate()
-    class ReplaceAllowsOverridingUserId(val allowsOverridingUserId: Boolean) : OrganisationUpdate()
 }

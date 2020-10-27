@@ -13,7 +13,6 @@ import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.AddTag
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceBilling
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceContentPackageId
-import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceAllowsOverridingUserId
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceFeatures
@@ -109,7 +108,6 @@ class MongoOrganisationRepository(
                         FeatureDocumentConverter.toDocument(it.key)
                     })
                 is ReplaceContentPackageId -> accumulator.copy(contentPackageId = update.contentPackageId.value)
-                is ReplaceAllowsOverridingUserId -> accumulator.copy(allowsOverridingUserIds = update.allowsOverridingUserId)
             }
         })
 
