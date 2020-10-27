@@ -180,6 +180,32 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
+        fun `updating the contentPackageId of an organisation`() {
+            val newContentPackageId = "5e5fe948b9abbe3602e52a61"
+
+            val apiIntegration = organisationRepository.save(
+                OrganisationFactory.apiIntegration(
+                    name = "my api integration"
+                )
+            )
+
+            mvc.perform(
+                patch("/v1/organisations/${apiIntegration.id.value}").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.UPDATE_ORGANISATIONS
+                )
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """{"contentPackageId": "$newContentPackageId"}"""
+                    )
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${apiIntegration.id.value}")))
+                .andExpect(jsonPath("$.id", equalTo(apiIntegration.id.value)))
+                .andExpect(jsonPath("$.contentPackageId", equalTo(newContentPackageId)))
+        }
+
+        @Test
         fun `update organization domain`() {
             val givenDomain = "my-district.pl"
             val district = organisationRepository.save(
