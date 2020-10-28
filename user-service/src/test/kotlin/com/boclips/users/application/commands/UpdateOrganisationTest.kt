@@ -80,6 +80,27 @@ class UpdateOrganisationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
+    fun `Updates an organisation with a valid billing field`() {
+
+        val oldBilling = false
+
+        val organisation = organisationRepository.save(
+            OrganisationFactory.apiIntegration(
+                id = OrganisationId("5d43328744f0c2bd4574436a"),
+                deal = OrganisationFactory.deal(
+                    billing = oldBilling
+                )
+            )
+        )
+
+        val newBilling = true
+        val request = UpdateOrganisationRequest(billing = newBilling)
+        val updatedOrganisation = updateOrganisation(organisation.id.value, request)
+
+        assertThat(updatedOrganisation.deal.billing).isEqualTo(newBilling)
+    }
+
+    @Test
     fun `Throws an error when organisation to update cannot be found`() {
         val nonExistingOrgId = UniqueId()
         assertThrows<OrganisationNotFoundException> {

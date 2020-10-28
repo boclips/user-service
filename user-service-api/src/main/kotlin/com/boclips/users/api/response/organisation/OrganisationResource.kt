@@ -8,6 +8,7 @@ open class OrganisationResource(
     val id: String,
     val accessExpiresOn: ZonedDateTime?,
     val contentPackageId: String?,
+    val billing:Boolean?,
     val organisationDetails: OrganisationDetailsResource,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var _links: Map<String, Link>?
