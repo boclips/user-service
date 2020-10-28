@@ -2,7 +2,6 @@ package com.boclips.users.testsupport
 
 import com.boclips.eventbus.infrastructure.SynchronousFakeEventBus
 import com.boclips.users.application.CaptchaProvider
-import com.boclips.users.application.commands.AddCollectionToAccessRule
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageRepository
@@ -109,9 +108,6 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var contentPackageLinkBuilder: ContentPackageLinkBuilder
-
-    @Autowired
-    lateinit var addCollectionToAccessRule: AddCollectionToAccessRule
 
     @Autowired
     lateinit var userCreationService: UserCreationService
