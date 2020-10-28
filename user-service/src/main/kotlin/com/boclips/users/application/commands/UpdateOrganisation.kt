@@ -12,6 +12,7 @@ import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceBilling
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceContentPackageId
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
@@ -43,6 +44,10 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
             ReplaceContentPackageId(ContentPackageId(contentPackageId))
         }
 
+        val billingUpdate = request?.billing?.let { billing ->
+            ReplaceBilling(billing)
+        }
+
         val featuresUpdate = request?.features?.let { features ->
             val convertedFeatures = convertToFeatures(features)
             ReplaceFeatures(convertedFeatures)
@@ -50,7 +55,13 @@ class UpdateOrganisation(private val organisationRepository: OrganisationReposit
 
         organisationRepository.update(
             organisationId,
-            *listOfNotNull(expiryUpdate, domainUpdate, featuresUpdate, contentPackageIdUpdate).toTypedArray()
+            *listOfNotNull(
+                expiryUpdate,
+                domainUpdate,
+                featuresUpdate,
+                contentPackageIdUpdate,
+                billingUpdate
+            ).toTypedArray()
         )
             ?: throw OrganisationNotFoundException(id)
 

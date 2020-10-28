@@ -153,6 +153,22 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentPackageId
             ).isEqualTo(ContentPackageId("5e6f91c75849165c9cfb2a38"))
         }
+
+        @Test
+        fun `can update the billing field`() {
+            val apiCustomer = organisationRepository.save(
+                apiIntegration(deal = deal(billing = false))
+            )
+
+            organisationRepository.update(
+                apiCustomer.id,
+                ReplaceBilling(true)
+            )
+
+            assertThat(
+                organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.billing
+            ).isEqualTo(true)
+        }
     }
 
     @Test

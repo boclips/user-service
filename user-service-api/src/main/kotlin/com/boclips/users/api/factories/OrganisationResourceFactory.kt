@@ -15,6 +15,7 @@ class OrganisationResourceFactory {
             id: String = UUID.randomUUID().toString(),
             accessExpiresOn: ZonedDateTime? = null,
             contentPackageId: String? = null,
+            billing: Boolean?,
             organisationDetails: OrganisationDetailsResource = sampleDetails(),
             _links: Map<String, Link>? = null
         ) = OrganisationResource(
@@ -22,6 +23,7 @@ class OrganisationResourceFactory {
             accessExpiresOn = accessExpiresOn,
             contentPackageId = contentPackageId,
             organisationDetails = organisationDetails,
+            billing = billing,
             _links = _links
         )
 

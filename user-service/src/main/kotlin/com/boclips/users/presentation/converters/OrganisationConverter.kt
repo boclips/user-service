@@ -18,6 +18,7 @@ class OrganisationConverter(
             id = organisation.id.value,
             contentPackageId = organisation.deal.contentPackageId?.value,
             accessExpiresOn = organisation.deal.accessExpiresOn,
+            billing = organisation.deal.billing,
             organisationDetails = OrganisationDetailsConverter().toResource(organisation),
             _links = listOfNotNull(
                 organisationLinkBuilder.self(organisation.id),

@@ -4,6 +4,7 @@ import com.boclips.users.api.request.CreateDistrictRequest
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
@@ -91,7 +92,6 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     UserRoles.VIEW_ORGANISATIONS
                 )
             )
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name").exists())
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.type").exists())
@@ -184,11 +184,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val newContentPackageId = "5e5fe948b9abbe3602e52a61"
 
             val apiIntegration = organisationRepository.save(
-                OrganisationFactory.apiIntegration(
-                    name = "my api integration"
-                )
+                OrganisationFactory.apiIntegration(name = "my api integration")
             )
-
             mvc.perform(
                 patch("/v1/organisations/${apiIntegration.id.value}").asUserWithRoles(
                     "some-boclipper",
@@ -203,6 +200,36 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${apiIntegration.id.value}")))
                 .andExpect(jsonPath("$.id", equalTo(apiIntegration.id.value)))
                 .andExpect(jsonPath("$.contentPackageId", equalTo(newContentPackageId)))
+        }
+
+        @Test
+        fun `updating the billing of an organisation`() {
+            val newBilling = true
+
+            val apiIntegration = organisationRepository.save(
+                OrganisationFactory.apiIntegration(
+                    name = "my api integration",
+                    deal= Deal(
+                        billing=false,
+                        accessExpiresOn=null
+                    )
+                )
+            )
+
+            mvc.perform(
+                patch("/v1/organisations/${apiIntegration.id.value}").asUserWithRoles(
+                    "some-boclipper",
+                    UserRoles.UPDATE_ORGANISATIONS
+                )
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """{"billing": "$newBilling"}"""
+                    )
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${apiIntegration.id.value}")))
+                .andExpect(jsonPath("$.id", equalTo(apiIntegration.id.value)))
+                .andExpect(jsonPath("$.billing", equalTo(newBilling)))
         }
 
         @Test
