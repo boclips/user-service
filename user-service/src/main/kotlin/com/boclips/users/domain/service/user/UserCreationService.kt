@@ -28,7 +28,10 @@ class UserCreationService(
     }
 
     fun create(identity: Identity): User {
-        return create(identity)
+        return create(
+            identity = identity,
+            organisation = organisationResolver.resolve(identity)
+        )
     }
 
     fun createTeacher(newTeacher: NewTeacher): User {
@@ -39,7 +42,8 @@ class UserCreationService(
         )
 
         return create(
-            identity
+            identity = identity,
+            organisation = organisationResolver.resolve(identity)
         ) {
             User(
                 teacherPlatformAttributes = TeacherPlatformAttributes(
@@ -62,7 +66,11 @@ class UserCreationService(
             ?: createLtiDeploymentUser(externalUserId, deploymentOrganisation)
     }
 
-    fun create(identity: Identity, organisation: Organisation?, setup: (defaults: User) -> User = { user -> user }): User {
+    fun create(
+        identity: Identity,
+        organisation: Organisation?,
+        setup: (defaults: User) -> User = { user -> user }
+    ): User {
         logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]" }
 
         return User(
@@ -88,9 +96,5 @@ class UserCreationService(
             Identity(id = UserId(), username = externalUserId, createdAt = ZonedDateTime.now()),
             organisation
         )
-    }
-
-    private fun create(identity: Identity, setup: (defaults: User) -> User): User {
-        return create(identity, organisationResolver.resolve(identity), setup)
     }
 }
