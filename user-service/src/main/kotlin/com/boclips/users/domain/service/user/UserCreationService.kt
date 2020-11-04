@@ -28,7 +28,7 @@ class UserCreationService(
     }
 
     fun create(identity: Identity): User {
-        return create(identity) { it }
+        return create(identity)
     }
 
     fun createTeacher(newTeacher: NewTeacher): User {
@@ -38,7 +38,9 @@ class UserCreationService(
             role = TEACHER_ROLE
         )
 
-        return create(identity) {
+        return create(
+            identity
+        ) {
             User(
                 teacherPlatformAttributes = TeacherPlatformAttributes(
                     hasLifetimeAccess = false
@@ -60,20 +62,7 @@ class UserCreationService(
             ?: createLtiDeploymentUser(externalUserId, deploymentOrganisation)
     }
 
-    private fun createLtiDeploymentUser(externalUserId: String, organisation: Organisation): User {
-        return create(
-            Identity(id = UserId(), username = externalUserId, createdAt = ZonedDateTime.now()),
-            organisation
-        ) {
-            it
-        }
-    }
-
-    private fun create(identity: Identity, setup: (defaults: User) -> User): User {
-        return create(identity, organisationResolver.resolve(identity), setup)
-    }
-
-    private fun create(identity: Identity, organisation: Organisation?, setup: (defaults: User) -> User): User {
+    fun create(identity: Identity, organisation: Organisation?, setup: (defaults: User) -> User = { user -> user }): User {
         logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]" }
 
         return User(
@@ -92,5 +81,16 @@ class UserCreationService(
             .also { user ->
                 logger.info { "User ${user.id.value} created under organisation ${user.organisation?.name}" }
             }
+    }
+
+    private fun createLtiDeploymentUser(externalUserId: String, organisation: Organisation): User {
+        return create(
+            Identity(id = UserId(), username = externalUserId, createdAt = ZonedDateTime.now()),
+            organisation
+        )
+    }
+
+    private fun create(identity: Identity, setup: (defaults: User) -> User): User {
+        return create(identity, organisationResolver.resolve(identity), setup)
     }
 }
