@@ -18,7 +18,12 @@ fun MockHttpServletRequestBuilder.asHqUser() =
     this.with(
         SecurityMockMvcRequestPostProcessors
             .user("user-service")
-            .roles(UserRoles.SYNCHRONIZE_USERS_HUBSPOT, UserRoles.SYNCHRONIZE_USERS_KEYCLOAK)
+            .roles(
+                UserRoles.SYNCHRONIZE_USERS_HUBSPOT,
+                UserRoles.SYNCHRONIZE_USERS_KEYCLOAK,
+                UserRoles.INSERT_CONTENT_PACKAGES,
+                UserRoles.VIEW_CONTENT_PACKAGES
+            )
     )
 
 fun MockHttpServletRequestBuilder.asTeacher(userId: String = "teacher@example.com") =
