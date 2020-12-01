@@ -39,9 +39,11 @@ open class KeycloakClient(
         val user: UserRepresentation?
         return try {
             user = keycloak.getUserById(id.value)!!
-            if (user.attributes != null && user.attributes.isNotEmpty() && user.attributes.containsKey("organisation")) {
-                logger.info { user.attributes.get("organisation")?.get(0) }
+            user.attributes?.let { attrs ->
+                attrs["legacyUserId"]?.let { logger.info { it.first() } }
+                attrs["legacyOrganisationId"]?.let { logger.info { it.first() } }
             }
+
             userConverter.convert(user)
         } catch (e: javax.ws.rs.NotFoundException) {
             logger.warn { "Could not find user: ${id.value}, omitting user" }
