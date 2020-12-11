@@ -75,6 +75,10 @@ open class KeycloakClient(
         return keycloak.countUsers()
     }
 
+    override fun deleteIdentity(id: UserId) {
+        keycloak.removeUser(id.value)
+    }
+
     override fun getUserSessions(id: UserId): UserSessions {
         val loginEventRepresentations = keycloak.getLastUserSession(id.value)
 

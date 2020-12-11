@@ -9,6 +9,10 @@ import com.boclips.users.infrastructure.hubspot.resources.SubscriptionStatus
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KLogging
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
@@ -53,10 +57,35 @@ class HubSpotClient(
         }
     }
 
-    override fun deleteContact(id:String) {
-        restTemplate.delete(
-            getDeleteContactEndpoint(id)
-        )
+    override fun deleteContact(email: String) {
+        val headers = HttpHeaders()
+        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        logger.info { "Getting hubspot account of $email" }
+
+        val httpEntity = HttpEntity<String>(headers)
+        val response: ResponseEntity<RetrievedHubSpotContact>? = try {
+            restTemplate.exchange(
+                getContactByEmailEndpoint(email),
+                HttpMethod.GET,
+                httpEntity,
+                RetrievedHubSpotContact::class.java
+            )
+        } catch (ex: Exception) {
+            logger.error("contact not found for email $email")
+            return
+        }
+
+        response?.body?.vid?.let {
+            logger.info { "resolved $email to vid: ${response.body?.vid} " }
+            try {
+                restTemplate.delete(
+                    getDeleteContactEndpoint(it)
+                )
+                logger.info { "deleting hubspot contact with vid $it " }
+            } catch (ex: Exception) {
+                logger.error("cannot delete contact with vid $it in hubspot", ex)
+            }
+        } ?: logger.info { "vid not found for $email" }
     }
 
     private fun updateContacts(batchOfUsers: List<CrmProfile>): List<HubSpotContact> {
@@ -89,9 +118,17 @@ class HubSpotClient(
             .toUri()
     }
 
-    private fun getDeleteContactEndpoint(id: String) : URI {
+    private fun getDeleteContactEndpoint(id: String): URI {
         return UriComponentsBuilder
             .fromUriString("${hubspotProperties.host}/contacts/v1/contact/vid/${id}")
+            .queryParam("hapikey", hubspotProperties.apiKey)
+            .build()
+            .toUri()
+    }
+
+    private fun getContactByEmailEndpoint(email: String): URI {
+        return UriComponentsBuilder
+            .fromUriString("${hubspotProperties.host}/contacts/v1/contact/email/${email}/profile")
             .queryParam("hapikey", hubspotProperties.apiKey)
             .build()
             .toUri()

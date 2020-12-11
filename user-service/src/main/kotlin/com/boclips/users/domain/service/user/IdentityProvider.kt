@@ -8,4 +8,5 @@ interface IdentityProvider {
     fun getIdentity(): Sequence<Identity>
     fun createIdentity(email: String, password: String, role: String?): Identity
     fun count(): Int
+    fun deleteIdentity(id: UserId)
 }

@@ -5,6 +5,10 @@ data class HubSpotContact(
     val properties: List<HubSpotProperty>
 )
 
+data class RetrievedHubSpotContact(
+    val vid: String
+)
+
 data class HubSpotProperty(
     val property: String,
     val value: String

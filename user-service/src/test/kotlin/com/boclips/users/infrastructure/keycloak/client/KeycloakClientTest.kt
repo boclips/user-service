@@ -138,4 +138,48 @@ internal class KeycloakClientTest {
         assertThat(users[1].username).isEqualTo(user2.username)
         assertThat(users[1].createdAt).isNotNull()
     }
+
+    @Test
+    fun `remove user by id`() {
+        val user1 = UserRepresentation().apply {
+            this.id = "1"
+            this.username = "test@gmail.com"
+            this.realmRoles = emptyList()
+            this.createdTimestamp = Instant.now().toEpochMilli()
+
+        }
+        val user2 = UserRepresentation().apply {
+            this.id = "2"
+            this.username = "test2@gmail.com"
+            this.realmRoles = emptyList()
+            this.createdTimestamp = Instant.now().toEpochMilli()
+        }
+
+        whenever(keycloakWrapperMock.countUsers()).thenReturn(2)
+        whenever(keycloakWrapperMock.users()).thenReturn(
+            listOf(
+                user1,
+                user2
+            ).asSequence()
+        )
+        assertThat(keycloakClient.count()).isEqualTo(2)
+
+
+        assertThat(keycloakClient.getIdentity().toList()[0].id.value).isEqualTo(user1.id)
+        assertThat(keycloakClient.getIdentity().toList()[1].id.value).isEqualTo(user2.id)
+
+
+        keycloakClient.deleteIdentity(UserId("1"))
+
+        whenever(keycloakWrapperMock.countUsers()).thenReturn(1)
+        whenever(keycloakWrapperMock.users()).thenReturn(
+            listOf(
+                user2
+            ).asSequence()
+        )
+        assertThat(keycloakClient.count()).isEqualTo(1)
+
+        assertThat(keycloakClient.getIdentity().toList()[0].id.value).isEqualTo(user2.id)
+
+    }
 }

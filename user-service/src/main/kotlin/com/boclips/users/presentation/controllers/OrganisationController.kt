@@ -9,9 +9,9 @@ import com.boclips.users.api.response.user.UserResourceWrapper
 import com.boclips.users.api.response.user.UsersResource
 import com.boclips.users.application.commands.AssignUsersByOrganisationDomain
 import com.boclips.users.application.commands.CreateDistrict
+import com.boclips.users.application.commands.DeleteOrganisationPII
 import com.boclips.users.application.commands.GetOrganisationById
 import com.boclips.users.application.commands.GetOrganisations
-import com.boclips.users.application.commands.SynchroniseIntegrationUser
 import com.boclips.users.application.commands.UpdateOrganisation
 import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.domain.model.organisation.OrganisationType
@@ -38,8 +38,7 @@ class OrganisationController(
     private val updateOrganisation: UpdateOrganisation,
     private val createDistrict: CreateDistrict,
     private val getOrganisations: GetOrganisations,
-    private val assignUsersByOrganisationDomain: AssignUsersByOrganisationDomain,
-    private val synchroniseIntegrationUser: SynchroniseIntegrationUser
+    private val assignUsersByOrganisationDomain: AssignUsersByOrganisationDomain
 ) {
 
     @PostMapping("/organisations")

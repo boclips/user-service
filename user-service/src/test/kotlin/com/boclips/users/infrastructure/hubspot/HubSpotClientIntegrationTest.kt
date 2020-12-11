@@ -14,10 +14,13 @@ import com.boclips.users.testsupport.factories.UserSessionsFactory
 import com.boclips.users.testsupport.loadWireMockStub
 import com.boclips.videos.api.response.subject.SubjectResource
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.delete
 import com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
+import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
@@ -166,23 +169,58 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Test
-    fun `a contact can be deleted`() {
+    fun `a contact can be deleted by email address`() {
         val user = UserFactory.sample(profile = ProfileFactory.sample(hasOptedIntoMarketing = true))
 
         wireMockServer.stubFor(
-            delete(
-                urlPathEqualTo("/contacts/v1/contact/vid/${user.id.value}")
+            get(
+                urlPathEqualTo("/contacts/v1/contact/email/${user.identity.email}/profile")
+            ).withQueryParam("hapikey", matching("some-api-key")).withHeader(
+                "Content-Type",
+                WireMock.equalTo("application/json")
             )
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                    """{
+                        "vid": 1234567,
+                        "profile-url": "https://app.hubspot.com/contacts/4854096/contact/30894151",
+                        "properties": {
+                            "hs_email_last_open_date": {
+                                "value": "1593172471807",
+                                "versions": []
+                            }
+                        }
+                    }""".trimMargin()
+                        )
+                )
+
+        )
+        wireMockServer.stubFor(
+            delete(
+                urlPathEqualTo("/contacts/v1/contact/vid/1234567")
+            ).withQueryParam("hapikey", matching("some-api-key"))
                 .willReturn(aResponse().withStatus(200))
         )
 
         hubSpotClient.deleteContact(
-            user.id.value
+            user.identity.email!!
+        )
+
+        wireMockServer.verify(
+            getRequestedFor(
+                urlMatching(".*/contacts/v1/contact/email/joe@dough.com/profile.*")
+            ).withQueryParam("hapikey", matching("some-api-key")).withHeader(
+                "Content-Type",
+                WireMock.equalTo("application/json")
+            )
         )
 
         wireMockServer.verify(
             deleteRequestedFor(
-                urlMatching(".*/contacts/v1/contact/vid/${user.id.value}.*")
+                urlMatching(".*/contacts/v1/contact/vid/1234567.*")
             ).withQueryParam("hapikey", matching("some-api-key"))
         )
     }
