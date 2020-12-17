@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        kotlinVersion = '1.4.10'
-        jacksonVersion = '2.10.1'
+        kotlinVersion = '1.4.21'
+        jacksonVersion = '2.11.0'
         lombok = 'org.projectlombok:lombok:1.18.8'
     }
     repositories {
@@ -73,26 +73,26 @@ dependencies {
     implementation('org.springframework.retry:spring-retry')
     implementation('org.springframework.boot:spring-boot-starter-aop')
 
-    implementation('com.github.boclips:event-bus:4.3.0')
-    implementation('com.github.boclips:boclips-spring-web:0.128.0')
-    implementation('com.github.boclips:boclips-spring-security:0.530.0')
+    implementation('com.github.boclips:event-bus:4.4.2')
+    implementation('com.github.boclips:boclips-spring-web:0.453.0')
+    implementation('com.github.boclips:boclips-spring-security:0.558.0')
     implementation('com.github.boclips:videos:84')
 
     implementation('com.jayway.jsonpath:json-path:2.3.0')
     implementation('io.github.microutils:kotlin-logging:1.6.22')
     implementation('com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1')
     implementation('com.fasterxml.jackson.core:jackson-databind')
-    implementation('org.keycloak:keycloak-admin-client:11.0.2')
-    implementation('org.keycloak:keycloak-authz-client:11.0.2')
+    implementation('org.keycloak:keycloak-admin-client:11.0.3')
+    implementation('org.keycloak:keycloak-authz-client:11.0.3')
     implementation('org.jboss.resteasy:resteasy-jackson2-provider:3.12.0.Final')
     implementation('org.jboss.resteasy:resteasy-client:3.12.0.Final')
-    implementation('com.google.guava:guava:27.0.1-jre')
+    implementation('com.google.guava:guava:30.1-jre')
     implementation('commons-validator:commons-validator:1.6')
     implementation('commons-beanutils:commons-beanutils:1.9.4')
     implementation('io.sentry:sentry-logback:1.7.21')
     implementation('io.micrometer:micrometer-core')
     implementation('io.micrometer:micrometer-registry-prometheus')
-    implementation("io.opentracing.contrib:opentracing-spring-jaeger-web-starter:3.1.2")
+    implementation("io.opentracing.contrib:opentracing-spring-jaeger-web-starter:3.2.2")
     implementation("io.opentracing.contrib:opentracing-mongo-driver:0.1.5")
     implementation('org.codehaus.janino:janino:3.1.2')
 

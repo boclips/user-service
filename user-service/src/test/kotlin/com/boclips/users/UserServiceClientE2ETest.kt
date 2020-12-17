@@ -12,7 +12,6 @@ import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
-import com.boclips.users.testsupport.factories.TeacherPlatformAttributesFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import feign.FeignException
 import org.assertj.core.api.Assertions.assertThat

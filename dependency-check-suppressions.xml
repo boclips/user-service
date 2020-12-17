@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <suppress until="2020-12-01">
+    <suppress until="2021-01-08">
         <notes><![CDATA[
           File name: spring-security-*.jar in combination with Spring Framework 5.0.5.RELEASE
 
@@ -9,18 +9,34 @@
         <gav regex="true">^org\.springframework\.security:spring-security-.*:.*$</gav>
         <cve>CVE-2018-1258</cve>
     </suppress>
-    <suppress until="2020-12-01">
+
+    <suppress until="2021-01-08">
         <notes>
             Matching 1.4.0 even though fixed in 1.4.0.
         </notes>
         <packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/kotlin\-.+$</packageUrl>
         <cve>CVE-2020-15824</cve>
     </suppress>
-    <suppress until="2020-12-01">
+    <suppress until="2021-01-08">
         <notes>
             Latest keycloak client using older resteasy-multipart-provider and resteasy-jaxb-provider
         </notes>
         <packageUrl regex="true">^pkg:maven/org\.jboss\.resteasy/resteasy\-.+$</packageUrl>
         <cve>CVE-2020-1695</cve>
+        <cve>CVE-2020-25633</cve>
+        <cve>CVE-2020-25633</cve>
+        <cve>CVE-2020-25633</cve>
+        <cve>CVE-2020-25633</cve>
+    </suppress>
+
+    <suppress until="2021-01-08">
+        <notes><![CDATA[
+   file name: keycloak-admin-client-11.0.3.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.keycloak/keycloak\-.*$</packageUrl>
+        <cve>CVE-2020-10776</cve>
+        <cve>CVE-2020-14366</cve>
+        <cve>CVE-2020-14389</cve>
+        <cve>CVE-2020-1728</cve>
     </suppress>
 </suppressions>

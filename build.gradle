@@ -19,7 +19,7 @@ allprojects {
 
     ext {
         junitVersion = "5.5.0"
-        springBootVersion = "2.3.4.RELEASE"
+        springBootVersion = "2.3.7.RELEASE"
     }
 
     dependencyCheck {
