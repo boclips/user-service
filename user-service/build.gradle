@@ -92,7 +92,7 @@ dependencies {
     implementation('io.sentry:sentry-logback:1.7.21')
     implementation('io.micrometer:micrometer-core')
     implementation('io.micrometer:micrometer-registry-prometheus')
-    implementation("io.opentracing.contrib:opentracing-spring-jaeger-web-starter:3.2.2")
+    implementation("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter:3.2.2")
     implementation("io.opentracing.contrib:opentracing-mongo-driver:0.1.5")
     implementation('org.codehaus.janino:janino:3.1.2')
 
