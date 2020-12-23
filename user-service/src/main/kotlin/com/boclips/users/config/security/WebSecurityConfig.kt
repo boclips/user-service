@@ -20,6 +20,7 @@ class ApiSecurityConfig : HttpSecurityConfigurer {
             .authorizeRequests()
             .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
             .antMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()
+            .antMatchers(HttpMethod.GET, "/actuator/httptrace").permitAll()
 
             .antMatchers(HttpMethod.GET, "/faults/**").permitAll()
 
