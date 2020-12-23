@@ -4,6 +4,7 @@ import com.boclips.users.api.httpclient.helper.ObjectMapperDefinition
 import com.boclips.users.api.httpclient.helper.TokenFactory
 import com.boclips.users.api.response.accessrule.ContentPackageResource
 import com.fasterxml.jackson.databind.ObjectMapper
+import feign.Client
 import feign.Feign
 import feign.Logger
 import feign.Param
@@ -11,7 +12,6 @@ import feign.RequestLine
 import feign.RequestTemplate
 import feign.jackson.JacksonDecoder
 import feign.jackson.JacksonEncoder
-import feign.okhttp.OkHttpClient
 import feign.slf4j.Slf4jLogger
 
 interface ContentPackagesClient {
@@ -23,10 +23,11 @@ interface ContentPackagesClient {
         fun create(
             apiUrl: String,
             objectMapper: ObjectMapper = ObjectMapperDefinition.default(),
+            feignClient: Client,
             tokenFactory: TokenFactory? = null
         ): ContentPackagesClient {
             return Feign.builder()
-                .client(OkHttpClient())
+                .client(feignClient)
                 .encoder(JacksonEncoder(objectMapper))
                 .decoder(JacksonDecoder(objectMapper))
                 .requestInterceptor { template: RequestTemplate ->

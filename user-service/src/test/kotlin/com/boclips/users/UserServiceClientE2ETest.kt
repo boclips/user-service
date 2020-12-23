@@ -14,6 +14,7 @@ import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import feign.FeignException
+import feign.okhttp.OkHttpClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -31,6 +32,7 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
             usersClient = UsersClient.create(
                 apiUrl = "http://localhost:$randomServerPort",
                 objectMapper = ObjectMapperDefinition.default(),
+                feignClient = OkHttpClient(),
                 tokenFactory = TestTokenFactory(
                     "the@owner.com",
                     UserRoles.VIEW_USERS,
@@ -114,6 +116,7 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
             organisationsClient = OrganisationsClient.create(
                 apiUrl = "http://localhost:$randomServerPort",
                 objectMapper = ObjectMapperDefinition.default(),
+                feignClient = OkHttpClient(),
                 tokenFactory = TestTokenFactory(
                     "the@owner.com",
                     UserRoles.VIEW_ORGANISATIONS
@@ -140,6 +143,7 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
             contentPackagesClient = ContentPackagesClient.create(
                 apiUrl = "http://localhost:$randomServerPort",
                 objectMapper = ObjectMapperDefinition.default(),
+                feignClient = OkHttpClient(),
                 tokenFactory = TestTokenFactory(
                     "the@owner.com",
                     UserRoles.VIEW_CONTENT_PACKAGES
