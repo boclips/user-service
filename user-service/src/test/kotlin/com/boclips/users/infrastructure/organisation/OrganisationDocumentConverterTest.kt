@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.organisation.VideoTypePrices
+import com.boclips.users.domain.model.organisation.VideoTypePrices.Price
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
@@ -115,8 +116,8 @@ class OrganisationDocumentConverterTest {
                 contentPackageId = contentPackageId,
                 prices = VideoTypePrices(
                     instructional = null,
-                    news = BigDecimal.TEN,
-                    stock = BigDecimal.ZERO
+                    news = Price(BigDecimal.TEN, Price.DEFAULT_CURRENCY),
+                    stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
                 )
             ),
             features = mapOf(Pair(Feature.LTI_COPY_RESOURCE_LINK, true))
@@ -125,9 +126,9 @@ class OrganisationDocumentConverterTest {
             district = parentOrganisation,
             deal = deal(
                 prices = VideoTypePrices(
-                    instructional = BigDecimal.ONE,
+                    instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
                     news = null,
-                    stock = BigDecimal.ZERO
+                    stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
                 )
             )
         )
@@ -170,9 +171,9 @@ class OrganisationDocumentConverterTest {
             val parentOrganisation = OrganisationFactory.district(
                 deal = deal(
                     prices = VideoTypePrices(
-                        instructional = BigDecimal.ONE,
+                        instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
                         news = null,
-                        stock = BigDecimal.ZERO
+                        stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
                     )
                 )
             )
@@ -180,8 +181,8 @@ class OrganisationDocumentConverterTest {
                 district = parentOrganisation,
                 deal = deal(
                     prices = VideoTypePrices(
-                        instructional = BigDecimal.ONE,
-                        news = BigDecimal.TEN,
+                        instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
+                        news = Price(BigDecimal.TEN, Price.DEFAULT_CURRENCY),
                         stock = null
                     )
                 )
@@ -190,16 +191,16 @@ class OrganisationDocumentConverterTest {
 
             assertThat(organisationDocument.parent!!.prices).isEqualTo(
                 mapOf(
-                    VideoTypeKey.INSTRUCTIONAL to BigDecimal.ONE,
+                    VideoTypeKey.INSTRUCTIONAL to VideoTypePriceValue(BigDecimal.ONE, "USD"),
                     VideoTypeKey.NEWS to null,
-                    VideoTypeKey.STOCK to BigDecimal.ZERO
+                    VideoTypeKey.STOCK to VideoTypePriceValue(BigDecimal.ZERO, "USD")
                 )
             )
 
             assertThat(organisationDocument.prices).isEqualTo(
                 mapOf(
-                    VideoTypeKey.INSTRUCTIONAL to BigDecimal.ONE,
-                    VideoTypeKey.NEWS to BigDecimal.TEN,
+                    VideoTypeKey.INSTRUCTIONAL to VideoTypePriceValue(BigDecimal.ONE, "USD"),
+                    VideoTypeKey.NEWS to VideoTypePriceValue(BigDecimal.TEN, "USD"),
                     VideoTypeKey.STOCK to null
                 )
             )
@@ -229,16 +230,16 @@ class OrganisationDocumentConverterTest {
             val organisationDocument = OrganisationDocumentFactory.sample(
                 type = OrganisationType.SCHOOL,
                 prices = mapOf(
-                    VideoTypeKey.INSTRUCTIONAL to BigDecimal.ONE,
-                    VideoTypeKey.NEWS to BigDecimal.TEN,
+                    VideoTypeKey.INSTRUCTIONAL to VideoTypePriceValue(BigDecimal.ONE, "USD"),
+                    VideoTypeKey.NEWS to VideoTypePriceValue(BigDecimal.TEN, "USD"),
                     VideoTypeKey.STOCK to null
                 ),
                 parent = OrganisationDocumentFactory.sample(
                     type = OrganisationType.DISTRICT,
                     prices = mapOf(
-                        VideoTypeKey.INSTRUCTIONAL to BigDecimal.ONE,
+                        VideoTypeKey.INSTRUCTIONAL to VideoTypePriceValue(BigDecimal.ONE, "USD"),
                         VideoTypeKey.NEWS to null,
-                        VideoTypeKey.STOCK to BigDecimal.ZERO
+                        VideoTypeKey.STOCK to VideoTypePriceValue(BigDecimal.ZERO, "USD")
                     )
                 )
             )
@@ -247,17 +248,17 @@ class OrganisationDocumentConverterTest {
 
             assertThat(organisation.deal.prices).isEqualTo(
                 VideoTypePrices(
-                    instructional = BigDecimal.ONE,
-                    news = BigDecimal.TEN,
+                    instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
+                    news = Price(BigDecimal.TEN, Price.DEFAULT_CURRENCY),
                     stock = null
                 )
             )
 
             assertThat((organisation as School).district!!.deal.prices).isEqualTo(
                 VideoTypePrices(
-                    instructional = BigDecimal.ONE,
+                    instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
                     news = null,
-                    stock = BigDecimal.ZERO
+                    stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
                 )
             )
         }

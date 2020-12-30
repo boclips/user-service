@@ -10,8 +10,14 @@ data class DealResource(
 ) {
 
     data class VideoTypePricesResource (
-        val instructional: String?,
-        val news: String?,
-        val stock: String?
-    )
+        val instructional: PriceResource?,
+        val news: PriceResource?,
+        val stock: PriceResource?
+    ) {
+
+        data class PriceResource (
+            val amount: String,
+            val currency: String
+        )
+    }
 }

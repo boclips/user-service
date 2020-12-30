@@ -2,6 +2,7 @@ package com.boclips.users.presentation.converters
 
 import com.boclips.users.api.response.organisation.DealResource
 import com.boclips.users.api.response.organisation.DealResource.VideoTypePricesResource
+import com.boclips.users.api.response.organisation.DealResource.VideoTypePricesResource.PriceResource
 import com.boclips.users.api.response.organisation.OrganisationResource
 import com.boclips.users.api.response.organisation.OrganisationsResource
 import com.boclips.users.api.response.organisation.OrganisationsWrapper
@@ -11,7 +12,6 @@ import com.boclips.users.domain.model.organisation.VideoTypePrices
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import org.springframework.hateoas.PagedModel
 import org.springframework.stereotype.Component
-import java.math.BigDecimal
 import java.text.DecimalFormat
 
 @Component
@@ -57,9 +57,9 @@ class OrganisationConverter(
 
     private fun VideoTypePrices.toResource(): VideoTypePricesResource {
         return VideoTypePricesResource(
-            instructional = convertToString(instructional),
-            news = convertToString(news),
-            stock = convertToString(stock),
+            instructional = convertToPriceJsonObject(instructional),
+            news = convertToPriceJsonObject(news),
+            stock = convertToPriceJsonObject(stock),
         )
     }
 
@@ -67,6 +67,11 @@ class OrganisationConverter(
 
         private val format: DecimalFormat = DecimalFormat().also { it.maximumFractionDigits = 2 }
 
-        private fun convertToString(price: BigDecimal?): String? = price?.let { format.format(it) }
+        private fun convertToPriceJsonObject(price: VideoTypePrices.Price?): PriceResource? = price?.let {
+            PriceResource(
+                amount = format.format(it.amount),
+                currency = it.currency.currencyCode
+            )
+        }
     }
 }

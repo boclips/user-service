@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.VideoTypePrices
+import com.boclips.users.domain.model.organisation.VideoTypePrices.Price
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.converters.OrganisationConverter
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
@@ -38,9 +39,9 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
     fun toResource() {
         setSecurityContext("org-viewer", UserRoles.UPDATE_ORGANISATIONS)
 
-        val instructionalVideoTypePrice = "123"
-        val newsVideoTypePrice = "234"
-        val stockVideoTypePrice = "345"
+        val instructionalVideoTypePrice = Price(BigDecimal("123"), Price.DEFAULT_CURRENCY)
+        val newsVideoTypePrice = Price(BigDecimal("234"), Price.DEFAULT_CURRENCY)
+        val stockVideoTypePrice = Price(BigDecimal("345"), Price.DEFAULT_CURRENCY)
         val originalOrganisation = OrganisationFactory.district(
             id = OrganisationId("organisation-account-id"),
             name = "my-district",
@@ -52,9 +53,9 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
                 billing = false,
                 accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
                 prices = VideoTypePrices(
-                    instructional = BigDecimal(instructionalVideoTypePrice),
-                    news = BigDecimal(newsVideoTypePrice),
-                    stock = BigDecimal(stockVideoTypePrice)
+                    instructional = instructionalVideoTypePrice,
+                    news = newsVideoTypePrice,
+                    stock = stockVideoTypePrice
                 )
             ),
             features = mapOf(Feature.USER_DATA_HIDDEN to true)
@@ -69,9 +70,12 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
         assertThat(organisationResource.deal!!.contentPackageId).isEqualTo(originalOrganisation.deal.contentPackageId!!.value)
         assertThat(organisationResource.billing).isEqualTo(originalOrganisation.deal.billing)
         assertThat(organisationResource.deal!!.billing).isEqualTo(originalOrganisation.deal.billing)
-        assertThat(organisationResource.deal!!.prices!!.instructional).isEqualTo(instructionalVideoTypePrice)
-        assertThat(organisationResource.deal!!.prices!!.news).isEqualTo(newsVideoTypePrice)
-        assertThat(organisationResource.deal!!.prices!!.stock).isEqualTo(stockVideoTypePrice)
+        assertThat(organisationResource.deal!!.prices!!.instructional!!.amount).isEqualTo("123")
+        assertThat(organisationResource.deal!!.prices!!.instructional!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal!!.prices!!.news!!.amount).isEqualTo("234")
+        assertThat(organisationResource.deal!!.prices!!.news!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal!!.prices!!.stock!!.amount).isEqualTo("345")
+        assertThat(organisationResource.deal!!.prices!!.stock!!.currency).isEqualTo("USD")
         assertThat(organisationResource.organisationDetails.name).isEqualTo(originalOrganisation.name)
         assertThat(organisationResource.organisationDetails.country?.name).isEqualTo(originalOrganisation.address.country?.name)
         assertThat(organisationResource.organisationDetails.state?.name).isEqualTo(originalOrganisation.address.state?.name)

@@ -7,6 +7,8 @@ import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.VideoTypePrices
+import com.boclips.users.domain.model.organisation.VideoTypePrices.Price
+import com.boclips.users.domain.model.organisation.VideoTypePrices.Price.Companion
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UniqueId
@@ -441,9 +443,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     deal = deal(
                         contentPackageId = contentPackage.id,
                         prices = VideoTypePrices(
-                            instructional = BigDecimal.ONE,
-                            news = BigDecimal.TEN,
-                            stock = BigDecimal.ZERO
+                            instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
+                            news = Price(BigDecimal.TEN, Price.DEFAULT_CURRENCY),
+                            stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
                         )
                     )
                 )
@@ -459,9 +461,12 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.organisationDetails.allowsOverridingUserIds", equalTo(true)))
                 .andExpect(jsonPath("$.deal.billing", equalTo(false)))
                 .andExpect(jsonPath("$.deal.contentPackageId", equalTo(contentPackage.id.value)))
-                .andExpect(jsonPath("$.deal.prices.instructional", equalTo("1")))
-                .andExpect(jsonPath("$.deal.prices.news", equalTo("10")))
-                .andExpect(jsonPath("$.deal.prices.stock", equalTo("0")))
+                .andExpect(jsonPath("$.deal.prices.instructional.amount", equalTo("1")))
+                .andExpect(jsonPath("$.deal.prices.instructional.currency", equalTo("USD")))
+                .andExpect(jsonPath("$.deal.prices.news.amount", equalTo("10")))
+                .andExpect(jsonPath("$.deal.prices.instructional.currency", equalTo("USD")))
+                .andExpect(jsonPath("$.deal.prices.stock.amount", equalTo("0")))
+                .andExpect(jsonPath("$.deal.prices.instructional.currency", equalTo("USD")))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
         }

@@ -23,7 +23,7 @@ data class OrganisationDocument(
     val billing: Boolean? = null,
     val contentPackageId: String? = null,
     val features: Map<FeatureKey, Boolean>?,
-    val prices: Map<VideoTypeKey, BigDecimal?>?,
+    val prices: Map<VideoTypeKey, VideoTypePriceValue?>?,
 )
 
 enum class VideoTypeKey {
@@ -31,6 +31,11 @@ enum class VideoTypeKey {
     NEWS,
     STOCK
 }
+
+data class VideoTypePriceValue(
+    val amount: BigDecimal,
+    val currency: String
+)
 
 enum class FeatureKey {
     LTI_COPY_RESOURCE_LINK,

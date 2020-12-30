@@ -13,13 +13,14 @@ import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.organisation.VideoTypePrices
+import com.boclips.users.domain.model.organisation.VideoTypePrices.Price
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import mu.KLogging
 import org.bson.types.ObjectId
-import java.math.BigDecimal
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.util.Currency
 
 object OrganisationDocumentConverter : KLogging() {
     fun fromDocument(organisationDocument: OrganisationDocument): Organisation {
@@ -37,9 +38,9 @@ object OrganisationDocumentConverter : KLogging() {
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
             prices = organisationDocument.prices?.let {
                 VideoTypePrices(
-                    instructional = it[VideoTypeKey.INSTRUCTIONAL],
-                    news = it[VideoTypeKey.NEWS],
-                    stock = it[VideoTypeKey.STOCK]
+                    instructional = it[VideoTypeKey.INSTRUCTIONAL]?.let { price -> convertToDomainPrice(price) },
+                    news = it[VideoTypeKey.NEWS]?.let { price -> convertToDomainPrice(price) },
+                    stock = it[VideoTypeKey.STOCK]?.let { price -> convertToDomainPrice(price) }
                 )
             }
         )
@@ -145,11 +146,23 @@ object OrganisationDocumentConverter : KLogging() {
             features = organisation.features?.mapKeys { FeatureDocumentConverter.toDocument(it.key) },
             prices = organisation.deal.prices?.let { prices ->
                 mapOf(
-                    VideoTypeKey.INSTRUCTIONAL to prices.instructional,
-                    VideoTypeKey.NEWS to prices.news,
-                    VideoTypeKey.STOCK to prices.stock
+                    VideoTypeKey.INSTRUCTIONAL to convertToPriceJsonField(prices.instructional),
+                    VideoTypeKey.NEWS to convertToPriceJsonField(prices.news),
+                    VideoTypeKey.STOCK to convertToPriceJsonField(prices.stock)
                 )
             }
+        )
+    }
+
+    private fun convertToDomainPrice(price: VideoTypePriceValue) = Price(
+        amount = price.amount,
+        currency = Currency.getInstance(price.currency)
+    )
+
+    private fun convertToPriceJsonField(price: Price?) = price?.let {
+        VideoTypePriceValue(
+            amount = it.amount,
+            currency = it.currency.currencyCode
         )
     }
 }

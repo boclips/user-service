@@ -5,6 +5,7 @@ import com.boclips.users.infrastructure.organisation.FeatureKey
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
 import com.boclips.users.infrastructure.organisation.VideoTypeKey
+import com.boclips.users.infrastructure.organisation.VideoTypePriceValue
 import org.bson.types.ObjectId
 import java.math.BigDecimal
 import java.time.ZonedDateTime
@@ -28,7 +29,7 @@ class OrganisationDocumentFactory {
             billing: Boolean? = null,
             accessExpiresOn: ZonedDateTime? = null,
             features: Map<FeatureKey, Boolean>? = null,
-            prices: Map<VideoTypeKey, BigDecimal?>? = null
+            prices: Map<VideoTypeKey, VideoTypePriceValue?>? = null
         ) = OrganisationDocument(
             _id = id,
             name = name,
