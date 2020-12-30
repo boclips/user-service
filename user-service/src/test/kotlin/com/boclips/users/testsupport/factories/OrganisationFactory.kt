@@ -12,6 +12,7 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.organisation.VideoTypePrices
 import com.boclips.users.domain.model.school.Country
 import java.time.ZonedDateTime
 
@@ -27,11 +28,13 @@ class OrganisationFactory {
         fun deal(
             contentPackageId: ContentPackageId? = null,
             billing: Boolean = false,
-            accessExpiresOn: ZonedDateTime? = null
+            accessExpiresOn: ZonedDateTime? = null,
+            prices: VideoTypePrices? = null
         ): Deal = Deal(
             contentPackageId = contentPackageId,
             billing = billing,
-            accessExpiresOn = accessExpiresOn
+            accessExpiresOn = accessExpiresOn,
+            prices = prices
         )
 
         fun district(

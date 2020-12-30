@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.OrganisationId
+import com.boclips.users.domain.model.organisation.VideoTypePrices
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.converters.OrganisationConverter
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
@@ -16,6 +17,7 @@ import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.ZonedDateTime
 
 class OrganisationConverterTest : AbstractSpringIntegrationTest() {
@@ -36,6 +38,9 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
     fun toResource() {
         setSecurityContext("org-viewer", UserRoles.UPDATE_ORGANISATIONS)
 
+        val instructionalVideoTypePrice = "123"
+        val newsVideoTypePrice = "234"
+        val stockVideoTypePrice = "345"
         val originalOrganisation = OrganisationFactory.district(
             id = OrganisationId("organisation-account-id"),
             name = "my-district",
@@ -45,7 +50,12 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
             deal = Deal(
                 contentPackageId = ContentPackageId("content-package-id"),
                 billing = false,
-                accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z")
+                accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
+                prices = VideoTypePrices(
+                    instructional = BigDecimal(instructionalVideoTypePrice),
+                    news = BigDecimal(newsVideoTypePrice),
+                    stock = BigDecimal(stockVideoTypePrice)
+                )
             ),
             features = mapOf(Feature.USER_DATA_HIDDEN to true)
         )
@@ -54,7 +64,14 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisationResource.id).isEqualTo(originalOrganisation.id.value)
         assertThat(organisationResource.accessExpiresOn).isEqualTo(originalOrganisation.deal.accessExpiresOn)
+        assertThat(organisationResource.deal!!.accessExpiresOn).isEqualTo(originalOrganisation.deal.accessExpiresOn)
         assertThat(organisationResource.contentPackageId).isEqualTo(originalOrganisation.deal.contentPackageId!!.value)
+        assertThat(organisationResource.deal!!.contentPackageId).isEqualTo(originalOrganisation.deal.contentPackageId!!.value)
+        assertThat(organisationResource.billing).isEqualTo(originalOrganisation.deal.billing)
+        assertThat(organisationResource.deal!!.billing).isEqualTo(originalOrganisation.deal.billing)
+        assertThat(organisationResource.deal!!.prices!!.instructional).isEqualTo(instructionalVideoTypePrice)
+        assertThat(organisationResource.deal!!.prices!!.news).isEqualTo(newsVideoTypePrice)
+        assertThat(organisationResource.deal!!.prices!!.stock).isEqualTo(stockVideoTypePrice)
         assertThat(organisationResource.organisationDetails.name).isEqualTo(originalOrganisation.name)
         assertThat(organisationResource.organisationDetails.country?.name).isEqualTo(originalOrganisation.address.country?.name)
         assertThat(organisationResource.organisationDetails.state?.name).isEqualTo(originalOrganisation.address.state?.name)

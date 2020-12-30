@@ -1,6 +1,7 @@
 package com.boclips.users.api.factories
 
 import com.boclips.users.api.response.country.CountryResource
+import com.boclips.users.api.response.organisation.DealResource
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.organisation.OrganisationResource
 import com.boclips.users.api.response.state.StateResource
@@ -17,6 +18,7 @@ class OrganisationResourceFactory {
             contentPackageId: String? = null,
             billing: Boolean?,
             organisationDetails: OrganisationDetailsResource = sampleDetails(),
+            deal: DealResource? = null,
             _links: Map<String, Link>? = null
         ) = OrganisationResource(
             id = id,
@@ -24,6 +26,7 @@ class OrganisationResourceFactory {
             contentPackageId = contentPackageId,
             organisationDetails = organisationDetails,
             billing = billing,
+            deal = deal,
             _links = _links
         )
 

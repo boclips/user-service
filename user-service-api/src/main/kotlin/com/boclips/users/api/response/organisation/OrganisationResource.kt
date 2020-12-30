@@ -11,5 +11,7 @@ open class OrganisationResource(
     val billing: Boolean?,
     val organisationDetails: OrganisationDetailsResource,
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    val deal: DealResource?,
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     var _links: Map<String, Link>?
 )

@@ -6,9 +6,9 @@ import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
+import com.boclips.users.domain.model.organisation.VideoTypePrices
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.service.UniqueId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
@@ -17,28 +17,19 @@ import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
-import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
-import com.nhaarman.mockitokotlin2.capture
-import com.nhaarman.mockitokotlin2.firstValue
-import com.nhaarman.mockitokotlin2.lastValue
-import com.nhaarman.mockitokotlin2.secondValue
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentCaptor
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.math.BigDecimal
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -448,7 +439,12 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     allowsOverridingUserId = true,
                     role = "ROLE_TEST_ORG",
                     deal = deal(
-                        contentPackageId = contentPackage.id
+                        contentPackageId = contentPackage.id,
+                        prices = VideoTypePrices(
+                            instructional = BigDecimal.ONE,
+                            news = BigDecimal.TEN,
+                            stock = BigDecimal.ZERO
+                        )
                     )
                 )
             )
@@ -461,6 +457,42 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.organisationDetails.allowsOverridingUserIds", equalTo(true)))
+                .andExpect(jsonPath("$.deal.billing", equalTo(false)))
+                .andExpect(jsonPath("$.deal.contentPackageId", equalTo(contentPackage.id.value)))
+                .andExpect(jsonPath("$.deal.prices.instructional", equalTo("1")))
+                .andExpect(jsonPath("$.deal.prices.news", equalTo("10")))
+                .andExpect(jsonPath("$.deal.prices.stock", equalTo("0")))
+                .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
+                .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
+        }
+
+        @Test
+        fun `retrieves an api integration organisation by id when no prices are defined`() {
+            val organisationName = "Test Org With No Deal Prices"
+            val contentPackage = saveContentPackage(ContentPackageFactory.sample())
+            val organisation = organisationRepository.save(
+                OrganisationFactory.apiIntegration(
+                    name = organisationName,
+                    allowsOverridingUserId = true,
+                    role = "ROLE_TEST_ORG",
+                    deal = deal(
+                        contentPackageId = contentPackage.id,
+                        prices = null
+                    )
+                )
+            )
+
+            mvc.perform(
+                get("/v1/organisations/${organisation.id.value}")
+                    .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
+                .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
+                .andExpect(jsonPath("$.organisationDetails.allowsOverridingUserIds", equalTo(true)))
+                .andExpect(jsonPath("$.deal.billing", equalTo(false)))
+                .andExpect(jsonPath("$.deal.contentPackageId", equalTo(contentPackage.id.value)))
+                .andExpect(jsonPath("$.organisationDetails.deal.prices").doesNotExist())
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
         }

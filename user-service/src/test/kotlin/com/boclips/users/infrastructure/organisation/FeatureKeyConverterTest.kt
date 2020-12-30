@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.feature.Feature
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class FeatureDocumentConverterTest {
+class FeatureKeyConverterTest {
     @Test
     fun `converts to FeatureDocument`() {
         Feature.values().forEach { feature ->
@@ -17,7 +17,7 @@ class FeatureDocumentConverterTest {
 
     @Test
     fun `converts to Feature`() {
-        FeatureDocument.values().forEach { document ->
+        FeatureKey.values().forEach { document ->
             run {
                 val converted = FeatureDocumentConverter.fromDocument(document)
                 assertThat(document.name).isEqualTo(converted.name)

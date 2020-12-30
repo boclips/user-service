@@ -1,10 +1,12 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.organisation.OrganisationType
-import com.boclips.users.infrastructure.organisation.FeatureDocument
+import com.boclips.users.infrastructure.organisation.FeatureKey
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
+import com.boclips.users.infrastructure.organisation.VideoTypeKey
 import org.bson.types.ObjectId
+import java.math.BigDecimal
 import java.time.ZonedDateTime
 
 class OrganisationDocumentFactory {
@@ -25,7 +27,8 @@ class OrganisationDocumentFactory {
             parent: OrganisationDocument? = null,
             billing: Boolean? = null,
             accessExpiresOn: ZonedDateTime? = null,
-            features: Map<FeatureDocument, Boolean>? = null
+            features: Map<FeatureKey, Boolean>? = null,
+            prices: Map<VideoTypeKey, BigDecimal?>? = null
         ) = OrganisationDocument(
             _id = id,
             name = name,
@@ -42,7 +45,8 @@ class OrganisationDocumentFactory {
             parent = parent,
             billing = billing,
             accessExpiresOn = accessExpiresOn?.toInstant(),
-            features = features
+            features = features,
+            prices = prices
         )
     }
 }

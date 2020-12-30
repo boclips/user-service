@@ -2,6 +2,7 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.organisation.OrganisationType
 import org.bson.types.ObjectId
+import java.math.BigDecimal
 import java.time.Instant
 
 data class OrganisationDocument(
@@ -21,10 +22,17 @@ data class OrganisationDocument(
     val tags: Set<String>? = null,
     val billing: Boolean? = null,
     val contentPackageId: String? = null,
-    val features: Map<FeatureDocument, Boolean>?
+    val features: Map<FeatureKey, Boolean>?,
+    val prices: Map<VideoTypeKey, BigDecimal?>?,
 )
 
-enum class FeatureDocument {
+enum class VideoTypeKey {
+    INSTRUCTIONAL,
+    NEWS,
+    STOCK
+}
+
+enum class FeatureKey {
     LTI_COPY_RESOURCE_LINK,
     LTI_SLS_TERMS_BUTTON,
     TEACHERS_HOME_BANNER,

@@ -12,10 +12,12 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
+import com.boclips.users.domain.model.organisation.VideoTypePrices
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import mu.KLogging
 import org.bson.types.ObjectId
+import java.math.BigDecimal
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
@@ -32,7 +34,14 @@ object OrganisationDocumentConverter : KLogging() {
         val deal = Deal(
             contentPackageId = organisationDocument.contentPackageId?.let { ContentPackageId(value = it) },
             billing = organisationDocument.billing ?: false,
-            accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) }
+            accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
+            prices = organisationDocument.prices?.let {
+                VideoTypePrices(
+                    instructional = it[VideoTypeKey.INSTRUCTIONAL],
+                    news = it[VideoTypeKey.NEWS],
+                    stock = it[VideoTypeKey.STOCK]
+                )
+            }
         )
 
         val tags = organisationDocument.tags.orEmpty().mapNotNull { tagName ->
@@ -133,7 +142,14 @@ object OrganisationDocumentConverter : KLogging() {
             tags = organisation.tags.map { it.name }.toSet(),
             billing = organisation.deal.billing,
             contentPackageId = organisation.deal.contentPackageId?.value,
-            features = organisation.features?.mapKeys { FeatureDocumentConverter.toDocument(it.key) }
+            features = organisation.features?.mapKeys { FeatureDocumentConverter.toDocument(it.key) },
+            prices = organisation.deal.prices?.let { prices ->
+                mapOf(
+                    VideoTypeKey.INSTRUCTIONAL to prices.instructional,
+                    VideoTypeKey.NEWS to prices.news,
+                    VideoTypeKey.STOCK to prices.stock
+                )
+            }
         )
     }
 }

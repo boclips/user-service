@@ -35,3 +35,5 @@ subjects:
 
 pubsub:
   consumerGroup: user-service
+
+httptracing.requests-to-store: 20
