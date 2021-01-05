@@ -7,5 +7,5 @@ data class Deal(
     val contentPackageId: ContentPackageId? = null,
     val billing: Boolean,
     val accessExpiresOn: ZonedDateTime?,
-    val prices: VideoTypePrices? = null
+    val prices: Prices? = null
 )

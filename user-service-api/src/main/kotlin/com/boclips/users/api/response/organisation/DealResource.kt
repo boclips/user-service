@@ -6,18 +6,15 @@ data class DealResource(
     val accessExpiresOn: ZonedDateTime?,
     val contentPackageId: String?,
     val billing: Boolean?,
-    val prices: VideoTypePricesResource?,
+    val prices: PricesResource?,
 ) {
 
-    data class VideoTypePricesResource (
-        val instructional: PriceResource?,
-        val news: PriceResource?,
-        val stock: PriceResource?
-    ) {
+    data class PricesResource (
+        val videoTypePrices: Map<String, PriceResource>
+    )
 
-        data class PriceResource (
-            val amount: String,
-            val currency: String
-        )
-    }
+    data class PriceResource (
+        val amount: String,
+        val currency: String
+    )
 }

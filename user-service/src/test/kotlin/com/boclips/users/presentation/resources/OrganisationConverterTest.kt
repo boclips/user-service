@@ -3,17 +3,18 @@ package com.boclips.users.presentation.resources
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.model.organisation.VideoTypePrices
-import com.boclips.users.domain.model.organisation.VideoTypePrices.Price
+import com.boclips.users.domain.model.organisation.Prices
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.presentation.converters.OrganisationConverter
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.PriceFactory
 import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -39,9 +40,9 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
     fun toResource() {
         setSecurityContext("org-viewer", UserRoles.UPDATE_ORGANISATIONS)
 
-        val instructionalVideoTypePrice = Price(BigDecimal("123"), Price.DEFAULT_CURRENCY)
-        val newsVideoTypePrice = Price(BigDecimal("234"), Price.DEFAULT_CURRENCY)
-        val stockVideoTypePrice = Price(BigDecimal("345"), Price.DEFAULT_CURRENCY)
+        val instructionalVideoTypePrice = PriceFactory.sample(BigDecimal("123"))
+        val newsVideoTypePrice = PriceFactory.sample(BigDecimal("234"))
+        val stockVideoTypePrice = PriceFactory.sample(BigDecimal("345"))
         val originalOrganisation = OrganisationFactory.district(
             id = OrganisationId("organisation-account-id"),
             name = "my-district",
@@ -52,10 +53,12 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
                 contentPackageId = ContentPackageId("content-package-id"),
                 billing = false,
                 accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
-                prices = VideoTypePrices(
-                    instructional = instructionalVideoTypePrice,
-                    news = newsVideoTypePrice,
-                    stock = stockVideoTypePrice
+                prices = Prices(
+                    videoTypePrices = mapOf(
+                        VideoType.INSTRUCTIONAL to instructionalVideoTypePrice,
+                        VideoType.NEWS to newsVideoTypePrice,
+                        VideoType.STOCK to stockVideoTypePrice,
+                    )
                 )
             ),
             features = mapOf(Feature.USER_DATA_HIDDEN to true)
@@ -70,12 +73,12 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
         assertThat(organisationResource.deal!!.contentPackageId).isEqualTo(originalOrganisation.deal.contentPackageId!!.value)
         assertThat(organisationResource.billing).isEqualTo(originalOrganisation.deal.billing)
         assertThat(organisationResource.deal!!.billing).isEqualTo(originalOrganisation.deal.billing)
-        assertThat(organisationResource.deal!!.prices!!.instructional!!.amount).isEqualTo("123")
-        assertThat(organisationResource.deal!!.prices!!.instructional!!.currency).isEqualTo("USD")
-        assertThat(organisationResource.deal!!.prices!!.news!!.amount).isEqualTo("234")
-        assertThat(organisationResource.deal!!.prices!!.news!!.currency).isEqualTo("USD")
-        assertThat(organisationResource.deal!!.prices!!.stock!!.amount).isEqualTo("345")
-        assertThat(organisationResource.deal!!.prices!!.stock!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["INSTRUCTIONAL"]!!.amount).isEqualTo("123")
+        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["INSTRUCTIONAL"]!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["NEWS"]!!.amount).isEqualTo("234")
+        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["NEWS"]!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["STOCK"]!!.amount).isEqualTo("345")
+        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["STOCK"]!!.currency).isEqualTo("USD")
         assertThat(organisationResource.organisationDetails.name).isEqualTo(originalOrganisation.name)
         assertThat(organisationResource.organisationDetails.country?.name).isEqualTo(originalOrganisation.address.country?.name)
         assertThat(organisationResource.organisationDetails.state?.name).isEqualTo(originalOrganisation.address.state?.name)

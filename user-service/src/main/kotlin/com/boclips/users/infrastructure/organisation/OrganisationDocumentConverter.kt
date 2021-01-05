@@ -1,6 +1,7 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.Deal
@@ -12,8 +13,8 @@ import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.model.organisation.VideoTypePrices
-import com.boclips.users.domain.model.organisation.VideoTypePrices.Price
+import com.boclips.users.domain.model.organisation.Prices
+import com.boclips.users.domain.model.organisation.Prices.Price
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import mu.KLogging
@@ -37,10 +38,17 @@ object OrganisationDocumentConverter : KLogging() {
             billing = organisationDocument.billing ?: false,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
             prices = organisationDocument.prices?.let {
-                VideoTypePrices(
-                    instructional = it[VideoTypeKey.INSTRUCTIONAL]?.let { price -> convertToDomainPrice(price) },
-                    news = it[VideoTypeKey.NEWS]?.let { price -> convertToDomainPrice(price) },
-                    stock = it[VideoTypeKey.STOCK]?.let { price -> convertToDomainPrice(price) }
+                Prices(
+                    videoTypePrices = it.videoTypePrices?.let {
+                        it.entries
+                            .map { entry ->
+                                when (entry.key) {
+                                    VideoTypeKey.INSTRUCTIONAL -> VideoType.INSTRUCTIONAL to convertToDomainPrice(entry.value)
+                                    VideoTypeKey.NEWS -> VideoType.NEWS to convertToDomainPrice(entry.value)
+                                    VideoTypeKey.STOCK -> VideoType.STOCK to convertToDomainPrice(entry.value)
+                                }
+                            }.toMap()
+                    } ?: emptyMap()
                 )
             }
         )
@@ -144,25 +152,26 @@ object OrganisationDocumentConverter : KLogging() {
             billing = organisation.deal.billing,
             contentPackageId = organisation.deal.contentPackageId?.value,
             features = organisation.features?.mapKeys { FeatureDocumentConverter.toDocument(it.key) },
-            prices = organisation.deal.prices?.let { prices ->
-                mapOf(
-                    VideoTypeKey.INSTRUCTIONAL to convertToPriceJsonField(prices.instructional),
-                    VideoTypeKey.NEWS to convertToPriceJsonField(prices.news),
-                    VideoTypeKey.STOCK to convertToPriceJsonField(prices.stock)
-                )
+            prices = organisation.deal.prices?.let {
+                PricesDocumentPart(videoTypePrices = it.videoTypePrices
+                    .map { entry ->
+                        when (entry.key) {
+                            VideoType.INSTRUCTIONAL -> VideoTypeKey.INSTRUCTIONAL to convertToPriceDocument(entry.value)
+                            VideoType.NEWS -> VideoTypeKey.NEWS to convertToPriceDocument(entry.value)
+                            VideoType.STOCK -> VideoTypeKey.STOCK to convertToPriceDocument(entry.value)
+                        }
+                    }.toMap())
             }
         )
     }
 
-    private fun convertToDomainPrice(price: VideoTypePriceValue) = Price(
+    private fun convertToDomainPrice(price: PriceDocumentPart) = Price(
         amount = price.amount,
         currency = Currency.getInstance(price.currency)
     )
 
-    private fun convertToPriceJsonField(price: Price?) = price?.let {
-        VideoTypePriceValue(
-            amount = it.amount,
-            currency = it.currency.currencyCode
+    private fun convertToPriceDocument(price: Price) = PriceDocumentPart(
+            amount = price.amount,
+            currency = price.currency.currencyCode
         )
-    }
 }

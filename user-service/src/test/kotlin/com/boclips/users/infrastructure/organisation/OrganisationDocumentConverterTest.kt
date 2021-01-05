@@ -1,17 +1,18 @@
 package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.model.organisation.VideoTypePrices
-import com.boclips.users.domain.model.organisation.VideoTypePrices.Price
+import com.boclips.users.domain.model.organisation.Prices
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
+import com.boclips.users.testsupport.factories.PriceFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -114,10 +115,11 @@ class OrganisationDocumentConverterTest {
             deal = deal(
                 billing = true,
                 contentPackageId = contentPackageId,
-                prices = VideoTypePrices(
-                    instructional = null,
-                    news = Price(BigDecimal.TEN, Price.DEFAULT_CURRENCY),
-                    stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
+                prices = Prices(
+                    videoTypePrices = mapOf(
+                        VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN),
+                        VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
+                    )
                 )
             ),
             features = mapOf(Pair(Feature.LTI_COPY_RESOURCE_LINK, true))
@@ -125,10 +127,11 @@ class OrganisationDocumentConverterTest {
         val organisation = OrganisationFactory.school(
             district = parentOrganisation,
             deal = deal(
-                prices = VideoTypePrices(
-                    instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
-                    news = null,
-                    stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
+                prices = Prices(
+                    videoTypePrices = mapOf(
+                        VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
+                        VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
+                    )
                 )
             )
         )
@@ -164,44 +167,48 @@ class OrganisationDocumentConverterTest {
     }
 
     @Nested
-    inner class VideoTypePricesConversions {
+    inner class PricesConversions {
 
         @Test
         fun `converts organisation domain object with a deal containing prices to a correct document`() {
             val parentOrganisation = OrganisationFactory.district(
                 deal = deal(
-                    prices = VideoTypePrices(
-                        instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
-                        news = null,
-                        stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
+                    prices = Prices(
+                        videoTypePrices = mapOf(
+                            VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
+                            VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
+                        )
                     )
                 )
             )
             val organisation = OrganisationFactory.school(
                 district = parentOrganisation,
                 deal = deal(
-                    prices = VideoTypePrices(
-                        instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
-                        news = Price(BigDecimal.TEN, Price.DEFAULT_CURRENCY),
-                        stock = null
+                    prices = Prices(
+                        videoTypePrices = mapOf(
+                            VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
+                            VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN)
+                        )
                     )
                 )
             )
             val organisationDocument = OrganisationDocumentConverter.toDocument(organisation)
 
             assertThat(organisationDocument.parent!!.prices).isEqualTo(
-                mapOf(
-                    VideoTypeKey.INSTRUCTIONAL to VideoTypePriceValue(BigDecimal.ONE, "USD"),
-                    VideoTypeKey.NEWS to null,
-                    VideoTypeKey.STOCK to VideoTypePriceValue(BigDecimal.ZERO, "USD")
+                PricesDocumentPart(
+                    videoTypePrices = mapOf(
+                        VideoTypeKey.INSTRUCTIONAL to PriceDocumentPart(BigDecimal.ONE, "USD"),
+                        VideoTypeKey.STOCK to PriceDocumentPart(BigDecimal.ZERO, "USD")
+                    )
                 )
             )
 
             assertThat(organisationDocument.prices).isEqualTo(
-                mapOf(
-                    VideoTypeKey.INSTRUCTIONAL to VideoTypePriceValue(BigDecimal.ONE, "USD"),
-                    VideoTypeKey.NEWS to VideoTypePriceValue(BigDecimal.TEN, "USD"),
-                    VideoTypeKey.STOCK to null
+                PricesDocumentPart(
+                    videoTypePrices = mapOf(
+                        VideoTypeKey.INSTRUCTIONAL to PriceDocumentPart(BigDecimal.ONE, "USD"),
+                        VideoTypeKey.NEWS to PriceDocumentPart(BigDecimal.TEN, "USD"),
+                    )
                 )
             )
         }
@@ -226,20 +233,22 @@ class OrganisationDocumentConverterTest {
         }
 
         @Test
-        fun `converts organisation document with a prices containg deal to a correct domain object`() {
+        fun `converts organisation document with prices containing deal to a correct domain object`() {
             val organisationDocument = OrganisationDocumentFactory.sample(
                 type = OrganisationType.SCHOOL,
-                prices = mapOf(
-                    VideoTypeKey.INSTRUCTIONAL to VideoTypePriceValue(BigDecimal.ONE, "USD"),
-                    VideoTypeKey.NEWS to VideoTypePriceValue(BigDecimal.TEN, "USD"),
-                    VideoTypeKey.STOCK to null
+                prices = PricesDocumentPart(
+                    videoTypePrices = mapOf(
+                        VideoTypeKey.INSTRUCTIONAL to PriceDocumentPart(BigDecimal.ONE, "USD"),
+                        VideoTypeKey.NEWS to PriceDocumentPart(BigDecimal.TEN, "USD")
+                    )
                 ),
                 parent = OrganisationDocumentFactory.sample(
                     type = OrganisationType.DISTRICT,
-                    prices = mapOf(
-                        VideoTypeKey.INSTRUCTIONAL to VideoTypePriceValue(BigDecimal.ONE, "USD"),
-                        VideoTypeKey.NEWS to null,
-                        VideoTypeKey.STOCK to VideoTypePriceValue(BigDecimal.ZERO, "USD")
+                    prices = PricesDocumentPart(
+                        videoTypePrices = mapOf(
+                            VideoTypeKey.INSTRUCTIONAL to PriceDocumentPart(BigDecimal.ONE, "USD"),
+                            VideoTypeKey.STOCK to PriceDocumentPart(BigDecimal.ZERO, "USD")
+                        )
                     )
                 )
             )
@@ -247,18 +256,20 @@ class OrganisationDocumentConverterTest {
             val organisation = OrganisationDocumentConverter.fromDocument(organisationDocument)
 
             assertThat(organisation.deal.prices).isEqualTo(
-                VideoTypePrices(
-                    instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
-                    news = Price(BigDecimal.TEN, Price.DEFAULT_CURRENCY),
-                    stock = null
+                Prices(
+                    videoTypePrices = mapOf(
+                        VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
+                        VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN)
+                    )
                 )
             )
 
             assertThat((organisation as School).district!!.deal.prices).isEqualTo(
-                VideoTypePrices(
-                    instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
-                    news = null,
-                    stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
+                Prices(
+                    videoTypePrices = mapOf(
+                        VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
+                        VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
+                    )
                 )
             )
         }

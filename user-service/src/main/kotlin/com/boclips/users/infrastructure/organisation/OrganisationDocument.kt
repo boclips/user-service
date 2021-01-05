@@ -23,7 +23,7 @@ data class OrganisationDocument(
     val billing: Boolean? = null,
     val contentPackageId: String? = null,
     val features: Map<FeatureKey, Boolean>?,
-    val prices: Map<VideoTypeKey, VideoTypePriceValue?>?,
+    val prices: PricesDocumentPart?,
 )
 
 enum class VideoTypeKey {
@@ -32,9 +32,14 @@ enum class VideoTypeKey {
     STOCK
 }
 
-data class VideoTypePriceValue(
+data class PriceDocumentPart(
     val amount: BigDecimal,
     val currency: String
+)
+
+data class PricesDocumentPart(
+    val videoTypePrices: Map<VideoTypeKey, PriceDocumentPart>?,
+    //val premiumContentPartnerPrices: ?List?
 )
 
 enum class FeatureKey {

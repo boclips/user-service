@@ -2,13 +2,12 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.api.request.CreateDistrictRequest
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
-import com.boclips.users.domain.model.organisation.VideoTypePrices
-import com.boclips.users.domain.model.organisation.VideoTypePrices.Price
-import com.boclips.users.domain.model.organisation.VideoTypePrices.Price.Companion
+import com.boclips.users.domain.model.organisation.Prices
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.service.UniqueId
@@ -34,6 +33,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import com.boclips.users.testsupport.factories.PriceFactory
+import org.springframework.test.web.servlet.ResultHandler
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 
 class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
@@ -442,10 +444,12 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     role = "ROLE_TEST_ORG",
                     deal = deal(
                         contentPackageId = contentPackage.id,
-                        prices = VideoTypePrices(
-                            instructional = Price(BigDecimal.ONE, Price.DEFAULT_CURRENCY),
-                            news = Price(BigDecimal.TEN, Price.DEFAULT_CURRENCY),
-                            stock = Price(BigDecimal.ZERO, Price.DEFAULT_CURRENCY)
+                        prices = Prices(
+                            videoTypePrices = mapOf(
+                                VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
+                                VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN),
+                                VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
+                            )
                         )
                     )
                 )
@@ -455,18 +459,19 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 get("/v1/organisations/${organisation.id.value}")
                     .asUserWithRoles("has-role@test.com", UserRoles.VIEW_ORGANISATIONS)
             )
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.name", equalTo(organisationName)))
                 .andExpect(jsonPath("$.organisationDetails.allowsOverridingUserIds", equalTo(true)))
                 .andExpect(jsonPath("$.deal.billing", equalTo(false)))
                 .andExpect(jsonPath("$.deal.contentPackageId", equalTo(contentPackage.id.value)))
-                .andExpect(jsonPath("$.deal.prices.instructional.amount", equalTo("1")))
-                .andExpect(jsonPath("$.deal.prices.instructional.currency", equalTo("USD")))
-                .andExpect(jsonPath("$.deal.prices.news.amount", equalTo("10")))
-                .andExpect(jsonPath("$.deal.prices.instructional.currency", equalTo("USD")))
-                .andExpect(jsonPath("$.deal.prices.stock.amount", equalTo("0")))
-                .andExpect(jsonPath("$.deal.prices.instructional.currency", equalTo("USD")))
+                .andExpect(jsonPath("$.deal.prices.videoTypePrices.INSTRUCTIONAL.amount", equalTo("1")))
+                .andExpect(jsonPath("$.deal.prices.videoTypePrices.INSTRUCTIONAL.currency", equalTo("USD")))
+                .andExpect(jsonPath("$.deal.prices.videoTypePrices.NEWS.amount", equalTo("10")))
+                .andExpect(jsonPath("$.deal.prices.videoTypePrices.NEWS.currency", equalTo("USD")))
+                .andExpect(jsonPath("$.deal.prices.videoTypePrices.STOCK.amount", equalTo("0")))
+                .andExpect(jsonPath("$.deal.prices.videoTypePrices.STOCK.currency", equalTo("USD")))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
         }

@@ -12,7 +12,7 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.School
-import com.boclips.users.domain.model.organisation.VideoTypePrices
+import com.boclips.users.domain.model.organisation.Prices
 import com.boclips.users.domain.model.school.Country
 import java.time.ZonedDateTime
 
@@ -29,7 +29,7 @@ class OrganisationFactory {
             contentPackageId: ContentPackageId? = null,
             billing: Boolean = false,
             accessExpiresOn: ZonedDateTime? = null,
-            prices: VideoTypePrices? = null
+            prices: Prices? = null
         ): Deal = Deal(
             contentPackageId = contentPackageId,
             billing = billing,
