@@ -2,6 +2,7 @@ package com.boclips.users.api.response.user
 
 import com.boclips.users.api.BoclipsServiceProjection
 import com.boclips.users.api.LtiProjection
+import com.boclips.users.api.PublisherProjection
 import com.boclips.users.api.TeacherProjection
 import com.boclips.users.api.UserProjection
 import com.boclips.users.api.response.SubjectResource
@@ -28,7 +29,7 @@ data class UserResource(
     val analyticsId: String?,
     @get:JsonView(TeacherProjection::class)
     val shareCode: String?,
-    @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
+    @get:JsonView(TeacherProjection::class, PublisherProjection::class, BoclipsServiceProjection::class)
     val organisation: OrganisationDetailsResource?,
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
     val school: OrganisationDetailsResource?,

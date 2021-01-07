@@ -26,6 +26,13 @@ fun MockHttpServletRequestBuilder.asHqUser() =
             )
     )
 
+fun MockHttpServletRequestBuilder.asPublisher(userId: String = "publisher@example.com") =
+    this.with(
+        SecurityMockMvcRequestPostProcessors
+            .user(userId)
+            .roles(UserRoles.ROLE_PUBLISHER)
+    )
+
 fun MockHttpServletRequestBuilder.asTeacher(userId: String = "teacher@example.com") =
     this.with(
         SecurityMockMvcRequestPostProcessors
