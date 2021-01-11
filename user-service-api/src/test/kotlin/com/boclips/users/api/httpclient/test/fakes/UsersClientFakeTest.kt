@@ -2,6 +2,7 @@ package com.boclips.users.api.httpclient.test.fakes
 
 import com.boclips.users.api.factories.AccessRuleResourceFactory
 import com.boclips.users.api.factories.UserResourceFactory
+import com.boclips.users.api.request.user.CreateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRuleResource
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
@@ -15,7 +16,8 @@ class UsersClientFakeTest {
     fun `can fetch an access rule`() {
         val fake = UsersClientFake()
         fake.addAccessRules(
-            userId = "hello", accessRulesResource = AccessRulesResource(
+            userId = "hello",
+            accessRulesResource = AccessRulesResource(
                 _embedded = AccessRulesWrapper(
                     listOf(
                         AccessRuleResourceFactory.sampleIncludedCollections()
@@ -33,7 +35,8 @@ class UsersClientFakeTest {
     fun `can add multiple access rules to the same user`() {
         val fake = UsersClientFake()
         fake.addAccessRules(
-            userId = "hello", accessRulesResource = AccessRulesResource(
+            userId = "hello",
+            accessRulesResource = AccessRulesResource(
                 _embedded = AccessRulesWrapper(
                     listOf(
                         AccessRuleResourceFactory.sampleIncludedCollections()
@@ -43,7 +46,8 @@ class UsersClientFakeTest {
         )
 
         fake.addAccessRules(
-            "hello", accessRulesResource = AccessRulesResource(
+            "hello",
+            accessRulesResource = AccessRulesResource(
                 _embedded = AccessRulesWrapper(
                     listOf(
                         AccessRuleResourceFactory.sampleIncludedCollections()
@@ -66,6 +70,15 @@ class UsersClientFakeTest {
     }
 
     @Test
+    fun `can create api user`() {
+        val fake = UsersClientFake()
+        fake.createApiUser(CreateUserRequest.CreateApiUserRequest(apiUserId = "1", organisationId = "123"))
+        val userResource = fake.getUser("1")
+        assertThat(userResource.id).isEqualTo("1")
+        assertThat(userResource.organisation!!.id).isEqualTo("123")
+    }
+
+    @Test
     fun `throws when invalid share code`() {
         assertThrows<FeignException.Forbidden> {
             UsersClientFake().getShareCode("wrong", "even more wrong")
@@ -76,12 +89,14 @@ class UsersClientFakeTest {
     fun `can fetch logged in user`() {
         val fake = UsersClientFake()
 
-        fake.setLoggedInUser(UserResourceFactory.sample(
-            firstName = "John",
-            lastName = "Doe",
-            id = "123",
-            features = mapOf("LTI_COPY_RESOURCE_LINK" to true)
-        ))
+        fake.setLoggedInUser(
+            UserResourceFactory.sample(
+                firstName = "John",
+                lastName = "Doe",
+                id = "123",
+                features = mapOf("LTI_COPY_RESOURCE_LINK" to true)
+            )
+        )
 
         val loggedInUser = fake.getLoggedInUser()
         assertThat(loggedInUser.id).isEqualTo("123")

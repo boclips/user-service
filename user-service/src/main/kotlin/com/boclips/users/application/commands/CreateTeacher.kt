@@ -1,6 +1,6 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.api.request.user.CreateTeacherRequest
+import com.boclips.users.api.request.user.CreateUserRequest
 import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -23,7 +23,7 @@ class CreateTeacher(
 ) {
     companion object : KLogging()
 
-    operator fun invoke(createTeacherRequest: CreateTeacherRequest): User {
+    operator fun invoke(createTeacherRequest: CreateUserRequest.CreateTeacherRequest): User {
         if (!this.captchaProvider.validateCaptchaToken(createTeacherRequest.recaptchaToken!!)) {
             throw CaptchaScoreBelowThresholdException(createTeacherRequest.email!!)
         }

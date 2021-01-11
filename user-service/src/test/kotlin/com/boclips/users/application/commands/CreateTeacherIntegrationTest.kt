@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.users.api.factories.CreateUserRequestFactory
-import com.boclips.users.api.request.user.CreateTeacherRequest
+import com.boclips.users.api.request.user.CreateUserRequest
 import com.boclips.users.application.exceptions.CaptchaScoreBelowThresholdException
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -24,7 +24,7 @@ class CreateTeacherIntegrationTest : AbstractSpringIntegrationTest() {
         val shareCodePattern = """^[\w\d]{4}$""".toRegex()
 
         val createdAccount = createTeacher(
-            CreateTeacherRequest(
+            CreateUserRequest.CreateTeacherRequest(
                 email = "hans@muster.com",
                 password = "hansli",
                 recaptchaToken = "SOMERECAPTCHATOKENHERE"
@@ -49,7 +49,7 @@ class CreateTeacherIntegrationTest : AbstractSpringIntegrationTest() {
     @Test
     fun `create account with referral and analytics information`() {
         val user = createTeacher(
-            CreateUserRequestFactory.sample(
+            CreateUserRequestFactory.teacher(
                 referralCode = "referral-code-123",
                 analyticsId = "123",
                 utmMedium = "utm-medium",
@@ -78,20 +78,20 @@ class CreateTeacherIntegrationTest : AbstractSpringIntegrationTest() {
         whenever(captchaProvider.validateCaptchaToken(any())).thenReturn(false)
 
         assertThrows<CaptchaScoreBelowThresholdException> {
-            createTeacher(CreateUserRequestFactory.sample())
+            createTeacher(CreateUserRequestFactory.teacher())
         }
     }
 
     @Test
     fun `update contact on hubspot after user creation`() {
-        createTeacher(CreateUserRequestFactory.sample())
+        createTeacher(CreateUserRequestFactory.teacher())
 
         verify(marketingService, times(1)).updateProfile(any())
     }
 
     @Test
     fun `update subscription on hubspot after user creation`() {
-        createTeacher(CreateUserRequestFactory.sample())
+        createTeacher(CreateUserRequestFactory.teacher())
 
         verify(marketingService, times(1)).updateSubscription(any())
     }

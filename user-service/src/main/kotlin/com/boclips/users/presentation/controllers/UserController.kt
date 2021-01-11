@@ -1,17 +1,19 @@
 package com.boclips.users.presentation.controllers
 
-import com.boclips.users.api.request.user.CreateTeacherRequest
+import com.boclips.security.utils.UserExtractor
+import com.boclips.users.api.request.user.CreateUserRequest
 import com.boclips.users.api.request.user.UpdateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
 import com.boclips.users.api.response.user.UserResource
-import com.boclips.users.application.commands.CreateTeacher
+import com.boclips.users.application.commands.CreateUser
 import com.boclips.users.application.commands.GetAccessRulesOfUser
 import com.boclips.users.application.commands.GetSelfUser
 import com.boclips.users.application.commands.GetUser
 import com.boclips.users.application.commands.IsUserActive
 import com.boclips.users.application.commands.UpdateUser
 import com.boclips.users.application.commands.ValidateShareCode
+import com.boclips.users.application.exceptions.ApiUserAlreadyExistsException
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.presentation.converters.AccessRuleConverter
 import com.boclips.users.presentation.hateoas.UserLinkBuilder
@@ -35,7 +37,7 @@ import javax.validation.Valid
 @ExposesResourceFor(UserResource::class)
 @RequestMapping("/v1/users")
 class UserController(
-    private val createTeacher: CreateTeacher,
+    private val createUser: CreateUser,
     private val updateUser: UpdateUser,
     private val getUser: GetUser,
     private val userLinkBuilder: UserLinkBuilder,
@@ -48,8 +50,12 @@ class UserController(
 ) {
 
     @PostMapping
-    fun createAUser(@Valid @RequestBody createTeacherRequest: CreateTeacherRequest?): ResponseEntity<EntityModel<*>> {
-        val user = createTeacher(createTeacherRequest!!)
+    fun createAUser(@Valid @RequestBody createUserRequest: CreateUserRequest?): ResponseEntity<EntityModel<*>> {
+        val user = try {
+            createUser(createUserRequest!!, UserExtractor.getCurrentUser())
+        } catch (e: ApiUserAlreadyExistsException) {
+            return ResponseEntity.noContent().build()
+        }
 
         val headers = HttpHeaders()
         headers.set(HttpHeaders.LOCATION, userLinkBuilder.newUserProfileLink(user.id)?.href)
@@ -113,4 +119,3 @@ class UserController(
             ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
 }
-

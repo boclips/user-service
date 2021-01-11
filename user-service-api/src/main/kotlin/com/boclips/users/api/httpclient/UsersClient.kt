@@ -2,6 +2,7 @@ package com.boclips.users.api.httpclient
 
 import com.boclips.users.api.httpclient.helper.ObjectMapperDefinition
 import com.boclips.users.api.httpclient.helper.TokenFactory
+import com.boclips.users.api.request.user.CreateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.user.UserResource
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -27,6 +28,9 @@ interface UsersClient {
 
     @RequestLine("GET /v1/users/_self")
     fun getLoggedInUser(): UserResource
+
+    @RequestLine("POST /v1/users")
+    fun createApiUser(createApiUserRequest: CreateUserRequest.CreateApiUserRequest)
 
     companion object {
         @JvmStatic

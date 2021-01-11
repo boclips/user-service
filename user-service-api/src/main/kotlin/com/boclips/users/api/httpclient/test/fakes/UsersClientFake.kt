@@ -1,6 +1,9 @@
 package com.boclips.users.api.httpclient.test.fakes
 
+import com.boclips.users.api.factories.OrganisationResourceFactory
+import com.boclips.users.api.factories.UserResourceFactory
 import com.boclips.users.api.httpclient.UsersClient
+import com.boclips.users.api.request.user.CreateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
 import com.boclips.users.api.response.user.UserResource
@@ -26,6 +29,13 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
 
     override fun getLoggedInUser(): UserResource {
         return loggedUser ?: throw FakeClient.forbiddenException("Access Denied")
+    }
+
+    override fun createApiUser(createApiUserRequest: CreateUserRequest.CreateApiUserRequest) {
+        userDatabase[createApiUserRequest.apiUserId] = UserResourceFactory.sample(
+            id = createApiUserRequest.apiUserId,
+            organisation = OrganisationResourceFactory.sampleDetails(id = createApiUserRequest.organisationId)
+        )
     }
 
     override fun add(element: UserResource): UserResource {

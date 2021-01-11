@@ -21,7 +21,7 @@ class CreateTeacherRequestTest {
 
     @Test
     fun `validates a valid request`() {
-        val validRequest = CreateUserRequestFactory.sample()
+        val validRequest = CreateUserRequestFactory.teacher()
         val violations = validator.validate(validRequest)
         assertThat(violations).hasSize(0)
     }
@@ -29,7 +29,7 @@ class CreateTeacherRequestTest {
     @Test
     fun `respects optional fields`() {
         val violations = validator.validate(
-            CreateUserRequestFactory.sample(
+            CreateUserRequestFactory.teacher(
                 referralCode = null,
                 analyticsId = null
             )
@@ -42,7 +42,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates email for null`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     email = null
                 )
             )
@@ -54,7 +54,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates email for empty string`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     email = ""
                 )
             )
@@ -67,7 +67,7 @@ class CreateTeacherRequestTest {
             val longEmail = "@test.com"
             val violations =
                 validator.validate(
-                    CreateUserRequestFactory.sample(
+                    CreateUserRequestFactory.teacher(
                         email = longEmail
                     )
                 )
@@ -81,7 +81,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates password for null`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     password = null
                 )
             )
@@ -93,7 +93,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates password for empty string`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     password = ""
                 )
             )
@@ -106,7 +106,7 @@ class CreateTeacherRequestTest {
         fun `validates password for format`() {
             val shortPassword = "1234567"
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     password = shortPassword
                 )
             )
@@ -120,7 +120,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates recaptchaToken for null`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     recaptchaToken = null
                 )
             )
@@ -132,7 +132,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates recaptchaToken for empty string`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     recaptchaToken = ""
                 )
             )
@@ -146,7 +146,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates utmContent for length of characters`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     utmContent = "some info".repeat(210)
                 )
             )
@@ -157,7 +157,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates utmCampaign for length of characters`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     utmCampaign = "some info".repeat(210)
                 )
             )
@@ -168,7 +168,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates utmMedium for length of characters`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     utmMedium = "some info".repeat(210)
                 )
             )
@@ -179,7 +179,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates utmTerm for length of characters`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     utmTerm = "some info".repeat(210)
                 )
             )
@@ -190,7 +190,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `validates utmSource for length of characters`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     utmSource = "some info".repeat(210)
                 )
             )
@@ -204,7 +204,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `referral code cannot be longer than 50 characters`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     referralCode = StringUtils.repeat("X", 51)
                 )
             )
@@ -215,7 +215,7 @@ class CreateTeacherRequestTest {
         @Test
         fun `analytics id cannot be longer than 100 characters`() {
             val violations = validator.validate(
-                CreateUserRequestFactory.sample(
+                CreateUserRequestFactory.teacher(
                     analyticsId = StringUtils.repeat("X", 101)
                 )
             )

@@ -52,7 +52,7 @@ import java.time.ZonedDateTime
 class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Nested
-    inner class CreateUserScenarios {
+    inner class CreateTeacherScenarios {
         @Test
         fun `can create a new user with valid request`() {
             mvc.perform(
@@ -67,7 +67,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "referralCode": "RR-123",
                      "recaptchaToken": "captcha-123"
                      }
-                    """.trimIndent()
+                        """.trimIndent()
                     )
             )
                 .andExpect(status().isCreated)
@@ -86,7 +86,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "password": "Champagn3",
                      "recaptchaToken": "captcha-123"
                      }
-                    """.trimIndent()
+                        """.trimIndent()
                     )
             )
                 .andExpect(status().isCreated)
@@ -103,7 +103,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "referralCode": "RR-123",
                      "recaptchaToken": "captcha-123"
                      }
-                    """.trimIndent()
+            """.trimIndent()
 
             mvc.perform(
                 post("/v1/users")
@@ -130,7 +130,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     {
                      "email": "jane@doe.com"
                      }
-                    """.trimIndent()
+                        """.trimIndent()
                     )
             )
                 .andExpect(status().isBadRequest)
@@ -153,10 +153,82 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                      "referralCode": "RR-123",
                      "recaptchaToken": "captcha-123"
                      }
-                    """.trimIndent()
+                        """.trimIndent()
                     )
             )
                 .andExpect(status().isBadRequest)
+        }
+    }
+
+    @Nested
+    inner class CreateApiUserScenarios {
+
+        @Test
+        fun `can create an api user with given organisation`() {
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
+
+            mvc.perform(
+                post("/v1/users")
+                    .asUserWithRoles(id = "service-account-gateway", roles = arrayOf(UserRoles.CREATE_API_USERS))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                    {
+                     "apiUserId": "1",
+                     "organisationId": "${organisation.id.value}",
+                     "type": "apiUser"
+                     }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isCreated)
+
+            assertThat(userRepository.findById(UserId("1"))).isNotNull
+            assertThat(userRepository.findById(UserId("1"))?.organisation).isEqualTo(organisation)
+        }
+
+        @Test
+        fun `returns no content when putting a user that already exists`() {
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
+            saveUser(UserFactory.sample("1"))
+
+            mvc.perform(
+                post("/v1/users")
+                    .asUserWithRoles(id = "service-account-gateway", roles = arrayOf(UserRoles.CREATE_API_USERS))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                    {
+                    "apiUserId": "1",
+                     "organisationId": "${organisation.id.value}",
+                     "type": "apiUser"
+                     }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isNoContent)
+        }
+
+        @Test
+        fun `returns 403 when trying to create api user without 'CREATE_API_USERS' role`() {
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
+            saveUser(UserFactory.sample("1"))
+
+            mvc.perform(
+                post("/v1/users")
+                    .asUserWithRoles(id = "service-account-gateway", roles = emptyArray())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                    {
+                    "apiUserId": "1",
+                     "organisationId": "${organisation.id.value}",
+                     "type": "apiUser"
+                     }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isForbidden)
         }
     }
 
@@ -233,7 +305,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     profile = ProfileFactory.sample(firstName = "oldname")
                 )
             )
-
 
             mvc.perform(
                 put("/v1/users/user-id").asUserWithRoles(
@@ -767,7 +838,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            mvc.perform(get("/v1/users/${user.id.value}/shareCode/${validShareCode}")).andExpect(status().isOk)
+            mvc.perform(get("/v1/users/${user.id.value}/shareCode/$validShareCode")).andExpect(status().isOk)
         }
 
         @Test
@@ -779,7 +850,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            mvc.perform(get("/v1/users/${user.id.value}/shareCode/${invalidShareCode}")).andExpect(status().isForbidden)
+            mvc.perform(get("/v1/users/${user.id.value}/shareCode/$invalidShareCode")).andExpect(status().isForbidden)
         }
 
         @Test

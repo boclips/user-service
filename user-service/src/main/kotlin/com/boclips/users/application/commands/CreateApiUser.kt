@@ -1,10 +1,11 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.api.request.CreateApiUserRequest
-import com.boclips.users.application.exceptions.AlreadyExistsException
+import com.boclips.users.api.request.user.CreateUserRequest
+import com.boclips.users.application.exceptions.ApiUserAlreadyExistsException
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.Identity
+import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.service.user.UserCreationService
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
@@ -19,15 +20,19 @@ class CreateApiUser(
 ) {
     companion object : KLogging()
 
-    operator fun invoke(userId: String, createApiUserRequest: CreateApiUserRequest) {
+    operator fun invoke(createApiUserRequest: CreateUserRequest.CreateApiUserRequest): User {
         try {
-            userCreationService.create(
-                Identity(id = UserId(userId), username = userId, createdAt = ZonedDateTime.now()),
+            return userCreationService.create(
+                Identity(
+                    id = UserId(createApiUserRequest.apiUserId),
+                    username = createApiUserRequest.apiUserId,
+                    createdAt = ZonedDateTime.now()
+                ),
                 organisationRepository.findOrganisationById(OrganisationId(createApiUserRequest.organisationId))
             )
         } catch (e: UserAlreadyExistsException) {
-            logger.info { "Could not create user. User: $userId already exists" }
-            throw AlreadyExistsException("User: $userId already exists")
+            logger.info { "Could not create user. User: ${createApiUserRequest.apiUserId} already exists" }
+            throw ApiUserAlreadyExistsException("User: ${createApiUserRequest.apiUserId} already exists")
         }
     }
 }

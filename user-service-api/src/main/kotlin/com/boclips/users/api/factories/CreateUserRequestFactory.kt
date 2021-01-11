@@ -1,10 +1,10 @@
 package com.boclips.users.api.factories
 
-import com.boclips.users.api.request.user.CreateTeacherRequest
+import com.boclips.users.api.request.user.CreateUserRequest
 
 class CreateUserRequestFactory {
     companion object {
-        fun sample(
+        fun teacher(
             email: String? = "hans@muster.ch",
             password: String? = "heidiisgreat",
             referralCode: String? = "referralCode-123",
@@ -15,8 +15,8 @@ class CreateUserRequestFactory {
             utmMedium: String? = null,
             utmSource: String? = null,
             utmTerm: String? = null
-        ): CreateTeacherRequest {
-            return CreateTeacherRequest(
+        ): CreateUserRequest.CreateTeacherRequest {
+            return CreateUserRequest.CreateTeacherRequest(
                 email = email,
                 password = password,
                 analyticsId = analyticsId,

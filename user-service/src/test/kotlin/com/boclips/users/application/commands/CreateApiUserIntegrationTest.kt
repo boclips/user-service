@@ -1,7 +1,7 @@
 package com.boclips.users.application.commands
 
-import com.boclips.users.api.request.CreateApiUserRequest
-import com.boclips.users.application.exceptions.AlreadyExistsException
+import com.boclips.users.api.request.user.CreateUserRequest
+import com.boclips.users.application.exceptions.ApiUserAlreadyExistsException
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -19,8 +19,10 @@ class CreateApiUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun `can create an api user given an organisation`() {
         val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
         createApiUser(
-            userId = "a-user-id",
-            createApiUserRequest = CreateApiUserRequest(organisationId = organisation.id.value)
+            createApiUserRequest = CreateUserRequest.CreateApiUserRequest(
+                apiUserId = "a-user-id",
+                organisationId = organisation.id.value
+            )
         )
 
         assertThat(userRepository.findById(UserId("a-user-id"))).isNotNull
@@ -32,10 +34,12 @@ class CreateApiUserIntegrationTest : AbstractSpringIntegrationTest() {
         val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
         saveUser(UserFactory.sample("a-user-id"))
 
-        assertThrows<AlreadyExistsException> {
+        assertThrows<ApiUserAlreadyExistsException> {
             createApiUser(
-                userId = "a-user-id",
-                createApiUserRequest = CreateApiUserRequest(organisationId = organisation.id.value)
+                createApiUserRequest = CreateUserRequest.CreateApiUserRequest(
+                    apiUserId = "a-user-id",
+                    organisationId = organisation.id.value
+                )
             )
         }
     }
