@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
@@ -580,6 +581,25 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             setSecurityContext(userId)
             return user
+        }
+    }
+
+    @Nested
+    inner class HeadUser {
+        @Test
+        fun `should return 200 for existing user`() {
+            saveUser(UserFactory.sample(id = "api-user-id"))
+
+            mvc.perform(
+                head("/v1/users/api-user-id").asBoclipsService()
+            ).andExpect(status().isOk)
+        }
+
+        @Test
+        fun `should return 404 for existing user`() {
+            mvc.perform(
+                head("/v1/users/api-user-id").asBoclipsService()
+            ).andExpect(status().isNotFound)
         }
     }
 

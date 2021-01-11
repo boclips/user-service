@@ -38,6 +38,12 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
         )
     }
 
+    override fun headUser(id: String) {
+        if (!userDatabase.containsKey(id)) {
+            throw FakeClient.notFoundException("user with id: $id not found")
+        }
+    }
+
     override fun add(element: UserResource): UserResource {
         userDatabase[element.id] = element
         return element

@@ -32,6 +32,9 @@ interface UsersClient {
     @RequestLine("POST /v1/users")
     fun createApiUser(createApiUserRequest: CreateUserRequest.CreateApiUserRequest)
 
+    @RequestLine("HEAD /v1/users/{id}")
+    fun headUser(@Param("id") id: String)
+
     companion object {
         @JvmStatic
         fun create(
