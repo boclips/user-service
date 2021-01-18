@@ -31,6 +31,7 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.findOneById
 import org.litote.kmongo.getCollection
+import org.litote.kmongo.ne
 import org.litote.kmongo.orderBy
 import org.litote.kmongo.regex
 import org.litote.kmongo.save
@@ -133,13 +134,15 @@ class MongoOrganisationRepository(
         countryCode: String?,
         types: List<OrganisationType>?,
         page: Int,
-        size: Int
+        size: Int,
+        hasCustomPrices: Boolean?
     ): Page<Organisation> {
 
         val filter = query(
             name = name,
             countryCode = countryCode,
-            types = types
+            types = types,
+            hasCustomPrices = hasCustomPrices
         )
 
         val totalElements = collection().countDocuments(filter)
@@ -186,7 +189,8 @@ class MongoOrganisationRepository(
     private fun query(
         name: String?,
         countryCode: String?,
-        types: List<OrganisationType>?
+        types: List<OrganisationType>?,
+        hasCustomPrices: Boolean?
     ): Bson {
 
         return and(listOfNotNull(
@@ -198,6 +202,13 @@ class MongoOrganisationRepository(
             },
             types?.let {
                 OrganisationDocument::type `in` it
+            },
+            hasCustomPrices?.let {
+                if (hasCustomPrices) {
+                    OrganisationDocument::prices ne null
+                } else {
+                    OrganisationDocument::prices eq null
+                }
             }
         ))
     }

@@ -5,4 +5,5 @@ class OrganisationFilterRequest {
     var countryCode: String? = null
     var page: Int = 0
     var size: Int = 30
+    var hasCustomPrices: Boolean? = null
 }

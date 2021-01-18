@@ -2,12 +2,15 @@ package com.boclips.users.api.httpclient
 
 import com.boclips.users.api.httpclient.helper.ObjectMapperDefinition
 import com.boclips.users.api.httpclient.helper.TokenFactory
+import com.boclips.users.api.request.OrganisationFilterRequest
 import com.boclips.users.api.response.organisation.OrganisationResource
+import com.boclips.users.api.response.organisation.OrganisationsResource
 import com.fasterxml.jackson.databind.ObjectMapper
 import feign.Client
 import feign.Feign
 import feign.Logger
 import feign.Param
+import feign.QueryMap
 import feign.RequestLine
 import feign.RequestTemplate
 import feign.jackson.JacksonDecoder
@@ -17,6 +20,9 @@ import feign.slf4j.Slf4jLogger
 interface OrganisationsClient {
     @RequestLine("GET /v1/organisations/{id}")
     fun getOrganisation(@Param("id") id: String): OrganisationResource
+
+    @RequestLine("GET /v1/organisations")
+    fun getOrganisations(@QueryMap filterRequest: OrganisationFilterRequest = OrganisationFilterRequest()): OrganisationsResource
 
     companion object {
         @JvmStatic

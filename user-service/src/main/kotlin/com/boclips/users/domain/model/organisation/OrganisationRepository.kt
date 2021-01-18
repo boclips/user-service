@@ -15,7 +15,8 @@ interface OrganisationRepository {
         countryCode: String? = null,
         types: List<OrganisationType>?,
         page: Int,
-        size: Int
+        size: Int,
+        hasCustomPrices: Boolean? = null
     ): Page<Organisation>
 
     fun findByRoleIn(roles: List<String>): List<Organisation>

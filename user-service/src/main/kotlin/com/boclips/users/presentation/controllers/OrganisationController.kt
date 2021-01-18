@@ -99,7 +99,8 @@ class OrganisationController(
             name = organisationFilterRequest?.name,
             countryCode = organisationFilterRequest?.countryCode,
             page = organisationFilterRequest?.page ?: 0,
-            size = organisationFilterRequest?.size ?: 30
+            size = organisationFilterRequest?.size ?: 30,
+            hasCustomPrices = organisationFilterRequest?.hasCustomPrices
         )
         val organisations = getOrganisations(filter)
 

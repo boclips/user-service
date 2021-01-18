@@ -1,6 +1,7 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
@@ -11,10 +12,12 @@ import com.boclips.users.domain.model.organisation.LtiDeployment
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
-import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.organisation.Prices
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
+import java.math.BigDecimal
 import java.time.ZonedDateTime
+import java.util.Currency
 
 class OrganisationFactory {
     companion object {
@@ -35,6 +38,23 @@ class OrganisationFactory {
             billing = billing,
             accessExpiresOn = accessExpiresOn,
             prices = prices
+        )
+
+        fun pricedDeal(
+            contentPackageId: ContentPackageId? = null,
+            billing: Boolean = false,
+            accessExpiresOn: ZonedDateTime? = null,
+        ): Deal = Deal(
+            contentPackageId = contentPackageId,
+            billing = billing,
+            accessExpiresOn = accessExpiresOn,
+            prices = Prices(
+                videoTypePrices = mapOf(
+                    VideoType.INSTRUCTIONAL to Prices.Price(BigDecimal.valueOf(10), Currency.getInstance("GBP")),
+                    VideoType.NEWS to Prices.Price(BigDecimal.valueOf(4), Currency.getInstance("GBP")),
+                    VideoType.STOCK to Prices.Price(BigDecimal.valueOf(5), Currency.getInstance("GBP"))
+                )
+            )
         )
 
         fun district(

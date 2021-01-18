@@ -14,7 +14,8 @@ class GetOrganisations(private val organisationRepository: OrganisationRepositor
             countryCode = filter.countryCode,
             types = filter.organisationTypes,
             size = filter.size,
-            page = filter.page
+            page = filter.page,
+            hasCustomPrices = filter.hasCustomPrices
         )
     }
 }

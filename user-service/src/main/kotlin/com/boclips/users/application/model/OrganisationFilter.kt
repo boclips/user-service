@@ -9,5 +9,6 @@ data class OrganisationFilter(
     val organisationTypes: List<OrganisationType>? = null,
     val parentOnly: Boolean = false,
     val page: Int,
-    val size: Int
+    val size: Int,
+    val hasCustomPrices: Boolean? = null
 )

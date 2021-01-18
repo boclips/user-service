@@ -18,6 +18,7 @@ import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
+import com.boclips.users.testsupport.factories.PriceFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.equalTo
@@ -28,14 +29,13 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import com.boclips.users.testsupport.factories.PriceFactory
-import org.springframework.test.web.servlet.ResultHandler
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
+import java.util.Currency
 
 class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
@@ -214,9 +214,9 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val apiIntegration = organisationRepository.save(
                 OrganisationFactory.apiIntegration(
                     name = "my api integration",
-                    deal= Deal(
-                        billing=false,
-                        accessExpiresOn=null
+                    deal = Deal(
+                        billing = false,
+                        accessExpiresOn = null
                     )
                 )
             )
@@ -558,6 +558,31 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.organisations[0].organisationDetails.name", equalTo("pamdale")))
+        }
+
+        @Test
+        fun `gets all organisations with custom price`() {
+            val organisationWithPrice = saveOrganisation(
+                OrganisationFactory.apiIntegration(
+                    deal = OrganisationFactory.pricedDeal()
+                )
+            )
+
+            saveOrganisation(OrganisationFactory.apiIntegration(deal = deal(prices = null)))
+
+            mvc.perform(
+                get("/v1/organisations?hasCustomPrices=true").asUserWithRoles(
+                    "me",
+                    UserRoles.VIEW_ORGANISATIONS
+                )
+            ).andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.organisations", hasSize<Int>(1)))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.organisations[0].organisationDetails.id",
+                        equalTo(organisationWithPrice.id.value)
+                    )
+                )
         }
     }
 

@@ -16,7 +16,7 @@ class OrganisationResourceFactory {
             id: String = UUID.randomUUID().toString(),
             accessExpiresOn: ZonedDateTime? = null,
             contentPackageId: String? = null,
-            billing: Boolean?,
+            billing: Boolean? = null,
             organisationDetails: OrganisationDetailsResource = sampleDetails(),
             deal: DealResource? = null,
             _links: Map<String, Link>? = null
@@ -49,6 +49,26 @@ class OrganisationResourceFactory {
             country = country,
             allowsOverridingUserIds = allowsOverridingUserIds,
             features = features
+        )
+
+        @JvmStatic
+        fun sampleDeal(
+            prices: DealResource.PricesResource = DealResource.PricesResource(
+                videoTypePrices = mapOf(
+                    "STOCK" to DealResource.PriceResource(
+                        "10",
+                        "USD"
+                    )
+                )
+            ),
+            accessExpiresOn: ZonedDateTime? = null,
+            contentPackageId: String? = null,
+            billing: Boolean? = null
+        ) = DealResource(
+            prices = prices,
+            accessExpiresOn = accessExpiresOn,
+            contentPackageId = contentPackageId,
+            billing = billing
         )
     }
 }
