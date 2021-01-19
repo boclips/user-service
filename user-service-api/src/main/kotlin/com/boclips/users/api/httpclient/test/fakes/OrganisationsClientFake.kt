@@ -32,7 +32,7 @@ class OrganisationsClientFake : OrganisationsClient, FakeClient<OrganisationReso
 
         return OrganisationsResource(
             _embedded = OrganisationsWrapper(organisations),
-            page = PagedModel.PageMetadata(organisations.size.toLong(), 0, database.size.toLong()),
+            page = PagedModel.PageMetadata(organisations.size.toLong(), 0, organisations.size.toLong()),
             _links = emptyMap()
         )
     }
