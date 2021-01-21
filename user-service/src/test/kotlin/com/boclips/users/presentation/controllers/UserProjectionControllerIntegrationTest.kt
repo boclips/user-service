@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.asPublisher
+import com.boclips.users.testsupport.asBoclipsWebAppUser
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.hamcrest.Matchers
@@ -28,7 +28,7 @@ class UserProjectionControllerIntegrationTest : AbstractSpringIntegrationTest() 
         )
 
         mvc.perform(
-            MockMvcRequestBuilders.get("/v1/users/_self").asPublisher(user.id.value)
+            MockMvcRequestBuilders.get("/v1/users/_self").asBoclipsWebAppUser(user.id.value)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.equalTo(user.id.value)))

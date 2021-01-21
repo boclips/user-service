@@ -5,4 +5,4 @@ interface TeacherProjection : UserProjection
 interface ApiUserProjection : UserProjection
 interface BoclipsServiceProjection : UserProjection
 interface LtiProjection : UserProjection
-interface PublisherProjection : UserProjection
+interface BoclipsWebAppProjection : UserProjection
