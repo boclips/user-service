@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.infrastructure.organisation.FeatureKey
 import com.boclips.users.infrastructure.organisation.LocationDocument
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
-import com.boclips.users.infrastructure.organisation.PricesDocumentPart
+import com.boclips.users.infrastructure.organisation.CustomPricesDocument
 import org.bson.types.ObjectId
 import java.time.ZonedDateTime
 
@@ -27,7 +27,7 @@ class OrganisationDocumentFactory {
             billing: Boolean? = null,
             accessExpiresOn: ZonedDateTime? = null,
             features: Map<FeatureKey, Boolean>? = null,
-            prices: PricesDocumentPart? = null
+            prices: CustomPricesDocument? = null
         ) = OrganisationDocument(
             _id = id,
             name = name,

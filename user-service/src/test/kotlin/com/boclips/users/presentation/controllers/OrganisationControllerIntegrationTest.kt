@@ -2,6 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.api.request.CreateDistrictRequest
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
@@ -449,7 +450,12 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                                 VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
                                 VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN),
                                 VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
+                            ),
+                            channelPrices = mapOf(
+                                ChannelId("channel-TED") to PriceFactory.sample(amount = BigDecimal.ONE),
+                                ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.TEN)
                             )
+
                         )
                     )
                 )

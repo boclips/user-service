@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.organisation.Address
@@ -12,9 +13,9 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
-import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.organisation.Prices
 import com.boclips.users.domain.model.organisation.Prices.Price
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import mu.KLogging
@@ -39,16 +40,16 @@ object OrganisationDocumentConverter : KLogging() {
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
             prices = organisationDocument.prices?.let {
                 Prices(
-                    videoTypePrices = it.videoTypePrices?.let {
-                        it.entries
-                            .map { entry ->
-                                when (entry.key) {
-                                    VideoTypeKey.INSTRUCTIONAL -> VideoType.INSTRUCTIONAL to convertToDomainPrice(entry.value)
-                                    VideoTypeKey.NEWS -> VideoType.NEWS to convertToDomainPrice(entry.value)
-                                    VideoTypeKey.STOCK -> VideoType.STOCK to convertToDomainPrice(entry.value)
-                                }
-                            }.toMap()
-                    } ?: emptyMap()
+                    videoTypePrices = it.videoTypePrices?.entries?.map { entry ->
+                        when (entry.key) {
+                            VideoTypeKey.INSTRUCTIONAL -> VideoType.INSTRUCTIONAL to convertToDomainPrice(entry.value)
+                            VideoTypeKey.NEWS -> VideoType.NEWS to convertToDomainPrice(entry.value)
+                            VideoTypeKey.STOCK -> VideoType.STOCK to convertToDomainPrice(entry.value)
+                        }
+                    }?.toMap() ?: emptyMap(),
+                    channelPrices = it.channelPrices?.entries?.map { price ->
+                        ChannelId(price.key) to convertToDomainPrice(price.value)
+                    }?.toMap() ?: emptyMap(),
                 )
             }
         )
@@ -153,25 +154,29 @@ object OrganisationDocumentConverter : KLogging() {
             contentPackageId = organisation.deal.contentPackageId?.value,
             features = organisation.features?.mapKeys { FeatureDocumentConverter.toDocument(it.key) },
             prices = organisation.deal.prices?.let {
-                PricesDocumentPart(videoTypePrices = it.videoTypePrices
-                    .map { entry ->
-                        when (entry.key) {
-                            VideoType.INSTRUCTIONAL -> VideoTypeKey.INSTRUCTIONAL to convertToPriceDocument(entry.value)
-                            VideoType.NEWS -> VideoTypeKey.NEWS to convertToPriceDocument(entry.value)
-                            VideoType.STOCK -> VideoTypeKey.STOCK to convertToPriceDocument(entry.value)
-                        }
-                    }.toMap())
+                CustomPricesDocument(
+                    videoTypePrices = it.videoTypePrices
+                        .map { entry ->
+                            when (entry.key) {
+                                VideoType.INSTRUCTIONAL -> VideoTypeKey.INSTRUCTIONAL to convertToPriceDocument(entry.value)
+                                VideoType.NEWS -> VideoTypeKey.NEWS to convertToPriceDocument(entry.value)
+                                VideoType.STOCK -> VideoTypeKey.STOCK to convertToPriceDocument(entry.value)
+                            }
+                        }.toMap(),
+                    channelPrices = it.channelPrices.map { price -> price.key.value to convertToPriceDocument(price.value) }
+                        .toMap()
+                )
             }
         )
     }
 
-    private fun convertToDomainPrice(price: PriceDocumentPart) = Price(
+    private fun convertToDomainPrice(price: PriceDocument) = Price(
         amount = price.amount,
         currency = Currency.getInstance(price.currency)
     )
 
-    private fun convertToPriceDocument(price: Price) = PriceDocumentPart(
-            amount = price.amount,
-            currency = price.currency.currencyCode
-        )
+    private fun convertToPriceDocument(price: Price) = PriceDocument(
+        amount = price.amount,
+        currency = price.currency.currencyCode
+    )
 }

@@ -1,5 +1,6 @@
 package com.boclips.users.testsupport.factories
 
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
@@ -53,8 +54,12 @@ class OrganisationFactory {
                     VideoType.INSTRUCTIONAL to Prices.Price(BigDecimal.valueOf(10), Currency.getInstance("GBP")),
                     VideoType.NEWS to Prices.Price(BigDecimal.valueOf(4), Currency.getInstance("GBP")),
                     VideoType.STOCK to Prices.Price(BigDecimal.valueOf(5), Currency.getInstance("GBP"))
+                ),
+                channelPrices = mapOf(
+                    ChannelId("channel-TED") to PriceFactory.sample(amount = BigDecimal.ONE),
+                    ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.TEN)
                 )
-            )
+             )
         )
 
         fun district(

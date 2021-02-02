@@ -21,6 +21,12 @@ class OrganisationsClientFakeTest {
                                 "10",
                                 "USD"
                             )
+                        ),
+                        channelPrices = mapOf(
+                            "channel-TED" to DealResource.PriceResource(
+                                "400",
+                                "USD"
+                            )
                         )
                     )
                 )
@@ -35,7 +41,7 @@ class OrganisationsClientFakeTest {
     }
 
     @Test
-    fun `can get all organisations without custom pricing` () {
+    fun `can get all organisations without custom pricing`() {
         val fake = OrganisationsClientFake()
         fake.add(
             OrganisationResourceFactory.sample(
@@ -45,6 +51,12 @@ class OrganisationsClientFakeTest {
                         videoTypePrices = mapOf(
                             "STOCK" to DealResource.PriceResource(
                                 "10",
+                                "USD"
+                            )
+                        ),
+                        channelPrices = mapOf(
+                            "channel-TED" to DealResource.PriceResource(
+                                "400",
                                 "USD"
                             )
                         )
@@ -71,6 +83,12 @@ class OrganisationsClientFakeTest {
                         videoTypePrices = mapOf(
                             "STOCK" to DealResource.PriceResource(
                                 "10",
+                                "USD"
+                            )
+                        ),
+                        channelPrices = mapOf(
+                            "channel-TED" to DealResource.PriceResource(
+                                "400",
                                 "USD"
                             )
                         )

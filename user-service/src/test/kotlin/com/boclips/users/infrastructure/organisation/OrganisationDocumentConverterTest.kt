@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
@@ -119,7 +120,8 @@ class OrganisationDocumentConverterTest {
                     videoTypePrices = mapOf(
                         VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN),
                         VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
-                    )
+                    ),
+                    channelPrices = mapOf(ChannelId("TED") to PriceFactory.sample(amount = BigDecimal.TEN))
                 )
             ),
             features = mapOf(Pair(Feature.LTI_COPY_RESOURCE_LINK, true))
@@ -131,7 +133,8 @@ class OrganisationDocumentConverterTest {
                     videoTypePrices = mapOf(
                         VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
                         VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
-                    )
+                    ),
+                    channelPrices = mapOf(ChannelId("BBC") to PriceFactory.sample(amount = BigDecimal.TEN))
                 )
             )
         )
@@ -177,6 +180,10 @@ class OrganisationDocumentConverterTest {
                         videoTypePrices = mapOf(
                             VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
                             VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
+                        ),
+                        channelPrices = mapOf(
+                            ChannelId("channel-TED") to PriceFactory.sample(amount = BigDecimal.ONE),
+                            ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.TEN)
                         )
                     )
                 )
@@ -188,6 +195,10 @@ class OrganisationDocumentConverterTest {
                         videoTypePrices = mapOf(
                             VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
                             VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN)
+                        ),
+                        channelPrices = mapOf(
+                            ChannelId("channel-TED") to PriceFactory.sample(amount = BigDecimal.ONE),
+                            ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.TEN)
                         )
                     )
                 )
@@ -195,19 +206,27 @@ class OrganisationDocumentConverterTest {
             val organisationDocument = OrganisationDocumentConverter.toDocument(organisation)
 
             assertThat(organisationDocument.parent!!.prices).isEqualTo(
-                PricesDocumentPart(
+                CustomPricesDocument(
                     videoTypePrices = mapOf(
-                        VideoTypeKey.INSTRUCTIONAL to PriceDocumentPart(BigDecimal.ONE, "USD"),
-                        VideoTypeKey.STOCK to PriceDocumentPart(BigDecimal.ZERO, "USD")
+                        VideoTypeKey.INSTRUCTIONAL to PriceDocument(BigDecimal.ONE, "USD"),
+                        VideoTypeKey.STOCK to PriceDocument(BigDecimal.ZERO, "USD")
+                    ),
+                    channelPrices = mapOf(
+                        "channel-TED" to PriceDocument(amount = BigDecimal.ONE, currency ="USD"),
+                        "channel-orange" to PriceDocument(amount = BigDecimal.TEN, currency ="USD")
                     )
                 )
             )
 
             assertThat(organisationDocument.prices).isEqualTo(
-                PricesDocumentPart(
+                CustomPricesDocument(
                     videoTypePrices = mapOf(
-                        VideoTypeKey.INSTRUCTIONAL to PriceDocumentPart(BigDecimal.ONE, "USD"),
-                        VideoTypeKey.NEWS to PriceDocumentPart(BigDecimal.TEN, "USD"),
+                        VideoTypeKey.INSTRUCTIONAL to PriceDocument(BigDecimal.ONE, "USD"),
+                        VideoTypeKey.NEWS to PriceDocument(BigDecimal.TEN, "USD"),
+                    ),
+                    channelPrices = mapOf(
+                        "channel-TED" to PriceDocument(amount = BigDecimal.ONE, currency ="USD"),
+                        "channel-orange" to PriceDocument(amount = BigDecimal.TEN, currency ="USD")
                     )
                 )
             )
@@ -236,18 +255,26 @@ class OrganisationDocumentConverterTest {
         fun `converts organisation document with prices containing deal to a correct domain object`() {
             val organisationDocument = OrganisationDocumentFactory.sample(
                 type = OrganisationType.SCHOOL,
-                prices = PricesDocumentPart(
+                prices = CustomPricesDocument(
                     videoTypePrices = mapOf(
-                        VideoTypeKey.INSTRUCTIONAL to PriceDocumentPart(BigDecimal.ONE, "USD"),
-                        VideoTypeKey.NEWS to PriceDocumentPart(BigDecimal.TEN, "USD")
+                        VideoTypeKey.INSTRUCTIONAL to PriceDocument(BigDecimal.ONE, "USD"),
+                        VideoTypeKey.NEWS to PriceDocument(BigDecimal.TEN, "USD")
+                    ),
+                    channelPrices = mapOf(
+                        "channel-TED" to PriceDocument(amount = BigDecimal.TEN, currency = "USD"),
+                        "channel-orange" to PriceDocument(amount = BigDecimal.valueOf(19.99), currency = "USD")
                     )
                 ),
                 parent = OrganisationDocumentFactory.sample(
                     type = OrganisationType.DISTRICT,
-                    prices = PricesDocumentPart(
+                    prices = CustomPricesDocument(
                         videoTypePrices = mapOf(
-                            VideoTypeKey.INSTRUCTIONAL to PriceDocumentPart(BigDecimal.ONE, "USD"),
-                            VideoTypeKey.STOCK to PriceDocumentPart(BigDecimal.ZERO, "USD")
+                            VideoTypeKey.INSTRUCTIONAL to PriceDocument(BigDecimal.ONE, "USD"),
+                            VideoTypeKey.STOCK to PriceDocument(BigDecimal.ZERO, "USD")
+                        ),
+                        channelPrices = mapOf(
+                            "channel-BBC" to PriceDocument(amount = BigDecimal.valueOf(100), currency = "USD"),
+                            "channel-ABC" to PriceDocument(amount = BigDecimal.valueOf(150), currency = "USD"),
                         )
                     )
                 )
@@ -260,6 +287,10 @@ class OrganisationDocumentConverterTest {
                     videoTypePrices = mapOf(
                         VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
                         VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN)
+                    ),
+                    channelPrices = mapOf(
+                        ChannelId("channel-TED") to PriceFactory.sample(amount = BigDecimal.TEN),
+                        ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.valueOf(19.99))
                     )
                 )
             )
@@ -269,6 +300,10 @@ class OrganisationDocumentConverterTest {
                     videoTypePrices = mapOf(
                         VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
                         VideoType.STOCK to PriceFactory.sample(amount = BigDecimal.ZERO)
+                    ),
+                    channelPrices = mapOf(
+                        ChannelId("channel-BBC") to PriceFactory.sample(amount = BigDecimal.valueOf(100)),
+                        ChannelId("channel-ABC") to PriceFactory.sample(amount = BigDecimal.valueOf(150))
                     )
                 )
             )

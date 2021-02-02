@@ -2,6 +2,7 @@ package com.boclips.users.presentation.resources
 
 import com.boclips.security.testing.setSecurityContext
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
@@ -58,6 +59,10 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
                         VideoType.INSTRUCTIONAL to instructionalVideoTypePrice,
                         VideoType.NEWS to newsVideoTypePrice,
                         VideoType.STOCK to stockVideoTypePrice,
+                    ),
+                    channelPrices = mapOf(
+                        ChannelId("channel-TED") to PriceFactory.sample(amount = BigDecimal.ONE),
+                        ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.TEN)
                     )
                 )
             ),

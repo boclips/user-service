@@ -10,7 +10,8 @@ data class DealResource(
 ) {
 
     data class PricesResource (
-        val videoTypePrices: Map<String, PriceResource>
+        val videoTypePrices: Map<String, PriceResource>,
+        val channelPrices: Map<String, PriceResource>
     )
 
     data class PriceResource (

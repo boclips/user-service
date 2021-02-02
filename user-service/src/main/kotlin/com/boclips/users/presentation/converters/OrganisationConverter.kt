@@ -61,7 +61,8 @@ class OrganisationConverter(
             videoTypePrices = videoTypePrices
                 .entries
                 .map { it.key.name to convertToPriceJsonObject(it.value) }
-                .toMap()
+                .toMap(),
+            channelPrices = emptyMap()
         )
     }
 

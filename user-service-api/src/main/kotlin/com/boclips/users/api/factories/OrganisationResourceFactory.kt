@@ -61,6 +61,12 @@ class OrganisationResourceFactory {
                         "10",
                         "USD"
                     )
+                ),
+                channelPrices = mapOf(
+                    "getty-id" to DealResource.PriceResource(
+                        "500",
+                        "USD"
+                    )
                 )
             ),
             accessExpiresOn: ZonedDateTime? = null,
