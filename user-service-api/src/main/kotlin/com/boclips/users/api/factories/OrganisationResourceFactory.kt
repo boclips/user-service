@@ -16,9 +16,11 @@ class OrganisationResourceFactory {
             id: String = UUID.randomUUID().toString(),
             accessExpiresOn: ZonedDateTime? = null,
             contentPackageId: String? = null,
-            billing: Boolean? = null,
+            billing: Boolean = false,
             organisationDetails: OrganisationDetailsResource = sampleDetails(),
-            deal: DealResource? = null,
+            deal: DealResource = DealResource(
+                accessExpiresOn = null, contentPackageId = null, billing = false, prices = null
+            ),
             _links: Map<String, Link>? = null
         ) = OrganisationResource(
             id = id,
@@ -63,7 +65,7 @@ class OrganisationResourceFactory {
             ),
             accessExpiresOn: ZonedDateTime? = null,
             contentPackageId: String? = null,
-            billing: Boolean? = null
+            billing: Boolean = false
         ) = DealResource(
             prices = prices,
             accessExpiresOn = accessExpiresOn,

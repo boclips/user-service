@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 data class DealResource(
     val accessExpiresOn: ZonedDateTime?,
     val contentPackageId: String?,
-    val billing: Boolean?,
+    val billing: Boolean,
     val prices: PricesResource?,
 ) {
 
