@@ -478,6 +478,10 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$.deal.prices.videoTypePrices.NEWS.currency", equalTo("USD")))
                 .andExpect(jsonPath("$.deal.prices.videoTypePrices.STOCK.amount", equalTo("0")))
                 .andExpect(jsonPath("$.deal.prices.videoTypePrices.STOCK.currency", equalTo("USD")))
+                .andExpect(jsonPath("$.deal.prices.channelPrices.channel-TED.amount", equalTo("1")))
+                .andExpect(jsonPath("$.deal.prices.channelPrices.channel-TED.currency", equalTo("USD")))
+                .andExpect(jsonPath("$.deal.prices.channelPrices.channel-orange.amount", equalTo("10")))
+                .andExpect(jsonPath("$.deal.prices.channelPrices.channel-orange.currency", equalTo("USD")))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/organisations/${organisation.id.value}")))
                 .andExpect(jsonPath("$._links.edit.href", endsWith("/organisations/${organisation.id.value}")))
         }

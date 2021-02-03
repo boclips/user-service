@@ -62,7 +62,8 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
                     ),
                     channelPrices = mapOf(
                         ChannelId("channel-TED") to PriceFactory.sample(amount = BigDecimal.ONE),
-                        ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.TEN)
+                        ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.TEN),
+                        ChannelId("channel-GME") to PriceFactory.sample(amount = BigDecimal.valueOf(1000))
                     )
                 )
             ),
@@ -84,6 +85,9 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
         assertThat(organisationResource.deal!!.prices!!.videoTypePrices["NEWS"]!!.currency).isEqualTo("USD")
         assertThat(organisationResource.deal!!.prices!!.videoTypePrices["STOCK"]!!.amount).isEqualTo("345")
         assertThat(organisationResource.deal!!.prices!!.videoTypePrices["STOCK"]!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal!!.prices!!.channelPrices["channel-TED"]!!.amount).isEqualTo("1")
+        assertThat(organisationResource.deal!!.prices!!.channelPrices["channel-orange"]!!.amount).isEqualTo("10")
+        assertThat(organisationResource.deal!!.prices!!.channelPrices["channel-GME"]!!.amount).isEqualTo("1000")
         assertThat(organisationResource.organisationDetails.name).isEqualTo(originalOrganisation.name)
         assertThat(organisationResource.organisationDetails.country?.name).isEqualTo(originalOrganisation.address.country?.name)
         assertThat(organisationResource.organisationDetails.state?.name).isEqualTo(originalOrganisation.address.state?.name)

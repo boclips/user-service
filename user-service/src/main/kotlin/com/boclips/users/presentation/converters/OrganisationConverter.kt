@@ -7,7 +7,6 @@ import com.boclips.users.api.response.organisation.OrganisationResource
 import com.boclips.users.api.response.organisation.OrganisationsResource
 import com.boclips.users.api.response.organisation.OrganisationsWrapper
 import com.boclips.users.domain.model.Page
-import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.Prices
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
@@ -30,7 +29,7 @@ class OrganisationConverter(
                 contentPackageId = organisation.deal.contentPackageId?.value,
                 accessExpiresOn = organisation.deal.accessExpiresOn,
                 billing = organisation.deal.billing,
-                prices = organisation.deal.prices?.toResource()
+                prices = organisation.deal.prices?.let { toPriceResource(it) }
             ),
             organisationDetails = OrganisationDetailsConverter().toResource(organisation),
             _links = listOfNotNull(
@@ -56,19 +55,19 @@ class OrganisationConverter(
         )
     }
 
-    private fun Prices.toResource(): PricesResource {
+    private fun toPriceResource(prices: Prices): PricesResource {
         return PricesResource(
-            videoTypePrices = videoTypePrices
-                .entries
-                .map { it.key.name to convertToPriceJsonObject(it.value) }
-                .toMap(),
-            channelPrices = emptyMap()
+            videoTypePrices = prices.videoTypePrices.map { it.key.name to convertToPriceJsonObject(it.value) }.toMap(),
+            channelPrices = prices.channelPrices.map { it.key.value to convertToPriceJsonObject(it.value) }.toMap()
         )
     }
 
     companion object {
 
-        private val format: DecimalFormat = DecimalFormat().also { it.maximumFractionDigits = 2 }
+        private val format: DecimalFormat = DecimalFormat().also {
+            it.maximumFractionDigits = 2
+            it.groupingSize = 0
+        }
 
         private fun convertToPriceJsonObject(price: Prices.Price): PriceResource = PriceResource(
             amount = format.format(price.amount),
