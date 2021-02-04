@@ -16,7 +16,8 @@ sealed class Organisation(
     open val role: String?,
     open val tags: Set<OrganisationTag>,
     open val domain: String?,
-    features: Map<Feature, Boolean>?
+    features: Map<Feature, Boolean>?,
+    open val legacyId: String?
 ) {
 
     val features: Map<Feature, Boolean>? = features
@@ -39,6 +40,7 @@ sealed class Organisation(
         if (tags != other.tags) return false
         if (domain != other.domain) return false
         if (accessExpiryDate != other.accessExpiryDate) return false
+        if (legacyId != other.legacyId) return false
 
         return true
     }
@@ -66,7 +68,8 @@ class School(
     override val domain: String?,
     val district: District?,
     val externalId: ExternalOrganisationId?,
-    features: Map<Feature, Boolean>?
+    features: Map<Feature, Boolean>?,
+    legacyId: String? = null
 ) : Organisation(
     id = id,
     name = name,
@@ -75,7 +78,8 @@ class School(
     role = role,
     tags = tags,
     domain = domain,
-    features = features
+    features = features,
+    legacyId = legacyId
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.SCHOOL
@@ -98,7 +102,8 @@ class District(
     override val role: String?,
     override val domain: String?,
     features: Map<Feature, Boolean>?,
-    val externalId: ExternalOrganisationId?
+    val externalId: ExternalOrganisationId?,
+    legacyId: String? = null
 ) : Organisation(
     id = id,
     name = name,
@@ -107,7 +112,8 @@ class District(
     tags = tags,
     role = role,
     domain = domain,
-    features = features
+    features = features,
+    legacyId = legacyId
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.DISTRICT
@@ -126,7 +132,8 @@ class ApiIntegration(
     override val role: String?,
     override val domain: String?,
     features: Map<Feature, Boolean>?,
-    val allowsOverridingUserIds: Boolean
+    val allowsOverridingUserIds: Boolean,
+    legacyId: String? = null
 ) : Organisation(
     id = id,
     name = name,
@@ -135,7 +142,8 @@ class ApiIntegration(
     tags = tags,
     role = role,
     domain = domain,
-    features = features
+    features = features,
+    legacyId = legacyId
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.API
@@ -155,7 +163,8 @@ class LtiDeployment(
     override val domain: String?,
     features: Map<Feature, Boolean>?,
     val deploymentId: String,
-    val parent: Organisation
+    val parent: Organisation,
+    legacyId: String? = null
 ) : Organisation(
     id = id,
     name = name,
@@ -164,7 +173,8 @@ class LtiDeployment(
     tags = tags,
     role = role,
     domain = domain,
-    features = features
+    features = features,
+    legacyId = legacyId
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.LTI_DEPLOYMENT

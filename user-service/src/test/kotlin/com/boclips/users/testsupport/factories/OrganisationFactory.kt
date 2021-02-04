@@ -122,7 +122,8 @@ class OrganisationFactory {
             domain: String? = null,
             district: District? = null,
             externalId: ExternalOrganisationId? = null,
-            features: Map<Feature, Boolean>? = null
+            features: Map<Feature, Boolean>? = null,
+            legacyId: String? = null
         ): School {
             return School(
                 id = id,
@@ -134,7 +135,8 @@ class OrganisationFactory {
                 externalId = externalId,
                 domain = domain,
                 district = district,
-                features = features
+                features = features,
+                legacyId = legacyId
             )
         }
 

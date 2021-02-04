@@ -136,7 +136,8 @@ class OrganisationDocumentConverterTest {
                     ),
                     channelPrices = mapOf(ChannelId("BBC") to PriceFactory.sample(amount = BigDecimal.TEN))
                 )
-            )
+            ),
+            legacyId = "anIdFromOldPublishersApplication"
         )
         val organisationDocument = OrganisationDocumentConverter.toDocument(organisation)
         val convertedOrganisation =

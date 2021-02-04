@@ -77,7 +77,8 @@ object OrganisationDocumentConverter : KLogging() {
                 domain = organisationDocument.domain,
                 allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false,
                 role = organisationDocument.role,
-                features = features
+                features = features,
+                legacyId = organisationDocument.legacyId
             )
 
             OrganisationType.SCHOOL -> School(
@@ -90,7 +91,8 @@ object OrganisationDocumentConverter : KLogging() {
                 district = organisationDocument.parent?.let { fromDocument(it) as? District? },
                 externalId = externalId,
                 role = organisationDocument.role,
-                features = features
+                features = features,
+                legacyId = organisationDocument.legacyId
             )
 
             OrganisationType.DISTRICT -> District(
@@ -102,7 +104,8 @@ object OrganisationDocumentConverter : KLogging() {
                 domain = organisationDocument.domain,
                 externalId = externalId,
                 role = organisationDocument.role,
-                features = features
+                features = features,
+                legacyId = organisationDocument.legacyId
             )
 
             OrganisationType.LTI_DEPLOYMENT -> LtiDeployment(
@@ -116,6 +119,7 @@ object OrganisationDocumentConverter : KLogging() {
                 role = organisationDocument.role,
                 features = features,
                 parent = organisationDocument.parent!!.let { fromDocument(it) },
+                legacyId = organisationDocument.legacyId
             )
         }
     }
@@ -166,7 +170,8 @@ object OrganisationDocumentConverter : KLogging() {
                     channelPrices = it.channelPrices.map { price -> price.key.value to convertToPriceDocument(price.value) }
                         .toMap()
                 )
-            }
+            },
+            legacyId = organisation.legacyId
         )
     }
 

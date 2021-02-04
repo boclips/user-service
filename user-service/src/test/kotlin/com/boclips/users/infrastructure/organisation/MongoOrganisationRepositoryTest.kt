@@ -2,7 +2,6 @@ package com.boclips.users.infrastructure.organisation
 
 import com.boclips.users.domain.model.Page
 import com.boclips.users.domain.model.access.ContentPackageId
-import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
@@ -16,7 +15,6 @@ import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceBil
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceContentPackageId
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceDomain
 import com.boclips.users.domain.model.organisation.OrganisationUpdate.ReplaceExpiryDate
-import com.boclips.users.domain.model.organisation.Prices
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -27,9 +25,7 @@ import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.sch
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
 import java.time.ZonedDateTime
-import java.util.Currency
 
 class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
@@ -425,6 +421,26 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
 
             assertThat(orgs.items).hasSize(1)
             assertThat(orgs.items.first().id).isEqualTo(noCustomPricesOrg.id)
+        }
+
+        @Test
+        fun `finds an organisation by a legacy organisation ID`() {
+            val idToLookFor = "anIdOfOrgFromLegacyPublishersApp"
+            organisationRepository.save(
+                school(
+                    legacyId = idToLookFor
+                )
+            )
+            organisationRepository.save(
+                school(
+                    legacyId = "someOtherOrgFromLegacyPublishersApp"
+                )
+            )
+
+            val organisation = organisationRepository.findByLegacyId(idToLookFor)
+
+            assertThat(organisation!!.legacyId).isNotNull()
+            assertThat(organisation.legacyId).isEqualTo(idToLookFor)
         }
     }
 

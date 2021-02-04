@@ -129,6 +129,10 @@ class MongoOrganisationRepository(
             ?.let { it as? School? }
     }
 
+    override fun findByLegacyId(legacyId: String): Organisation? {
+        return collection().findOne(OrganisationDocument::legacyId eq legacyId)?.convert()
+    }
+
     override fun findOrganisations(
         name: String?,
         countryCode: String?,
