@@ -93,7 +93,11 @@ class UserCreationService(
 
     private fun createLtiDeploymentUser(externalUserId: String, organisation: Organisation): User {
         return create(
-            Identity(id = UserId(), username = externalUserId, createdAt = ZonedDateTime.now()),
+            Identity(
+                id = UserId(),
+                username = externalUserId,
+                createdAt = ZonedDateTime.now()
+            ),
             organisation
         )
     }

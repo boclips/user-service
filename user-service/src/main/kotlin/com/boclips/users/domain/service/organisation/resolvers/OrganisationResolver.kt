@@ -9,10 +9,12 @@ interface OrganisationResolver {
 
     companion object {
         fun create(organisationRepository: OrganisationRepository): OrganisationResolver {
+            val legacyOrganisationResolver = LegacyOrganisationResolver(organisationRepository)
+            val emailResolver = EmailDomainOrganisationResolver(organisationRepository)
             val roleBasedResolver = RoleOrganisationResolver(organisationRepository)
             val fallbackResolver = FallbackOrganisationResolver(organisationRepository)
-            val emailResolver = EmailDomainOrganisationResolver(organisationRepository)
             return OrganisationResolverChain(
+                legacyOrganisationResolver,
                 emailResolver,
                 roleBasedResolver,
                 fallbackResolver

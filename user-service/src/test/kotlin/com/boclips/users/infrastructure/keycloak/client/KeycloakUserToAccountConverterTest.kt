@@ -23,6 +23,7 @@ class KeycloakUserToAccountConverterTest {
             this.isEmailVerified = true
             this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_HQ", "uma_something")
             this.createdTimestamp = Instant.now().toEpochMilli()
+            this.attributes = mapOf("legacyOrganisationId" to listOf(null, "pearson-org-legacy-id"))
         }
     }
 
@@ -44,6 +45,7 @@ class KeycloakUserToAccountConverterTest {
                 ZoneOffset.UTC
             )
         )
+        assertThat(convertedUser.legacyOrganisationId).isEqualTo("pearson-org-legacy-id")
     }
 
     @Test
@@ -102,5 +104,35 @@ class KeycloakUserToAccountConverterTest {
 
         assertThat(convertedUser.email).isEqualTo(user.username)
         assertThat(convertedUser.username).isEqualTo(user.username)
+    }
+
+    @Test
+    fun `nullable attributes are converted to empty map`() {
+        val user = UserRepresentation().apply {
+            this.id = UUID.randomUUID().toString()
+            this.username = "ignorethis@gmail.com"
+            this.createdTimestamp = Instant.now().toEpochMilli()
+            this.realmRoles = emptyList()
+            this.attributes = null
+        }
+
+        val convertedUser = userConverter.convert(user)
+
+        assertThat(convertedUser.legacyOrganisationId).isNull()
+    }
+
+    @Test
+    fun `resolves legacy organisation ID to null when no appropriate attribute is defined`() {
+        val user = UserRepresentation().apply {
+            this.id = UUID.randomUUID().toString()
+            this.username = "ignorethis@gmail.com"
+            this.createdTimestamp = Instant.now().toEpochMilli()
+            this.realmRoles = emptyList()
+            this.attributes = mapOf("anything" to listOf("somethingElse"))
+        }
+
+        val convertedUser = userConverter.convert(user)
+
+        assertThat(convertedUser.legacyOrganisationId).isNull()
     }
 }

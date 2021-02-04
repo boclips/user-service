@@ -17,7 +17,8 @@ class OrganisationResolverIntegrationTest : AbstractSpringIntegrationTest() {
                 name = "Email",
                 role = null,
                 domain = "example.com",
-                tags = emptySet()
+                tags = emptySet(),
+                legacyId = null
             )
         )
         saveOrganisation(
@@ -25,7 +26,8 @@ class OrganisationResolverIntegrationTest : AbstractSpringIntegrationTest() {
                 name = "Role",
                 role = "ROLE_X",
                 domain = null,
-                tags = emptySet()
+                tags = emptySet(),
+                legacyId = null
             )
         )
         saveOrganisation(
@@ -33,7 +35,17 @@ class OrganisationResolverIntegrationTest : AbstractSpringIntegrationTest() {
                 name = "Default",
                 role = null,
                 domain = null,
-                tags = setOf(OrganisationTag.DEFAULT_ORGANISATION)
+                tags = setOf(OrganisationTag.DEFAULT_ORGANISATION),
+                legacyId = null
+            )
+        )
+        saveOrganisation(
+            district(
+                name = "OrganisationWithLegacyCounterpart",
+                role = null,
+                domain = null,
+                tags = emptySet(),
+                legacyId = "idOfOrgFromLegacyApplication"
             )
         )
     }
@@ -69,5 +81,17 @@ class OrganisationResolverIntegrationTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisationResolver.resolve(identity)).isNotNull
         assertThat(organisationResolver.resolve(identity)?.name).isEqualTo("Default")
+    }
+
+    @Test
+    fun `organisation with legacy counterpart is returned when legacy ID is defined`() {
+        val identity = IdentityFactory.sample(
+            username = "abc",
+            roles = emptyList(),
+            legacyOrganisationId = "idOfOrgFromLegacyApplication"
+        )
+
+        assertThat(organisationResolver.resolve(identity)).isNotNull
+        assertThat(organisationResolver.resolve(identity)?.name).isEqualTo("OrganisationWithLegacyCounterpart")
     }
 }

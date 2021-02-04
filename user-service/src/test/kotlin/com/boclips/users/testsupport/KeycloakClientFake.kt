@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.user.UserSessions
 import com.boclips.users.domain.service.user.IdentityProvider
 import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.infrastructure.keycloak.UserAlreadyExistsException
+import com.boclips.users.testsupport.factories.IdentityFactory
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -21,8 +22,8 @@ class KeycloakClientFake : IdentityProvider, SessionProvider {
         }
 
         val id = UUID.randomUUID().toString()
-        fakeUsers[id] = Identity(
-            id = UserId(value = id),
+        fakeUsers[id] = IdentityFactory.sample(
+            id = id,
             username = email,
             roles = listOfNotNull(role),
             createdAt = ZonedDateTime.now()

@@ -23,7 +23,18 @@ class KeycloakUserToAccountConverter {
             createdAt = ZonedDateTime.ofInstant(
                 Instant.ofEpochMilli(userRepresentation.createdTimestamp),
                 ZoneOffset.UTC
-            )
+            ),
+            legacyOrganisationId = legacyOrganisationId(userRepresentation)
         )
+    }
+
+    private fun legacyOrganisationId(userRepresentation: UserRepresentation): String? {
+        val attributes = userRepresentation.attributes?.mapValues { (_, value) -> value.filterNotNull() } ?: emptyMap()
+        return attributes[LEGACY_ORGANISATION_ID_KEY]?.firstOrNull()
+    }
+
+    companion object {
+
+        const val LEGACY_ORGANISATION_ID_KEY = "legacyOrganisationId"
     }
 }

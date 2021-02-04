@@ -3,6 +3,7 @@ package com.boclips.users.application.commands
 import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -15,8 +16,8 @@ class GetOrImportUserIntegrationTest : AbstractSpringIntegrationTest() {
         val userId = UserId(UUID.randomUUID().toString())
 
         keycloakClientFake.createAccount(
-            Identity(
-                id = userId,
+            IdentityFactory.sample(
+                id = userId.value,
                 username = "service-account@somewhere.com",
                 createdAt = ZonedDateTime.now()
             )

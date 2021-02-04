@@ -808,8 +808,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val authority = "TEST_ORGANISATION"
             val organisationMatchingRole = "ROLE_$authority"
             keycloakClientFake.createAccount(
-                Identity(
-                    id = UserId(userId),
+                IdentityFactory.sample(
+                    id = userId,
                     username = "service-account@somewhere.com",
                     roles = listOf(organisationMatchingRole),
                     createdAt = ZonedDateTime.now()

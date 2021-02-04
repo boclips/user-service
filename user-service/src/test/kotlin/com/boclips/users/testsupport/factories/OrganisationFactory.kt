@@ -71,7 +71,8 @@ class OrganisationFactory {
             domain: String? = null,
             tags: Set<OrganisationTag> = emptySet(),
             externalId: ExternalOrganisationId? = null,
-            features: Map<Feature, Boolean>? = null
+            features: Map<Feature, Boolean>? = null,
+            legacyId: String? = null
         ): District {
             return District(
                 id = id,
@@ -82,7 +83,8 @@ class OrganisationFactory {
                 role = role,
                 externalId = externalId,
                 domain = domain,
-                features = features
+                features = features,
+                legacyId = legacyId
             )
         }
 

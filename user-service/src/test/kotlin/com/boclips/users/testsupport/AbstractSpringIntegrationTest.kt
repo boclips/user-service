@@ -23,6 +23,7 @@ import com.boclips.users.infrastructure.MongoDatabase
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.videos.api.httpclient.test.fakes.SubjectsClientFake
 import com.boclips.videos.api.request.subject.CreateSubjectRequest
 import com.github.tomakehurst.wiremock.WireMockServer
@@ -163,8 +164,8 @@ abstract class AbstractSpringIntegrationTest {
 
     fun saveAccount(user: User): String {
         keycloakClientFake.createAccount(
-            Identity(
-                id = user.id,
+            IdentityFactory.sample(
+                id = user.id.value,
                 username = user.identity.email ?: user.identity.username,
                 roles = listOf("ROLE_TEACHER"),
                 createdAt = user.identity.createdAt

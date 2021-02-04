@@ -40,8 +40,12 @@ open class KeycloakClient(
         return try {
             user = keycloak.getUserById(id.value)!!
             user.attributes?.let { attrs ->
-                attrs["legacyUserId"]?.let { logger.info { it.first() } }
-                attrs["legacyOrganisationId"]?.let { logger.info { it.first() } }
+                attrs["legacyUserId"]?.let { logger.info {
+                    "Legacy user ID [${it.first()}] of user with ID [${user.id}]"
+                } }
+                attrs["legacyOrganisationId"]?.let { logger.info {
+                    "Legacy organisation ID [${it.first()}] of user with ID [${user.id}]"
+                } }
             }
 
             userConverter.convert(user)

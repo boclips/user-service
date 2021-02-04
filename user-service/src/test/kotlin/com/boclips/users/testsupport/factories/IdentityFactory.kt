@@ -10,12 +10,14 @@ class IdentityFactory {
             id: String = UserId().value,
             username: String = "joe@dough.com",
             roles: List<String> = emptyList(),
-            createdAt: ZonedDateTime = ZonedDateTime.now()
+            createdAt: ZonedDateTime = ZonedDateTime.now(),
+            legacyOrganisationId: String? = null
         ) = Identity(
             id = UserId(value = id),
             username = username,
             roles = roles,
-            createdAt = createdAt
+            createdAt = createdAt,
+            legacyOrganisationId = legacyOrganisationId
         )
     }
 }
