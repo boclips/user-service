@@ -127,6 +127,26 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
         assertThat(event.userId).isEqualTo("testUser")
     }
 
+
+    @Test
+    fun `platform interaction is tracked and boclips-referer has precedence over referer for setting url`() {
+        saveUser(UserFactory.sample(id = "testUser"))
+
+        mvc.perform(
+            MockMvcRequestBuilders.post("/v1/events/platform-interaction?subtype=HELP_CLICKED").asUser("testUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Referer", "https://teachers.boclips.com")
+                .header("Boclips-Referer", "https://teachers.boclips.com/videos/1234?referer=me")
+        )
+            .andExpect(MockMvcResultMatchers.status().isCreated)
+
+        val event = eventBus.getEventOfType(PlatformInteractedWith::class.java)
+
+        assertThat(event.url).isEqualTo("https://teachers.boclips.com/videos/1234?referer=me")
+        assertThat(event.subtype).isEqualTo("HELP_CLICKED")
+        assertThat(event.userId).isEqualTo("testUser")
+    }
+
     @Test
     fun `anonymous platform interaction is tracked and sets url from referer`() {
         saveUser(UserFactory.sample(id = "testUser"))
