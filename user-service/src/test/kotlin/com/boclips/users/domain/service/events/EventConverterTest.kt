@@ -1,5 +1,6 @@
 package com.boclips.users.domain.service.events
 
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
@@ -43,12 +44,19 @@ class EventConverterTest {
                     Subject(
                         id = SubjectId(
                             "subject-id"
-                        ), name = "maths"
+                        ),
+                        name = "maths"
                     )
                 ),
                 role = "PARENT",
                 ages = listOf(5, 6, 7, 8),
                 school = OrganisationFactory.school(name = "School name")
+            ),
+            organisation = OrganisationFactory.school(
+                features = mapOf(
+                    Feature.LTI_COPY_RESOURCE_LINK to false,
+                    Feature.TEACHERS_SUBJECTS to true
+                )
             )
         )
 
@@ -67,6 +75,10 @@ class EventConverterTest {
         assertThat(eventUser.profile.marketingTracking?.utmMedium).isEqualTo("telekinesis")
         assertThat(eventUser.profile.marketingTracking?.utmSource).isEqualTo("AWS")
         assertThat(eventUser.profile.marketingTracking?.utmTerm).isEqualTo("easy")
+
+        assertThat(eventUser.organisation.features).isNotNull()
+        assertThat(eventUser.organisation.features["LTI_COPY_RESOURCE_LINK"]).isFalse()
+        assertThat(eventUser.organisation.features["TEACHERS_SUBJECTS"]).isTrue()
     }
 
     @Test
@@ -96,6 +108,23 @@ class EventConverterTest {
         assertThat(eventOrganisation.deal.expiresAt).isEqualTo(now)
         assertThat(eventOrganisation.deal.billing).isTrue()
         assertThat(eventOrganisation.tags).containsExactly("DESIGN_PARTNER")
+    }
+
+    @Test
+    fun `converts organisation's declared features and uses default values for missing ones`() {
+        val organisation = OrganisationFactory.school(
+            features = mapOf(Feature.LTI_COPY_RESOURCE_LINK to true)
+        )
+
+        val eventOrganisation = EventConverter().toEventOrganisation(organisation)
+
+        assertThat(eventOrganisation.features["LTI_COPY_RESOURCE_LINK"]).isTrue()
+        assertThat(eventOrganisation.features["LTI_SLS_TERMS_BUTTON"]).isFalse()
+        assertThat(eventOrganisation.features["TEACHERS_HOME_BANNER"]).isTrue()
+        assertThat(eventOrganisation.features["TEACHERS_HOME_SUGGESTED_VIDEOS"]).isTrue()
+        assertThat(eventOrganisation.features["TEACHERS_HOME_PROMOTED_COLLECTIONS"]).isTrue()
+        assertThat(eventOrganisation.features["TEACHERS_SUBJECTS"]).isTrue()
+        assertThat(eventOrganisation.features["USER_DATA_HIDDEN"]).isFalse()
     }
 
     @Test

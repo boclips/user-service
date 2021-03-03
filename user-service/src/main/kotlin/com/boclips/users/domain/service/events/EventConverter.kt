@@ -58,6 +58,7 @@ class EventConverter {
             .deal(toEventDeal(organisation.deal))
             .tags(organisation.tags.map { it.name }.toSet())
             .parent(parent)
+            .features(organisation.features?.mapKeys { (feature, _) -> feature.name } ?: emptyMap())
             .build()
     }
 
