@@ -23,7 +23,7 @@ class CacheableSubjectsClientIntegrationTest : AbstractSpringIntegrationTest() {
         subjectsClient.add(SubjectResource(id = "1", name = "maths"))
         val cachedSubjects = cacheableSubjectsClient.getSubjects()
 
-        subjectsClient.add(SubjectResource(id = "1", name = "biology"))
+        subjectsClient.add(SubjectResource(id = "2", name = "biology"))
 
         await().untilAsserted {
             assertThat(cachedSubjects).isNotEqualTo(cacheableSubjectsClient.getSubjects())
