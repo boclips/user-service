@@ -3,6 +3,7 @@ package com.boclips.users.testsupport.factories
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.user.ExternalIdentity
 import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.Profile
 import com.boclips.users.domain.model.user.TeacherPlatformAttributes
@@ -22,7 +23,8 @@ class UserFactory {
             teacherPlatformAttributes: TeacherPlatformAttributes? = TeacherPlatformAttributesFactory.sample(),
             organisation: Organisation? = null,
             shareCode: String? = "DFGY",
-            accessExpiresOn: ZonedDateTime? = null
+            accessExpiresOn: ZonedDateTime? = null,
+            externalIdentity: ExternalIdentity? = null
         ) = User(
             identity = identity,
             profile = profile,
@@ -32,7 +34,8 @@ class UserFactory {
             marketingTracking = marketing,
             organisation = organisation,
             shareCode = shareCode,
-            accessExpiresOn = accessExpiresOn
+            accessExpiresOn = accessExpiresOn,
+            externalIdentity = externalIdentity
         )
 
         fun sample(

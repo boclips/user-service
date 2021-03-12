@@ -50,7 +50,8 @@ class UserDocumentConverterTest {
             accessExpiresOn = null,
             createdAt = Instant.now(),
             role = "TEACHER",
-            profileSchool = OrganisationDocumentFactory.sample(name = "School")
+            profileSchool = OrganisationDocumentFactory.sample(name = "School"),
+            externalIdentity = ExternalIdentityDocument(id = "external-id-123")
         )
 
         val convertedUser = userDocumentConverter.convertToUser(document)
@@ -75,6 +76,7 @@ class UserDocumentConverterTest {
         assertThat(convertedUser.shareCode).isEqualTo("EFG")
         assertThat(convertedUser.accessExpiresOn).isNull()
         assertThat(convertedUser.profile!!.role).isEqualTo("TEACHER")
+        assertThat(convertedUser.externalIdentity!!.id.value).isEqualTo("external-id-123")
     }
 
     @Test

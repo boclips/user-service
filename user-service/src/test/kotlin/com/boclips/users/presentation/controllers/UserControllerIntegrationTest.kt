@@ -13,7 +13,6 @@ import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
-import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -165,8 +164,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     inner class CreateApiUserScenarios {
 
         @Test
-        fun `can create an api user with given organisation`() {
-            val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
+        fun `can create an api user with given organisation and externalUserId`() {
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration(name = "guru customer"))
 
             mvc.perform(
                 post("/v1/users")
@@ -177,19 +176,22 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     {
                      "apiUserId": "1",
                      "organisationId": "${organisation.id.value}",
-                     "type": "apiUser"
+                     "type": "apiUser",
+                     "externalUserId": "guru-client-user-id"
                      }
                         """.trimIndent()
                     )
             )
                 .andExpect(status().isCreated)
 
-            assertThat(userRepository.findById(UserId("1"))).isNotNull
-            assertThat(userRepository.findById(UserId("1"))?.organisation).isEqualTo(organisation)
+            val user = userRepository.findById(UserId("1"))
+            assertThat(user).isNotNull
+            assertThat(user?.organisation).isEqualTo(organisation)
+            assertThat(user?.externalIdentity?.id?.value).isEqualTo("guru-client-user-id")
         }
 
         @Test
-        fun `returns no content when putting a user that already exists`() {
+        fun `returns no content when posting a user that already exists`() {
             val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
             saveUser(UserFactory.sample("1"))
 
@@ -202,7 +204,8 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     {
                     "apiUserId": "1",
                      "organisationId": "${organisation.id.value}",
-                     "type": "apiUser"
+                     "type": "apiUser",
+                     "externalUserId": "external-user-id"
                      }
                         """.trimIndent()
                     )
@@ -213,7 +216,28 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `returns 403 when trying to create api user without 'CREATE_API_USERS' role`() {
             val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
-            saveUser(UserFactory.sample("1"))
+
+            mvc.perform(
+                post("/v1/users")
+                    .asUserWithRoles(id = "service-account-gateway", roles = emptyArray())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                    {
+                    "apiUserId": "1",
+                     "organisationId": "${organisation.id.value}",
+                     "type": "apiUser",
+                     "externalUserId": "external-user-id"
+                     }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `returns 400 when not sending externalUserId in request`() {
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
 
             mvc.perform(
                 post("/v1/users")
@@ -229,7 +253,47 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         """.trimIndent()
                     )
             )
-                .andExpect(status().isForbidden)
+                .andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `returns 400 when not sending apiUserId in request`() {
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration())
+
+            mvc.perform(
+                post("/v1/users")
+                    .asUserWithRoles(id = "service-account-gateway", roles = emptyArray())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                    {
+                    "externalUserId": "1",
+                     "organisationId": "${organisation.id.value}",
+                     "type": "apiUser"
+                     }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `returns 400 when not sending organisationId in request`() {
+            mvc.perform(
+                post("/v1/users")
+                    .asUserWithRoles(id = "service-account-gateway", roles = emptyArray())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                    {
+                    "apiUserId": "1",
+                    "externalUserId": "1",
+                     "type": "apiUser"
+                     }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isBadRequest)
         }
     }
 

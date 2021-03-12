@@ -23,7 +23,8 @@ data class UserDocument(
     var createdAt: Instant,
     var hasLifetimeAccess: Boolean,
     var role: String?,
-    var profileSchool: OrganisationDocument?
+    var profileSchool: OrganisationDocument?,
+    val externalIdentity: ExternalIdentityDocument?
 ) {
 
     companion object {
@@ -52,7 +53,8 @@ data class UserDocument(
                 createdAt = user.identity.createdAt.toInstant(),
                 hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false,
                 role = user.profile?.role,
-                profileSchool = user.profile?.school?.let(OrganisationDocumentConverter::toDocument)
+                profileSchool = user.profile?.school?.let(OrganisationDocumentConverter::toDocument),
+                externalIdentity = user.externalIdentity?.let { ExternalIdentityDocument(it.id.value) }
             )
         }
     }

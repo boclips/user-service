@@ -21,12 +21,15 @@ class CreateApiUserIntegrationTest : AbstractSpringIntegrationTest() {
         createApiUser(
             createApiUserRequest = CreateUserRequest.CreateApiUserRequest(
                 apiUserId = "a-user-id",
-                organisationId = organisation.id.value
+                organisationId = organisation.id.value,
+                externalUserId = "external-user-id"
             )
         )
 
-        assertThat(userRepository.findById(UserId("a-user-id"))).isNotNull
-        assertThat(userRepository.findById(UserId("a-user-id"))?.organisation).isEqualTo(organisation)
+        val user = userRepository.findById(UserId("a-user-id"))!!
+        assertThat(user).isNotNull
+        assertThat(user.organisation).isEqualTo(organisation)
+        assertThat(user.externalIdentity?.id?.value).isEqualTo("external-user-id")
     }
 
     @Test
@@ -38,7 +41,8 @@ class CreateApiUserIntegrationTest : AbstractSpringIntegrationTest() {
             createApiUser(
                 createApiUserRequest = CreateUserRequest.CreateApiUserRequest(
                     apiUserId = "a-user-id",
-                    organisationId = organisation.id.value
+                    organisationId = organisation.id.value,
+                    externalUserId = "hello"
                 )
             )
         }

@@ -15,6 +15,7 @@ class User(
     val analyticsId: AnalyticsId? = null,
     val organisation: Organisation? = null,
     val shareCode: String? = null,
+    val externalIdentity: ExternalIdentity? = null,
     accessExpiresOn: ZonedDateTime?
 ) {
     val id get() = this.identity.id

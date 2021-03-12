@@ -2,6 +2,8 @@ package com.boclips.users.domain.service.user
 
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
+import com.boclips.users.domain.model.user.ExternalIdentity
+import com.boclips.users.domain.model.user.ExternalUserId
 import com.boclips.users.domain.model.user.NewTeacher
 import com.boclips.users.domain.model.user.User
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -51,6 +53,19 @@ class UserCreationServiceIntegrationTest : AbstractSpringIntegrationTest() {
             utmMedium = ""
         )
     )
+
+    @Test
+    fun `create user with external identity`() {
+        val createdUser = userCreationService.create(
+            identity = IdentityFactory.sample(),
+            externalIdentity = ExternalIdentity(id = ExternalUserId("external-user-id")),
+            organisation = OrganisationFactory.apiIntegration()
+        )
+
+        val retrievedUser = userRepository.findById(createdUser.id)
+
+        assertThat(retrievedUser!!.externalIdentity!!.id.value).isEqualTo("external-user-id")
+    }
 
     @Test
     fun `create teacher`() {

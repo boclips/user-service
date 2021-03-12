@@ -11,7 +11,11 @@ class CreateUserRequestTest {
 
     @Test
     fun `will encode the type for CreateApiUserRequest`() {
-        val request = CreateUserRequest.CreateApiUserRequest(organisationId = "abc", apiUserId = "id")
+        val request = CreateUserRequest.CreateApiUserRequest(
+            organisationId = "abc",
+            apiUserId = "id",
+            externalUserId = "external-user-id"
+        )
 
         Assertions.assertThat(mapper.writeValueAsString(request)).contains("\"type\":\"apiUser\"")
     }

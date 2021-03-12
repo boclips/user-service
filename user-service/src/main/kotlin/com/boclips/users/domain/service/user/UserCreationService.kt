@@ -4,6 +4,7 @@ import com.boclips.users.application.commands.GenerateShareCode
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.user.ExternalIdentity
 import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.NewTeacher
 import com.boclips.users.domain.model.user.TeacherPlatformAttributes
@@ -69,6 +70,7 @@ class UserCreationService(
     fun create(
         identity: Identity,
         organisation: Organisation?,
+        externalIdentity: ExternalIdentity? = null,
         setup: (defaults: User) -> User = { user -> user }
     ): User {
         logger.info { "Creating user ${identity.id.value} with roles [${identity.roles.joinToString()}]" }
@@ -82,7 +84,8 @@ class UserCreationService(
             analyticsId = null,
             organisation = organisation,
             accessExpiresOn = null,
-            shareCode = generateShareCode()
+            shareCode = generateShareCode(),
+            externalIdentity = externalIdentity
         )
             .let(setup)
             .let(userRepository::create)

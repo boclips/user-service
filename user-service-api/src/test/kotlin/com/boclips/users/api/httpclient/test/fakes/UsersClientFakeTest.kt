@@ -72,7 +72,13 @@ class UsersClientFakeTest {
     @Test
     fun `can create api user`() {
         val fake = UsersClientFake()
-        fake.createApiUser(CreateUserRequest.CreateApiUserRequest(apiUserId = "1", organisationId = "123"))
+        fake.createApiUser(
+            CreateUserRequest.CreateApiUserRequest(
+                apiUserId = "1",
+                organisationId = "123",
+                externalUserId = "external-user-id"
+            )
+        )
         val userResource = fake.getUser("1")
         assertThat(userResource.id).isEqualTo("1")
         assertThat(userResource.organisation!!.id).isEqualTo("123")

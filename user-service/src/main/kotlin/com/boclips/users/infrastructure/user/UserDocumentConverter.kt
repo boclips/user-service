@@ -4,6 +4,8 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.model.user.ExternalIdentity
+import com.boclips.users.domain.model.user.ExternalUserId
 import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.Profile
 import com.boclips.users.domain.model.user.TeacherPlatformAttributes
@@ -55,7 +57,8 @@ data class UserDocumentConverter(
             ),
             organisation = userDocument.organisation?.let(OrganisationDocumentConverter::fromDocument),
             accessExpiresOn = userDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
-            shareCode = userDocument.shareCode
+            shareCode = userDocument.shareCode,
+            externalIdentity = userDocument.externalIdentity?.let { ExternalIdentity(id = ExternalUserId(it.id)) }
         )
     }
 

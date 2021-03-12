@@ -1,6 +1,7 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.infrastructure.organisation.OrganisationDocument
+import com.boclips.users.infrastructure.user.ExternalIdentityDocument
 import com.boclips.users.infrastructure.user.MarketingTrackingDocument
 import com.boclips.users.infrastructure.user.UserDocument
 import java.time.Instant
@@ -32,7 +33,8 @@ class UserDocumentFactory {
             createdAt: Instant = Instant.now(),
             hasLifetimeAccess: Boolean = false,
             role: String = "TEACHER",
-            profileSchool: OrganisationDocument? = null
+            profileSchool: OrganisationDocument? = null,
+            externalIdentity: ExternalIdentityDocument? = null
         ): UserDocument = UserDocument(
             _id = id,
             firstName = firstName,
@@ -51,7 +53,8 @@ class UserDocumentFactory {
             createdAt = createdAt,
             hasLifetimeAccess = hasLifetimeAccess,
             role = role,
-            profileSchool = profileSchool
+            profileSchool = profileSchool,
+            externalIdentity = externalIdentity
         )
     }
 }

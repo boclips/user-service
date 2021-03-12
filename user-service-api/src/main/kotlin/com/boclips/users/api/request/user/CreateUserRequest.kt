@@ -51,7 +51,13 @@ sealed class CreateUserRequest(
 
     @JsonTypeName("apiUser")
     data class CreateApiUserRequest(
+        @field:NotEmpty(message = "apiUserId is required")
         val apiUserId: String,
-        val organisationId: String
+
+        @field:NotEmpty(message = "organisationId is required")
+        val organisationId: String,
+
+        @field:NotEmpty(message = "externalUserId is required")
+        val externalUserId: String
     ) : CreateUserRequest()
 }
