@@ -8,6 +8,8 @@ import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
+import com.boclips.users.domain.model.user.ExternalIdentity
+import com.boclips.users.domain.model.user.ExternalUserId
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.MarketingTrackingFactory
@@ -57,12 +59,15 @@ class EventConverterTest {
                     Feature.LTI_COPY_RESOURCE_LINK to false,
                     Feature.TEACHERS_SUBJECTS to true
                 )
-            )
+            ),
+            externalIdentity = ExternalIdentity(id = ExternalUserId(value = "external-id-1"))
         )
 
         val eventUser = EventConverter().toEventUser(user)
 
         assertThat(eventUser.createdAt).isEqualTo("2020-03-20T10:11:12Z")
+        assertThat(eventUser.externalUserId).isEqualTo("external-id-1")
+
         assertThat(eventUser.profile.firstName).isEqualTo("John")
         assertThat(eventUser.profile.lastName).isEqualTo("Johnson")
         assertThat(eventUser.profile.hasOptedIntoMarketing).isEqualTo(false)
@@ -142,7 +147,6 @@ class EventConverterTest {
 
     @Test
     fun `convert LTI deployment organisation to event`() {
-        val now = ZonedDateTime.now()
         val organisation = OrganisationFactory.ltiDeployment(
             tags = setOf(OrganisationTag.DEFAULT_ORGANISATION),
             name = "my-deployment",

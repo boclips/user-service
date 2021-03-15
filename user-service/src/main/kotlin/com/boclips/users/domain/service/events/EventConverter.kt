@@ -42,6 +42,7 @@ class EventConverter {
             .profile(profile)
             .isBoclipsEmployee(user.identity.isBoclipsEmployee())
             .organisation(user.organisation?.let(this::toEventOrganisation))
+            .externalUserId(user.externalIdentity?.id?.value)
             .build()
     }
 

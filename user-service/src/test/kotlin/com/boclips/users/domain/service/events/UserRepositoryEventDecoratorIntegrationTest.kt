@@ -6,6 +6,8 @@ import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.OrganisationUpdate
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
+import com.boclips.users.domain.model.user.ExternalIdentity
+import com.boclips.users.domain.model.user.ExternalUserId
 import com.boclips.users.domain.model.user.UserUpdate
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -23,12 +25,14 @@ class UserRepositoryEventDecoratorIntegrationTest : AbstractSpringIntegrationTes
             organisationRepository.save(OrganisationFactory.school())
         val user = userRepository.create(
             UserFactory.sample(
-                organisation = organisation
+                organisation = organisation,
+                externalIdentity = ExternalIdentity(id = ExternalUserId("external-id-4"))
             )
         )
 
         val event = eventBus.getEventOfType(UserCreated::class.java)
         assertThat(event.user.id).isEqualTo(user.id.value)
+        assertThat(event.user.externalUserId).isEqualTo("external-id-4")
         assertThat(event.user.organisation.id).isEqualTo(organisation.id.value)
     }
 
