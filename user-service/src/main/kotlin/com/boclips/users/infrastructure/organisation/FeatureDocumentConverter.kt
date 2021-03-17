@@ -13,6 +13,7 @@ object FeatureDocumentConverter : KLogging() {
             FeatureKey.TEACHERS_HOME_PROMOTED_COLLECTIONS -> Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS
             FeatureKey.TEACHERS_SUBJECTS -> Feature.TEACHERS_SUBJECTS
             FeatureKey.USER_DATA_HIDDEN -> Feature.USER_DATA_HIDDEN
+            FeatureKey.LTI_RESPONSIVE_VIDEO_CARD -> Feature.LTI_RESPONSIVE_VIDEO_CARD
         }
 
     fun toDocument(feature: Feature): FeatureKey =
@@ -24,5 +25,6 @@ object FeatureDocumentConverter : KLogging() {
             Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS -> FeatureKey.TEACHERS_HOME_PROMOTED_COLLECTIONS
             Feature.TEACHERS_SUBJECTS -> FeatureKey.TEACHERS_SUBJECTS
             Feature.USER_DATA_HIDDEN -> FeatureKey.USER_DATA_HIDDEN
+            Feature.LTI_RESPONSIVE_VIDEO_CARD -> FeatureKey.LTI_RESPONSIVE_VIDEO_CARD
         }
 }
