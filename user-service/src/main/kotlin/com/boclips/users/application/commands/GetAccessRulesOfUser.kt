@@ -10,9 +10,9 @@ class GetAccessRulesOfUser(
     private val getOrImportUser: GetOrImportUser,
     private val accessRuleService: AccessRuleService
 ) {
-    operator fun invoke(userId: String): List<AccessRule> {
+    operator fun invoke(userId: String, client: String? = null): List<AccessRule> {
         val user = getOrImportUser(UserId(value = userId))
 
-        return accessRuleService.forOrganisation(user.organisation)
+        return accessRuleService.forOrganisation(user.organisation, client)
     }
 }

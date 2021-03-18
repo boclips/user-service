@@ -78,7 +78,8 @@ class UserLinkBuilder :
         return if (currentUserHasAnyRole(UserRoles.VIEW_ACCESS_RULES)) {
             WebMvcLinkBuilder.linkTo(
                 WebMvcLinkBuilder.methodOn(UserController::class.java).fetchAccessRulesOfUser(
-                    userId?.value
+                    userId?.value,
+                    null
                 )
             )
                 .withRel("accessRules")

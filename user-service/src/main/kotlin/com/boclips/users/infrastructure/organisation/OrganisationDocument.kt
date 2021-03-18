@@ -22,6 +22,7 @@ data class OrganisationDocument(
     val tags: Set<String>? = null,
     val billing: Boolean? = null,
     val contentPackageId: String? = null,
+    val contentPackageByClient: Map<String, String>? = null,
     val features: Map<FeatureKey, Boolean>?,
     val prices: CustomPricesDocument?,
     val legacyId: String? = null

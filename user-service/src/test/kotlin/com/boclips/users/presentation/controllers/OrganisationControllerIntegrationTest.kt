@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Prices
@@ -444,7 +445,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     allowsOverridingUserId = true,
                     role = "ROLE_TEST_ORG",
                     deal = deal(
-                        contentPackageId = contentPackage.id,
+                        contentAccess = ContentAccess.SimpleAccess(contentPackage.id),
                         prices = Prices(
                             videoTypePrices = mapOf(
                                 VideoType.INSTRUCTIONAL to PriceFactory.sample(amount = BigDecimal.ONE),
@@ -496,7 +497,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     allowsOverridingUserId = true,
                     role = "ROLE_TEST_ORG",
                     deal = deal(
-                        contentPackageId = contentPackage.id,
+                        contentAccess = ContentAccess.SimpleAccess(contentPackage.id),
                         prices = null
                     )
                 )

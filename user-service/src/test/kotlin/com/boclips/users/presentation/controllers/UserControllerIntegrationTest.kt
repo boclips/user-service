@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.security.utils.Client
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.AccessRuleId
@@ -8,9 +9,11 @@ import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoId
+import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import com.boclips.users.domain.model.user.User
@@ -21,6 +24,7 @@ import com.boclips.users.testsupport.asBoclipsService
 import com.boclips.users.testsupport.asTeacher
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
+import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -840,7 +844,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveContentPackage(contentPackage)
             val organisation =
-                saveOrganisation(OrganisationFactory.apiIntegration(deal = deal(contentPackageId = contentPackage.id)))
+                saveOrganisation(OrganisationFactory.apiIntegration(deal = deal(contentAccess = ContentAccess.SimpleAccess(contentPackage.id))))
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
@@ -867,6 +871,67 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
 
         @Test
+        fun `can get the access rules that are assigned to a user based on user's client`() {
+            val teachersContentPackage = saveContentPackage(
+                ContentPackage(
+                    name = "teachers content package",
+                    id = ContentPackageId(ObjectId.get().toHexString()),
+                    accessRules = listOf(AccessRuleFactory.sampleIncludedCollectionsAccessRule(name = "teachers rules"))
+                )
+            )
+            val hqContentPackage = saveContentPackage(
+                ContentPackage(
+                    name = "hq content package",
+                    id = ContentPackageId(ObjectId.get().toHexString()),
+                    accessRules = listOf(AccessRuleFactory.sampleIncludedVideosAccessRule(name = "hq rules"))
+                )
+            )
+            val defaultContentPackage = saveContentPackage(
+                ContentPackage(
+                    name = "default content package",
+                    id = ContentPackageId(ObjectId.get().toHexString()),
+                    accessRules = listOf(
+                        AccessRuleFactory.sampleExcludedVideoTypesAccessRule(
+                            videoTypes = listOf(VideoType.NEWS),
+                            name = "default"
+                        )
+                    )
+                )
+            )
+
+            val clientBasedAccess = mapOf(
+                Client.Teachers to teachersContentPackage.id,
+                Client.Hq to hqContentPackage.id,
+            )
+
+            val organisation =
+                saveOrganisation(OrganisationFactory.apiIntegration(deal = deal(contentAccess = ContentAccess.ClientBasedAccess(clientBasedAccess))))
+            val user = saveUser(UserFactory.sample(organisation = organisation))
+
+            mvc.perform(
+                get("/v1/users/${user.id.value}/access-rules?client=teachers").asUserWithRoles(
+                    user.id.value,
+                    UserRoles.VIEW_ACCESS_RULES
+                )
+            )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(1)))
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.accessRules[0].type",
+                        equalTo("IncludedCollections")
+                    )
+                )
+                .andExpect(
+                    jsonPath(
+                        "$._embedded.accessRules[0].name",
+                        equalTo("teachers rules")
+                    )
+                )
+        }
+
+        @Test
         fun `assigns a new user a access rules based on a keycloak role`() {
             val userId = "709f86bf-3292-4c96-9c84-5c89a255a07c"
             val authority = "TEST_ORGANISATION"
@@ -885,7 +950,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val organisation = saveOrganisation(
                 OrganisationFactory.apiIntegration(
                     deal = deal(
-                        contentPackageId = contentPackage.id
+                        contentAccess = ContentAccess.SimpleAccess(contentPackage.id)
                     ),
                     role = organisationMatchingRole
                 )

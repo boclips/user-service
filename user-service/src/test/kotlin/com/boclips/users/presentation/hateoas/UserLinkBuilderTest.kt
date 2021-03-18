@@ -213,7 +213,7 @@ class UserLinkBuilderTest : AbstractSpringIntegrationTest() {
         )
 
         assertThat(accessRulesLink).isNotNull()
-        assertThat(accessRulesLink!!.href).endsWith("/users/a-user/access-rules")
+        assertThat(accessRulesLink!!.href).endsWith("/users/a-user/access-rules{?client}")
         assertThat(accessRulesLink.rel.value()).isEqualTo("accessRules")
     }
 

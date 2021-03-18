@@ -1,7 +1,9 @@
 package com.boclips.users.domain.service.access
 
+import com.boclips.security.utils.Client
 import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.ContentPackageRepository
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Organisation
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -14,12 +16,18 @@ class AccessRuleService(
         const val DEFAULT_CONTENT_PACKAGE_NAME = "Classroom"
     }
 
-    fun forOrganisation(organisation: Organisation?): List<AccessRule> {
-        return organisation
-            ?.deal
-            ?.contentPackageId
-            ?.let { contentPackageId ->
-                contentPackageRepository.findById(contentPackageId)
+    fun forOrganisation(organisation: Organisation?, client: String? = null): List<AccessRule> {
+        val contentAccess = organisation?.deal?.contentAccess
+
+        val contentPackageId = when (contentAccess) {
+            is ContentAccess.ClientBasedAccess -> client?.let { contentAccess.clientAccess[Client.Teachers] }
+            is ContentAccess.SimpleAccess -> contentAccess.id
+            else -> null
+        }
+
+        return contentPackageId
+            ?.let {
+                contentPackageRepository.findById(it)
             }?.let { contentPackage ->
                 contentPackage.accessRules
             } ?: defaultAccessRules()

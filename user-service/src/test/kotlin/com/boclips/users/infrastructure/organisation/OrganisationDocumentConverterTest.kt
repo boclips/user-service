@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
@@ -115,7 +116,7 @@ class OrganisationDocumentConverterTest {
             tags = setOf(OrganisationTag.DESIGN_PARTNER),
             deal = deal(
                 billing = true,
-                contentPackageId = contentPackageId,
+                contentAccess = ContentAccess.SimpleAccess(contentPackageId),
                 prices = Prices(
                     videoTypePrices = mapOf(
                         VideoType.NEWS to PriceFactory.sample(amount = BigDecimal.TEN),

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
@@ -94,11 +95,11 @@ class UserController(
     }
 
     @GetMapping("/{id}/access-rules")
-    fun fetchAccessRulesOfUser(@PathVariable id: String?): AccessRulesResource {
+    fun fetchAccessRulesOfUser(@PathVariable id: String?, @RequestParam(name = "client", required = false) client: String?): AccessRulesResource {
         val userId = UserId(id!!)
         return AccessRulesResource(
             _embedded = AccessRulesWrapper(
-                getAccessRulesOfUser(userId.value).map { accessRuleConverter.toResource(it) }
+                getAccessRulesOfUser(userId.value, client).map { accessRuleConverter.toResource(it) }
             )
         )
     }

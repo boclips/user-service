@@ -2,6 +2,7 @@ package com.boclips.users.application.commands
 
 import com.boclips.users.api.request.CreateDistrictRequest
 import com.boclips.users.application.exceptions.OrganisationAlreadyExistsException
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.ContentPackageFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
@@ -32,7 +33,7 @@ class CreateDistrictTest : AbstractSpringIntegrationTest() {
 
         // then
         assertThat(district.name).isEqualTo(name)
-        assertThat(district.deal.contentPackageId).isEqualTo(contentPackage.id)
+        assertThat((district.deal.contentAccess as? ContentAccess.SimpleAccess)?.id).isEqualTo(contentPackage.id)
     }
 
     @Test
