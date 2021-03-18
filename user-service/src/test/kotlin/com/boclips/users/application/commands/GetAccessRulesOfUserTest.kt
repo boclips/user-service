@@ -1,5 +1,6 @@
 package com.boclips.users.application.commands
 
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
@@ -23,7 +24,7 @@ class GetAccessRulesOfUserTest : AbstractSpringIntegrationTest() {
         saveContentPackage(contentPackage)
 
         val organisation = saveOrganisation(
-            apiIntegration(deal = deal(contentPackageId = contentPackage.id))
+            apiIntegration(deal = deal(contentAccess = ContentAccess.SimpleAccess(contentPackage.id)))
         )
         val user = saveUser(UserFactory.sample(organisation = organisation))
 

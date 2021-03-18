@@ -5,6 +5,7 @@ import com.boclips.users.application.exceptions.OrganisationAlreadyExistsExcepti
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.ContentPackageRepository
 import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -26,7 +27,7 @@ class CreateDistrict(
             name = request.name,
             address = Address(),
             deal = Deal(
-                contentPackageId = contentPackage?.id,
+                contentAccess = contentPackage?.id?.let {ContentAccess.SimpleAccess(it)},
                 billing = false,
                 accessExpiresOn = null
             ),

@@ -2,6 +2,7 @@ package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -155,7 +156,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                     name = organisationName,
                     role = "ROLE_TEST_ORG",
                     deal = deal(
-                        contentPackageId = ContentPackageId("content-package-id")
+                        contentAccess = ContentAccess.SimpleAccess(ContentPackageId("content-package-id"))
                     )
                 )
             )

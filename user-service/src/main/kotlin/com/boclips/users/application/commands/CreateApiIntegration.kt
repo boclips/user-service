@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.ContentPackageRepository
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationRepository
@@ -27,7 +28,7 @@ class CreateApiIntegration(
             name = name,
             address = Address(),
             deal = Deal(
-                contentPackageId = contentPackage?.id,
+                contentAccess = contentPackage?.id?.let { ContentAccess.SimpleAccess(it) },
                 billing = false,
                 accessExpiresOn = null
             ),

@@ -54,7 +54,6 @@ class OrganisationService(
                 name = externalInfo.school.name,
                 address = externalInfo.school.address,
                 deal = Deal(
-                    contentPackageId = null,
                     billing = false,
                     accessExpiresOn = null
                 ),
@@ -75,7 +74,6 @@ class OrganisationService(
                 name = externalInfo.name,
                 address = externalInfo.address,
                 deal = Deal(
-                    contentPackageId = null,
                     billing = false,
                     accessExpiresOn = null
                 ),
@@ -95,7 +93,6 @@ class OrganisationService(
             name = deploymentId,
             address = Address(),
             deal = Deal(
-                contentPackageId = null,
                 billing = false,
                 accessExpiresOn = null
             ),

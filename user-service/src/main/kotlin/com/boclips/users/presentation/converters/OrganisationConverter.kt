@@ -7,6 +7,7 @@ import com.boclips.users.api.response.organisation.OrganisationResource
 import com.boclips.users.api.response.organisation.OrganisationsResource
 import com.boclips.users.api.response.organisation.OrganisationsWrapper
 import com.boclips.users.domain.model.Page
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.Prices
 import com.boclips.users.presentation.hateoas.OrganisationLinkBuilder
@@ -22,11 +23,21 @@ class OrganisationConverter(
     fun toResource(organisation: Organisation): OrganisationResource {
         return OrganisationResource(
             id = organisation.id.value,
-            contentPackageId = organisation.deal.contentPackageId?.value,
+            contentPackageId = organisation.deal.contentAccess?.let { contentAccess ->
+                when (contentAccess) {
+                    is ContentAccess.SimpleAccess -> contentAccess.id?.value
+                    else -> null
+                }
+            },
             accessExpiresOn = organisation.deal.accessExpiresOn,
             billing = organisation.deal.billing,
             deal = DealResource(
-                contentPackageId = organisation.deal.contentPackageId?.value,
+                contentPackageId = organisation.deal.contentAccess?.let { contentAccess ->
+                    when (contentAccess) {
+                        is ContentAccess.SimpleAccess -> contentAccess.id?.value
+                        else -> null
+                    }
+                },
                 accessExpiresOn = organisation.deal.accessExpiresOn,
                 billing = organisation.deal.billing,
                 prices = organisation.deal.prices?.let { toPriceResource(it) }
@@ -45,7 +56,8 @@ class OrganisationConverter(
             _embedded = OrganisationsWrapper(
                 organisations = organisations.items.map {
                     toResource(it)
-                }),
+                }
+            ),
             page = PagedModel.PageMetadata(
                 organisations.pageSize.toLong(),
                 organisations.pageNumber.toLong(),

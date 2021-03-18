@@ -169,7 +169,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
 
         val updatedUser = userRepository.update(user, UserUpdate.ReplaceOrganisation(newOrganisation))
 
-        assertThat(updatedUser.organisation).isEqualTo(newOrganisation)
+        assertThat(updatedUser.organisation).usingRecursiveComparison().isEqualTo(newOrganisation)
+
         assertThat(userRepository.findById(user.id)).isEqualTo(updatedUser)
     }
 
@@ -349,7 +350,8 @@ class MongoUserRepositoryTest : AbstractSpringIntegrationTest() {
                 identity = IdentityFactory.sample(
                     id = "user-3",
                     username = "user1@meme.com"
-                ), organisation = organisation1
+                ),
+                organisation = organisation1
             )
         )
 

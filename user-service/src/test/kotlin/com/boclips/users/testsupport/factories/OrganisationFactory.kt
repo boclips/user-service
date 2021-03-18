@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
@@ -30,12 +31,12 @@ class OrganisationFactory {
         )
 
         fun deal(
-            contentPackageId: ContentPackageId? = null,
+            contentAccess: ContentAccess? = null,
             billing: Boolean = false,
             accessExpiresOn: ZonedDateTime? = null,
             prices: Prices? = null
         ): Deal = Deal(
-            contentPackageId = contentPackageId,
+            contentAccess = contentAccess,
             billing = billing,
             accessExpiresOn = accessExpiresOn,
             prices = prices
@@ -46,7 +47,7 @@ class OrganisationFactory {
             billing: Boolean = false,
             accessExpiresOn: ZonedDateTime? = null,
         ): Deal = Deal(
-            contentPackageId = contentPackageId,
+            contentAccess = contentPackageId?.let { ContentAccess.SimpleAccess(it) },
             billing = billing,
             accessExpiresOn = accessExpiresOn,
             prices = Prices(
@@ -59,7 +60,7 @@ class OrganisationFactory {
                     ChannelId("channel-TED") to PriceFactory.sample(amount = BigDecimal.ONE),
                     ChannelId("channel-orange") to PriceFactory.sample(amount = BigDecimal.TEN)
                 )
-             )
+            )
         )
 
         fun district(

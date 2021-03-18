@@ -7,6 +7,7 @@ import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.Prices
@@ -51,7 +52,7 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
                 state = State.fromCode("NY")
             ),
             deal = Deal(
-                contentPackageId = ContentPackageId("content-package-id"),
+                contentAccess = ContentAccess.SimpleAccess(ContentPackageId("content-package-id")),
                 billing = false,
                 accessExpiresOn = ZonedDateTime.parse("2019-12-04T15:11:59.531Z"),
                 prices = Prices(
@@ -74,20 +75,20 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
 
         assertThat(organisationResource.id).isEqualTo(originalOrganisation.id.value)
         assertThat(organisationResource.accessExpiresOn).isEqualTo(originalOrganisation.deal.accessExpiresOn)
-        assertThat(organisationResource.deal!!.accessExpiresOn).isEqualTo(originalOrganisation.deal.accessExpiresOn)
-        assertThat(organisationResource.contentPackageId).isEqualTo(originalOrganisation.deal.contentPackageId!!.value)
-        assertThat(organisationResource.deal!!.contentPackageId).isEqualTo(originalOrganisation.deal.contentPackageId!!.value)
+        assertThat(organisationResource.deal.accessExpiresOn).isEqualTo(originalOrganisation.deal.accessExpiresOn)
+        assertThat(organisationResource.contentPackageId).isEqualTo((originalOrganisation.deal.contentAccess as? ContentAccess.SimpleAccess)?.id!!.value)
+        assertThat(organisationResource.deal.contentPackageId).isEqualTo((originalOrganisation.deal.contentAccess as? ContentAccess.SimpleAccess)?.id!!.value)
         assertThat(organisationResource.billing).isEqualTo(originalOrganisation.deal.billing)
-        assertThat(organisationResource.deal!!.billing).isEqualTo(originalOrganisation.deal.billing)
-        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["INSTRUCTIONAL"]!!.amount).isEqualTo("123")
-        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["INSTRUCTIONAL"]!!.currency).isEqualTo("USD")
-        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["NEWS"]!!.amount).isEqualTo("234")
-        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["NEWS"]!!.currency).isEqualTo("USD")
-        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["STOCK"]!!.amount).isEqualTo("345")
-        assertThat(organisationResource.deal!!.prices!!.videoTypePrices["STOCK"]!!.currency).isEqualTo("USD")
-        assertThat(organisationResource.deal!!.prices!!.channelPrices["channel-TED"]!!.amount).isEqualTo("1")
-        assertThat(organisationResource.deal!!.prices!!.channelPrices["channel-orange"]!!.amount).isEqualTo("10")
-        assertThat(organisationResource.deal!!.prices!!.channelPrices["channel-GME"]!!.amount).isEqualTo("1000")
+        assertThat(organisationResource.deal.billing).isEqualTo(originalOrganisation.deal.billing)
+        assertThat(organisationResource.deal.prices!!.videoTypePrices["INSTRUCTIONAL"]!!.amount).isEqualTo("123")
+        assertThat(organisationResource.deal.prices!!.videoTypePrices["INSTRUCTIONAL"]!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal.prices!!.videoTypePrices["NEWS"]!!.amount).isEqualTo("234")
+        assertThat(organisationResource.deal.prices!!.videoTypePrices["NEWS"]!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal.prices!!.videoTypePrices["STOCK"]!!.amount).isEqualTo("345")
+        assertThat(organisationResource.deal.prices!!.videoTypePrices["STOCK"]!!.currency).isEqualTo("USD")
+        assertThat(organisationResource.deal.prices!!.channelPrices["channel-TED"]!!.amount).isEqualTo("1")
+        assertThat(organisationResource.deal.prices!!.channelPrices["channel-orange"]!!.amount).isEqualTo("10")
+        assertThat(organisationResource.deal.prices!!.channelPrices["channel-GME"]!!.amount).isEqualTo("1000")
         assertThat(organisationResource.organisationDetails.name).isEqualTo(originalOrganisation.name)
         assertThat(organisationResource.organisationDetails.country?.name).isEqualTo(originalOrganisation.address.country?.name)
         assertThat(organisationResource.organisationDetails.state?.name).isEqualTo(originalOrganisation.address.state?.name)

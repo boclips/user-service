@@ -6,6 +6,7 @@ import com.boclips.users.api.httpclient.UsersClient
 import com.boclips.users.api.httpclient.helper.ObjectMapperDefinition
 import com.boclips.users.api.httpclient.helper.TestTokenFactory
 import com.boclips.users.config.security.UserRoles
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.user.Profile
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccessRuleFactory
@@ -70,7 +71,7 @@ class UserServiceClientE2ETest : AbstractSpringIntegrationTest() {
             val organisation = saveOrganisation(
                 OrganisationFactory.apiIntegration(
                     deal = OrganisationFactory.deal(
-                        contentPackageId = contentPackage.id
+                        contentAccess = ContentAccess.SimpleAccess(contentPackage.id)
                     )
                 )
             )

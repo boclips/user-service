@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
@@ -35,7 +36,7 @@ object OrganisationDocumentConverter : KLogging() {
         )
 
         val deal = Deal(
-            contentPackageId = organisationDocument.contentPackageId?.let { ContentPackageId(value = it) },
+            contentAccess = organisationDocument.contentPackageId?.let { ContentAccess.SimpleAccess(ContentPackageId(it))},
             billing = organisationDocument.billing ?: false,
             accessExpiresOn = organisationDocument.accessExpiresOn?.let { ZonedDateTime.ofInstant(it, ZoneOffset.UTC) },
             prices = organisationDocument.prices?.let {
@@ -155,7 +156,12 @@ object OrganisationDocumentConverter : KLogging() {
             accessExpiresOn = organisation.deal.accessExpiresOn?.toInstant(),
             tags = organisation.tags.map { it.name }.toSet(),
             billing = organisation.deal.billing,
-            contentPackageId = organisation.deal.contentPackageId?.value,
+            contentPackageId = organisation.deal.contentAccess?.let { contentAccess ->
+                when (contentAccess) {
+                    is ContentAccess.SimpleAccess -> contentAccess.id.value
+                    else -> null
+                }
+            },
             features = organisation.features?.mapKeys { FeatureDocumentConverter.toDocument(it.key) },
             prices = organisation.deal.prices?.let {
                 CustomPricesDocument(

@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.Page
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
@@ -38,7 +39,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             val organisation: ApiIntegration = apiIntegration(
                 name = organisationName,
                 deal = deal(
-                    contentPackageId = ContentPackageId(value = "123")
+                    contentAccess = ContentAccess.SimpleAccess(ContentPackageId("123"))
                 ),
                 allowsOverridingUserId = true
             )
@@ -48,7 +49,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             assertThat(retrievedOrganisation.id).isNotNull
             assertThat(retrievedOrganisation.name).isEqualTo(organisationName)
             assertThat(retrievedOrganisation.allowsOverridingUserIds).isTrue()
-            assertThat(retrievedOrganisation.deal.contentPackageId?.value).isEqualTo("123")
+            assertThat((retrievedOrganisation.deal.contentAccess as? ContentAccess.SimpleAccess)?.id?.value).isEqualTo("123")
         }
 
         @Test
@@ -142,7 +143,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
         @Test
         fun `can update the contentPackageId field`() {
             val apiCustomer = organisationRepository.save(
-                apiIntegration(deal = deal(contentPackageId = ContentPackageId("12345")))
+                apiIntegration(deal = deal(contentAccess = ContentAccess.SimpleAccess(ContentPackageId("12345"))))
             )
 
             organisationRepository.update(
@@ -151,7 +152,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             )
 
             assertThat(
-                organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentPackageId
+                (organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentAccess as? ContentAccess.SimpleAccess)?.id
             ).isEqualTo(ContentPackageId("5e6f91c75849165c9cfb2a38"))
         }
 

@@ -1,6 +1,7 @@
 package com.boclips.users.domain.service.access
 
 import com.boclips.users.domain.model.access.AccessRule
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.AccessRuleFactory
 import com.boclips.users.testsupport.factories.ContentPackageFactory
@@ -43,7 +44,7 @@ class AccessRuleServiceTest : AbstractSpringIntegrationTest() {
             val organisation = saveOrganisation(
                 apiIntegration(
                     deal = deal(
-                        contentPackageId = contentPackage.id
+                        contentAccess = ContentAccess.SimpleAccess(contentPackage.id)
                     )
                 )
             )
@@ -62,13 +63,7 @@ class AccessRuleServiceTest : AbstractSpringIntegrationTest() {
 
         @Test
         fun `defaults for organisations without a content package (necessary for schools and districts)`() {
-            val organisation = saveOrganisation(
-                apiIntegration(
-                    deal = deal(
-                        contentPackageId = null
-                    )
-                )
-            )
+            val organisation = saveOrganisation(apiIntegration())
             val accessRules = accessRuleService.forOrganisation(organisation)
 
             assertThat(accessRules).containsExactlyInAnyOrder(*defaultAccessRules.toTypedArray())

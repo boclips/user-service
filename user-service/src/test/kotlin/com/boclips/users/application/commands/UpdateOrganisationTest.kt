@@ -7,6 +7,7 @@ import com.boclips.users.application.exceptions.OrganisationNotFoundException
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
+import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.ExternalOrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.school.State
@@ -67,7 +68,7 @@ class UpdateOrganisationTest : AbstractSpringIntegrationTest() {
             OrganisationFactory.apiIntegration(
                 id = OrganisationId("5d43328744f0c2bd4574436a"),
                 deal = OrganisationFactory.deal(
-                    contentPackageId = oldContentPackageId
+                    contentAccess = ContentAccess.SimpleAccess(oldContentPackageId)
                 )
             )
         )
@@ -76,7 +77,7 @@ class UpdateOrganisationTest : AbstractSpringIntegrationTest() {
         val request = UpdateOrganisationRequest(contentPackageId = newContentPackageId.value)
         val updatedOrganisation = updateOrganisation(organisation.id.value, request)
 
-        assertThat(updatedOrganisation.deal.contentPackageId).isEqualTo(newContentPackageId)
+        assertThat((updatedOrganisation.deal.contentAccess as? ContentAccess.SimpleAccess)?.id).isEqualTo(newContentPackageId)
     }
 
     @Test
