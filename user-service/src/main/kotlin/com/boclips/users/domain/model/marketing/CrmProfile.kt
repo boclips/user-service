@@ -17,7 +17,8 @@ class CrmProfile(
     val hasLifetimeAccess: Boolean,
     val lastLoggedIn: Instant?,
     val marketingTracking: MarketingTracking,
-    val accessExpiresOn: Instant?
+    val accessExpiresOn: Instant?,
+    val vid: String?
 ) {
     override fun toString(): String {
         return "CrmProfile(id=$id)"

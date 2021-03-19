@@ -53,10 +53,10 @@ class HubSpotClient(
         }
     }
 
-    override fun deleteContact(id:String) {
-        restTemplate.delete(
-            getDeleteContactEndpoint(id)
-        )
+    override fun deleteContact(email: String) {
+        restTemplate.getForObject(getProfileFromEmailEndpoint(email), HubSpotContact::class.java).let {
+           restTemplate.delete(getDeleteContactEndpoint(it?.vid!!))
+        }
     }
 
     private fun updateContacts(batchOfUsers: List<CrmProfile>): List<HubSpotContact> {
@@ -89,9 +89,17 @@ class HubSpotClient(
             .toUri()
     }
 
-    private fun getDeleteContactEndpoint(id: String) : URI {
+    private fun getDeleteContactEndpoint(id: String): URI {
         return UriComponentsBuilder
             .fromUriString("${hubspotProperties.host}/contacts/v1/contact/vid/${id}")
+            .queryParam("hapikey", hubspotProperties.apiKey)
+            .build()
+            .toUri()
+    }
+
+    private fun getProfileFromEmailEndpoint(email: String): URI {
+        return UriComponentsBuilder
+            .fromUriString("${hubspotProperties.host}/contacts/v1/contact/email/${email}/profile")
             .queryParam("hapikey", hubspotProperties.apiKey)
             .build()
             .toUri()

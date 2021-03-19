@@ -21,6 +21,7 @@ class HubSpotContactConverter {
 
         return HubSpotContact(
             email = crmProfile.email,
+            vid = null,
             properties = listOfNotNull(
                 HubSpotProperty("firstname", crmProfile.firstName),
                 HubSpotProperty("lastname", crmProfile.lastName),

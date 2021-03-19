@@ -25,8 +25,9 @@ fun convertUserToCrmProfile(user: User, sessions: UserSessions): CrmProfile? =
                 lastLoggedIn = sessions.lastAccess,
                 marketingTracking = user.marketingTracking,
                 hasLifetimeAccess = user.teacherPlatformAttributes?.hasLifetimeAccess ?: false,
-                accessExpiresOn = user.accessExpiresOn?.toInstant()
-            )
+                accessExpiresOn = user.accessExpiresOn?.toInstant(),
+                vid = null
+                )
         }
     }
 

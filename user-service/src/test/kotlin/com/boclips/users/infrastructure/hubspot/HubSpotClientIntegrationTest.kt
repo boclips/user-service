@@ -6,25 +6,11 @@ import com.boclips.users.domain.model.user.TeacherPlatformAttributes
 import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
-import com.boclips.users.testsupport.factories.IdentityFactory
-import com.boclips.users.testsupport.factories.MarketingTrackingFactory
-import com.boclips.users.testsupport.factories.ProfileFactory
-import com.boclips.users.testsupport.factories.UserFactory
-import com.boclips.users.testsupport.factories.UserSessionsFactory
+import com.boclips.users.testsupport.factories.*
 import com.boclips.users.testsupport.loadWireMockStub
 import com.boclips.videos.api.response.subject.SubjectResource
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import com.github.tomakehurst.wiremock.client.WireMock.delete
-import com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor
-import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
-import com.github.tomakehurst.wiremock.client.WireMock.matching
-import com.github.tomakehurst.wiremock.client.WireMock.post
-import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
-import com.github.tomakehurst.wiremock.client.WireMock.put
-import com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor
-import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
-import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestTemplate
@@ -35,11 +21,11 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
     var hubSpotClient: HubSpotClient = HubSpotClient(
         ObjectMapper(), HubSpotProperties().apply {
-            host = "http://localhost:9999"
-            apiKey = "some-api-key"
-            batchSize = 100
-            marketingSubscriptionId = 123
-        },
+        host = "http://localhost:9999"
+        apiKey = "some-api-key"
+        batchSize = 100
+        marketingSubscriptionId = 123
+    },
         RestTemplate()
     )
 
@@ -167,22 +153,47 @@ class HubSpotClientIntegrationTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `a contact can be deleted`() {
-        val user = UserFactory.sample(profile = ProfileFactory.sample(hasOptedIntoMarketing = true))
+        val user = UserFactory.sample(
+            profile = ProfileFactory.sample(hasOptedIntoMarketing = true),
+            identity = IdentityFactory.sample(username = "boo@baa.com")
+        )
 
         wireMockServer.stubFor(
+            get(
+                urlPathEqualTo("/contacts/v1/contact/email/boo@baa.com/profile")
+            ).willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(
+                    """
+                        {
+                        "email": "${user.identity.email}",
+                        "properties": [],
+                        "vid": "retrieved-users-vid"
+                        }
+                    """.trimIndent()
+                )
+            )
+        )
+        wireMockServer.stubFor(
             delete(
-                urlPathEqualTo("/contacts/v1/contact/vid/${user.id.value}")
+                urlPathEqualTo("/contacts/v1/contact/vid/retrieved-users-vid")
             )
                 .willReturn(aResponse().withStatus(200))
         )
 
         hubSpotClient.deleteContact(
-            user.id.value
+            email = user.identity.email!!
         )
 
         wireMockServer.verify(
+            getRequestedFor(
+                urlMatching(".*/contacts/v1/contact/email/boo@baa.com/profile.*")
+            ).withQueryParam("hapikey", matching("some-api-key"))
+        )
+        wireMockServer.verify(
             deleteRequestedFor(
-                urlMatching(".*/contacts/v1/contact/vid/${user.id.value}.*")
+                urlMatching(".*/contacts/v1/contact/vid/retrieved-users-vid.*")
             ).withQueryParam("hapikey", matching("some-api-key"))
         )
     }

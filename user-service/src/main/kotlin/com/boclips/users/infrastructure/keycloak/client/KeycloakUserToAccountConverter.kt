@@ -23,7 +23,9 @@ class KeycloakUserToAccountConverter {
             createdAt = ZonedDateTime.ofInstant(
                 Instant.ofEpochMilli(userRepresentation.createdTimestamp),
                 ZoneOffset.UTC
-            )
+            ),
+            firstName = userRepresentation.firstName,
+            lastName = userRepresentation.lastName
         )
     }
 }

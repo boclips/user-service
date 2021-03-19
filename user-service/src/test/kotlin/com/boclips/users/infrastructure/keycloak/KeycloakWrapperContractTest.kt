@@ -14,7 +14,7 @@ import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
 import java.util.UUID
 
-@Disabled("These tests require Keycloak to be configured by CI")
+//@Disabled("These tests require Keycloak to be configured by CI")
 class KeycloakWrapperContractTest {
     lateinit var wrapper: KeycloakWrapper
 
@@ -119,6 +119,13 @@ class KeycloakWrapperContractTest {
 
         assertThat(wrapper.getUserByUsername(aUser.username)!!.realmRoles.contains("ROLE_TEACHER")).isTrue()
     }
+
+//    @Test
+//    fun `update user`() {
+//        val updateUserRequest:
+//        wrapper.updateUser({})
+//
+//    }
 
     @Nested
     @DisplayName("Testing sessions and last login")

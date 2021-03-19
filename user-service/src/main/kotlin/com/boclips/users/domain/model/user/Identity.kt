@@ -8,7 +8,9 @@ data class Identity(
     val username: String,
     val idpEmail: String? = null,
     val roles: List<String> = emptyList(),
-    val createdAt: ZonedDateTime
+    val createdAt: ZonedDateTime,
+    val firstName: String? = null,
+    val lastName: String? = null
 ) {
     fun isBoclipsEmployee() = this.username.endsWith("@boclips.com")
     val email

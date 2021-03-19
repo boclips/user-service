@@ -23,6 +23,8 @@ class KeycloakUserToAccountConverterTest {
             this.isEmailVerified = true
             this.realmRoles = listOf("ROLE_VIEWSONIC", "ROLE_TEACHER", "ROLE_BACKOFFICE", "uma_something")
             this.createdTimestamp = Instant.now().toEpochMilli()
+            this.firstName = "first-name"
+            this.lastName = "last-name"
         }
     }
 
@@ -32,6 +34,8 @@ class KeycloakUserToAccountConverterTest {
 
         assertThat(convertedUser.id.value).isEqualTo(keycloakUser.id)
         assertThat(convertedUser.username).isEqualTo(keycloakUser.username)
+        assertThat(convertedUser.firstName).isEqualTo(keycloakUser.firstName)
+        assertThat(convertedUser.lastName).isEqualTo(keycloakUser.lastName)
         assertThat(convertedUser.roles).containsExactly(
             "ROLE_VIEWSONIC",
             "ROLE_TEACHER",

@@ -28,7 +28,8 @@ class CrmProfileFactory {
                 hasOptedIntoMarketing = true,
                 hasLifetimeAccess = hasLifetimeAccess,
                 marketingTracking = MarketingTrackingFactory.sample(),
-                accessExpiresOn = accessExpiresOn
+                accessExpiresOn = accessExpiresOn,
+                vid = "sample-vid"
             )
         }
     }
