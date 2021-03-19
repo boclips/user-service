@@ -61,6 +61,32 @@ class UsersClientFakeTest {
     }
 
     @Test
+    fun `can resolve access rules based on client`() {
+        val fake = UsersClientFake()
+        fake.addAccessRules(
+            userId = "my-user-id",
+            accessRulesResource = AccessRulesResource(_embedded =
+            AccessRulesWrapper(accessRules = listOf(AccessRuleResourceFactory.sampleIncludedCollections(collectionIds = listOf("collection-1-id"))))),
+            client = "teachers"
+        )
+        fake.addAccessRules(
+            userId = "my-user-id",
+            accessRulesResource = AccessRulesResource(_embedded =
+            AccessRulesWrapper(accessRules = listOf(AccessRuleResourceFactory.sampleExcludedVideos(videoIds = listOf("video-1-id"))))),
+            client = "boclips-web-app"
+        )
+
+        val webAppRules = fake.getAccessRulesOfUser("my-user-id", client = "boclips-web-app")
+        val teachersRules = fake.getAccessRulesOfUser("my-user-id", client = "teachers")
+
+        assertThat(webAppRules._embedded.accessRules.size).isEqualTo(1)
+        assertThat(teachersRules._embedded.accessRules.size).isEqualTo(1)
+
+        assertThat(webAppRules._embedded.accessRules.first().type).isEqualTo("ExcludedVideos")
+        assertThat(teachersRules._embedded.accessRules.first().type).isEqualTo("IncludedCollections")
+    }
+
+    @Test
     fun `can fetch a user`() {
         val fake = UsersClientFake()
         val user = UserResourceFactory.sample(id = "1", firstName = "Baptiste")

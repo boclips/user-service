@@ -20,8 +20,8 @@ interface UsersClient {
     @RequestLine("GET /v1/users/{id}")
     fun getUser(@Param("id") id: String): UserResource
 
-    @RequestLine("GET /v1/users/{id}/access-rules")
-    fun getAccessRulesOfUser(@Param("id") id: String): AccessRulesResource
+    @RequestLine("GET /v1/users/{id}/access-rules?client={client}")
+    fun getAccessRulesOfUser(@Param("id") id: String, @Param("client") client: String? = null): AccessRulesResource
 
     @RequestLine("GET /v1/users/{id}/shareCode/{shareCode}")
     fun getShareCode(@Param("id") id: String, @Param("shareCode") shareCode: String)

@@ -16,5 +16,17 @@ class AccessRuleResourceFactory {
                 collectionIds = collectionIds
             )
         }
+        @JvmStatic
+        fun sampleExcludedVideos(
+            id: String = "access-rule-id",
+            name: String = "videos",
+            videoIds: List<String> = emptyList()
+        ): AccessRuleResource {
+            return AccessRuleResource.ExcludedVideos(
+                id = id,
+                name = name,
+                videoIds = videoIds
+            )
+        }
     }
 }

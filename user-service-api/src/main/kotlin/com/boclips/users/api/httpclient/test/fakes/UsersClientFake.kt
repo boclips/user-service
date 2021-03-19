@@ -1,24 +1,27 @@
 package com.boclips.users.api.httpclient.test.fakes
 
+import com.boclips.users.api.factories.AccessRulesResourceFactory
 import com.boclips.users.api.factories.OrganisationResourceFactory
 import com.boclips.users.api.factories.UserResourceFactory
 import com.boclips.users.api.httpclient.UsersClient
 import com.boclips.users.api.request.user.CreateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRulesResource
-import com.boclips.users.api.response.accessrule.AccessRulesWrapper
 import com.boclips.users.api.response.user.UserResource
 
 class UsersClientFake : UsersClient, FakeClient<UserResource> {
     private val userDatabase: MutableMap<String, UserResource> = LinkedHashMap()
     private val accessRulesDatabase: MutableMap<String, AccessRulesResource> = LinkedHashMap()
+    private val clientBasedAccessRulesDatabase: MutableMap<String, MutableMap<String, AccessRulesResource>> = LinkedHashMap()
     private var loggedUser: UserResource? = null
 
     override fun getUser(id: String): UserResource {
         return userDatabase[id] ?: throw FakeClient.notFoundException("User not found")
     }
 
-    override fun getAccessRulesOfUser(id: String): AccessRulesResource {
-        return accessRulesDatabase[id] ?: throw FakeClient.notFoundException("User not found")
+    override fun getAccessRulesOfUser(id: String, client: String?): AccessRulesResource {
+        return client?.let {
+            clientBasedAccessRulesDatabase[id]?.get(it) ?: throw FakeClient.notFoundException("User not found")
+        } ?: accessRulesDatabase[id] ?: throw FakeClient.notFoundException("User not found")
     }
 
     override fun getShareCode(id: String, shareCode: String) {
@@ -58,16 +61,27 @@ class UsersClientFake : UsersClient, FakeClient<UserResource> {
         accessRulesDatabase.clear()
     }
 
-    fun addAccessRules(userId: String, accessRulesResource: AccessRulesResource): AccessRulesResource {
-        val currentRules = accessRulesDatabase[userId]?._embedded?.accessRules ?: emptyList()
+    fun addAccessRules(userId: String, accessRulesResource: AccessRulesResource, client: String? = null): AccessRulesResource {
+        val clientBasedRules = client != null
+        val currentRules = if (clientBasedRules) {
+            clientBasedAccessRulesDatabase[userId]?.get(client)?._embedded?.accessRules ?: emptyList()
+        } else {
+            accessRulesDatabase[userId]?._embedded?.accessRules ?: emptyList()
+        }
 
         val mergedRules = currentRules.plus(accessRulesResource._embedded.accessRules)
 
-        val amendedResource = AccessRulesResource(
-            _embedded = AccessRulesWrapper(mergedRules)
-        )
+        val amendedResource = AccessRulesResourceFactory.sample(*mergedRules.toTypedArray())
 
-        accessRulesDatabase[userId] = amendedResource
+        if (clientBasedRules) {
+            if (clientBasedAccessRulesDatabase[userId] == null) {
+                clientBasedAccessRulesDatabase[userId] = mutableMapOf(client!! to AccessRulesResourceFactory.sample())
+            }
+
+            clientBasedAccessRulesDatabase[userId]?.set(client!!, amendedResource)
+        } else {
+            accessRulesDatabase[userId] = amendedResource
+        }
 
         return amendedResource
     }
