@@ -20,7 +20,7 @@ class AccessRuleService(
         val contentAccess = organisation?.deal?.contentAccess
 
         val contentPackageId = when (contentAccess) {
-            is ContentAccess.ClientBasedAccess -> client?.let { contentAccess.clientAccess[Client.Teachers] }
+            is ContentAccess.ClientBasedAccess -> client?.let { contentAccess.clientAccess[Client.getClientByName(it)] }
             is ContentAccess.SimpleAccess -> contentAccess.id
             else -> null
         }

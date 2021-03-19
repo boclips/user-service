@@ -135,10 +135,10 @@ class AccessRuleServiceTest : AbstractSpringIntegrationTest() {
         fun `can resolve access rule by client`() {
             val organisation = organisationRepository.findOrganisationById(organisationId)
             val accessRules =
-                accessRuleService.forOrganisation(organisation = organisation, Client.getNameByClient(Client.Teachers))
+                accessRuleService.forOrganisation(organisation = organisation, Client.getNameByClient(Client.Hq))
 
             assertThat(accessRules.size).isEqualTo(1)
-            assertThat(accessRules[0].name).isEqualTo("teachers rules")
+            assertThat(accessRules[0].name).isEqualTo("hq rules")
         }
 
         @Test
