@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.organisation
 
+import com.boclips.security.utils.Client
 import com.boclips.users.domain.model.Page
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.Address
@@ -154,6 +155,20 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             assertThat(
                 (organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentAccess as? ContentAccess.SimpleAccess)?.id
             ).isEqualTo(ContentPackageId("5e6f91c75849165c9cfb2a38"))
+        }
+
+
+        @Test
+        fun `can persist a client based content access`() {
+            val apiCustomer = organisationRepository.save(
+                apiIntegration(deal = deal(contentAccess = ContentAccess.ClientBasedAccess(mapOf(Client.Teachers to ContentPackageId("12345")))))
+            )
+
+            val persistedContentAccess = organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentAccess as? ContentAccess.ClientBasedAccess
+
+            assertThat((persistedContentAccess!!.clientAccess).size).isEqualTo(1)
+            assertThat((persistedContentAccess!!.clientAccess)[Client.Teachers]).isEqualTo(ContentPackageId("12345"))
+
         }
 
         @Test
