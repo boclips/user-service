@@ -1,5 +1,6 @@
 package com.boclips.users.infrastructure.keycloak
 
+import com.fasterxml.jackson.databind.JsonMappingException
 import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
@@ -8,34 +9,38 @@ import org.keycloak.representations.idm.UserRepresentation
 import javax.ws.rs.core.Response
 import kotlin.math.ceil
 
-open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize: Int = 500) {
+open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize: Int = 50) {
     companion object : KLogging() {
         const val REALM = "boclips"
     }
 
     fun users(): Sequence<UserRepresentation> {
         val maxPages = ceil(countUsers().toDouble() / pageSize)
-        var currentPage = 0
+        var currentPage = 210
         logger.info { "Found ${countUsers()} users [$maxPages pages of page size $pageSize]" }
 
-        return generateSequence {
-            if (currentPage > maxPages) return@generateSequence null
+        val toReturn = generateSequence {
+            if (currentPage > 270) return@generateSequence null
 
             logger.info { "Fetching users page [$currentPage]" }
-            val sequenceOfUsers: MutableList<UserRepresentation> = keycloak
-                .realm(REALM)
-                .users()
-                .list(currentPage * pageSize, pageSize)
-
-            currentPage += 1
-            return@generateSequence sequenceOfUsers
-        }.flatMap { listOfUsers: MutableList<UserRepresentation> ->
-            listOfUsers.forEach { user ->
-                user.realmRoles = getRolesOfUser(user.id)
+            val sequenceOfUsers: MutableList<UserRepresentation> = try {
+                keycloak
+                    .realm(REALM)
+                    .users()
+                    .list(currentPage * pageSize, pageSize)
+            } catch (e: Exception) {
+                logger.info { e.message }
+                return@generateSequence emptyList<UserRepresentation>()
             }
 
-            listOfUsers.asSequence()
-        }
+            currentPage += 1
+            logger.info { "sequence generated [$currentPage]" }
+            return@generateSequence sequenceOfUsers
+        }.flatten()
+
+        logger.info { "Fetched all the users" }
+
+        return toReturn
     }
 
     fun countUsers(): Int {

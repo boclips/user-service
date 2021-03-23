@@ -14,14 +14,13 @@ import org.yaml.snakeyaml.Yaml
 import java.io.InputStream
 import java.util.UUID
 
-@Disabled("These tests require Keycloak to be configured by CI")
 class KeycloakWrapperContractTest {
     lateinit var wrapper: KeycloakWrapper
 
     @BeforeEach
     fun setUp() {
         val keycloakInstance: Keycloak = Keycloak.getInstance(
-            "https://login.testing-boclips.com/auth",
+            "https://login.staging-boclips.com/auth",
             KeycloakWrapper.REALM,
             readSecret("KEYCLOAK_USERNAME"),
             readSecret("KEYCLOAK_PASSWORD"),
@@ -38,7 +37,7 @@ class KeycloakWrapperContractTest {
         val createdUser = wrapper.createUser(
             KeycloakCreateUserRequest(
                 email = randomEmail,
-                password = "123",
+                password = "12345678",
                 role = null
             )
         )
@@ -56,7 +55,7 @@ class KeycloakWrapperContractTest {
         val createdUser = wrapper.createUser(
             KeycloakCreateUserRequest(
                 email = generateRandomEmail(),
-                password = "123",
+                password = "12345678",
                 role = "ROLE_TEACHER"
             )
         )
@@ -70,7 +69,7 @@ class KeycloakWrapperContractTest {
     fun `throws when user already exists`() {
         val user = KeycloakCreateUserRequest(
             email = generateRandomEmail(),
-            password = "123",
+            password = "12345678",
             role = null
         )
 
@@ -84,27 +83,37 @@ class KeycloakWrapperContractTest {
 
     @Test
     fun `can fetch users`() {
-        val createdUser = wrapper.createUser(
-            KeycloakCreateUserRequest(
-                email = generateRandomEmail(),
-                password = "123",
-                role = "ROLE_TEACHER"
-            )
+//        val createdUser = wrapper.createUser(
+//            KeycloakCreateUserRequest(
+//                email = generateRandomEmail(),
+//                password = "12345678",
+//                role = "ROLE_TEACHER"
+//            )
+//        )
+
+        val keycloakProdInstance: Keycloak = Keycloak.getInstance(
+            "https://login.boclips.com/auth",
+            KeycloakWrapper.REALM,
+            "",
+            "",
+            "boclips-admin"
         )
 
-        val users: List<UserRepresentation> = wrapper.users().toList()
+        val prodWrapper = KeycloakWrapper(keycloakProdInstance)
+        val users: List<UserRepresentation> = prodWrapper.users().toList()
 
-        assertThat(users.size).isEqualTo(wrapper.countUsers())
+        assertThat(users.size).isEqualTo(prodWrapper.countUsers())
 
-        val theChosenUser = users.find { (it.id == createdUser.id) }!!
-        assertThat(theChosenUser.id).isNotNull()
-        assertThat(theChosenUser.firstName).isNull()
-        assertThat(theChosenUser.lastName).isNull()
-        assertThat(theChosenUser.email).isNotNull()
-        assertThat(theChosenUser.realmRoles).contains("ROLE_TEACHER")
+//        val theChosenUser = users.find { (it.id == createdUser.id) }!!
+//        assertThat(theChosenUser.id).isNotNull()
+//        assertThat(theChosenUser.firstName).isNull()
+//        assertThat(theChosenUser.lastName).isNull()
+//        assertThat(theChosenUser.email).isNotNull()
+//        assertThat(theChosenUser.realmRoles).contains("ROLE_TEACHER")
     }
 
     @Test
+    @Disabled
     fun `can count users`() {
         val count = wrapper.countUsers()
 
@@ -112,6 +121,7 @@ class KeycloakWrapperContractTest {
     }
 
     @Test
+    @Disabled
     fun `add role to user`() {
         val aUser = wrapper.users().first()
 
@@ -124,6 +134,7 @@ class KeycloakWrapperContractTest {
     @DisplayName("Testing sessions and last login")
     inner class Sessions {
         @Test
+        @Disabled
         fun `cannot fetch user session for a user that does not exist`() {
             val userSessionRepresentation = wrapper.getLastUserSession("x")
 
@@ -131,11 +142,12 @@ class KeycloakWrapperContractTest {
         }
 
         @Test
+        @Disabled
         fun `cannot fetch user session for a user that has never logged in`() {
             val createdUser = wrapper.createUser(
                 KeycloakCreateUserRequest(
                     email = generateRandomEmail(),
-                    password = "123",
+                    password = "12345678",
                     role = null
                 )
             )
@@ -161,6 +173,7 @@ class KeycloakWrapperContractTest {
     @Nested
     inner class GetUserTest {
         @Test
+        @Disabled
         fun `returns null when user does not exist`() {
             val user: UserRepresentation? = wrapper.getUserById("4567890")
 
@@ -168,11 +181,12 @@ class KeycloakWrapperContractTest {
         }
 
         @Test
+        @Disabled
         fun `returns user`() {
             val createdUser = wrapper.createUser(
                 KeycloakCreateUserRequest(
                     email = generateRandomEmail(),
-                    password = "123",
+                    password = "12345678",
                     role = "ROLE_TEACHER"
                 )
             )
@@ -188,11 +202,12 @@ class KeycloakWrapperContractTest {
     @Nested
     inner class GetUserByUsernameTest {
         @Test
+        @Disabled
         fun `gets user by username`() {
             val createdUser = wrapper.createUser(
                 KeycloakCreateUserRequest(
                     email = generateRandomEmail(),
-                    password = "123",
+                    password = "12345678",
                     role = "ROLE_TEACHER"
                 )
             )
@@ -205,6 +220,7 @@ class KeycloakWrapperContractTest {
         }
 
         @Test
+        @Disabled
         fun `returns null for non-existent username`() {
 
             val user: UserRepresentation? = wrapper.getUserByUsername("this should not exist")
