@@ -12,6 +12,7 @@ import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.service.UniqueId
 import org.springframework.stereotype.Service
+import java.util.Locale
 
 @Service
 class AccessRuleConverter(
@@ -62,6 +63,11 @@ class AccessRuleConverter(
                 id = accessRule.id.value,
                 name = accessRule.name,
                 voiceTypes = accessRule.voiceTypes.map { it.name }
+            )
+            is AccessRule.ExcludedLanguages -> AccessRuleResource.ExcludedLanguages(
+                id = accessRule.id.value,
+                name = accessRule.name,
+                languages = accessRule.languages.map { it.toLanguageTag() }.toSet()
             )
         }
     }
@@ -118,6 +124,12 @@ class AccessRuleConverter(
                         it
                     )
                 } ?: emptySet()
+            )
+
+            is AccessRuleRequest.ExcludedLanguages -> AccessRule.ExcludedLanguages(
+                id = id,
+                name = name,
+                languages = accessRuleRequest.languages?.map { Locale.forLanguageTag(it) }?.toSet() ?: emptySet()
             )
         }
     }

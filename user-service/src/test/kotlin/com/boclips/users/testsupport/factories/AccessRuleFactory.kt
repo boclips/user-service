@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.access.VideoVoiceType
+import java.util.Locale
 
 class AccessRuleFactory {
     companion object {
@@ -66,5 +67,12 @@ class AccessRuleFactory {
             videoVoiceTypes: List<VideoVoiceType>
         ): AccessRule.IncludedVideoVoiceTypes =
             AccessRule.IncludedVideoVoiceTypes(id = id, name = name, voiceTypes = videoVoiceTypes)
+
+        fun sampleExcludedLanguagesAccessRule(
+            id: AccessRuleId = AccessRuleId(),
+            name: String = "Excluded Languages",
+            languages: Set<Locale>
+        ): AccessRule.ExcludedLanguages =
+            AccessRule.ExcludedLanguages(id = id, name = name, languages = languages)
     }
 }

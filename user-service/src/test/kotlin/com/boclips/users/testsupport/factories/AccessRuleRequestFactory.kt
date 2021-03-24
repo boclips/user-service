@@ -73,5 +73,15 @@ class AccessRuleRequestFactory {
             request.name = name
             return request
         }
+
+        fun sampleExcludedLanguagesAccessRuleRequest(
+            name: String = "excluded languages access rule",
+            languages: Set<String> = emptySet()
+        ): AccessRuleRequest {
+            val request = AccessRuleRequest.ExcludedLanguages()
+            request.languages = languages
+            request.name = name
+            return request
+        }
     }
 }

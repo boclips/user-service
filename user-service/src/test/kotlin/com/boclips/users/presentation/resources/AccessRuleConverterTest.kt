@@ -14,6 +14,7 @@ import com.boclips.users.testsupport.factories.AccessRuleRequestFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.util.Locale
 
 class AccessRuleConverterTest {
 
@@ -77,6 +78,17 @@ class AccessRuleConverterTest {
             val resource = converter.toResource(accessRule) as AccessRuleResource.IncludedVideoVoiceTypes
 
             assertThat(resource.voiceTypes).containsExactlyInAnyOrder("UNKNOWN_VOICE", "WITHOUT_VOICE", "WITH_VOICE")
+        }
+
+        @Test
+        fun `converts excluded languages access rule`() {
+            val accessRule = AccessRuleFactory.sampleExcludedLanguagesAccessRule(
+                languages = setOf(Locale.FRENCH, Locale.ENGLISH)
+            )
+
+            val resource = converter.toResource(accessRule) as AccessRuleResource.ExcludedLanguages
+
+            assertThat(resource.languages).containsExactlyInAnyOrder(Locale.FRENCH.toLanguageTag(), Locale.ENGLISH.toLanguageTag())
         }
     }
 
@@ -189,6 +201,20 @@ class AccessRuleConverterTest {
             val convertedAccessRule = converter.fromRequest(accessRule)
 
             assertThat(convertedAccessRule.name).isEqualTo("")
+        }
+
+        @Test
+        fun `converts excluded languages to access rule`() {
+            val accessRule = AccessRuleRequestFactory.sampleExcludedLanguagesAccessRuleRequest(
+                name = "access-rule",
+                languages = setOf(Locale.ENGLISH.toLanguageTag(), Locale.JAPANESE.toLanguageTag())
+            )
+            val convertedAccessRule = converter.fromRequest(accessRule)
+
+            assertThat(convertedAccessRule.name).isEqualTo(accessRule.name)
+            assertThat(convertedAccessRule).isInstanceOf(AccessRule.ExcludedLanguages::class.java)
+            assertThat((convertedAccessRule as AccessRule.ExcludedLanguages).languages)
+                .containsExactlyInAnyOrderElementsOf(setOf(Locale.ENGLISH, Locale.JAPANESE))
         }
     }
 

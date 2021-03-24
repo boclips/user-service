@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.access.DistributionMethod
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.access.VideoVoiceType
+import java.util.Locale
 
 object AccessRuleDocumentConverter {
     fun fromDocument(document: AccessRuleDocument): AccessRule {
@@ -68,6 +69,11 @@ object AccessRuleDocumentConverter {
                         VideoVoiceTypeDocument.WITHOUT_VOICE -> VideoVoiceType.WITHOUT_VOICE
                     }
                 } ?: blowUp(document)
+            )
+            AccessRuleDocument.TYPE_EXCLUDED_LANGUAGES -> AccessRule.ExcludedLanguages(
+                id = AccessRuleId(document.id),
+                name = document.name,
+                languages = document.languages?.map { Locale.forLanguageTag(it) }?.toSet() ?: blowUp(document)
             )
             else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document.id}")
         }
@@ -153,6 +159,12 @@ object AccessRuleDocumentConverter {
                         VideoVoiceType.WITHOUT_VOICE -> VideoVoiceTypeDocument.WITHOUT_VOICE
                     }
                 }
+            )
+            is AccessRule.ExcludedLanguages -> AccessRuleDocument(
+                id = accessRule.id.value,
+                name = accessRule.name,
+                _class = AccessRuleDocument.TYPE_EXCLUDED_LANGUAGES,
+                languages = accessRule.languages.map { it.toLanguageTag() }.toSet()
             )
         }
     }

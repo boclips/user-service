@@ -1,5 +1,7 @@
 package com.boclips.users.domain.model.access
 
+import java.util.Locale
+
 sealed class AccessRule {
     data class IncludedCollections(
         override val id: AccessRuleId,
@@ -53,7 +55,12 @@ sealed class AccessRule {
         override val id: AccessRuleId,
         override val name: String,
         val voiceTypes: List<VideoVoiceType>
+    ) : AccessRule()
 
+    data class ExcludedLanguages(
+        override val id: AccessRuleId,
+        override val name: String,
+        val languages: Set<Locale>
     ) : AccessRule()
 
     abstract val id: AccessRuleId

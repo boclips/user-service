@@ -15,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.ArgumentsProvider
 import org.junit.jupiter.params.provider.ArgumentsSource
+import java.util.Locale
 import java.util.stream.Stream
 
 class AccessRuleDocumentConverterTest {
@@ -78,6 +79,14 @@ class AccessRuleDocumentConverterTest {
                     VideoVoiceType.UNKNOWN_VOICE,
                     VideoVoiceType.WITHOUT_VOICE,
                     VideoVoiceType.WITH_VOICE
+                )
+            ),
+            AccessRule.ExcludedLanguages(
+                id = AccessRuleId(UniqueId()),
+                name = "languages",
+                languages = setOf(
+                    Locale.JAPANESE,
+                    Locale.FRENCH
                 )
             )
         ).map { accessRule -> Arguments.of(accessRule) }

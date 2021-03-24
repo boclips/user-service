@@ -52,6 +52,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.ZonedDateTime
+import java.util.Locale
 
 class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
@@ -835,11 +836,17 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 id = AccessRuleId(ObjectId.get().toHexString())
             )
 
+            val languageAccessRule = AccessRule.ExcludedLanguages(
+                name = "Test languages",
+                id = AccessRuleId(ObjectId.get().toHexString()),
+                languages = setOf(Locale.JAPANESE)
+            )
+
             val contentPackageId = ContentPackageId(ObjectId.get().toHexString())
             val contentPackage = ContentPackage(
                 name = "Package 1",
                 id = contentPackageId,
-                accessRules = listOf(collectionsAccessRule, videosAccessRule)
+                accessRules = listOf(collectionsAccessRule, videosAccessRule, languageAccessRule)
             )
 
             saveContentPackage(contentPackage)
@@ -855,17 +862,17 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(2)))
+                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(3)))
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[*].type",
-                        containsInAnyOrder("IncludedCollections", "IncludedVideos")
+                        containsInAnyOrder("IncludedCollections", "IncludedVideos", "ExcludedLanguages")
                     )
                 )
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[*].name",
-                        containsInAnyOrder("Test collections contract", "Test videos contract")
+                        containsInAnyOrder("Test collections contract", "Test videos contract", "Test languages")
                     )
                 )
         }
