@@ -7,7 +7,6 @@ import com.boclips.users.domain.service.user.IdentityProvider
 import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.infrastructure.keycloak.KeycloakCreateUserRequest
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
-import com.boclips.users.infrastructure.keycloak.UnknownUserSourceException
 import com.boclips.users.infrastructure.keycloak.UserNotCreatedException
 import com.boclips.users.infrastructure.keycloak.client.exceptions.InvalidUserRepresentation
 import mu.KLogging
@@ -40,12 +39,16 @@ open class KeycloakClient(
         return try {
             user = keycloak.getUserById(id.value)!!
             user.attributes?.let { attrs ->
-                attrs["legacyUserId"]?.let { logger.info {
-                    "Legacy user ID [${it.first()}] of user with ID [${user.id}]"
-                } }
-                attrs["legacyOrganisationId"]?.let { logger.info {
-                    "Legacy organisation ID [${it.first()}] of user with ID [${user.id}]"
-                } }
+                attrs["legacyUserId"]?.let {
+                    logger.info {
+                        "Legacy user ID [${it.first()}] of user with ID [${user.id}]"
+                    }
+                }
+                attrs["legacyOrganisationId"]?.let {
+                    logger.info {
+                        "Legacy organisation ID [${it.first()}] of user with ID [${user.id}]"
+                    }
+                }
             }
 
             userConverter.convert(user)
@@ -61,18 +64,8 @@ open class KeycloakClient(
         }
     }
 
-    override fun getIdentity(): Sequence<Identity> {
-        return keycloak.users().mapNotNull { userRepresentation ->
-            try {
-                userConverter.convert(userRepresentation)
-            } catch (e: InvalidUserRepresentation) {
-                logger.info { "Could not convert external keycloak user ${userRepresentation.id} as email address is invalid" }
-                null
-            } catch (e: UnknownUserSourceException) {
-                logger.info { "Could not convert keycloak user ${userRepresentation.id} as source is unknown" }
-                null
-            }
-        }
+    override fun getAllIdentityIds(): List<UserId> {
+        return keycloak.getAllUserIds().map { UserId(it) }.toList()
     }
 
     override fun count(): Int {

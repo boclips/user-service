@@ -1,5 +1,7 @@
 package com.boclips.users.infrastructure.keycloak
 
+import com.boclips.users.infrastructure.keycloak.client.KeycloakDbClient
+import com.boclips.users.infrastructure.keycloak.client.KeycloakDbProxy
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -23,12 +25,16 @@ class KeycloakWrapperContractTest {
         val keycloakInstance: Keycloak = Keycloak.getInstance(
             "https://login.testing-boclips.com/auth",
             KeycloakWrapper.REALM,
-            readSecret("KEYCLOAK_USERNAME"),
-            readSecret("KEYCLOAK_PASSWORD"),
+            "",
+            "",
             "boclips-admin"
         )
+        val dbClient = KeycloakDbClient(
+            KeycloakDbProxy(),
+            KeycloakDbProperties()
+        )
 
-        wrapper = KeycloakWrapper(keycloak = keycloakInstance, pageSize = 3)
+        wrapper = KeycloakWrapper(keycloak = keycloakInstance, keycloakDbClient = dbClient)
     }
 
     @Test
@@ -84,24 +90,10 @@ class KeycloakWrapperContractTest {
 
     @Test
     fun `can fetch users`() {
-        val createdUser = wrapper.createUser(
-            KeycloakCreateUserRequest(
-                email = generateRandomEmail(),
-                password = "123",
-                role = "ROLE_TEACHER"
-            )
-        )
 
-        val users: List<UserRepresentation> = wrapper.users().toList()
+        val users: List<String> = wrapper.getAllUserIds()
 
         assertThat(users.size).isEqualTo(wrapper.countUsers())
-
-        val theChosenUser = users.find { (it.id == createdUser.id) }!!
-        assertThat(theChosenUser.id).isNotNull()
-        assertThat(theChosenUser.firstName).isNull()
-        assertThat(theChosenUser.lastName).isNull()
-        assertThat(theChosenUser.email).isNotNull()
-        assertThat(theChosenUser.realmRoles).contains("ROLE_TEACHER")
     }
 
     @Test
@@ -113,11 +105,11 @@ class KeycloakWrapperContractTest {
 
     @Test
     fun `add role to user`() {
-        val aUser = wrapper.users().first()
+        val aUserId = wrapper.getAllUserIds().first()
 
-        wrapper.addRealmRoleToUser("ROLE_TEACHER", aUser.id)
+        wrapper.addRealmRoleToUser("ROLE_TEACHER", aUserId)
 
-        assertThat(wrapper.getUserByUsername(aUser.username)!!.realmRoles.contains("ROLE_TEACHER")).isTrue()
+        assertThat(wrapper.getUserById(aUserId)!!.realmRoles.contains("ROLE_TEACHER")).isTrue()
     }
 
     @Nested

@@ -46,10 +46,10 @@ class SynchronisationService(
         val allUserIds = users.map { it.id }.toSet()
         logger.info { "Found ${allUserIds.size} users" }
 
-        identityProvider.getIdentity().forEach { userAccount ->
-            if (!allUserIds.contains(userAccount.id)) {
-                userImportService.importFromIdentityProvider(listOf(userAccount.id))
-                logger.info { "Import of user $userAccount completed" }
+        identityProvider.getAllIdentityIds().forEach { id ->
+            if (!allUserIds.contains(id)) {
+                userImportService.importFromIdentityProvider(listOf(id))
+                logger.info { "Import of user with id: $id completed" }
             }
         }
     }

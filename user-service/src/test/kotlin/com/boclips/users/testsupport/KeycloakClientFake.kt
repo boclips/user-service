@@ -35,8 +35,8 @@ class KeycloakClientFake : IdentityProvider, SessionProvider {
         return fakeUsers[id.value]
     }
 
-    override fun getIdentity(): Sequence<Identity> {
-        return fakeUsers.values.asSequence()
+    override fun getAllIdentityIds(): List<UserId> {
+        return fakeUsers.values.map { it.id }
     }
 
     override fun count(): Int {

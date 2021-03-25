@@ -32,15 +32,17 @@ internal class KeycloakClientTest {
     inner class GetUserById {
         @Test
         fun `can fetch a valid user`() {
-            whenever(keycloakWrapperMock.getUserById(any())).thenReturn(UserRepresentation().apply {
-                this.id = "x"
-                this.firstName = "Odete"
-                this.username = "abc@def.xyz"
-                this.lastName = "Portugal"
-                this.isEmailVerified = true
-                this.realmRoles = emptyList()
-                this.createdTimestamp = Instant.now().toEpochMilli()
-            })
+            whenever(keycloakWrapperMock.getUserById(any())).thenReturn(
+                UserRepresentation().apply {
+                    this.id = "x"
+                    this.firstName = "Odete"
+                    this.username = "abc@def.xyz"
+                    this.lastName = "Portugal"
+                    this.isEmailVerified = true
+                    this.realmRoles = emptyList()
+                    this.createdTimestamp = Instant.now().toEpochMilli()
+                }
+            )
 
             val id = UserId(value = "x")
             val account = keycloakClient.getIdentitiesById(id)!!
@@ -58,9 +60,11 @@ internal class KeycloakClientTest {
 
         @Test
         fun `returns null when user is missing required fields`() {
-            whenever(keycloakWrapperMock.getUserById(any())).thenReturn(UserRepresentation().apply {
-                this.id = "x"
-            })
+            whenever(keycloakWrapperMock.getUserById(any())).thenReturn(
+                UserRepresentation().apply {
+                    this.id = "x"
+                }
+            )
 
             val id = UserId(value = "x")
             val account = keycloakClient.getIdentitiesById(id)
@@ -73,10 +77,14 @@ internal class KeycloakClientTest {
     inner class getUserSessions {
         @Test
         fun `fetch user session`() {
-            whenever(keycloakWrapperMock.getLastUserSession(any())).thenReturn(listOf(EventRepresentation().apply {
-                this.time = 1558080047000
-                this.type = "LOGIN"
-            }))
+            whenever(keycloakWrapperMock.getLastUserSession(any())).thenReturn(
+                listOf(
+                    EventRepresentation().apply {
+                        this.time = 1558080047000
+                        this.type = "LOGIN"
+                    }
+                )
+            )
 
             val lastUserSession: UserSessions = keycloakClient.getUserSessions(
                 UserId(
@@ -104,49 +112,12 @@ internal class KeycloakClientTest {
     }
 
     @Test
-    fun getUsers() {
-        val user1 = UserRepresentation().apply {
-            this.id = "1"
-            this.username = "test@gmail.com"
-            this.realmRoles = emptyList()
-            this.createdTimestamp = Instant.now().toEpochMilli()
-
-        }
-        val user2 = UserRepresentation().apply {
-            this.id = "2"
-            this.username = "test2@gmail.com"
-            this.realmRoles = emptyList()
-            this.createdTimestamp = Instant.now().toEpochMilli()
-        }
-
-        whenever(keycloakWrapperMock.countUsers()).thenReturn(2)
-        whenever(keycloakWrapperMock.users()).thenReturn(
-            listOf(
-                user1,
-                user2
-            ).asSequence()
-        )
-
-        val users = keycloakClient.getIdentity().toList()
-
-        assertThat(users).hasSize(2)
-        assertThat(users[0].id.value).isEqualTo(user1.id)
-        assertThat(users[0].username).isEqualTo(user1.username)
-        assertThat(users[0].createdAt).isNotNull()
-
-        assertThat(users[1].id.value).isEqualTo(user2.id)
-        assertThat(users[1].username).isEqualTo(user2.username)
-        assertThat(users[1].createdAt).isNotNull()
-    }
-
-    @Test
     fun `remove user by id`() {
         val user1 = UserRepresentation().apply {
             this.id = "1"
             this.username = "test@gmail.com"
             this.realmRoles = emptyList()
             this.createdTimestamp = Instant.now().toEpochMilli()
-
         }
         val user2 = UserRepresentation().apply {
             this.id = "2"
@@ -156,30 +127,27 @@ internal class KeycloakClientTest {
         }
 
         whenever(keycloakWrapperMock.countUsers()).thenReturn(2)
-        whenever(keycloakWrapperMock.users()).thenReturn(
+        whenever(keycloakWrapperMock.getAllUserIds()).thenReturn(
             listOf(
-                user1,
-                user2
-            ).asSequence()
+                user1.id,
+                user2.id
+            )
         )
         assertThat(keycloakClient.count()).isEqualTo(2)
 
-
-        assertThat(keycloakClient.getIdentity().toList()[0].id.value).isEqualTo(user1.id)
-        assertThat(keycloakClient.getIdentity().toList()[1].id.value).isEqualTo(user2.id)
-
+        assertThat(keycloakClient.getAllIdentityIds().toList()[0].value).isEqualTo(user1.id)
+        assertThat(keycloakClient.getAllIdentityIds().toList()[1].value).isEqualTo(user2.id)
 
         keycloakClient.deleteIdentity(UserId("1"))
 
         whenever(keycloakWrapperMock.countUsers()).thenReturn(1)
-        whenever(keycloakWrapperMock.users()).thenReturn(
+        whenever(keycloakWrapperMock.getAllUserIds()).thenReturn(
             listOf(
-                user2
-            ).asSequence()
+                user2.id
+            )
         )
         assertThat(keycloakClient.count()).isEqualTo(1)
 
-        assertThat(keycloakClient.getIdentity().toList()[0].id.value).isEqualTo(user2.id)
-
+        assertThat(keycloakClient.getAllIdentityIds().toList()[0].value).isEqualTo(user2.id)
     }
 }

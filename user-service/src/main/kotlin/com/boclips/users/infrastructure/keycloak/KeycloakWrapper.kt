@@ -1,42 +1,22 @@
 package com.boclips.users.infrastructure.keycloak
 
+import com.boclips.users.infrastructure.keycloak.client.KeycloakDbClient
 import mu.KLogging
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.EventRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import javax.ws.rs.core.Response
-import kotlin.math.ceil
 
-open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize: Int = 500) {
+open class KeycloakWrapper(
+    private val keycloak: Keycloak,
+    private val keycloakDbClient: KeycloakDbClient
+) {
     companion object : KLogging() {
         const val REALM = "boclips"
     }
 
-    fun users(): Sequence<UserRepresentation> {
-        val maxPages = ceil(countUsers().toDouble() / pageSize)
-        var currentPage = 0
-        logger.info { "Found ${countUsers()} users [$maxPages pages of page size $pageSize]" }
-
-        return generateSequence {
-            if (currentPage > maxPages) return@generateSequence null
-
-            logger.info { "Fetching users page [$currentPage]" }
-            val sequenceOfUsers: MutableList<UserRepresentation> = keycloak
-                .realm(REALM)
-                .users()
-                .list(currentPage * pageSize, pageSize)
-
-            currentPage += 1
-            return@generateSequence sequenceOfUsers
-        }.flatMap { listOfUsers: MutableList<UserRepresentation> ->
-            listOfUsers.forEach { user ->
-                user.realmRoles = getRolesOfUser(user.id)
-            }
-
-            listOfUsers.asSequence()
-        }
-    }
+    fun getAllUserIds() = keycloakDbClient.getAllUserIds()
 
     fun countUsers(): Int {
         return keycloak.realm(REALM).users().count()
@@ -76,17 +56,21 @@ open class KeycloakWrapper(private val keycloak: Keycloak, private val pageSize:
         logger.info { "Attempt to create user" }
         val response: Response = keycloak.realm(REALM)
             .users()
-            .create(UserRepresentation().apply {
-                username = request.email
-                email = request.email
-                credentials = listOf(CredentialRepresentation().apply {
-                    type = CredentialRepresentation.PASSWORD
-                    value = request.password
-                    isTemporary = false
-                })
-                isEmailVerified = false
-                isEnabled = true
-            })
+            .create(
+                UserRepresentation().apply {
+                    username = request.email
+                    email = request.email
+                    credentials = listOf(
+                        CredentialRepresentation().apply {
+                            type = CredentialRepresentation.PASSWORD
+                            value = request.password
+                            isTemporary = false
+                        }
+                    )
+                    isEmailVerified = false
+                    isEnabled = true
+                }
+            )
 
         if (response.status == 409) throw UserAlreadyExistsException()
 

@@ -9,9 +9,12 @@ import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.infrastructure.access.MongoContentPackageRepository
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
+import com.boclips.users.infrastructure.keycloak.KeycloakDbProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.boclips.users.infrastructure.keycloak.client.KeycloakClient
+import com.boclips.users.infrastructure.keycloak.client.KeycloakDbClient
+import com.boclips.users.infrastructure.keycloak.client.KeycloakDbProxy
 import com.boclips.users.infrastructure.keycloak.client.KeycloakUserToAccountConverter
 import com.boclips.users.infrastructure.organisation.MongoOrganisationRepository
 import com.boclips.users.infrastructure.recaptcha.GoogleRecaptchaClient
@@ -44,6 +47,7 @@ class InfrastructureConfiguration(
     private val subjectsClient: SubjectsClient,
     private val mongoProperties: MongoProperties,
     private val keycloakProperties: KeycloakProperties,
+    private val keycloakDbProperties: KeycloakDbProperties,
     private val googleRecaptchaProperties: GoogleRecaptchaProperties,
     private val schoolDiggerProperties: SchoolDiggerProperties,
     private val hubspotProperties: HubSpotProperties,
@@ -52,7 +56,7 @@ class InfrastructureConfiguration(
 
     @Profile("!test")
     @Bean
-    fun keycloakWrapper() = KeycloakWrapper(keycloak())
+    fun keycloakWrapper() = KeycloakWrapper(keycloak(), keycloakDbClient())
 
     @Profile("!test")
     @Bean
@@ -87,6 +91,14 @@ class InfrastructureConfiguration(
             "boclips-admin"
         )
     }
+
+    @Profile("!test")
+    @Bean
+    fun keycloakDbClient(): KeycloakDbClient = KeycloakDbClient(keycloakDbProxy(), keycloakDbProperties)
+
+    @Profile("!test")
+    @Bean
+    fun keycloakDbProxy(): KeycloakDbProxy = KeycloakDbProxy()
 
     @Profile("!test")
     @Bean
