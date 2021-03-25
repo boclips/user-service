@@ -10,6 +10,7 @@ import com.boclips.users.domain.model.organisation.ContentAccess
 import com.boclips.users.domain.model.organisation.Deal
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationRepository
+import com.boclips.users.domain.model.organisation.OrganisationTag
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,6 +24,10 @@ class CreateApiIntegration(
         val name = request.name ?: throw IllegalStateException("Name cannot be null")
         val contentPackage = request.contentPackageId?.let { contentPackageRepository.findById(ContentPackageId(it)) }
 
+        val tags = if (repository.findByTag(OrganisationTag.DEFAULT_ORGANISATION).isEmpty()) {
+            setOf(OrganisationTag.DEFAULT_ORGANISATION)
+        } else emptySet()
+
         val organisation = ApiIntegration(
             id = OrganisationId(),
             name = name,
@@ -32,7 +37,7 @@ class CreateApiIntegration(
                 billing = false,
                 accessExpiresOn = null
             ),
-            tags = emptySet(),
+            tags = tags,
             role = request.role,
             domain = null,
             allowsOverridingUserIds = false,
