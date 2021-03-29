@@ -35,7 +35,8 @@ class UserTest {
                 Feature.TEACHERS_HOME_SUGGESTED_VIDEOS to true,
                 Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS to true,
                 Feature.TEACHERS_SUBJECTS to true,
-                Feature.USER_DATA_HIDDEN to false
+                Feature.USER_DATA_HIDDEN to false,
+                Feature.BO_WEB_APP_COPY_OLD_LINK_BUTTON to false
             )
         )
     }

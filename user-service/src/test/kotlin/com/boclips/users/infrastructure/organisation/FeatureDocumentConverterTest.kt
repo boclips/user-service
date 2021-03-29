@@ -4,7 +4,7 @@ import com.boclips.users.domain.model.feature.Feature
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class FeatureKeyConverterTest {
+class FeatureDocumentConverterTest {
     @Test
     fun `converts to FeatureDocument`() {
         Feature.values().forEach { feature ->
