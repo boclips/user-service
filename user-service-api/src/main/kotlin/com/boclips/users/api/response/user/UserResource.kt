@@ -1,8 +1,8 @@
 package com.boclips.users.api.response.user
 
 import com.boclips.users.api.BoclipsServiceProjection
-import com.boclips.users.api.LtiProjection
 import com.boclips.users.api.BoclipsWebAppProjection
+import com.boclips.users.api.LtiProjection
 import com.boclips.users.api.TeacherProjection
 import com.boclips.users.api.UserProjection
 import com.boclips.users.api.response.SubjectResource
@@ -33,7 +33,12 @@ data class UserResource(
     val organisation: OrganisationDetailsResource?,
     @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class)
     val school: OrganisationDetailsResource?,
-    @get:JsonView(TeacherProjection::class, BoclipsServiceProjection::class, LtiProjection::class)
+    @get:JsonView(
+        TeacherProjection::class,
+        BoclipsServiceProjection::class,
+        LtiProjection::class,
+        BoclipsWebAppProjection::class
+    )
     val features: FeaturesResource?,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var _links: Map<String, Link>? = null
