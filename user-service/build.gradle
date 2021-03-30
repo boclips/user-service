@@ -90,7 +90,8 @@ dependencies {
     implementation('com.google.guava:guava:30.1-jre')
     implementation('commons-validator:commons-validator:1.6')
     implementation('commons-beanutils:commons-beanutils:1.9.4')
-    implementation('io.sentry:sentry-logback:1.7.21')
+    implementation('io.sentry:sentry-logback:4.3.0')
+    implementation 'io.sentry:sentry-spring-boot-starter:4.3.0'
     implementation('io.micrometer:micrometer-core')
     implementation('io.micrometer:micrometer-registry-prometheus')
     implementation("io.opentracing.contrib:opentracing-spring-jaeger-cloud-starter:3.2.2")
