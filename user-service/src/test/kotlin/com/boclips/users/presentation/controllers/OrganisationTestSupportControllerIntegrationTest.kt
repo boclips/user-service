@@ -3,6 +3,7 @@ package com.boclips.users.presentation.controllers
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.organisation.ContentAccess
+import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUser
 import com.boclips.users.testsupport.asUserWithRoles
@@ -48,7 +49,7 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                             "role": "ROLE_TEST_ORGANISATION",
                             "contentPackageId": "${contentPackage.id.value}"
                         }
-                    """.trimIndent()
+                        """.trimIndent()
                     )
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
             )
@@ -82,10 +83,9 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                         """
                         {
                             "name": "$organisationName",
-                            "role": "ROLE_ANOTHER",
-                            "accessRuleIds": []
+                            "role": "ROLE_ANOTHER"
                         }
-                    """.trimIndent()
+                        """.trimIndent()
                     )
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
             )
@@ -109,10 +109,34 @@ class OrganisationTestSupportControllerIntegrationTest : AbstractSpringIntegrati
                         """
                         {
                             "name": "Some other name",
-                            "role": "$role",
-                            "accessRuleIds": []
+                            "role": "$role"
                         }
-                    """.trimIndent()
+                        """.trimIndent()
+                    )
+                    .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
+            )
+                .andExpect(status().isConflict)
+        }
+        @Test
+        fun `returns a 409 response when creating default org and one already exists`() {
+            organisationRepository.save(
+                OrganisationFactory.apiIntegration(
+                    name = "Some name",
+                    tags = setOf(OrganisationTag.DEFAULT_ORGANISATION)
+                )
+            )
+
+            mvc.perform(
+                post("/v1/api-integrations")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                            "name": "Some other name",
+                            "role": "default",
+                            "tags": ["DEFAULT_ORGANISATION"]
+                        }
+                        """.trimIndent()
                     )
                     .asUserWithRoles("has-role@test.com", UserRoles.INSERT_ORGANISATIONS)
             )

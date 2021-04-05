@@ -8,5 +8,6 @@ class CreateOrganisationRequest {
 
     @field:NotEmpty
     var role: String? = null
+    var tags: Set<String>? = null
     var contentPackageId: String? = null
 }

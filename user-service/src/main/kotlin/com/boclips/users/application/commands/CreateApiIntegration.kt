@@ -24,10 +24,7 @@ class CreateApiIntegration(
         val name = request.name ?: throw IllegalStateException("Name cannot be null")
         val contentPackage = request.contentPackageId?.let { contentPackageRepository.findById(ContentPackageId(it)) }
 
-        val tags = if (repository.findByTag(OrganisationTag.DEFAULT_ORGANISATION).isEmpty()) {
-            setOf(OrganisationTag.DEFAULT_ORGANISATION)
-        } else emptySet()
-
+        val tags = request.tags?.map { OrganisationTag.valueOf(it) }?.toSet() ?: emptySet()
         val organisation = ApiIntegration(
             id = OrganisationId(),
             name = name,
@@ -53,6 +50,12 @@ class CreateApiIntegration(
         }
         if (repository.findByRoleIn(listOf(request.role!!)).isNotEmpty()) {
             throw OrganisationAlreadyExistsException(request.role!!)
+        }
+
+        if (request.tags?.contains(OrganisationTag.DEFAULT_ORGANISATION.toString()) == true &&
+            repository.findByTag(OrganisationTag.DEFAULT_ORGANISATION).isNotEmpty()
+        ) {
+            throw OrganisationAlreadyExistsException(OrganisationTag.DEFAULT_ORGANISATION.toString())
         }
     }
 }
