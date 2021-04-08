@@ -1,27 +1,32 @@
 package com.boclips.users.presentation
 
 import com.boclips.users.application.SynchronisationService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.SpringApplication
+import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
-import kotlin.system.exitProcess
 
 @Component
 class CommandLine(
     val env: Environment,
     val synchronisationService: SynchronisationService
 ) {
+    @Autowired
+    lateinit var app: ApplicationContext
+
     @PostConstruct
     fun onBoot() {
         when (env.getProperty("mode")) {
             "sync-hubspot-contacts" -> {
                 synchronisationService.synchroniseCrmProfiles()
-                exitProcess(0)
+                System.exit(SpringApplication.exit(app))
             }
 
             "pull-users-from-keycloak" -> {
                 synchronisationService.synchroniseUserAccounts()
-                exitProcess(0)
+                System.exit(SpringApplication.exit(app))
             }
         }
     }
