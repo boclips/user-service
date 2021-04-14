@@ -41,7 +41,8 @@ class OrganisationResourceFactory {
             state: StateResource? = null,
             country: CountryResource? = null,
             allowsOverridingUserIds: Boolean? = null,
-            features: Map<String, Boolean> = emptyMap()
+            features: Map<String, Boolean> = emptyMap(),
+            logoUrl: String? = null,
         ) = OrganisationDetailsResource(
             id = id,
             name = name,
@@ -50,7 +51,8 @@ class OrganisationResourceFactory {
             state = state,
             country = country,
             allowsOverridingUserIds = allowsOverridingUserIds,
-            features = features
+            features = features,
+            logoUrl = logoUrl
         )
 
         @JvmStatic

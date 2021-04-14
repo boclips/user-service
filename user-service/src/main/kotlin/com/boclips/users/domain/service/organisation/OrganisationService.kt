@@ -62,7 +62,8 @@ class OrganisationService(
                 district = externalInfo.district?.let(this::getOrCreateDistrict),
                 externalId = externalInfo.school.id,
                 domain = null,
-                features = null
+                features = null,
+                logoUrl = null,
             )
         )
     }
@@ -81,7 +82,8 @@ class OrganisationService(
                 role = null,
                 externalId = externalInfo.id,
                 domain = null,
-                features = null
+                features = null,
+                logoUrl = null,
             )
         )
     }
@@ -101,7 +103,8 @@ class OrganisationService(
             domain = null,
             features = null,
             deploymentId = deploymentId,
-            parent = integrationOrganisation
+            parent = integrationOrganisation,
+            logoUrl = null,
         )
         return organisationRepository.save(organisation)
     }

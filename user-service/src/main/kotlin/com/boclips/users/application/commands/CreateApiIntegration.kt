@@ -38,7 +38,8 @@ class CreateApiIntegration(
             role = request.role,
             domain = null,
             allowsOverridingUserIds = false,
-            features = null
+            features = null,
+            logoUrl = null,
         )
 
         return repository.save(organisation)

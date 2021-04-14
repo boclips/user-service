@@ -1,7 +1,6 @@
 package com.boclips.users.domain.model.organisation
 
 import com.boclips.users.domain.model.feature.Feature
-
 import java.time.ZonedDateTime
 
 enum class OrganisationType {
@@ -16,6 +15,7 @@ sealed class Organisation(
     open val role: String?,
     open val tags: Set<OrganisationTag>,
     open val domain: String?,
+    open val logoUrl: String?,
     features: Map<Feature, Boolean>?,
     open val legacyId: String?
 ) {
@@ -66,6 +66,7 @@ class School(
     override val role: String?,
     override val tags: Set<OrganisationTag>,
     override val domain: String?,
+    override val logoUrl: String?,
     val district: District?,
     val externalId: ExternalOrganisationId?,
     features: Map<Feature, Boolean>?,
@@ -79,7 +80,8 @@ class School(
     tags = tags,
     domain = domain,
     features = features,
-    legacyId = legacyId
+    legacyId = legacyId,
+    logoUrl = logoUrl
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.SCHOOL
@@ -101,6 +103,7 @@ class District(
     override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
+    override val logoUrl: String?,
     features: Map<Feature, Boolean>?,
     val externalId: ExternalOrganisationId?,
     legacyId: String? = null
@@ -113,7 +116,8 @@ class District(
     role = role,
     domain = domain,
     features = features,
-    legacyId = legacyId
+    legacyId = legacyId,
+    logoUrl = logoUrl
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.DISTRICT
@@ -131,6 +135,7 @@ class ApiIntegration(
     override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
+    override val logoUrl: String?,
     features: Map<Feature, Boolean>?,
     val allowsOverridingUserIds: Boolean,
     legacyId: String? = null
@@ -143,7 +148,8 @@ class ApiIntegration(
     role = role,
     domain = domain,
     features = features,
-    legacyId = legacyId
+    legacyId = legacyId,
+    logoUrl = logoUrl
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.API
@@ -161,6 +167,7 @@ class LtiDeployment(
     override val tags: Set<OrganisationTag>,
     override val role: String?,
     override val domain: String?,
+    override val logoUrl: String?,
     features: Map<Feature, Boolean>?,
     val deploymentId: String,
     val parent: Organisation,
@@ -174,7 +181,8 @@ class LtiDeployment(
     role = role,
     domain = domain,
     features = features,
-    legacyId = legacyId
+    legacyId = legacyId,
+    logoUrl = logoUrl
 ) {
     override fun type(): OrganisationType {
         return OrganisationType.LTI_DEPLOYMENT

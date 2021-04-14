@@ -37,7 +37,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Currency
 
 class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
     @Nested
@@ -293,7 +292,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                                 "TEACHERS_HOME_PROMOTED_COLLECTIONS" : "false",
                                 "TEACHERS_SUBJECTS" : "false",
                                 "USER_DATA_HIDDEN" : "true" }
-                            } """.trimIndent()
+                            } 
+                        """.trimIndent()
                     )
             )
                 .andExpect(status().isOk)
@@ -331,7 +331,8 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                         """ {"features":  { 
                                 "NONEXISTENTFEATURE" : "false",
                                 "USER_DATA_HIDDEN" : "true" }
-                            } """.trimIndent()
+                            } 
+                        """.trimIndent()
                     )
             )
                 .andExpect(status().isBadRequest)
@@ -595,98 +596,119 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     )
                 )
         }
-    }
 
-    @Nested
-    inner class CreatingOrganisations {
         @Test
-        fun `creates a district organisation with given name and content package`() {
-            val name = "the_district_name"
-            val contentPackage = ContentPackageFactory.sample()
-            contentPackageRepository.save(contentPackage)
+        fun `gets an organisations with a custom logo if defined `() {
+            val organisationWithLogo = saveOrganisation(
+                OrganisationFactory.apiIntegration(
+                    logoUrl = "www.great-logo.com"
+                )
+            )
 
-            val request = CreateDistrictRequest()
-            request.name = name
-            request.contentPackageId = contentPackage.id.value
-            request.type = "DISTRICT"
+            mvc.perform(
+                get("/v1/organisations/${organisationWithLogo.id.value}").asUserWithRoles(
+                    "me",
+                    UserRoles.ROLE_BOCLIPS_WEB_APP,
+                    UserRoles.VIEW_ORGANISATIONS
+                )
+            ).andExpect(
+                jsonPath("$.organisationDetails.name", equalTo(organisationWithLogo.name))
+            ).andExpect(
+                jsonPath("$.organisationDetails.logoUrl", equalTo(organisationWithLogo.logoUrl))
+            )
+        }
 
-            mvc
-                .perform(
-                    post("/v1/organisations")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """{
+        @Nested
+        inner class CreatingOrganisations {
+            @Test
+            fun `creates a district organisation with given name and content package`() {
+                val name = "the_district_name"
+                val contentPackage = ContentPackageFactory.sample()
+                contentPackageRepository.save(contentPackage)
+
+                val request = CreateDistrictRequest()
+                request.name = name
+                request.contentPackageId = contentPackage.id.value
+                request.type = "DISTRICT"
+
+                mvc
+                    .perform(
+                        post("/v1/organisations")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                """{
                                 "name": "the_district_name",
                                 "type": "DISTRICT",
                                 "contentPackageId": "${contentPackage.id.value}"
                                 }"""
-                        )
-                        .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
-                )
-                .andExpect(jsonPath("$.organisationDetails.name", equalTo("the_district_name")))
-                .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
-        }
+                            )
+                            .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
+                    )
+                    .andExpect(jsonPath("$.organisationDetails.name", equalTo("the_district_name")))
+                    .andExpect(jsonPath("$.contentPackageId", equalTo(contentPackage.id.value)))
+            }
 
-        @Test
-        fun `returns 409 when organisation with given name already exists`() {
-            saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
-            val contentPackage = ContentPackageFactory.sample()
-            contentPackageRepository.save(contentPackage)
-            mvc
-                .perform(
-                    post("/v1/organisations")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """{
+            @Test
+            fun `returns 409 when organisation with given name already exists`() {
+                saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
+                val contentPackage = ContentPackageFactory.sample()
+                contentPackageRepository.save(contentPackage)
+                mvc
+                    .perform(
+                        post("/v1/organisations")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                """{
                                 "name": "the_district_name",
                                 "type": "DISTRICT",
                                 "contentPackageId": "${contentPackage.id.value}"
                                 }"""
-                        )
-                        .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
-                )
-                .andExpect(status().isConflict)
-        }
+                            )
+                            .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
+                    )
+                    .andExpect(status().isConflict)
+            }
 
-        @Test
-        fun `returns 400 when organisation type is not district`() {
-            saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
-            val contentPackage = ContentPackageFactory.sample()
-            contentPackageRepository.save(contentPackage)
-            mvc
-                .perform(
-                    post("/v1/organisations")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """{
+            @Test
+            fun `returns 400 when organisation type is not district`() {
+                saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
+                val contentPackage = ContentPackageFactory.sample()
+                contentPackageRepository.save(contentPackage)
+                mvc
+                    .perform(
+                        post("/v1/organisations")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                """{
                                 "name": "the_district_name",
                                 "type": "SCHOOL",
                                 "contentPackageId": "${contentPackage.id.value}"
                                 }"""
-                        )
-                        .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
-                )
-                .andExpect(status().isBadRequest)
-        }
+                            )
+                            .asUserWithRoles("some-boclipper", UserRoles.INSERT_ORGANISATIONS)
+                    )
+                    .andExpect(status().isBadRequest)
+            }
 
-        @Test
-        fun `returns 403 when called without INSERT_ORGANISATIONS role`() {
-            saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
-            val contentPackage = ContentPackageFactory.sample()
-            contentPackageRepository.save(contentPackage)
-            mvc
-                .perform(
-                    post("/v1/organisations")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                            """{
+            @Test
+            fun `returns 403 when called without INSERT_ORGANISATIONS role`() {
+                saveOrganisation(OrganisationFactory.district(name = "the_district_name"))
+                val contentPackage = ContentPackageFactory.sample()
+                contentPackageRepository.save(contentPackage)
+                mvc
+                    .perform(
+                        post("/v1/organisations")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                """{
                                 "name": "the_district_name",
                                 "type": "SCHOOL",
                                 "contentPackageId": "${contentPackage.id.value}"
                                 }"""
-                        )
-                )
-                .andExpect(status().isForbidden)
+                            )
+                    )
+                    .andExpect(status().isForbidden)
+            }
         }
     }
 }

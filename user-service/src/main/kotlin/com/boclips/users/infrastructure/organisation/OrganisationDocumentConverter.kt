@@ -80,7 +80,8 @@ object OrganisationDocumentConverter : KLogging() {
                 allowsOverridingUserIds = organisationDocument.allowsOverridingUserIds ?: false,
                 role = organisationDocument.role,
                 features = features,
-                legacyId = organisationDocument.legacyId
+                legacyId = organisationDocument.legacyId,
+                logoUrl = organisationDocument.logoUrl
             )
 
             OrganisationType.SCHOOL -> School(
@@ -94,7 +95,8 @@ object OrganisationDocumentConverter : KLogging() {
                 externalId = externalId,
                 role = organisationDocument.role,
                 features = features,
-                legacyId = organisationDocument.legacyId
+                legacyId = organisationDocument.legacyId,
+                logoUrl = organisationDocument.logoUrl
             )
 
             OrganisationType.DISTRICT -> District(
@@ -107,7 +109,9 @@ object OrganisationDocumentConverter : KLogging() {
                 externalId = externalId,
                 role = organisationDocument.role,
                 features = features,
-                legacyId = organisationDocument.legacyId
+                legacyId = organisationDocument.legacyId,
+                logoUrl = organisationDocument.logoUrl
+
             )
 
             OrganisationType.LTI_DEPLOYMENT -> LtiDeployment(
@@ -121,7 +125,8 @@ object OrganisationDocumentConverter : KLogging() {
                 role = organisationDocument.role,
                 features = features,
                 parent = organisationDocument.parent!!.let { fromDocument(it) },
-                legacyId = organisationDocument.legacyId
+                legacyId = organisationDocument.legacyId,
+                logoUrl = organisationDocument.logoUrl
             )
         }
     }
@@ -179,7 +184,8 @@ object OrganisationDocumentConverter : KLogging() {
                         .toMap()
                 )
             },
-            legacyId = organisation.legacyId
+            legacyId = organisation.legacyId,
+            logoUrl = organisation.logoUrl
         )
     }
 

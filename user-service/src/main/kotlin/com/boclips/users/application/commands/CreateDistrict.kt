@@ -35,7 +35,8 @@ class CreateDistrict(
             domain = null,
             features = null,
             externalId = null,
-            role = null
+            role = null,
+            logoUrl = null,
         )
 
         return repository.save(organisation)

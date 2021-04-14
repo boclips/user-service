@@ -25,7 +25,8 @@ data class OrganisationDocument(
     val contentPackageByClient: Map<String, String>? = null,
     val features: Map<FeatureKey, Boolean>?,
     val prices: CustomPricesDocument?,
-    val legacyId: String? = null
+    val legacyId: String? = null,
+    val logoUrl: String? = null
 )
 
 enum class VideoTypeKey {

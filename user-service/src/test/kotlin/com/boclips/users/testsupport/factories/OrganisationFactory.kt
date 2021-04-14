@@ -73,7 +73,8 @@ class OrganisationFactory {
             tags: Set<OrganisationTag> = emptySet(),
             externalId: ExternalOrganisationId? = null,
             features: Map<Feature, Boolean>? = null,
-            legacyId: String? = null
+            legacyId: String? = null,
+            logoUrl: String? = null
         ): District {
             return District(
                 id = id,
@@ -85,7 +86,8 @@ class OrganisationFactory {
                 externalId = externalId,
                 domain = domain,
                 features = features,
-                legacyId = legacyId
+                legacyId = legacyId,
+                logoUrl = logoUrl
             )
         }
 
@@ -99,7 +101,8 @@ class OrganisationFactory {
             tags: Set<OrganisationTag> = emptySet(),
             deploymentId: String = "deployment-id",
             features: Map<Feature, Boolean>? = null,
-            parent: Organisation = apiIntegration()
+            parent: Organisation = apiIntegration(),
+            logoUrl: String? = null
         ): LtiDeployment {
             return LtiDeployment(
                 id = id,
@@ -111,7 +114,8 @@ class OrganisationFactory {
                 deploymentId = deploymentId,
                 domain = domain,
                 features = features,
-                parent = parent
+                parent = parent,
+                logoUrl = logoUrl
             )
         }
 
@@ -126,7 +130,8 @@ class OrganisationFactory {
             district: District? = null,
             externalId: ExternalOrganisationId? = null,
             features: Map<Feature, Boolean>? = null,
-            legacyId: String? = null
+            legacyId: String? = null,
+            logoUrl: String? = null
         ): School {
             return School(
                 id = id,
@@ -139,7 +144,8 @@ class OrganisationFactory {
                 domain = domain,
                 district = district,
                 features = features,
-                legacyId = legacyId
+                legacyId = legacyId,
+                logoUrl = logoUrl
             )
         }
 
@@ -151,6 +157,7 @@ class OrganisationFactory {
             tags: Set<OrganisationTag> = emptySet(),
             role: String? = null,
             domain: String? = null,
+            logoUrl: String? = null,
             allowsOverridingUserId: Boolean = false,
             features: Map<Feature, Boolean>? = null
         ): ApiIntegration {
@@ -163,7 +170,8 @@ class OrganisationFactory {
                 role = role,
                 domain = domain,
                 allowsOverridingUserIds = allowsOverridingUserId,
-                features = features
+                features = features,
+                logoUrl = logoUrl
             )
         }
     }

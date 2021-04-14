@@ -107,7 +107,8 @@ class UpdateUser(
                             externalId = null,
                             role = null,
                             domain = null,
-                            features = null
+                            features = null,
+                            logoUrl = null,
                         )
                     )
             }

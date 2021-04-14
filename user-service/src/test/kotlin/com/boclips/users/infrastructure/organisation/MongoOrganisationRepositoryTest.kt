@@ -42,7 +42,8 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 deal = deal(
                     contentAccess = ContentAccess.SimpleAccess(ContentPackageId("123"))
                 ),
-                allowsOverridingUserId = true
+                allowsOverridingUserId = true,
+                logoUrl = "www.great-logo.com"
             )
 
             val retrievedOrganisation = organisationRepository.save(organisation)
@@ -51,6 +52,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             assertThat(retrievedOrganisation.name).isEqualTo(organisationName)
             assertThat(retrievedOrganisation.allowsOverridingUserIds).isTrue()
             assertThat((retrievedOrganisation.deal.contentAccess as? ContentAccess.SimpleAccess)?.id?.value).isEqualTo("123")
+            assertThat(retrievedOrganisation.logoUrl).isEqualTo("www.great-logo.com")
         }
 
         @Test
@@ -157,18 +159,27 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
             ).isEqualTo(ContentPackageId("5e6f91c75849165c9cfb2a38"))
         }
 
-
         @Test
         fun `can persist a client based content access`() {
             val apiCustomer = organisationRepository.save(
-                apiIntegration(deal = deal(contentAccess = ContentAccess.ClientBasedAccess(mapOf(Client.Teachers to ContentPackageId("12345")))))
+                apiIntegration(
+                    deal = deal(
+                        contentAccess = ContentAccess.ClientBasedAccess(
+                            mapOf(
+                                Client.Teachers to ContentPackageId(
+                                    "12345"
+                                )
+                            )
+                        )
+                    )
+                )
             )
 
-            val persistedContentAccess = organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentAccess as? ContentAccess.ClientBasedAccess
+            val persistedContentAccess =
+                organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentAccess as? ContentAccess.ClientBasedAccess
 
             assertThat((persistedContentAccess!!.clientAccess).size).isEqualTo(1)
             assertThat((persistedContentAccess!!.clientAccess)[Client.Teachers]).isEqualTo(ContentPackageId("12345"))
-
         }
 
         @Test
@@ -414,7 +425,8 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val orgs = organisationRepository.findOrganisations(hasCustomPrices = true, size = 10, page = 0, types = null)
+            val orgs =
+                organisationRepository.findOrganisations(hasCustomPrices = true, size = 10, page = 0, types = null)
 
             assertThat(orgs.items).hasSize(1)
             assertThat(orgs.items.first().id).isEqualTo(customPriceOrg.id)
@@ -433,7 +445,8 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val orgs = organisationRepository.findOrganisations(hasCustomPrices = false, size = 10, page = 0, types = null)
+            val orgs =
+                organisationRepository.findOrganisations(hasCustomPrices = false, size = 10, page = 0, types = null)
 
             assertThat(orgs.items).hasSize(1)
             assertThat(orgs.items.first().id).isEqualTo(noCustomPricesOrg.id)

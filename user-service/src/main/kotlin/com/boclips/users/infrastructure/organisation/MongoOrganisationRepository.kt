@@ -98,19 +98,21 @@ class MongoOrganisationRepository(
     override fun update(id: OrganisationId, vararg updates: OrganisationUpdate): Organisation? {
         val document = collection().findOneById(ObjectId(id.value)) ?: return null
 
-        val updatedDocument = updates.fold(document, { accumulator: OrganisationDocument, update: OrganisationUpdate ->
+        val updatedDocument = updates.fold(document) { accumulator: OrganisationDocument, update: OrganisationUpdate ->
             return@fold when (update) {
                 is ReplaceExpiryDate -> accumulator.copy(accessExpiresOn = update.accessExpiresOn.toInstant())
                 is ReplaceDomain -> accumulator.copy(domain = update.domain)
                 is AddTag -> accumulator.copy(tags = accumulator.tags.orEmpty() + update.tag.name)
                 is ReplaceBilling -> accumulator.copy(billing = update.billing)
                 is ReplaceFeatures ->
-                    accumulator.copy(features = update.features.mapKeys {
-                        FeatureDocumentConverter.toDocument(it.key)
-                    })
+                    accumulator.copy(
+                        features = update.features.mapKeys {
+                            FeatureDocumentConverter.toDocument(it.key)
+                        }
+                    )
                 is ReplaceContentPackageId -> accumulator.copy(contentPackageId = update.contentPackageId.value)
             }
-        })
+        }
 
         return save(updatedDocument)
     }
@@ -197,24 +199,26 @@ class MongoOrganisationRepository(
         hasCustomPrices: Boolean?
     ): Bson {
 
-        return and(listOfNotNull(
-            name?.let {
-                OrganisationDocument::name.regex(".*$it.*", "i")
-            },
-            countryCode?.let {
-                OrganisationDocument::country / LocationDocument::code eq it
-            },
-            types?.let {
-                OrganisationDocument::type `in` it
-            },
-            hasCustomPrices?.let {
-                if (hasCustomPrices) {
-                    OrganisationDocument::prices ne null
-                } else {
-                    OrganisationDocument::prices eq null
+        return and(
+            listOfNotNull(
+                name?.let {
+                    OrganisationDocument::name.regex(".*$it.*", "i")
+                },
+                countryCode?.let {
+                    OrganisationDocument::country / LocationDocument::code eq it
+                },
+                types?.let {
+                    OrganisationDocument::type `in` it
+                },
+                hasCustomPrices?.let {
+                    if (hasCustomPrices) {
+                        OrganisationDocument::prices ne null
+                    } else {
+                        OrganisationDocument::prices eq null
+                    }
                 }
-            }
-        ))
+            )
+        )
     }
 
     private fun sort(): Bson {
