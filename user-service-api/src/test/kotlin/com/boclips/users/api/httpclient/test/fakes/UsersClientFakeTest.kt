@@ -6,6 +6,7 @@ import com.boclips.users.api.request.user.CreateUserRequest
 import com.boclips.users.api.response.accessrule.AccessRuleResource
 import com.boclips.users.api.response.accessrule.AccessRulesResource
 import com.boclips.users.api.response.accessrule.AccessRulesWrapper
+import com.boclips.users.api.response.feature.FeatureKeyResource
 import feign.FeignException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -126,7 +127,7 @@ class UsersClientFakeTest {
                 firstName = "John",
                 lastName = "Doe",
                 id = "123",
-                features = mapOf("LTI_COPY_RESOURCE_LINK" to true)
+                features = mapOf(FeatureKeyResource.LTI_COPY_RESOURCE_LINK to true)
             )
         )
 
@@ -134,6 +135,6 @@ class UsersClientFakeTest {
         assertThat(loggedInUser.id).isEqualTo("123")
         assertThat(loggedInUser.firstName).isEqualTo("John")
         assertThat(loggedInUser.lastName).isEqualTo("Doe")
-        assertThat(loggedInUser.features!!["LTI_COPY_RESOURCE_LINK"]).isEqualTo(true)
+        assertThat(loggedInUser.features!![FeatureKeyResource.LTI_COPY_RESOURCE_LINK]).isEqualTo(true)
     }
 }

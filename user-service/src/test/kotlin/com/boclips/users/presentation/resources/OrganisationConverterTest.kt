@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.security.testing.setSecurityContext
+import com.boclips.users.api.response.feature.FeatureKeyResource
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.ContentPackageId
@@ -95,7 +96,7 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
         assertThat(organisationResource.organisationDetails.type).isEqualTo(
             originalOrganisation.type().toString()
         )
-        assertThat(organisationResource.organisationDetails.features!![Feature.USER_DATA_HIDDEN.name]).isTrue()
+        assertThat(organisationResource.organisationDetails.features!![FeatureKeyResource.USER_DATA_HIDDEN]).isTrue()
         assertThat(organisationResource._links?.map { it.key }).containsExactlyInAnyOrder(
             "self",
             "edit",

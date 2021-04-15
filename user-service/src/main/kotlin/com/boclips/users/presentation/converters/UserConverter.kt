@@ -29,7 +29,7 @@ class UserConverter(
             organisation = user.organisation?.let(this::toOrganisationResource),
             school = user.profile?.school?.let(this::toOrganisationResource),
             shareCode = user.shareCode,
-            features = FeatureConverter().toFeatureResource(features = user.features),
+            features = FeatureConverter.toFeatureResource(features = user.features),
             _links = listOfNotNull(
                 userLinkBuilder.profileSelfLink(UserId(user.id.value)),
                 userLinkBuilder.profileLink(UserId(user.id.value)),

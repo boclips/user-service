@@ -1,3 +1,17 @@
 package com.boclips.users.api.response.feature
 
-typealias FeaturesResource = Map<String, Boolean>
+typealias FeaturesResource = Map<FeatureKeyResource, Boolean>
+
+enum class FeatureKeyResource {
+    LTI_COPY_RESOURCE_LINK,
+    LTI_SLS_TERMS_BUTTON,
+    LTI_RESPONSIVE_VIDEO_CARD,
+    TEACHERS_HOME_BANNER,
+    TEACHERS_HOME_SUGGESTED_VIDEOS,
+    TEACHERS_HOME_PROMOTED_COLLECTIONS,
+    TEACHERS_SUBJECTS,
+    USER_DATA_HIDDEN,
+    BO_WEB_APP_COPY_OLD_LINK_BUTTON,
+    BO_WEB_APP_ADDITIONAL_SERVICES,
+    BO_WEB_APP_HIDE_PRICES
+}

@@ -1,6 +1,7 @@
 package com.boclips.users.api.response.organisation
 
 import com.boclips.users.api.response.country.CountryResource
+import com.boclips.users.api.response.feature.FeaturesResource
 import com.boclips.users.api.response.state.StateResource
 
 data class OrganisationDetailsResource(
@@ -11,6 +12,7 @@ data class OrganisationDetailsResource(
     val state: StateResource?,
     val country: CountryResource?,
     val allowsOverridingUserIds: Boolean?,
-    val features: Map<String, Boolean>?,
+    val features: FeaturesResource?,
     val logoUrl: String?
 )
+

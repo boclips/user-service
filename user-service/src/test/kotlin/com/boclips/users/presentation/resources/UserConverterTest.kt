@@ -1,6 +1,7 @@
 package com.boclips.users.presentation.resources
 
 import com.boclips.users.api.response.SubjectResource
+import com.boclips.users.api.response.feature.FeatureKeyResource
 import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
@@ -86,7 +87,7 @@ class UserConverterTest : AbstractSpringIntegrationTest() {
         assertThat(userResource.organisation!!.state!!.id).isEqualTo("NY")
         assertThat(userResource.organisation!!.country!!.name).isEqualTo("United States")
         assertThat(userResource.organisation!!.country!!.id).isEqualTo("USA")
-        assertThat(userResource.features!!["TEACHERS_HOME_BANNER"]).isEqualTo(true)
+        assertThat(userResource.features!![FeatureKeyResource.TEACHERS_HOME_BANNER]).isEqualTo(true)
         assertThat(userResource.shareCode).isEqualTo("1234")
     }
 

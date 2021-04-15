@@ -1,6 +1,7 @@
 package com.boclips.users.api.factories
 
 import com.boclips.users.api.response.country.CountryResource
+import com.boclips.users.api.response.feature.FeaturesResource
 import com.boclips.users.api.response.organisation.DealResource
 import com.boclips.users.api.response.organisation.OrganisationDetailsResource
 import com.boclips.users.api.response.organisation.OrganisationResource
@@ -41,7 +42,7 @@ class OrganisationResourceFactory {
             state: StateResource? = null,
             country: CountryResource? = null,
             allowsOverridingUserIds: Boolean? = null,
-            features: Map<String, Boolean> = emptyMap(),
+            features: FeaturesResource = emptyMap(),
             logoUrl: String? = null,
         ) = OrganisationDetailsResource(
             id = id,

@@ -33,7 +33,7 @@ class OrganisationDetailsConverter {
                 is ApiIntegration -> organisation.allowsOverridingUserIds
                 else -> null
             },
-            features = organisation.features?.map { it.key.name to it.value }?.toMap(),
+            features = organisation.features?.let { FeatureConverter.toFeatureResource(features = it) },
             logoUrl = organisation.logoUrl
         )
     }
