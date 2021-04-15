@@ -37,7 +37,8 @@ class UserTest {
                 Feature.TEACHERS_SUBJECTS to true,
                 Feature.USER_DATA_HIDDEN to false,
                 Feature.BO_WEB_APP_COPY_OLD_LINK_BUTTON to false,
-                Feature.BO_WEB_APP_ADDITIONAL_SERVICES to true
+                Feature.BO_WEB_APP_ADDITIONAL_SERVICES to true,
+                Feature.BO_WEB_APP_HIDE_PRICES to false
             )
         )
     }

@@ -10,7 +10,8 @@ enum class Feature(val defaultValue: Boolean) {
     TEACHERS_SUBJECTS(true),
     USER_DATA_HIDDEN(false),
     BO_WEB_APP_COPY_OLD_LINK_BUTTON(false),
-    BO_WEB_APP_ADDITIONAL_SERVICES(true);
+    BO_WEB_APP_ADDITIONAL_SERVICES(true),
+    BO_WEB_APP_HIDE_PRICES(false);
 
     companion object {
 
