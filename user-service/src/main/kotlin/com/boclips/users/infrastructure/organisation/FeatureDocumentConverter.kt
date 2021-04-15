@@ -15,6 +15,7 @@ object FeatureDocumentConverter : KLogging() {
             FeatureKey.USER_DATA_HIDDEN -> Feature.USER_DATA_HIDDEN
             FeatureKey.LTI_RESPONSIVE_VIDEO_CARD -> Feature.LTI_RESPONSIVE_VIDEO_CARD
             FeatureKey.BO_WEB_APP_COPY_OLD_LINK_BUTTON -> Feature.BO_WEB_APP_COPY_OLD_LINK_BUTTON
+            FeatureKey.BO_WEB_APP_ADDITIONAL_SERVICES -> Feature.BO_WEB_APP_ADDITIONAL_SERVICES
         }
 
     fun toDocument(feature: Feature): FeatureKey =
@@ -28,5 +29,6 @@ object FeatureDocumentConverter : KLogging() {
             Feature.USER_DATA_HIDDEN -> FeatureKey.USER_DATA_HIDDEN
             Feature.LTI_RESPONSIVE_VIDEO_CARD -> FeatureKey.LTI_RESPONSIVE_VIDEO_CARD
             Feature.BO_WEB_APP_COPY_OLD_LINK_BUTTON -> FeatureKey.BO_WEB_APP_COPY_OLD_LINK_BUTTON
+            Feature.BO_WEB_APP_ADDITIONAL_SERVICES -> FeatureKey.BO_WEB_APP_ADDITIONAL_SERVICES
         }
 }

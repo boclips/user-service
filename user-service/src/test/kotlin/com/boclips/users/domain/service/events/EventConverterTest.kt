@@ -130,6 +130,7 @@ class EventConverterTest {
         assertThat(eventOrganisation.features["TEACHERS_HOME_PROMOTED_COLLECTIONS"]).isTrue()
         assertThat(eventOrganisation.features["TEACHERS_SUBJECTS"]).isTrue()
         assertThat(eventOrganisation.features["USER_DATA_HIDDEN"]).isFalse()
+        assertThat(eventOrganisation.features["BO_WEB_APP_ADDITIONAL_SERVICES"]).isTrue()
     }
 
     @Test
