@@ -165,6 +165,38 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         }
     }
 
+    @Test
+    fun `can return logo url for teachers and boclips web app`() {
+
+        val organisation = organisationRepository.save(
+            OrganisationFactory.apiIntegration(
+                logoUrl = "www.logo.com"
+            )
+        )
+
+        val userId = saveUser(UserFactory.sample(organisation = organisation)).id.value
+
+        mvc.perform(
+            get("/v1/users/$userId").asUserWithRoles(
+                id = "service-account-gateway",
+                roles = arrayOf(UserRoles.VIEW_USERS, UserRoles.ROLE_BOCLIPS_WEB_APP)
+            )
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.organisation.logoUrl", equalTo("www.logo.com")))
+
+        mvc.perform(
+            get("/v1/users/$userId").asUserWithRoles(
+                id = "service-account-gateway",
+                roles = arrayOf(UserRoles.VIEW_USERS, UserRoles.ROLE_TEACHER)
+            )
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.organisation.logoUrl", equalTo("www.logo.com")))
+    }
+
     @Nested
     inner class CreateApiUserScenarios {
 
@@ -857,7 +889,15 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
 
             saveContentPackage(contentPackage)
             val organisation =
-                saveOrganisation(OrganisationFactory.apiIntegration(deal = deal(contentAccess = ContentAccess.SimpleAccess(contentPackage.id))))
+                saveOrganisation(
+                    OrganisationFactory.apiIntegration(
+                        deal = deal(
+                            contentAccess = ContentAccess.SimpleAccess(
+                                contentPackage.id
+                            )
+                        )
+                    )
+                )
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
@@ -918,7 +958,15 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
 
             val organisation =
-                saveOrganisation(OrganisationFactory.apiIntegration(deal = deal(contentAccess = ContentAccess.ClientBasedAccess(clientBasedAccess))))
+                saveOrganisation(
+                    OrganisationFactory.apiIntegration(
+                        deal = deal(
+                            contentAccess = ContentAccess.ClientBasedAccess(
+                                clientBasedAccess
+                            )
+                        )
+                    )
+                )
             val user = saveUser(UserFactory.sample(organisation = organisation))
 
             mvc.perform(
