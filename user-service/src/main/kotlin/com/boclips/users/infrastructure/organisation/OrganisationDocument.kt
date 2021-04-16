@@ -56,7 +56,7 @@ enum class FeatureKey {
     USER_DATA_HIDDEN,
     BO_WEB_APP_COPY_OLD_LINK_BUTTON,
     BO_WEB_APP_ADDITIONAL_SERVICES,
-    BO_WEB_APP_HIDE_PRICES
+    BO_WEB_APP_PRICES
 }
 
 data class LocationDocument(

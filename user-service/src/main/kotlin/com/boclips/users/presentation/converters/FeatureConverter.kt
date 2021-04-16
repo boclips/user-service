@@ -19,7 +19,7 @@ class FeatureConverter {
                     Feature.USER_DATA_HIDDEN -> FeatureKeyResource.USER_DATA_HIDDEN
                     Feature.BO_WEB_APP_COPY_OLD_LINK_BUTTON -> FeatureKeyResource.BO_WEB_APP_COPY_OLD_LINK_BUTTON
                     Feature.BO_WEB_APP_ADDITIONAL_SERVICES -> FeatureKeyResource.BO_WEB_APP_ADDITIONAL_SERVICES
-                    Feature.BO_WEB_APP_HIDE_PRICES -> FeatureKeyResource.BO_WEB_APP_HIDE_PRICES
+                    Feature.BO_WEB_APP_PRICES -> FeatureKeyResource.BO_WEB_APP_PRICES
                 }
             }
         }
