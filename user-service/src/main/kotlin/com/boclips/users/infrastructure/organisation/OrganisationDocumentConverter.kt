@@ -4,27 +4,16 @@ import com.boclips.security.utils.Client
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
-import com.boclips.users.domain.model.organisation.Address
-import com.boclips.users.domain.model.organisation.ApiIntegration
-import com.boclips.users.domain.model.organisation.ContentAccess
-import com.boclips.users.domain.model.organisation.Deal
-import com.boclips.users.domain.model.organisation.District
-import com.boclips.users.domain.model.organisation.ExternalOrganisationId
-import com.boclips.users.domain.model.organisation.LtiDeployment
-import com.boclips.users.domain.model.organisation.Organisation
-import com.boclips.users.domain.model.organisation.OrganisationId
-import com.boclips.users.domain.model.organisation.OrganisationTag
-import com.boclips.users.domain.model.organisation.OrganisationType
-import com.boclips.users.domain.model.organisation.Prices
+import com.boclips.users.domain.model.feature.Feature
+import com.boclips.users.domain.model.organisation.*
 import com.boclips.users.domain.model.organisation.Prices.Price
-import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.school.Country
 import com.boclips.users.domain.model.school.State
 import mu.KLogging
 import org.bson.types.ObjectId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import java.util.Currency
+import java.util.*
 
 object OrganisationDocumentConverter : KLogging() {
     fun fromDocument(organisationDocument: OrganisationDocument): Organisation {
@@ -67,7 +56,14 @@ object OrganisationDocumentConverter : KLogging() {
 
         val externalId = organisationDocument.externalId?.let(::ExternalOrganisationId)
 
-        val features = organisationDocument.features?.mapKeys { FeatureDocumentConverter.fromDocument(it.key) }
+        val features = organisationDocument.features?.map { it ->
+            //TODO("remove after we have migrated DB")
+            if (it.key == FeatureKey.BO_WEB_APP_HIDE_PRICES) {
+                Feature.BO_WEB_APP_PRICES to !it.value
+            } else {
+                FeatureDocumentConverter.fromDocument(it.key) to it.value
+            }
+        }?.toMap()
 
         return when (organisationDocument.type) {
             OrganisationType.API -> ApiIntegration(

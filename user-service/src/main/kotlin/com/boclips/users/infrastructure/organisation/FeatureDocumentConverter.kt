@@ -17,6 +17,7 @@ object FeatureDocumentConverter : KLogging() {
             FeatureKey.BO_WEB_APP_COPY_OLD_LINK_BUTTON -> Feature.BO_WEB_APP_COPY_OLD_LINK_BUTTON
             FeatureKey.BO_WEB_APP_ADDITIONAL_SERVICES -> Feature.BO_WEB_APP_ADDITIONAL_SERVICES
             FeatureKey.BO_WEB_APP_PRICES -> Feature.BO_WEB_APP_PRICES
+                else -> Feature.BO_WEB_APP_PRICES
         }
 
     fun toDocument(feature: Feature): FeatureKey =
