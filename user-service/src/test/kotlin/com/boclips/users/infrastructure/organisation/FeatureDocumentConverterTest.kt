@@ -20,11 +20,7 @@ class FeatureDocumentConverterTest {
         FeatureKey.values().forEach { document ->
             run {
                 val converted = FeatureDocumentConverter.fromDocument(document)
-                if (document.name == FeatureKey.BO_WEB_APP_HIDE_PRICES.name) {
-                    assertThat(converted.name).isEqualTo(Feature.BO_WEB_APP_PRICES.name)
-                } else {
-                    assertThat(document.name).isEqualTo(converted.name)
-                }
+                assertThat(document.name).isEqualTo(converted.name)
             }
         }
     }
