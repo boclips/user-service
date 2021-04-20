@@ -11,6 +11,7 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.organisation.School
+import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,6 +19,8 @@ class OrganisationService(
     val americanSchoolsProvider: AmericanSchoolsProvider,
     val organisationRepository: OrganisationRepository
 ) {
+    companion object : KLogging()
+
     fun findOrCreateSchooldiggerSchool(externalSchoolId: ExternalOrganisationId): School? {
         val existingOrganisation = organisationRepository
             .findOrganisationByExternalId(externalSchoolId)
@@ -89,6 +92,7 @@ class OrganisationService(
     }
 
     private fun saveDeploymentOrganisation(deploymentId: String, topLevelOrganisationId: OrganisationId): Organisation {
+        logger.info { "creating deployment organisation: deploymentId:$deploymentId, topLevelOrganisationId: ${topLevelOrganisationId.value}" }
         val integrationOrganisation = organisationRepository.findOrganisationById(topLevelOrganisationId)!!
         val organisation = LtiDeployment(
             id = OrganisationId(),
