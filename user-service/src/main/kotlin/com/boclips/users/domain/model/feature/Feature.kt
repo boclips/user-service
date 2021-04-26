@@ -4,6 +4,7 @@ enum class Feature(val defaultValue: Boolean) {
     LTI_COPY_RESOURCE_LINK(false),
     LTI_SLS_TERMS_BUTTON(false),
     LTI_RESPONSIVE_VIDEO_CARD(false),
+    LTI_AGE_FILTER(true),
     TEACHERS_HOME_BANNER(true),
     TEACHERS_HOME_SUGGESTED_VIDEOS(true),
     TEACHERS_HOME_PROMOTED_COLLECTIONS(true),

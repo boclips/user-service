@@ -30,6 +30,7 @@ class UserTest {
             mapOf(
                 Feature.LTI_COPY_RESOURCE_LINK to false,
                 Feature.LTI_SLS_TERMS_BUTTON to false,
+                Feature.LTI_AGE_FILTER to true,
                 Feature.LTI_RESPONSIVE_VIDEO_CARD to true,
                 Feature.TEACHERS_HOME_BANNER to false,
                 Feature.TEACHERS_HOME_SUGGESTED_VIDEOS to true,

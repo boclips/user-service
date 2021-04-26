@@ -12,6 +12,7 @@ class FeatureConverter {
                     Feature.LTI_COPY_RESOURCE_LINK -> FeatureKeyResource.LTI_COPY_RESOURCE_LINK
                     Feature.LTI_SLS_TERMS_BUTTON -> FeatureKeyResource.LTI_SLS_TERMS_BUTTON
                     Feature.LTI_RESPONSIVE_VIDEO_CARD -> FeatureKeyResource.LTI_RESPONSIVE_VIDEO_CARD
+                    Feature.LTI_AGE_FILTER -> FeatureKeyResource.LTI_AGE_FILTER
                     Feature.TEACHERS_HOME_BANNER -> FeatureKeyResource.TEACHERS_HOME_BANNER
                     Feature.TEACHERS_HOME_SUGGESTED_VIDEOS -> FeatureKeyResource.TEACHERS_HOME_SUGGESTED_VIDEOS
                     Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS -> FeatureKeyResource.TEACHERS_HOME_PROMOTED_COLLECTIONS

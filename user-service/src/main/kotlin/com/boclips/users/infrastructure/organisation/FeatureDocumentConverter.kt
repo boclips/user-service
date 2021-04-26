@@ -8,6 +8,7 @@ object FeatureDocumentConverter : KLogging() {
         when (featureKey) {
             FeatureKey.LTI_COPY_RESOURCE_LINK -> Feature.LTI_COPY_RESOURCE_LINK
             FeatureKey.LTI_SLS_TERMS_BUTTON -> Feature.LTI_SLS_TERMS_BUTTON
+            FeatureKey.LTI_AGE_FILTER -> Feature.LTI_AGE_FILTER
             FeatureKey.TEACHERS_HOME_BANNER -> Feature.TEACHERS_HOME_BANNER
             FeatureKey.TEACHERS_HOME_SUGGESTED_VIDEOS -> Feature.TEACHERS_HOME_SUGGESTED_VIDEOS
             FeatureKey.TEACHERS_HOME_PROMOTED_COLLECTIONS -> Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS
@@ -23,6 +24,7 @@ object FeatureDocumentConverter : KLogging() {
         when (feature) {
             Feature.LTI_COPY_RESOURCE_LINK -> FeatureKey.LTI_COPY_RESOURCE_LINK
             Feature.LTI_SLS_TERMS_BUTTON -> FeatureKey.LTI_SLS_TERMS_BUTTON
+            Feature.LTI_AGE_FILTER -> FeatureKey.LTI_AGE_FILTER
             Feature.TEACHERS_HOME_BANNER -> FeatureKey.TEACHERS_HOME_BANNER
             Feature.TEACHERS_HOME_SUGGESTED_VIDEOS -> FeatureKey.TEACHERS_HOME_SUGGESTED_VIDEOS
             Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS -> FeatureKey.TEACHERS_HOME_PROMOTED_COLLECTIONS
