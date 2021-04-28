@@ -87,7 +87,7 @@ class UserConverterTest : AbstractSpringIntegrationTest() {
         assertThat(userResource.organisation!!.state!!.id).isEqualTo("NY")
         assertThat(userResource.organisation!!.country!!.name).isEqualTo("United States")
         assertThat(userResource.organisation!!.country!!.id).isEqualTo("USA")
-        assertThat(userResource.features!![FeatureKeyResource.TEACHERS_HOME_BANNER]).isEqualTo(true)
+        assertThat(userResource.features!![FeatureKeyResource.TEACHERS_HOME_BANNER.toString()]).isEqualTo(true)
         assertThat(userResource.shareCode).isEqualTo("1234")
     }
 

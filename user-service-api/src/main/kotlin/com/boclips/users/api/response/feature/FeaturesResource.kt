@@ -1,6 +1,6 @@
 package com.boclips.users.api.response.feature
 
-typealias FeaturesResource = Map<FeatureKeyResource, Boolean>
+typealias FeaturesResource = Map<String, Boolean>
 
 enum class FeatureKeyResource {
     LTI_COPY_RESOURCE_LINK,

@@ -96,7 +96,7 @@ class OrganisationConverterTest : AbstractSpringIntegrationTest() {
         assertThat(organisationResource.organisationDetails.type).isEqualTo(
             originalOrganisation.type().toString()
         )
-        assertThat(organisationResource.organisationDetails.features!![FeatureKeyResource.USER_DATA_HIDDEN]).isTrue()
+        assertThat(organisationResource.organisationDetails.features!![FeatureKeyResource.USER_DATA_HIDDEN.toString()]).isTrue()
         assertThat(organisationResource._links?.map { it.key }).containsExactlyInAnyOrder(
             "self",
             "edit",
