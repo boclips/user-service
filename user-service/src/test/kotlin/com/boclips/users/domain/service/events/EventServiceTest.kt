@@ -14,7 +14,7 @@ class EventServiceTest : AbstractSpringIntegrationTest() {
 
     @Test
     fun `publish page rendered events`() {
-        eventService.publishPageRendered(userId = "test-id", url = "https://teachers.boclips.com/collections")
+        eventService.publishPageRendered(userId = "test-id", url = "https://teachers.boclips.com/collections", viewport = null)
 
         val event = eventBus.getEventOfType(PageRendered::class.java)
         assertThat(event.url).isEqualTo("https://teachers.boclips.com/collections")

@@ -1,6 +1,7 @@
 package com.boclips.users.domain.service.events
 
 import com.boclips.eventbus.EventBus
+import com.boclips.eventbus.domain.page.Viewport
 import com.boclips.eventbus.events.page.PageRendered
 import com.boclips.eventbus.events.platform.PlatformInteractedWith
 import com.boclips.eventbus.events.user.UserExpired
@@ -12,11 +13,12 @@ class EventService(
     val eventBus: EventBus,
     val eventConverter: EventConverter
 ) {
-    fun publishPageRendered(userId: String, url: String) {
+    fun publishPageRendered(userId: String, url: String, viewport: Viewport?) {
         eventBus.publish(
             PageRendered.builder()
                 .userId(userId)
                 .url(url)
+                .viewport(viewport)
                 .build()
         )
     }
