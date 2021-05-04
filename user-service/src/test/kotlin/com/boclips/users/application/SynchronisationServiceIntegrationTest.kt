@@ -1,6 +1,8 @@
 package com.boclips.users.application
 
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.marketing.CrmProfile
+import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -104,5 +106,30 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
                 "cat"
             ), UserId("dog")
         )
+    }
+
+    @Test
+    fun `updates user's features with organisaation features`() {
+        val organisation = saveOrganisation(
+            OrganisationFactory.ltiDeployment(
+                features = mapOf(Feature.BO_WEB_APP_ADDITIONAL_SERVICES to true)
+            )
+        )
+        val user = saveUser(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(username = "teacher@test.com"),
+                accessExpiresOn = ZonedDateTime.now().plusDays(1),
+                organisation = OrganisationFactory.ltiDeployment(
+                    id = organisation.id,
+                    features = mapOf(Feature.BO_WEB_APP_ADDITIONAL_SERVICES to false)
+                )
+            )
+        )
+
+        synchronisationService.synchroniseUsersOrganisations()
+
+        val retrievedUser = userRepository.findById(user.id)
+
+        assertThat(retrievedUser?.organisation?.features?.get(Feature.BO_WEB_APP_ADDITIONAL_SERVICES)).isTrue
     }
 }

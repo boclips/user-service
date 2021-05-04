@@ -6,6 +6,7 @@ interface OrganisationRepository {
     fun <T : Organisation> save(organisation: T): T
 
     fun update(id: OrganisationId, vararg updates: OrganisationUpdate): Organisation?
+    fun findAll(): List<Organisation>
 
     fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation>
     fun findOrganisationById(id: OrganisationId): Organisation?

@@ -117,6 +117,10 @@ class MongoOrganisationRepository(
         return save(updatedDocument)
     }
 
+    override fun findAll(): List<Organisation> {
+        return collection().find().convert()
+    }
+
     override fun findOrganisationsByParentId(parentId: OrganisationId): List<Organisation> {
         return collection().find(OrganisationDocument::parent / OrganisationDocument::_id eq ObjectId(parentId.value))
             .convert()

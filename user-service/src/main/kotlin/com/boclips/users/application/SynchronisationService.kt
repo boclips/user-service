@@ -1,6 +1,8 @@
 package com.boclips.users.application
 
+import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.user.UserRepository
+import com.boclips.users.domain.model.user.UserUpdate
 import com.boclips.users.domain.service.access.AccessExpiryService
 import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.marketing.convertUserToCrmProfile
@@ -16,7 +18,8 @@ class SynchronisationService(
     val sessionProvider: SessionProvider,
     val userImportService: UserImportService,
     val identityProvider: IdentityProvider,
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    val organisationRepository: OrganisationRepository
 ) {
     companion object : KLogging()
 
@@ -50,6 +53,19 @@ class SynchronisationService(
             if (!allUserIds.contains(id)) {
                 userImportService.importFromIdentityProvider(listOf(id))
                 logger.info { "Import of user with id: $id completed" }
+            }
+        }
+    }
+
+    fun synchroniseUsersOrganisations() {
+        val organisations = organisationRepository.findAll()
+        logger.info { "Found ${organisations.size} organisations" }
+
+        organisations.forEach { org ->
+            val users = userRepository.findAllByOrganisationId(org.id)
+            logger.info { "Updating ${org.name} organisation, found ${users.size} users" }
+            users.forEach { user ->
+                userRepository.update(user, UserUpdate.ReplaceOrganisation(org))
             }
         }
     }

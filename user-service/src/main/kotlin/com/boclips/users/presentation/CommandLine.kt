@@ -28,6 +28,11 @@ class CommandLine(
                 synchronisationService.synchroniseUserAccounts()
                 System.exit(SpringApplication.exit(app))
             }
+
+            "sync-users-organisations" -> {
+                synchronisationService.synchroniseUsersOrganisations()
+                System.exit(SpringApplication.exit(app))
+            }
         }
     }
 }
