@@ -3,6 +3,7 @@ package com.boclips.users.config.security
 object UserRoles {
     const val ROLE_API = "API"
     const val ROLE_BOCLIPS_WEB_APP = "BOCLIPS_WEB_APP"
+    const val ROLE_BOCLIPS_WEB_APP_DEMO = "BOCLIPS_WEB_APP_DEMO"
     const val ROLE_TEACHER = "TEACHER"
     const val ROLE_BOCLIPS_SERVICE = "BOCLIPS_SERVICE"
     const val ROLE_LTI = "LTI"
