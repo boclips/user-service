@@ -63,7 +63,8 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
         saveUser(
             UserFactory.sample(
                 identity = IdentityFactory.sample(id = userId),
-                profile = null
+                profile = null,
+                organisation = school()
             )
         )
 
@@ -126,7 +127,6 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
         assertThat(event.subtype).isEqualTo("HELP_CLICKED")
         assertThat(event.userId).isEqualTo("testUser")
     }
-
 
     @Test
     fun `platform interaction is tracked and boclips-referer has precedence over referer for setting url`() {

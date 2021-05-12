@@ -4,6 +4,7 @@ import com.boclips.users.domain.model.analytics.AnalyticsId
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.marketing.MarketingTracking
 import com.boclips.users.domain.model.organisation.Organisation
+import com.boclips.users.domain.model.organisation.OrganisationType
 import java.time.ZonedDateTime
 
 class User(
@@ -23,7 +24,9 @@ class User(
     val accessExpiresOn: ZonedDateTime? = accessExpiresOn
         get() {
             val hasLifetimeAccess = field == null
-            return if (hasLifetimeAccess) field else { organisation?.accessExpiryDate ?: field }
+            return if (hasLifetimeAccess) field else {
+                organisation?.accessExpiryDate ?: field
+            }
         }
 
     val features get() = organisation?.features ?: Feature.DEFAULT_VALUES
@@ -50,6 +53,18 @@ class User(
                 email = email
             )
         }
+    }
+
+    fun isTrackable(): Boolean {
+        return !this.isATeacher() || this.hasOnboarded()
+    }
+
+    fun isATeacher(): Boolean = when (this.organisation?.type()) {
+        OrganisationType.SCHOOL -> true
+        OrganisationType.DISTRICT -> true
+        OrganisationType.API -> false
+        OrganisationType.LTI_DEPLOYMENT -> false
+        null -> false
     }
 
     override fun equals(other: Any?): Boolean {

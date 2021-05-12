@@ -2,9 +2,12 @@ package com.boclips.users.domain.model.user
 
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Deal
+import com.boclips.users.testsupport.factories.IdentityFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
+import com.boclips.users.testsupport.factories.ProfileFactory
 import com.boclips.users.testsupport.factories.UserFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
@@ -112,6 +115,88 @@ class UserTest {
 
         // then
         assertThat(accessExpiresOn).isNull()
+    }
+
+    @Test
+    fun `teacher users are not trackable if they haven't onboarded`() {
+        val user = UserFactory.sample(
+            identity = IdentityFactory.sample(id = "testUser"),
+            profile = null,
+            organisation = OrganisationFactory.school()
+        )
+
+        assertThat(user.isTrackable()).isFalse
+    }
+
+    @Test
+    fun `teacher users are trackable if they have onboarded`() {
+        val user = UserFactory.sample(
+            identity = IdentityFactory.sample(id = "testUser"),
+            profile = ProfileFactory.sample(firstName = "Mr Trackable"),
+            organisation = OrganisationFactory.school()
+        )
+
+        assertThat(user.isTrackable()).isTrue
+    }
+
+
+    @Test
+    fun `API users are always trackable`() {
+        val user = UserFactory.sample(
+            identity = IdentityFactory.sample(id = "apiUser"),
+            profile = null,
+            organisation = OrganisationFactory.apiIntegration()
+        )
+
+        assertThat(user.isTrackable()).isTrue
+    }
+
+    @Nested
+    inner class IsATeacher {
+        @Test
+        fun `SCHOOL users are Teachers `() {
+            val user = UserFactory.sample(
+                organisation = OrganisationFactory.school()
+            )
+
+            assertThat(user.isATeacher()).isTrue
+        }
+
+        @Test
+        fun `District users are Teachers `() {
+            val user = UserFactory.sample(
+                organisation = OrganisationFactory.district()
+            )
+
+            assertThat(user.isATeacher()).isTrue
+        }
+
+        @Test
+        fun `API users are not Teachers `() {
+            val user = UserFactory.sample(
+                organisation = OrganisationFactory.apiIntegration()
+            )
+
+            assertThat(user.isATeacher()).isFalse
+        }
+
+        @Test
+        fun `LTI users are not Teachers `() {
+            val user = UserFactory.sample(
+                organisation = OrganisationFactory.ltiDeployment()
+            )
+
+            assertThat(user.isATeacher()).isFalse
+        }
+
+        @Test
+        fun `Users with no organisation assigned are not Teachers `() {
+            val user = UserFactory.sample(
+                organisation = null
+            )
+
+            assertThat(user.isATeacher()).isFalse
+        }
     }
 
     private companion object {
