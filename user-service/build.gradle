@@ -26,7 +26,6 @@ apply plugin: 'idea'
 apply plugin: 'com.github.ben-manes.versions'
 
 group 'com.boclips.users'
-version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
