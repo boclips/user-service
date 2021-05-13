@@ -16,6 +16,8 @@ class TrackPageRenderedEvent(
         eventService.publishPageRendered(
             userId = userId,
             url = request.url,
-            viewport = request.viewport?.let { Viewport(it.width, it.height) })
+            viewport = request.viewport?.let { Viewport(it.width, it.height) },
+            isResize = request.isResize
+        )
     }
 }

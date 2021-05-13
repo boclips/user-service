@@ -13,12 +13,13 @@ class EventService(
     val eventBus: EventBus,
     val eventConverter: EventConverter
 ) {
-    fun publishPageRendered(userId: String, url: String, viewport: Viewport?) {
+    fun publishPageRendered(userId: String, url: String, viewport: Viewport?, isResize: Boolean?) {
         eventBus.publish(
             PageRendered.builder()
                 .userId(userId)
                 .url(url)
                 .viewport(viewport)
+                .isResize(isResize)
                 .build()
         )
     }

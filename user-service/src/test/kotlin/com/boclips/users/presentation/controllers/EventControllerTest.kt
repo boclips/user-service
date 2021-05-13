@@ -39,7 +39,8 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
 
         val path = "/v1/events/page-render"
         val content = """{
-                    "url" : "http://teachers.boclips.com/discover-collections?subject=5cb499c9fd5beb4281894553"
+                    "url" : "http://teachers.boclips.com/discover-collections?subject=5cb499c9fd5beb4281894553",
+                    "isResize": true
                     }""".trimMargin()
 
         mockMvc.perform(
@@ -53,6 +54,7 @@ class EventControllerTest : AbstractSpringIntegrationTest() {
 
         assertThat(event.userId).isEqualTo("test-user-id")
         assertThat(event.url).isEqualTo("http://teachers.boclips.com/discover-collections?subject=5cb499c9fd5beb4281894553")
+        assertThat(event.isResize).isTrue
     }
 
     @Test
