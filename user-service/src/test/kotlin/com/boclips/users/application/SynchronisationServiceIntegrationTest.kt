@@ -2,7 +2,6 @@ package com.boclips.users.application
 
 import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.marketing.CrmProfile
-import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.factories.IdentityFactory
@@ -15,9 +14,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 
 class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
     @Autowired
@@ -52,8 +49,15 @@ class SynchronisationServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         val argument = ArgumentCaptor.forClass(List::class.java) as ArgumentCaptor<List<CrmProfile>>
         verify(marketingService).updateProfile(capture(argument))
-        assertThat(argument.value.first().accessExpiresOn).isEqualTo(orgAccess.toInstant())
+
+        val receivedDate = localDate(argument.value.first().accessExpiresOn)
+        val orgAccessDate = localDate(orgAccess.toInstant())
+
+        assertThat(receivedDate).isEqualTo(orgAccessDate)
     }
+
+    private fun localDate(instant: Instant?) =
+        LocalDateTime.ofInstant(instant, ZoneOffset.UTC).toLocalDate()
 
     @Test
     fun `does not try to sync expired teachers or boclipper users`() {
