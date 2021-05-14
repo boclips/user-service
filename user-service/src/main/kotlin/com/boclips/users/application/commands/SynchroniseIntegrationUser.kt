@@ -1,6 +1,7 @@
 package com.boclips.users.application.commands
 
 import com.boclips.security.utils.UserExtractor
+import com.boclips.users.application.exceptions.NotAuthenticatedException
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.user.UserId
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Component
 class SynchroniseIntegrationUser(
     val userRepository: UserRepository,
     val organisationService: OrganisationService,
-    val userCreationService: UserCreationService
+    val userCreationService: UserCreationService,
+    val getOrImportUser: GetOrImportUser
 ) {
     operator fun invoke(deploymentId: String, externalUserId: String): User {
         val topLevelOrganisationId = getTopLevelOrganisationId()
@@ -23,9 +25,8 @@ class SynchroniseIntegrationUser(
     }
 
     private fun getTopLevelOrganisationId(): OrganisationId {
-        val integrationUser = UserExtractor.getCurrentUser()?.let {
-            userRepository.findById(UserId(value = it.id))
-        }!!
+        val userId = UserExtractor.getCurrentUser()?.let { UserId(it.id)} ?: throw NotAuthenticatedException()
+        val integrationUser = getOrImportUser(userId)
         return integrationUser.organisation!!.id
     }
 }
