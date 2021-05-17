@@ -6,6 +6,7 @@ import com.boclips.users.domain.service.marketing.MarketingService
 import com.boclips.users.domain.service.organisation.AmericanSchoolsProvider
 import com.boclips.users.domain.service.user.IdentityProvider
 import com.boclips.users.domain.service.user.SessionProvider
+import com.boclips.users.infrastructure.MongoDatabase.DB_NAME
 import com.boclips.users.infrastructure.access.MongoContentPackageRepository
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
@@ -27,6 +28,8 @@ import com.boclips.users.infrastructure.user.MongoUserRepository
 import com.boclips.users.infrastructure.user.UserDocumentConverter
 import com.boclips.videos.api.httpclient.SubjectsClient
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.cloudyrock.mongock.driver.mongodb.v3.driver.MongoCore3Driver
+import com.github.cloudyrock.spring.v5.MongockSpring5
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientOptions
 import com.mongodb.MongoClientURI
@@ -36,6 +39,7 @@ import org.keycloak.adapters.KeycloakConfigResolver
 import org.keycloak.admin.client.Keycloak
 import org.litote.kmongo.KMongo
 import org.springframework.boot.autoconfigure.mongo.MongoProperties
+import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -159,5 +163,18 @@ class InfrastructureConfiguration(
                     .addCommandListener(TracingCommandListener.Builder(tracer).build())
             )
         )
+    }
+
+    @Profile("!test")
+    @Bean
+    fun mongockInitializingBeanRunner(
+        springContext: ApplicationContext,
+        mongoClient: com.mongodb.client.MongoClient
+    ): MongockSpring5.MongockInitializingBeanRunner? {
+        return MongockSpring5.builder()
+            .setDriver(MongoCore3Driver.withDefaultLock(mongoClient, DB_NAME))
+            .addChangeLogsScanPackage("com.boclips.users.infrastructure")
+            .setSpringContext(springContext)
+            .buildInitializingBeanRunner()
     }
 }
