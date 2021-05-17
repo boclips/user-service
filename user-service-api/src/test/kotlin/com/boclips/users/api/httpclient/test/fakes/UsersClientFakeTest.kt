@@ -127,7 +127,7 @@ class UsersClientFakeTest {
                 firstName = "John",
                 lastName = "Doe",
                 id = "123",
-                features = mapOf(FeatureKeyResource.LTI_COPY_RESOURCE_LINK.toString() to true)
+                features = mapOf(FeatureKeyResource.LTI_AGE_FILTER.toString() to true)
             )
         )
 
@@ -135,6 +135,6 @@ class UsersClientFakeTest {
         assertThat(loggedInUser.id).isEqualTo("123")
         assertThat(loggedInUser.firstName).isEqualTo("John")
         assertThat(loggedInUser.lastName).isEqualTo("Doe")
-        assertThat(loggedInUser.features!![FeatureKeyResource.LTI_COPY_RESOURCE_LINK.toString()]).isEqualTo(true)
+        assertThat(loggedInUser.features!![FeatureKeyResource.LTI_AGE_FILTER.toString()]).isEqualTo(true)
     }
 }

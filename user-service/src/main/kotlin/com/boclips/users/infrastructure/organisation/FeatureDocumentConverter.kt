@@ -6,7 +6,6 @@ import mu.KLogging
 object FeatureDocumentConverter : KLogging() {
     fun fromDocument(featureKey: FeatureKey): Feature =
         when (featureKey) {
-            FeatureKey.LTI_COPY_RESOURCE_LINK -> Feature.LTI_COPY_RESOURCE_LINK
             FeatureKey.LTI_SLS_TERMS_BUTTON -> Feature.LTI_SLS_TERMS_BUTTON
             FeatureKey.LTI_AGE_FILTER -> Feature.LTI_AGE_FILTER
             FeatureKey.TEACHERS_HOME_BANNER -> Feature.TEACHERS_HOME_BANNER
@@ -22,7 +21,6 @@ object FeatureDocumentConverter : KLogging() {
 
     fun toDocument(feature: Feature): FeatureKey =
         when (feature) {
-            Feature.LTI_COPY_RESOURCE_LINK -> FeatureKey.LTI_COPY_RESOURCE_LINK
             Feature.LTI_SLS_TERMS_BUTTON -> FeatureKey.LTI_SLS_TERMS_BUTTON
             Feature.LTI_AGE_FILTER -> FeatureKey.LTI_AGE_FILTER
             Feature.TEACHERS_HOME_BANNER -> FeatureKey.TEACHERS_HOME_BANNER

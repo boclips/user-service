@@ -125,7 +125,7 @@ class OrganisationDocumentConverterTest {
                     channelPrices = mapOf(ChannelId("TED") to PriceFactory.sample(amount = BigDecimal.TEN))
                 )
             ),
-            features = mapOf(Pair(Feature.LTI_COPY_RESOURCE_LINK, true))
+            features = mapOf(Pair(Feature.LTI_AGE_FILTER, true))
         )
         val organisation = OrganisationFactory.school(
             district = parentOrganisation,

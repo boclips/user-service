@@ -9,7 +9,6 @@ class FeatureConverter {
         fun toFeatureResource(features: Map<Feature, Boolean>): FeaturesResource {
             return features.mapKeys { pair ->
                 when (pair.key) {
-                    Feature.LTI_COPY_RESOURCE_LINK -> FeatureKeyResource.LTI_COPY_RESOURCE_LINK.toString()
                     Feature.LTI_SLS_TERMS_BUTTON -> FeatureKeyResource.LTI_SLS_TERMS_BUTTON.toString()
                     Feature.LTI_RESPONSIVE_VIDEO_CARD -> FeatureKeyResource.LTI_RESPONSIVE_VIDEO_CARD.toString()
                     Feature.LTI_AGE_FILTER -> FeatureKeyResource.LTI_AGE_FILTER.toString()

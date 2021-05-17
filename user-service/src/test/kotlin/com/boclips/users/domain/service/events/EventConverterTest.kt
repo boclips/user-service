@@ -56,7 +56,7 @@ class EventConverterTest {
             ),
             organisation = OrganisationFactory.school(
                 features = mapOf(
-                    Feature.LTI_COPY_RESOURCE_LINK to false,
+                    Feature.LTI_AGE_FILTER to false,
                     Feature.TEACHERS_SUBJECTS to true
                 )
             ),
@@ -82,7 +82,7 @@ class EventConverterTest {
         assertThat(eventUser.profile.marketingTracking?.utmTerm).isEqualTo("easy")
 
         assertThat(eventUser.organisation.features).isNotNull()
-        assertThat(eventUser.organisation.features["LTI_COPY_RESOURCE_LINK"]).isFalse()
+        assertThat(eventUser.organisation.features["LTI_AGE_FILTER"]).isFalse()
         assertThat(eventUser.organisation.features["TEACHERS_SUBJECTS"]).isTrue()
     }
 
@@ -118,12 +118,12 @@ class EventConverterTest {
     @Test
     fun `converts organisation's declared features and uses default values for missing ones`() {
         val organisation = OrganisationFactory.school(
-            features = mapOf(Feature.LTI_COPY_RESOURCE_LINK to true)
+            features = mapOf(Feature.LTI_AGE_FILTER to true)
         )
 
         val eventOrganisation = EventConverter().toEventOrganisation(organisation)
 
-        assertThat(eventOrganisation.features["LTI_COPY_RESOURCE_LINK"]).isTrue()
+        assertThat(eventOrganisation.features["LTI_AGE_FILTER"]).isTrue()
         assertThat(eventOrganisation.features["LTI_SLS_TERMS_BUTTON"]).isFalse()
         assertThat(eventOrganisation.features["TEACHERS_HOME_BANNER"]).isTrue()
         assertThat(eventOrganisation.features["TEACHERS_HOME_SUGGESTED_VIDEOS"]).isTrue()

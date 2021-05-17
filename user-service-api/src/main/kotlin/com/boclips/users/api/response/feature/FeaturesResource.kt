@@ -3,7 +3,6 @@ package com.boclips.users.api.response.feature
 typealias FeaturesResource = Map<String, Boolean>
 
 enum class FeatureKeyResource {
-    LTI_COPY_RESOURCE_LINK,
     LTI_SLS_TERMS_BUTTON,
     LTI_RESPONSIVE_VIDEO_CARD,
     LTI_AGE_FILTER,

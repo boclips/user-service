@@ -46,7 +46,6 @@ data class CustomPricesDocument(
 )
 
 enum class FeatureKey {
-    LTI_COPY_RESOURCE_LINK,
     LTI_SLS_TERMS_BUTTON,
     LTI_RESPONSIVE_VIDEO_CARD,
     LTI_AGE_FILTER,

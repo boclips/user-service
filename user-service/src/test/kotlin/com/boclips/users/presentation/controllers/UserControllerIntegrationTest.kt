@@ -712,7 +712,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 school(
                     address = Address(country = Country.usa(), state = State.fromCode("WA")),
                     features = mapOf(
-                        Feature.LTI_COPY_RESOURCE_LINK to true,
                         Feature.BO_WEB_APP_ADDITIONAL_SERVICES to false,
                         Feature.LTI_SLS_TERMS_BUTTON to true,
                     )
@@ -725,7 +724,6 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", equalTo(user.id.value)))
-                .andExpect(jsonPath("$.features.LTI_COPY_RESOURCE_LINK", equalTo(true)))
                 .andExpect(jsonPath("$.features.LTI_SLS_TERMS_BUTTON", equalTo(true)))
                 .andExpect(jsonPath("$.features.LTI_SLS_TERMS_BUTTON", equalTo(true)))
                 .andExpect(jsonPath("$.features.BO_WEB_APP_ADDITIONAL_SERVICES", equalTo(false)))

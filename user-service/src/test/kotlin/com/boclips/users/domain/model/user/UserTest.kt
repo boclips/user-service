@@ -31,7 +31,6 @@ class UserTest {
         // then
         assertThat(features).isEqualTo(
             mapOf(
-                Feature.LTI_COPY_RESOURCE_LINK to false,
                 Feature.LTI_SLS_TERMS_BUTTON to false,
                 Feature.LTI_AGE_FILTER to true,
                 Feature.LTI_RESPONSIVE_VIDEO_CARD to true,

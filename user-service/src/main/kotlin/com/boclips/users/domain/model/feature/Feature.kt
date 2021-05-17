@@ -1,7 +1,6 @@
 package com.boclips.users.domain.model.feature
 
 enum class Feature(val defaultValue: Boolean) {
-    LTI_COPY_RESOURCE_LINK(false),
     LTI_SLS_TERMS_BUTTON(false),
     LTI_RESPONSIVE_VIDEO_CARD(false),
     LTI_AGE_FILTER(true),

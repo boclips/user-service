@@ -285,7 +285,6 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """ {"features":  { 
-                                "LTI_COPY_RESOURCE_LINK" : "false",
                                 "LTI_SLS_TERMS_BUTTON" : "false",
                                 "TEACHERS_HOME_BANNER" : "false",
                                 "TEACHERS_HOME_SUGGESTED_VIDEOS" : "false",
@@ -298,7 +297,6 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", equalTo(org.id.value)))
-                .andExpect(jsonPath("$.organisationDetails.features.LTI_COPY_RESOURCE_LINK", equalTo(false)))
                 .andExpect(jsonPath("$.organisationDetails.features.LTI_SLS_TERMS_BUTTON", equalTo(false)))
                 .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_BANNER", equalTo(false)))
                 .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_SUGGESTED_VIDEOS", equalTo(false)))
