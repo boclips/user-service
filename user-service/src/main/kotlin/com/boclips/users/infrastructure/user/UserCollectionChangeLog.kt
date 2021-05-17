@@ -38,4 +38,30 @@ class UserCollectionChangeLog {
 
         logger.info { "users: unset organisation.parent.features.LTI_COPY_RESOURCE_LINK results: $updateResult" }
     }
+
+    @ChangeSet(order = "005", id = "5", author = "mjanik")
+    fun removeCopyLinkButtonFromSchoolProfileFeatures(
+        @NonLockGuarded mongoClient: MongoClient,
+    ) {
+        val updateResult = mongoClient.getDatabase(DB_NAME).getCollection("users")
+            .updateMany(
+                Filters.exists("profileSchool.features.LTI_COPY_RESOURCE_LINK"),
+                Updates.unset("profileSchool.features.LTI_COPY_RESOURCE_LINK")
+            )
+
+        logger.info { "users: unset profileSchool.features.LTI_COPY_RESOURCE_LINK results: $updateResult" }
+    }
+
+    @ChangeSet(order = "006", id = "6", author = "mjanik")
+    fun removeCopyLinkButtonFromSchoolProfileParentFeatures(
+        @NonLockGuarded mongoClient: MongoClient,
+    ) {
+        val updateResult = mongoClient.getDatabase(DB_NAME).getCollection("users")
+            .updateMany(
+                Filters.exists("profileSchool.parent.features.LTI_COPY_RESOURCE_LINK"),
+                Updates.unset("profileSchool.parent.features.LTI_COPY_RESOURCE_LINK")
+            )
+
+        logger.info { "users: unset profileSchool.parent.features.LTI_COPY_RESOURCE_LINK results: $updateResult" }
+    }
 }
