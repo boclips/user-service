@@ -64,6 +64,12 @@ sealed class AccessRuleResource(val type: String) {
         val languages: Set<String>
     ) : AccessRuleResource(type = "ExcludedLanguages")
 
+    data class ExcludedPlaybackSources(
+        override val id: String,
+        override val name: String,
+        val sources: Set<String>
+    ) : AccessRuleResource(type = "ExcludedPlaybackSources")
+
     abstract val id: String
     abstract val name: String
 }

@@ -6,6 +6,7 @@ import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
+import com.boclips.users.domain.model.access.PlaybackSource
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
@@ -179,6 +180,26 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].distributionMethods", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].distributionMethods[*]", containsInAnyOrder("STREAM")))
+        }
+
+        @Test
+        fun `can fetch ExcludedPlaybackSources access rules`() {
+            val accessRule = AccessRuleFactory.sampleExcludedPlaybackSourcesAccessRule(
+                name = "Exclude youtube",
+                sources = setOf(PlaybackSource.YOUTUBE)
+            )
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
+
+            mvc.perform(
+                get("/v1/access-rules")
+                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("ExcludedPlaybackSources")))
+                .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].sources", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].sources[*]", containsInAnyOrder("YOUTUBE")))
         }
     }
 }

@@ -56,5 +56,10 @@ sealed class AccessRuleRequest {
         var languages: Set<String>? = null
     }
 
+    class ExcludedPlaybackSources: AccessRuleRequest() {
+        @field:NotEmpty
+        var sources: Set<String>? = null
+    }
+
     var name: String? = null
 }

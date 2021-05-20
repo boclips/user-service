@@ -63,6 +63,12 @@ sealed class AccessRule {
         val languages: Set<Locale>
     ) : AccessRule()
 
+    data class ExcludedPlaybackSources(
+        override val id: AccessRuleId,
+        override val name: String,
+        val sources: Set<PlaybackSource>
+    ) : AccessRule()
+
     abstract val id: AccessRuleId
     abstract val name: String
 }

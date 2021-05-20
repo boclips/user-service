@@ -83,5 +83,15 @@ class AccessRuleRequestFactory {
             request.name = name
             return request
         }
+
+        fun sampleExcludedPlaybackSourcesAccessRuleRequest(
+            name: String = "excluded playback sources access rule",
+            sources: Set<String>
+        ): AccessRuleRequest {
+            val request = AccessRuleRequest.ExcludedPlaybackSources()
+            request.sources = sources
+            request.name = name
+            return request
+        }
     }
 }

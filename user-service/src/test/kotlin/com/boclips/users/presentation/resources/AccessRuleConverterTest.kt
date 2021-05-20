@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.access.AccessRule
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
+import com.boclips.users.domain.model.access.PlaybackSource
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.access.VideoVoiceType
@@ -14,6 +15,7 @@ import com.boclips.users.testsupport.factories.AccessRuleRequestFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.util.Locale
 
 class AccessRuleConverterTest {
@@ -215,6 +217,42 @@ class AccessRuleConverterTest {
             assertThat(convertedAccessRule).isInstanceOf(AccessRule.ExcludedLanguages::class.java)
             assertThat((convertedAccessRule as AccessRule.ExcludedLanguages).languages)
                 .containsExactlyInAnyOrderElementsOf(setOf(Locale.ENGLISH, Locale.JAPANESE))
+        }
+
+        @Test
+        fun `converts excluded playback sources to access rule`() {
+            val accessRule = AccessRuleRequestFactory.sampleExcludedPlaybackSourcesAccessRuleRequest(
+                sources = setOf(PlaybackSource.KALTURA.name, PlaybackSource.YOUTUBE.name)
+            )
+            val convertedAccessRule = converter.fromRequest(accessRule)
+
+            assertThat(convertedAccessRule.name).isEqualTo(accessRule.name)
+            assertThat(convertedAccessRule).isInstanceOf(AccessRule.ExcludedPlaybackSources::class.java)
+            assertThat((convertedAccessRule as AccessRule.ExcludedPlaybackSources).sources)
+                .containsExactlyInAnyOrderElementsOf(setOf(PlaybackSource.KALTURA, PlaybackSource.YOUTUBE))
+        }
+
+        @Test
+        fun `converts excluded playback sources access rule to resource`() {
+            val accessRule = AccessRuleFactory.sampleExcludedPlaybackSourcesAccessRule(
+                sources = setOf(PlaybackSource.KALTURA, PlaybackSource.YOUTUBE)
+            )
+            val resource = converter.toResource(accessRule)
+
+            assertThat(resource.name).isEqualTo(accessRule.name)
+            assertThat(resource).isInstanceOf(AccessRuleResource.ExcludedPlaybackSources::class.java)
+            assertThat((resource as AccessRuleResource.ExcludedPlaybackSources).sources)
+                .containsExactlyInAnyOrderElementsOf(setOf(PlaybackSource.KALTURA.name, PlaybackSource.YOUTUBE.name))
+        }
+
+        @Test
+        fun `throws when invalid playback source is used`() {
+            val accessRule = AccessRuleRequestFactory.sampleExcludedPlaybackSourcesAccessRuleRequest(
+                sources = setOf("invalid_source")
+            )
+            val thrown = assertThrows<IllegalArgumentException> { converter.fromRequest(accessRule) }
+
+            assertThat(thrown).isExactlyInstanceOf(IllegalArgumentException::class.java)
         }
     }
 

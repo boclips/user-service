@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
+import com.boclips.users.domain.model.access.PlaybackSource
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.access.VideoVoiceType
@@ -74,5 +75,12 @@ class AccessRuleFactory {
             languages: Set<Locale>
         ): AccessRule.ExcludedLanguages =
             AccessRule.ExcludedLanguages(id = id, name = name, languages = languages)
+
+        fun sampleExcludedPlaybackSourcesAccessRule(
+            id: AccessRuleId = AccessRuleId(),
+            name: String = "Excluded Playback Source",
+            sources: Set<PlaybackSource>
+        ): AccessRule.ExcludedPlaybackSources =
+            AccessRule.ExcludedPlaybackSources(id = id, name = name, sources = sources)
     }
 }

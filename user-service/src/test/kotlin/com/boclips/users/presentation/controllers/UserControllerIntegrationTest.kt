@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageId
+import com.boclips.users.domain.model.access.PlaybackSource
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.analytics.AnalyticsId
@@ -877,12 +878,17 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 id = AccessRuleId(ObjectId.get().toHexString()),
                 languages = setOf(Locale.JAPANESE)
             )
+            val playbackSourcesAccessRule = AccessRule.ExcludedPlaybackSources(
+                name = "Excluded youtube",
+                id = AccessRuleId(ObjectId.get().toHexString()),
+                sources = setOf(PlaybackSource.YOUTUBE)
+            )
 
             val contentPackageId = ContentPackageId(ObjectId.get().toHexString())
             val contentPackage = ContentPackage(
                 name = "Package 1",
                 id = contentPackageId,
-                accessRules = listOf(collectionsAccessRule, videosAccessRule, languageAccessRule)
+                accessRules = listOf(collectionsAccessRule, videosAccessRule, languageAccessRule, playbackSourcesAccessRule)
             )
 
             saveContentPackage(contentPackage)
@@ -906,17 +912,17 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(3)))
+                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Int>(4)))
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[*].type",
-                        containsInAnyOrder("IncludedCollections", "IncludedVideos", "ExcludedLanguages")
+                        containsInAnyOrder("IncludedCollections", "IncludedVideos", "ExcludedLanguages", "ExcludedPlaybackSources")
                     )
                 )
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[*].name",
-                        containsInAnyOrder("Test collections contract", "Test videos contract", "Test languages")
+                        containsInAnyOrder("Test collections contract", "Test videos contract", "Test languages", "Excluded youtube")
                     )
                 )
         }

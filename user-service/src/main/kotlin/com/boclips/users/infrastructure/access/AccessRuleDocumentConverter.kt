@@ -5,6 +5,7 @@ import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
+import com.boclips.users.domain.model.access.PlaybackSource
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.model.access.VideoVoiceType
@@ -74,6 +75,11 @@ object AccessRuleDocumentConverter {
                 id = AccessRuleId(document.id),
                 name = document.name,
                 languages = document.languages?.map { Locale.forLanguageTag(it) }?.toSet() ?: blowUp(document)
+            )
+            AccessRuleDocument.TYPE_EXCLUDED_PLAYBACK_SOURCES -> AccessRule.ExcludedPlaybackSources(
+                id = AccessRuleId(document.id),
+                name = document.name,
+                sources = document.sources?.map { PlaybackSource.valueOf(it) }?.toSet() ?: blowUp(document)
             )
             else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document.id}")
         }
@@ -165,6 +171,12 @@ object AccessRuleDocumentConverter {
                 name = accessRule.name,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_LANGUAGES,
                 languages = accessRule.languages.map { it.toLanguageTag() }.toSet()
+            )
+            is AccessRule.ExcludedPlaybackSources -> AccessRuleDocument(
+                id = accessRule.id.value,
+                name = accessRule.name,
+                _class = AccessRuleDocument.TYPE_EXCLUDED_PLAYBACK_SOURCES,
+                sources = accessRule.sources.map { it.name }.toSet()
             )
         }
     }

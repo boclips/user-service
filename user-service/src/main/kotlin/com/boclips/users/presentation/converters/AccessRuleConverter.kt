@@ -8,6 +8,7 @@ import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
+import com.boclips.users.domain.model.access.PlaybackSource
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.domain.model.access.VideoType
 import com.boclips.users.domain.service.UniqueId
@@ -68,6 +69,11 @@ class AccessRuleConverter(
                 id = accessRule.id.value,
                 name = accessRule.name,
                 languages = accessRule.languages.map { it.toLanguageTag() }.toSet()
+            )
+            is AccessRule.ExcludedPlaybackSources -> AccessRuleResource.ExcludedPlaybackSources(
+                id = accessRule.id.value,
+                name = accessRule.name,
+                sources = accessRule.sources.map { it.name }.toSet()
             )
         }
     }
@@ -130,6 +136,12 @@ class AccessRuleConverter(
                 id = id,
                 name = name,
                 languages = accessRuleRequest.languages?.map { Locale.forLanguageTag(it) }?.toSet() ?: emptySet()
+            )
+
+            is AccessRuleRequest.ExcludedPlaybackSources -> AccessRule.ExcludedPlaybackSources(
+                id = id,
+                name = name,
+                sources = accessRuleRequest.sources?.map { PlaybackSource.valueOf(it) }?.toSet() ?: emptySet()
             )
         }
     }
