@@ -1,7 +1,6 @@
 package com.boclips.users.infrastructure.access
 
 import com.boclips.users.domain.model.access.AccessRule
-import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
@@ -15,42 +14,34 @@ object AccessRuleDocumentConverter {
     fun fromDocument(document: AccessRuleDocument): AccessRule {
         return when (document._class) {
             AccessRuleDocument.TYPE_INCLUDED_COLLECTIONS -> AccessRule.IncludedCollections(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 collectionIds = document.collectionIds?.map { CollectionId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_VIDEOS -> AccessRule.IncludedVideos(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 videoIds = document.videoIds?.map { VideoId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_VIDEOS -> AccessRule.ExcludedVideos(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 videoIds = document.videoIds?.map { VideoId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_VIDEO_TYPES -> AccessRule.ExcludedVideoTypes(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 videoTypes = convertToVideoTypes(document.videoTypes) ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_VIDEO_TYPES -> AccessRule.IncludedVideoTypes(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 videoTypes = convertToVideoTypes(document.videoTypes) ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_CHANNELS -> AccessRule.ExcludedChannels(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 channelIds = document.channelIds?.map { ChannelId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_CHANNELS -> AccessRule.IncludedChannels(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 channelIds = document.channelIds?.map { ChannelId(it) } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_DISTRIBUTION_METHODS -> AccessRule.IncludedDistributionMethods(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 distributionMethods = document.distributionMethods?.map {
                     when (it) {
@@ -61,7 +52,6 @@ object AccessRuleDocumentConverter {
                 }?.toSet() ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_INCLUDED_VIDEO_VOICE_TYPES -> AccessRule.IncludedVideoVoiceTypes(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 voiceTypes = document.voiceTypes?.map {
                     when (it) {
@@ -72,16 +62,14 @@ object AccessRuleDocumentConverter {
                 } ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_LANGUAGES -> AccessRule.ExcludedLanguages(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 languages = document.languages?.map { Locale.forLanguageTag(it) }?.toSet() ?: blowUp(document)
             )
             AccessRuleDocument.TYPE_EXCLUDED_PLAYBACK_SOURCES -> AccessRule.ExcludedPlaybackSources(
-                id = AccessRuleId(document.id),
                 name = document.name,
                 sources = document.sources?.map { PlaybackSource.valueOf(it) }?.toSet() ?: blowUp(document)
             )
-            else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document.id}")
+            else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document.name}")
         }
     }
 
@@ -102,49 +90,41 @@ object AccessRuleDocumentConverter {
     fun toDocument(accessRule: AccessRule): AccessRuleDocument {
         return when (accessRule) {
             is AccessRule.IncludedCollections -> AccessRuleDocument(
-                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_COLLECTIONS,
                 name = accessRule.name,
                 collectionIds = accessRule.collectionIds.map { it.value }
             )
             is AccessRule.IncludedVideos -> AccessRuleDocument(
-                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_VIDEOS,
                 name = accessRule.name,
                 videoIds = accessRule.videoIds.map { it.value }
             )
             is AccessRule.ExcludedVideos -> AccessRuleDocument(
-                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_VIDEOS,
                 name = accessRule.name,
                 videoIds = accessRule.videoIds.map { it.value }
             )
             is AccessRule.ExcludedVideoTypes -> AccessRuleDocument(
-                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_VIDEO_TYPES,
                 name = accessRule.name,
                 videoTypes = convertFromVideoTypes(accessRule.videoTypes)
             )
             is AccessRule.IncludedVideoTypes -> AccessRuleDocument(
-                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_VIDEO_TYPES,
                 name = accessRule.name,
                 videoTypes = convertFromVideoTypes(accessRule.videoTypes)
             )
             is AccessRule.ExcludedChannels -> AccessRuleDocument(
-                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_CHANNELS,
                 name = accessRule.name,
                 channelIds = accessRule.channelIds.map { it.value }
             )
             is AccessRule.IncludedChannels -> AccessRuleDocument(
-                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_CHANNELS,
                 name = accessRule.name,
                 channelIds = accessRule.channelIds.map { it.value }
             )
             is AccessRule.IncludedDistributionMethods -> AccessRuleDocument(
-                id = accessRule.id.value,
                 _class = AccessRuleDocument.TYPE_INCLUDED_DISTRIBUTION_METHODS,
                 name = accessRule.name,
                 distributionMethods = accessRule.distributionMethods.map {
@@ -155,7 +135,6 @@ object AccessRuleDocumentConverter {
                 }
             )
             is AccessRule.IncludedVideoVoiceTypes -> AccessRuleDocument(
-                id = accessRule.id.value,
                 name = accessRule.name,
                 _class = AccessRuleDocument.TYPE_INCLUDED_VIDEO_VOICE_TYPES,
                 voiceTypes = accessRule.voiceTypes.map {
@@ -167,13 +146,11 @@ object AccessRuleDocumentConverter {
                 }
             )
             is AccessRule.ExcludedLanguages -> AccessRuleDocument(
-                id = accessRule.id.value,
                 name = accessRule.name,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_LANGUAGES,
                 languages = accessRule.languages.map { it.toLanguageTag() }.toSet()
             )
             is AccessRule.ExcludedPlaybackSources -> AccessRuleDocument(
-                id = accessRule.id.value,
                 name = accessRule.name,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_PLAYBACK_SOURCES,
                 sources = accessRule.sources.map { it.name }.toSet()

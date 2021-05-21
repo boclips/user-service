@@ -1,7 +1,6 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.VideoId
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asHqUser
@@ -77,7 +76,6 @@ class ContentPackageControllerIntegrationTest : AbstractSpringIntegrationTest() 
                 name = "My first content package",
                 accessRules = listOf(
                     AccessRuleFactory.sampleIncludedVideosAccessRule(
-                        id = AccessRuleId("access-rule-1"),
                         name = "My access rule for content package",
                         videoIds = listOf(VideoId("123"))
                     )

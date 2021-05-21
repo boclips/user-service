@@ -1,7 +1,6 @@
 package com.boclips.users.testsupport.factories
 
 import com.boclips.users.domain.model.access.AccessRule
-import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
@@ -14,73 +13,62 @@ import java.util.Locale
 class AccessRuleFactory {
     companion object {
         fun sampleIncludedCollectionsAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Tailored collections list",
             collectionIds: List<CollectionId> = emptyList()
-        ) = AccessRule.IncludedCollections(id, name, collectionIds)
+        ) = AccessRule.IncludedCollections(name, collectionIds)
 
         fun sampleIncludedVideosAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Tailored videos list",
             videoIds: List<VideoId> = emptyList()
-        ) = AccessRule.IncludedVideos(id, name, videoIds)
+        ) = AccessRule.IncludedVideos(name, videoIds)
 
         fun sampleExcludedVideosAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Tailored videos list",
             videoIds: List<VideoId> = emptyList()
-        ) = AccessRule.ExcludedVideos(id, name, videoIds)
+        ) = AccessRule.ExcludedVideos(name, videoIds)
 
         fun sampleExcludedVideoTypesAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Excluded Types",
             videoTypes: List<VideoType> = emptyList()
-        ) = AccessRule.ExcludedVideoTypes(id, name, videoTypes)
+        ) = AccessRule.ExcludedVideoTypes(name, videoTypes)
 
         fun sampleIncludedVideoTypesAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Included Types",
             videoTypes: List<VideoType> = emptyList()
-        ) = AccessRule.IncludedVideoTypes(id, name, videoTypes)
+        ) = AccessRule.IncludedVideoTypes(name, videoTypes)
 
         fun sampleExcludedContentPartnersAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Excluded Content Partners",
             channelIds: List<ChannelId> = emptyList()
-        ) = AccessRule.ExcludedChannels(id, name, channelIds)
+        ) = AccessRule.ExcludedChannels(name, channelIds)
 
         fun sampleIncludedChannelsAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Included Channels",
             channelIds: List<ChannelId> = emptyList()
-        ) = AccessRule.IncludedChannels(id, name, channelIds)
+        ) = AccessRule.IncludedChannels(name, channelIds)
 
         fun sampleIncludedDistributionMethodsAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Included Distribution Methods",
             distributionMethods: Set<DistributionMethod>
         ): AccessRule.IncludedDistributionMethods =
-            AccessRule.IncludedDistributionMethods(id, name, distributionMethods)
+            AccessRule.IncludedDistributionMethods(name, distributionMethods)
 
         fun sampleIncludedVideoVoiceTypeAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Included Video Voice Types",
             videoVoiceTypes: List<VideoVoiceType>
         ): AccessRule.IncludedVideoVoiceTypes =
-            AccessRule.IncludedVideoVoiceTypes(id = id, name = name, voiceTypes = videoVoiceTypes)
+            AccessRule.IncludedVideoVoiceTypes(name = name, voiceTypes = videoVoiceTypes)
 
         fun sampleExcludedLanguagesAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Excluded Languages",
             languages: Set<Locale>
         ): AccessRule.ExcludedLanguages =
-            AccessRule.ExcludedLanguages(id = id, name = name, languages = languages)
+            AccessRule.ExcludedLanguages(name = name, languages = languages)
 
         fun sampleExcludedPlaybackSourcesAccessRule(
-            id: AccessRuleId = AccessRuleId(),
             name: String = "Excluded Playback Source",
             sources: Set<PlaybackSource>
         ): AccessRule.ExcludedPlaybackSources =
-            AccessRule.ExcludedPlaybackSources(id = id, name = name, sources = sources)
+            AccessRule.ExcludedPlaybackSources(name = name, sources = sources)
     }
 }

@@ -4,7 +4,6 @@ import com.boclips.security.testing.setSecurityContext
 import com.boclips.security.utils.Client
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.AccessRule
-import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageId
@@ -478,7 +477,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `successful onboarding sets up the trial access date`() {
             val subject = saveSubject("Maths")
-            val user = setupSampleUserBeforeOnboarding("user-id")
+            val user = setupSampleUserBeforeOnboarding()
 
             val userBeforeOnboarding = userRepository.findById(user.id)
             assertThat(userBeforeOnboarding!!.accessExpiresOn).isNull()
@@ -611,7 +610,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `updates for an onboarded user does not change the access expiry`() {
             val subject = saveSubject("Maths")
-            val user = setupSampleUserBeforeOnboarding("user-id")
+            val user = setupSampleUserBeforeOnboarding()
 
             val userBeforeOnboarding = userRepository.findById(user.id)
             assertThat(userBeforeOnboarding!!.accessExpiresOn).isNull()
@@ -658,12 +657,12 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             assertThat(userAfterUpdate.accessExpiresOn).isEqualTo(originalAccessExpiresOn)
         }
 
-        private fun setupSampleUserBeforeOnboarding(userId: String): User {
+        private fun setupSampleUserBeforeOnboarding(): User {
             val user = UserFactory.sample(
                 analyticsId = AnalyticsId(
                     value = "1234567"
                 ),
-                identity = IdentityFactory.sample(id = userId),
+                identity = IdentityFactory.sample(id = "user-id"),
                 profile = null,
                 organisation = null,
                 accessExpiresOn = null
@@ -681,7 +680,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            setSecurityContext(userId)
+            setSecurityContext("user-id")
             return user
         }
     }
@@ -865,22 +864,18 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val collectionsAccessRule = AccessRule.IncludedCollections(
                 name = "Test collections contract",
                 collectionIds = listOf(CollectionId(("test-collection-id"))),
-                id = AccessRuleId(ObjectId.get().toHexString())
             )
             val videosAccessRule = AccessRule.IncludedVideos(
                 name = "Test videos contract",
                 videoIds = listOf(VideoId("test-video-id")),
-                id = AccessRuleId(ObjectId.get().toHexString())
             )
 
             val languageAccessRule = AccessRule.ExcludedLanguages(
                 name = "Test languages",
-                id = AccessRuleId(ObjectId.get().toHexString()),
                 languages = setOf(Locale.JAPANESE)
             )
             val playbackSourcesAccessRule = AccessRule.ExcludedPlaybackSources(
                 name = "Excluded youtube",
-                id = AccessRuleId(ObjectId.get().toHexString()),
                 sources = setOf(PlaybackSource.YOUTUBE)
             )
 
@@ -943,7 +938,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     accessRules = listOf(AccessRuleFactory.sampleIncludedVideosAccessRule(name = "hq rules"))
                 )
             )
-            val defaultContentPackage = saveContentPackage(
+            saveContentPackage(
                 ContentPackage(
                     name = "default content package",
                     id = ContentPackageId(ObjectId.get().toHexString()),

@@ -2,7 +2,6 @@ package com.boclips.users.presentation.controllers.accessrules
 
 import com.boclips.users.config.security.UserRoles
 import com.boclips.users.domain.model.access.AccessRule
-import com.boclips.users.domain.model.access.AccessRuleId
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.CollectionId
 import com.boclips.users.domain.model.access.DistributionMethod
@@ -40,10 +39,9 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `returns given access rule on the list when the name matches`() {
             val accessRuleName = "Super contract"
             val accessRule = AccessRule.IncludedCollections(
-                id = AccessRuleId(),
                 name = accessRuleName,
                 collectionIds = listOf(CollectionId("A"))
-            );
+            )
             contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
 
             mvc.perform(
@@ -68,18 +66,16 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         fun `can fetch all access rules in the system when name query parameter is not provided`() {
             val firstAccessRuleName = "first"
             val firstAccessRule = AccessRule.IncludedCollections(
-                id = AccessRuleId(),
                 name = firstAccessRuleName,
                 collectionIds = listOf(CollectionId("A"))
-            );
+            )
             contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(firstAccessRule)))
 
             val secondAccessRuleName = "second"
             val secondAccessRule = AccessRule.IncludedCollections(
-                id = AccessRuleId(),
                 name = secondAccessRuleName,
                 collectionIds = listOf(CollectionId("B"))
-            );
+            )
             contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(secondAccessRule)))
 
 
@@ -103,7 +99,6 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
         @Test
         fun `can fetch ExcludedVideos access rules`() {
             val accessRule = AccessRule.ExcludedVideos(
-                id = AccessRuleId(),
                 name = "BadVideos",
                 videoIds = listOf(VideoId("A"), VideoId("B"))
             );

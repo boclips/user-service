@@ -1,7 +1,6 @@
 package com.boclips.users.infrastructure.access
 
 data class AccessRuleDocument(
-    var id: String,
     var name: String,
     var _class: String,
     var collectionIds: List<String>? = null,
