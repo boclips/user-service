@@ -35,9 +35,9 @@
         <cve>CVE-2021-21295</cve>
         <cve>CVE-2021-21409</cve>
     </suppress>
-    <suppress until="2021-06-01">
+    <suppress until="2021-07-01">
         <notes>
-            Suppress until libthrift is upgraded in jaegertracing, see: https://github.com/jaegertracing/jaeger-client-java/pull/774
+            Suppress until we can update opentracing jaeger which brings libthrift -> latest version isn't available on maven, see: https://github.com/opentracing-contrib/java-spring-jaeger/issues/129
         </notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.thrift/libthrift.+$</packageUrl>
         <cve>CVE-2020-13949</cve>
