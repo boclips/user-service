@@ -6,7 +6,7 @@
         <cve>CVE-2020-15824</cve>
         <cpe>cpe:/2.3:a:jetbrains:kotlin:1.4.0:milestone1:*:*:*:*:*:*</cpe>
     </suppress>
-    <suppress until="2021-06-01">
+    <suppress until="2021-09-01">
         <notes>
             Latest keycloak client using older resteasy-multipart-provider and resteasy-jaxb-provider
         </notes>
@@ -15,7 +15,7 @@
         <cve>CVE-2020-25633</cve>
         <cve>CVE-2021-20289</cve>
     </suppress>
-    <suppress until="2021-06-01">
+    <suppress until="2021-09-01">
         <notes>
             Suppress until we upgrade to Keycloak 13.x.
         </notes>
