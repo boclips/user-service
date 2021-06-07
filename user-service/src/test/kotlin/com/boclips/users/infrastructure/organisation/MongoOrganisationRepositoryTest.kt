@@ -179,7 +179,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 organisationRepository.findApiIntegrationByName(apiCustomer.name)?.deal?.contentAccess as? ContentAccess.ClientBasedAccess
 
             assertThat((persistedContentAccess!!.clientAccess).size).isEqualTo(1)
-            assertThat((persistedContentAccess!!.clientAccess)[Client.Teachers]).isEqualTo(ContentPackageId("12345"))
+            assertThat((persistedContentAccess.clientAccess)[Client.Teachers]).isEqualTo(ContentPackageId("12345"))
         }
 
         @Test
@@ -597,7 +597,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val independentOrganisations: Page<Organisation>? =
+            val independentOrganisations: Page<Organisation> =
                 organisationRepository.findOrganisations(
                     countryCode = Country.USA_ISO,
                     page = 0,
@@ -684,7 +684,7 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
             )
 
-            val independentOrganisations: Page<Organisation>? =
+            val independentOrganisations: Page<Organisation> =
                 organisationRepository.findOrganisations(
                     countryCode = Country.USA_ISO,
                     page = 0,
@@ -693,8 +693,8 @@ class MongoOrganisationRepositoryTest : AbstractSpringIntegrationTest() {
                 )
 
             assertThat(independentOrganisations).containsExactly(schoolOne, schoolThree)
-            assertThat(independentOrganisations?.pageSize).isEqualTo(2)
-            assertThat(independentOrganisations?.totalElements).isEqualTo(6)
+            assertThat(independentOrganisations.pageSize).isEqualTo(2)
+            assertThat(independentOrganisations.totalElements).isEqualTo(6)
         }
     }
 }

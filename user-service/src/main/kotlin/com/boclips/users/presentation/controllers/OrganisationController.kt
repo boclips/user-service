@@ -7,12 +7,7 @@ import com.boclips.users.api.response.organisation.OrganisationResource
 import com.boclips.users.api.response.organisation.OrganisationsResource
 import com.boclips.users.api.response.user.UserResourceWrapper
 import com.boclips.users.api.response.user.UsersResource
-import com.boclips.users.application.commands.AssignUsersByOrganisationDomain
-import com.boclips.users.application.commands.CreateDistrict
-import com.boclips.users.application.commands.DeleteOrganisationPII
-import com.boclips.users.application.commands.GetOrganisationById
-import com.boclips.users.application.commands.GetOrganisations
-import com.boclips.users.application.commands.UpdateOrganisation
+import com.boclips.users.application.commands.*
 import com.boclips.users.application.model.OrganisationFilter
 import com.boclips.users.domain.model.organisation.OrganisationType
 import com.boclips.users.presentation.converters.OrganisationConverter
@@ -20,13 +15,7 @@ import com.boclips.users.presentation.converters.UserConverter
 import com.boclips.web.exceptions.ExceptionDetails
 import com.boclips.web.exceptions.InvalidRequestApiException
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController

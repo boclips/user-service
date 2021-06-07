@@ -32,7 +32,7 @@ class EventConverter {
             .school(user.profile?.school?.let(this::toEventOrganisation))
             .role(user.profile?.role)
             .hasOptedIntoMarketing(user.profile?.hasOptedIntoMarketing)
-            .marketingTracking(user.marketingTracking?.let(this::toEventMarketingTracking))
+            .marketingTracking(user.marketingTracking.let(this::toEventMarketingTracking))
             .build()
 
         return EventUser.builder()

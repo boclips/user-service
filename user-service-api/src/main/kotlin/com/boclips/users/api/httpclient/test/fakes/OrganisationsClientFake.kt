@@ -18,10 +18,10 @@ class OrganisationsClientFake : OrganisationsClient, FakeClient<OrganisationReso
         val organisations = database.filter {
             when (filterRequest.hasCustomPrices) {
                 true -> {
-                    it.value.deal?.prices != null
+                    it.value.deal.prices != null
                 }
                 false -> {
-                    it.value.deal?.prices == null
+                    it.value.deal.prices == null
                 }
                 else -> {
                     true
