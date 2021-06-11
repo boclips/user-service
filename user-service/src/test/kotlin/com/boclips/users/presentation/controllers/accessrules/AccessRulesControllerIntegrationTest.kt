@@ -196,5 +196,25 @@ class AccessRulesControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(jsonPath("$._embedded.accessRules[0].sources", hasSize<Int>(1)))
                 .andExpect(jsonPath("$._embedded.accessRules[0].sources[*]", containsInAnyOrder("YOUTUBE")))
         }
+
+        @Test
+        fun `can fetch IncludedPrivateChannels access rules`() {
+            val accessRule = AccessRuleFactory.sampleIncludedPrivateChannelsAccessRule(
+                name = "Exclude youtube",
+                channelIds = listOf(ChannelId("hi"))
+            )
+            contentPackageRepository.save(ContentPackageFactory.sample(accessRules = listOf(accessRule)))
+
+            mvc.perform(
+                get("/v1/access-rules")
+                    .asUserWithRoles("access-rules-viewer@hacker.com", UserRoles.VIEW_ACCESS_RULES)
+            )
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$._embedded.accessRules", hasSize<Any>(1)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].type", equalTo("IncludedPrivateChannels")))
+                .andExpect(jsonPath("$._embedded.accessRules[0].name", equalTo(accessRule.name)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].channelIds", hasSize<Int>(1)))
+                .andExpect(jsonPath("$._embedded.accessRules[0].channelIds[*]", containsInAnyOrder("hi")))
+        }
     }
 }

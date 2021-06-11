@@ -58,5 +58,10 @@ sealed class AccessRule {
         val sources: Set<PlaybackSource>
     ) : AccessRule()
 
+    data class IncludedPrivateChannels(
+        override val name: String,
+        val channelIds: List<ChannelId>
+    ): AccessRule()
+
     abstract val name: String
 }

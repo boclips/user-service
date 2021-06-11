@@ -69,6 +69,10 @@ object AccessRuleDocumentConverter {
                 name = document.name,
                 sources = document.sources?.map { PlaybackSource.valueOf(it) }?.toSet() ?: blowUp(document)
             )
+            AccessRuleDocument.TYPE_INCLUDED_PRIVATE_CHANNELS -> AccessRule.IncludedPrivateChannels(
+                name = document.name,
+                channelIds = document.channelIds?.map {ChannelId(it) } ?: blowUp(document)
+            )
             else -> throw IllegalStateException("Unknown type ${document._class} in access rule ${document.name}")
         }
     }
@@ -154,6 +158,11 @@ object AccessRuleDocumentConverter {
                 name = accessRule.name,
                 _class = AccessRuleDocument.TYPE_EXCLUDED_PLAYBACK_SOURCES,
                 sources = accessRule.sources.map { it.name }.toSet()
+            )
+            is AccessRule.IncludedPrivateChannels -> AccessRuleDocument(
+                name = accessRule.name,
+                _class = AccessRuleDocument.TYPE_INCLUDED_PRIVATE_CHANNELS,
+                channelIds = accessRule.channelIds.map { it.value }
             )
         }
     }

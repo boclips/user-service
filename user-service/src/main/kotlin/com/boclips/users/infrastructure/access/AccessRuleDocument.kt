@@ -21,6 +21,7 @@ data class AccessRuleDocument(
         const val TYPE_EXCLUDED_VIDEO_TYPES = "ExcludedVideoTypes"
         const val TYPE_INCLUDED_VIDEO_TYPES = "IncludedVideoTypes"
         const val TYPE_EXCLUDED_CHANNELS = "ExcludedChannels"
+        const val TYPE_INCLUDED_PRIVATE_CHANNELS = "IncludedPrivateChannels"
         const val TYPE_INCLUDED_DISTRIBUTION_METHODS = "IncludedDistributionMethods"
         const val TYPE_INCLUDED_CHANNELS = "IncludedChannels"
         const val TYPE_INCLUDED_VIDEO_VOICE_TYPES = "IncludedVideoVoiceTypes"

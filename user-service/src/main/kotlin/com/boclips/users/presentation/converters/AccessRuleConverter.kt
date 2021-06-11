@@ -61,6 +61,10 @@ class AccessRuleConverter {
                 name = accessRule.name,
                 sources = accessRule.sources.map { it.name }.toSet()
             )
+            is AccessRule.IncludedPrivateChannels ->AccessRuleResource.IncludedPrivateChannels(
+                name = accessRule.name,
+                channelIds = accessRule.channelIds.map { it.value }
+            )
         }
     }
 

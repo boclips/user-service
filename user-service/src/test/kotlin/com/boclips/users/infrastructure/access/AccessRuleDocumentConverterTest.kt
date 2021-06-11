@@ -85,6 +85,10 @@ class AccessRuleDocumentConverterTest {
                 sources = setOf(
                     PlaybackSource.KALTURA
                 )
+            ),
+            AccessRule.IncludedPrivateChannels(
+                name = "private channels",
+                channelIds = listOf(ChannelId("HI"))
             )
         ).map { accessRule -> Arguments.of(accessRule) }
     }

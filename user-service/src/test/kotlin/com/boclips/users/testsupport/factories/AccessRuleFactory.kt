@@ -70,5 +70,11 @@ class AccessRuleFactory {
             sources: Set<PlaybackSource>
         ): AccessRule.ExcludedPlaybackSources =
             AccessRule.ExcludedPlaybackSources(name = name, sources = sources)
+
+        fun sampleIncludedPrivateChannelsAccessRule(
+            name: String = "Included Private Channels",
+            channelIds: List<ChannelId>
+        ): AccessRule.IncludedPrivateChannels =
+            AccessRule.IncludedPrivateChannels(name = name, channelIds = channelIds)
     }
 }

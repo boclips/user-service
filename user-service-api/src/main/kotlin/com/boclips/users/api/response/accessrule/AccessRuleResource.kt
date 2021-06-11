@@ -59,5 +59,10 @@ sealed class AccessRuleResource(val type: String) {
         val sources: Set<String>
     ) : AccessRuleResource(type = "ExcludedPlaybackSources")
 
+    data class IncludedPrivateChannels(
+        override val name: String,
+        val channelIds: List<String>
+    ) : AccessRuleResource(type = "IncludedPrivateChannels")
+
     abstract val name: String
 }

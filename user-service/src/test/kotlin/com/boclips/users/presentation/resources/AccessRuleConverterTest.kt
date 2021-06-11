@@ -246,6 +246,19 @@ class AccessRuleConverterTest {
         }
 
         @Test
+        fun `converts included private channels access rule to resource`() {
+            val accessRule = AccessRuleFactory.sampleIncludedPrivateChannelsAccessRule(
+                channelIds = listOf(ChannelId("hello"), ChannelId("hi"))
+            )
+            val resource = converter.toResource(accessRule)
+
+            assertThat(resource.name).isEqualTo(accessRule.name)
+            assertThat(resource).isInstanceOf(AccessRuleResource.IncludedPrivateChannels::class.java)
+            assertThat((resource as AccessRuleResource.IncludedPrivateChannels).channelIds)
+                .containsExactlyInAnyOrderElementsOf(listOf("hello","hi"))
+        }
+
+        @Test
         fun `throws when invalid playback source is used`() {
             val accessRule = AccessRuleRequestFactory.sampleExcludedPlaybackSourcesAccessRuleRequest(
                 sources = setOf("invalid_source")
