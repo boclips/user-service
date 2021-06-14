@@ -2,8 +2,11 @@ package com.boclips.users.infrastructure.keycloak.client
 
 import com.boclips.users.domain.model.user.UserId
 import com.boclips.users.domain.model.user.UserSessions
+import com.boclips.users.infrastructure.keycloak.KeycloakCreateUserRequest
 import com.boclips.users.infrastructure.keycloak.KeycloakWrapper
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -13,6 +16,7 @@ import org.keycloak.representations.idm.EventRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import org.mockito.Mockito
 import java.time.Instant
+import java.util.Date
 
 internal class KeycloakClientTest {
     lateinit var keycloakClient: KeycloakClient
@@ -149,5 +153,30 @@ internal class KeycloakClientTest {
         assertThat(keycloakClient.count()).isEqualTo(1)
 
         assertThat(keycloakClient.getAllIdentityIds().toList()[0].value).isEqualTo(user2.id)
+    }
+
+    @Nested
+    inner class CreateIdentity {
+        @Test
+        fun `can create a user with a temporary password`() {
+            val mockUser = UserRepresentation().apply {
+                id = "randomId"
+                username = "username"
+                realmRoles = listOf("CREATE_B2B_USERS")
+                createdTimestamp = Date().time
+            }
+
+            whenever(keycloakWrapperMock.createUser(any())).thenReturn(mockUser)
+            keycloakClient.createIdentity("funkyemail.com", "temporarypassword", "CREATE_B2B_USERS", true)
+
+            argumentCaptor<KeycloakCreateUserRequest>().apply {
+                verify(keycloakWrapperMock).createUser(capture())
+
+                assertThat(firstValue.email).isEqualTo("funkyemail.com")
+                assertThat(firstValue.password).isEqualTo("temporarypassword")
+                assertThat(firstValue.role).isEqualTo("CREATE_B2B_USERS")
+                assertThat(firstValue.isPasswordTemporary).isTrue()
+            }
+        }
     }
 }

@@ -335,6 +335,65 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
     }
 
     @Nested
+    inner class CreateB2bUserScenarios {
+
+        @Test
+        fun `can create a b2b user when providing email, orgId and role`() {
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration(name = "big account"))
+
+            mvc.perform(
+                post("/v1/users")
+                    .asUserWithRoles(id = "boclipper", roles = arrayOf(UserRoles.CREATE_B2B_USERS))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                    {
+                     "email": "new-user@bigaccount.com",
+                     "password": "randompass999",
+                     "organisationId": "${organisation.id.value}",
+                     "role": "BOCLIPS_WEB_APP",
+                     "type": "b2bUser"
+                     }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isCreated)
+
+            val user = userRepository.findAllByOrganisationId(organisation.id).first()
+            assertThat(user).isNotNull
+            assertThat(user.identity.email).isEqualTo("new-user@bigaccount.com")
+            assertThat(user.organisation).isEqualTo(organisation)
+
+            val keycloakUser = keycloakClientFake.getIdentitiesById(user.id)
+            assertThat(keycloakUser?.roles).contains("BOCLIPS_WEB_APP")
+            assertThat(keycloakUser?.email).isEqualTo("new-user@bigaccount.com")
+        }
+
+        @Test
+        fun `cannot create b2b user without CREATE_B2B_USERS role`() {
+            val organisation = saveOrganisation(OrganisationFactory.apiIntegration(name = "big account"))
+
+            mvc.perform(
+                post("/v1/users")
+                    .asUser("random-user")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                    {
+                     "email": "new-user@bigaccount.com",
+                     "password": "randompass999",
+                     "organisationId": "${organisation.id.value}",
+                     "role": "BOCLIPS_WEB_APP",
+                     "type": "b2bUser"
+                     }
+                        """.trimIndent()
+                    )
+            )
+                .andExpect(status().isForbidden)
+        }
+    }
+
+    @Nested
     inner class UpdateUser {
         @Test
         fun `updates a user`() {
@@ -883,7 +942,12 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val contentPackage = ContentPackage(
                 name = "Package 1",
                 id = contentPackageId,
-                accessRules = listOf(collectionsAccessRule, videosAccessRule, languageAccessRule, playbackSourcesAccessRule)
+                accessRules = listOf(
+                    collectionsAccessRule,
+                    videosAccessRule,
+                    languageAccessRule,
+                    playbackSourcesAccessRule
+                )
             )
 
             saveContentPackage(contentPackage)
@@ -911,13 +975,23 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[*].type",
-                        containsInAnyOrder("IncludedCollections", "IncludedVideos", "ExcludedLanguages", "ExcludedPlaybackSources")
+                        containsInAnyOrder(
+                            "IncludedCollections",
+                            "IncludedVideos",
+                            "ExcludedLanguages",
+                            "ExcludedPlaybackSources"
+                        )
                     )
                 )
                 .andExpect(
                     jsonPath(
                         "$._embedded.accessRules[*].name",
-                        containsInAnyOrder("Test collections contract", "Test videos contract", "Test languages", "Excluded youtube")
+                        containsInAnyOrder(
+                            "Test collections contract",
+                            "Test videos contract",
+                            "Test languages",
+                            "Excluded youtube"
+                        )
                     )
                 )
         }

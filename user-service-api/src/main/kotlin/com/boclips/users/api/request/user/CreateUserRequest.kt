@@ -60,4 +60,21 @@ sealed class CreateUserRequest(
         @field:NotEmpty(message = "externalUserId is required")
         val externalUserId: String
     ) : CreateUserRequest()
+
+    @JsonTypeName("b2bUser")
+    data class CreateB2bUserRequest(
+        @field:NotEmpty(message = "Email is required")
+        val email: String,
+
+        @field:Size(min = 8, max = 50, message = "Password length must be at least 8")
+        @field:NotNull(message = "Password is required")
+        @field:NotEmpty(message = "Password must be set")
+        var password: String,
+
+        @field:NotEmpty(message = "OrganisationId is required")
+        val organisationId: String,
+
+        @field:NotEmpty(message = "Role is required")
+        val role: String
+    ) : CreateUserRequest()
 }

@@ -64,7 +64,7 @@ open class KeycloakWrapper(
                         CredentialRepresentation().apply {
                             type = CredentialRepresentation.PASSWORD
                             value = request.password
-                            isTemporary = false
+                            isTemporary = request.isPasswordTemporary
                         }
                     )
                     isEmailVerified = false

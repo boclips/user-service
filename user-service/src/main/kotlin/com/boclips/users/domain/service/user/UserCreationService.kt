@@ -39,7 +39,8 @@ class UserCreationService(
         val identity = identityProvider.createIdentity(
             email = newTeacher.email,
             password = newTeacher.password,
-            role = TEACHER_ROLE
+            role = TEACHER_ROLE,
+            isPasswordTemporary = false
         )
 
         return create(

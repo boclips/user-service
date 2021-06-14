@@ -16,7 +16,12 @@ class KeycloakClientFake : IdentityProvider, SessionProvider {
     private var session: UserSessions =
         UserSessions(lastAccess = null)
 
-    override fun createIdentity(email: String, password: String, role: String?): Identity {
+    override fun createIdentity(
+        email: String,
+        password: String,
+        role: String?,
+        isPasswordTemporary: Boolean
+    ): Identity {
         if (fakeUsers.values.filter { it.email == email }.isNotEmpty()) {
             throw UserAlreadyExistsException()
         }

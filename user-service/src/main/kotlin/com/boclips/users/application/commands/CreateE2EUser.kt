@@ -31,7 +31,8 @@ class CreateE2EUser(
         val identity = identityProvider.createIdentity(
             email = createE2EUserRequest.email!!,
             password = createE2EUserRequest.password!!,
-            role = "ROLE_E2E"
+            role = "ROLE_E2E",
+            isPasswordTemporary = false
         )
 
         return userRepository.create(

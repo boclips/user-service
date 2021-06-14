@@ -21,12 +21,18 @@ open class KeycloakClient(
     companion object : KLogging()
 
     @Retryable(value = [UserNotCreatedException::class], maxAttempts = 2)
-    override fun createIdentity(email: String, password: String, role: String?): Identity {
+    override fun createIdentity(
+        email: String,
+        password: String,
+        role: String?,
+        isPasswordTemporary: Boolean
+    ): Identity {
         val createdUser = keycloak.createUser(
             KeycloakCreateUserRequest(
                 email = email,
                 password = password,
-                role = role
+                role = role,
+                isPasswordTemporary = isPasswordTemporary
             )
         )
         logger.info { "Created user ${createdUser.id} in Keycloak" }
