@@ -21,6 +21,7 @@ import com.boclips.users.domain.service.subject.SubjectService
 import com.boclips.users.domain.service.user.IdentityProvider
 import com.boclips.users.domain.service.user.UserCreationService
 import com.boclips.users.infrastructure.MongoDatabase
+import com.boclips.users.infrastructure.account.AccountDocument
 import com.boclips.users.infrastructure.schooldigger.FakeAmericanSchoolsProvider
 import com.boclips.users.infrastructure.subjects.CacheableSubjectsClient
 import com.boclips.users.presentation.hateoas.ContentPackageLinkBuilder
@@ -33,6 +34,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import de.flapdoodle.embed.mongo.MongodProcess
 import mu.KLogging
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -164,6 +166,10 @@ abstract class AbstractSpringIntegrationTest {
         saveIdentityProviderAccount(createdUser)
 
         return createdUser
+    }
+
+    fun saveAccount(name: String): Account {
+        return accountRepository.create(AccountDocument(name = name, _id = ObjectId()))
     }
 
     fun saveIdentityProviderAccount(user: User): String {
