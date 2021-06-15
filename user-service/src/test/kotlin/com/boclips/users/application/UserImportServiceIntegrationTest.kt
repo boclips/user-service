@@ -23,7 +23,7 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
 
         setSecurityContext(userId.value)
 
-        saveAccount(UserFactory.sample(id = userId.value))
+        saveIdentityProviderAccount(UserFactory.sample(id = userId.value))
 
         userImportService.importFromIdentityProvider(userId = userId)
 
@@ -38,7 +38,7 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
         val savedUser = userRepository.create(user)
         setSecurityContext(savedUser.id.value)
 
-        saveAccount(UserFactory.sample(id = "some-id"))
+        saveIdentityProviderAccount(UserFactory.sample(id = "some-id"))
 
         assertThrows<UserAlreadyExistsException> { userImportService.importFromIdentityProvider(userId = savedUser.id) }
     }
@@ -51,8 +51,8 @@ class UserImportServiceIntegrationTest : AbstractSpringIntegrationTest() {
         setSecurityContext(userId1)
         setSecurityContext(userId2)
 
-        saveAccount(UserFactory.sample(id = userId1))
-        saveAccount(UserFactory.sample(id = userId2))
+        saveIdentityProviderAccount(UserFactory.sample(id = userId1))
+        saveIdentityProviderAccount(UserFactory.sample(id = userId2))
 
         userImportService.importFromIdentityProvider(
             listOf(

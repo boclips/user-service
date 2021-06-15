@@ -322,7 +322,7 @@ class UpdateUserIntegrationTest : AbstractSpringIntegrationTest() {
         // this mimics a user not being in our local database,
         // but is instead provided by some SSO source
         val userId = UserId("some-user-id")
-        keycloakClientFake.createAccount(IdentityFactory.sample(id = userId.value))
+        keycloakClientFake.createIdentityProviderAccount(IdentityFactory.sample(id = userId.value))
         setSecurityContext(userId.value)
 
         val mySubject = saveSubject("Maths")

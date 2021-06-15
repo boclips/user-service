@@ -61,7 +61,7 @@ class KeycloakClientFake : IdentityProvider, SessionProvider {
         fakeUsers.clear()
     }
 
-    fun createAccount(identity: Identity): Identity {
+    fun createIdentityProviderAccount(identity: Identity): Identity {
         fakeUsers[identity.id.value] = identity
         return identity
     }

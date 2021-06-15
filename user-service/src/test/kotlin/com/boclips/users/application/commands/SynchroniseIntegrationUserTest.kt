@@ -150,7 +150,7 @@ class SynchroniseIntegrationUserTest : AbstractSpringIntegrationTest() {
     fun `imports user from identity provider if not in db`() {
         setSecurityContext("internal-user-id")
 
-        keycloakClientFake.createAccount(
+        keycloakClientFake.createIdentityProviderAccount(
             IdentityFactory.sample(
                 id = "internal-user-id",
                 username = "external-user-id",

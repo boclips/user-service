@@ -14,7 +14,7 @@ class GetOrImportUserIntegrationTest : AbstractSpringIntegrationTest() {
     fun `imports the user if it doesn't exist and returns the created entry`() {
         val userId = UserId(UUID.randomUUID().toString())
 
-        keycloakClientFake.createAccount(
+        keycloakClientFake.createIdentityProviderAccount(
             IdentityFactory.sample(
                 id = userId.value,
                 username = "service-account@somewhere.com",

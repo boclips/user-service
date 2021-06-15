@@ -122,7 +122,7 @@ class GetUserIntegrationTest : AbstractSpringIntegrationTest() {
             val userId = UUID.randomUUID().toString()
             setSecurityContext(userId)
 
-            saveAccount(UserFactory.sample(id = userId))
+            saveIdentityProviderAccount(UserFactory.sample(id = userId))
 
             val user = getUser(userId)
 

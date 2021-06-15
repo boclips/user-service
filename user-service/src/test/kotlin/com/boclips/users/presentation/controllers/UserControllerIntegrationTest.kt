@@ -1070,7 +1070,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             val userId = "709f86bf-3292-4c96-9c84-5c89a255a07c"
             val authority = "TEST_ORGANISATION"
             val organisationMatchingRole = "ROLE_$authority"
-            keycloakClientFake.createAccount(
+            keycloakClientFake.createIdentityProviderAccount(
                 IdentityFactory.sample(
                     id = userId,
                     username = "service-account@somewhere.com",

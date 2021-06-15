@@ -9,7 +9,6 @@ import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.subject.Subject
 import com.boclips.users.domain.model.subject.SubjectId
-import com.boclips.users.domain.model.user.Identity
 import com.boclips.users.domain.model.user.User
 import com.boclips.users.domain.model.user.UserRepository
 import com.boclips.users.domain.service.access.AccessExpiryService
@@ -157,13 +156,13 @@ abstract class AbstractSpringIntegrationTest {
     fun saveUser(user: User): User {
         val createdUser = userRepository.create(user)
 
-        saveAccount(createdUser)
+        saveIdentityProviderAccount(createdUser)
 
         return createdUser
     }
 
-    fun saveAccount(user: User): String {
-        keycloakClientFake.createAccount(
+    fun saveIdentityProviderAccount(user: User): String {
+        keycloakClientFake.createIdentityProviderAccount(
             IdentityFactory.sample(
                 id = user.id.value,
                 username = user.identity.email ?: user.identity.username,
