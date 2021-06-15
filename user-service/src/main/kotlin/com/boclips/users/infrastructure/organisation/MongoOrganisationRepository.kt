@@ -106,9 +106,7 @@ class MongoOrganisationRepository(
                 is ReplaceBilling -> accumulator.copy(billing = update.billing)
                 is ReplaceFeatures ->
                     accumulator.copy(
-                        features = update.features.mapKeys {
-                            FeatureDocumentConverter.toDocument(it.key)
-                        }
+                        features = update.features.mapKeys { it.key.name }
                     )
                 is ReplaceContentPackageId -> accumulator.copy(contentPackageId = update.contentPackageId.value)
             }

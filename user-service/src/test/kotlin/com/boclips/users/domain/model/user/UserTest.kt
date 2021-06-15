@@ -19,7 +19,7 @@ class UserTest {
         val user = UserFactory.sample(
             organisation = OrganisationFactory.school(
                 features = mapOf(
-                    Feature.TEACHERS_HOME_BANNER to false,
+                    Feature.BO_WEB_APP_ADDITIONAL_SERVICES to false,
                     Feature.LTI_RESPONSIVE_VIDEO_CARD to true
                 )
             )
@@ -34,13 +34,9 @@ class UserTest {
                 Feature.LTI_SLS_TERMS_BUTTON to false,
                 Feature.LTI_AGE_FILTER to true,
                 Feature.LTI_RESPONSIVE_VIDEO_CARD to true,
-                Feature.TEACHERS_HOME_BANNER to false,
-                Feature.TEACHERS_HOME_SUGGESTED_VIDEOS to true,
-                Feature.TEACHERS_HOME_PROMOTED_COLLECTIONS to true,
-                Feature.TEACHERS_SUBJECTS to true,
                 Feature.USER_DATA_HIDDEN to false,
                 Feature.BO_WEB_APP_COPY_OLD_LINK_BUTTON to false,
-                Feature.BO_WEB_APP_ADDITIONAL_SERVICES to true,
+                Feature.BO_WEB_APP_ADDITIONAL_SERVICES to false,
                 Feature.BO_WEB_APP_PRICES to true
             )
         )

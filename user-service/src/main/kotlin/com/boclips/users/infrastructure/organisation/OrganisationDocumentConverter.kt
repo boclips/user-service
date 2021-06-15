@@ -4,6 +4,7 @@ import com.boclips.security.utils.Client
 import com.boclips.users.domain.model.access.ChannelId
 import com.boclips.users.domain.model.access.ContentPackageId
 import com.boclips.users.domain.model.access.VideoType
+import com.boclips.users.domain.model.feature.Feature
 import com.boclips.users.domain.model.organisation.Address
 import com.boclips.users.domain.model.organisation.ApiIntegration
 import com.boclips.users.domain.model.organisation.ContentAccess
@@ -67,7 +68,7 @@ object OrganisationDocumentConverter : KLogging() {
 
         val externalId = organisationDocument.externalId?.let(::ExternalOrganisationId)
 
-        val features = organisationDocument.features?.mapKeys { FeatureDocumentConverter.fromDocument(it.key) }
+        val features = convertToDomainFeatures(organisationDocument.features)
 
         return when (organisationDocument.type) {
             OrganisationType.API -> ApiIntegration(
@@ -169,7 +170,7 @@ object OrganisationDocumentConverter : KLogging() {
                 }
             },
             contentPackageByClient = organisation.deal.contentAccess?.let { convertToDocumentContentPackageByClient(it) },
-            features = organisation.features?.mapKeys { FeatureDocumentConverter.toDocument(it.key) },
+            features = organisation.features?.mapKeys { it.key.name },
             prices = organisation.deal.prices?.let {
                 CustomPricesDocument(
                     videoTypePrices = it.videoTypePrices
@@ -187,6 +188,10 @@ object OrganisationDocumentConverter : KLogging() {
             legacyId = organisation.legacyId,
             logoUrl = organisation.logoUrl
         )
+    }
+
+    private fun convertToDomainFeatures(featureDocument: Map<String, Boolean>?): Map<Feature, Boolean>? {
+        return featureDocument?.filterKeys { Feature.isValid(it) }?.mapKeys { Feature.valueOf(it.key) }
     }
 
     private fun convertToDomainPrice(price: PriceDocument) = Price(

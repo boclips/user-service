@@ -248,7 +248,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     address = Address(
                         state = State(id = "FL", name = "Florida")
                     ),
-                    features = mapOf(Feature.TEACHERS_HOME_BANNER to false)
+                    features = mapOf(Feature.LTI_AGE_FILTER to false)
                 )
             )
 
@@ -265,7 +265,7 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", equalTo(district.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.domain", equalTo(givenDomain)))
-                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_BANNER", equalTo(false)))
+                .andExpect(jsonPath("$.organisationDetails.features.LTI_AGE_FILTER", equalTo(false)))
         }
 
         @Test
@@ -286,10 +286,6 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                     .content(
                         """ {"features":  { 
                                 "LTI_SLS_TERMS_BUTTON" : "false",
-                                "TEACHERS_HOME_BANNER" : "false",
-                                "TEACHERS_HOME_SUGGESTED_VIDEOS" : "false",
-                                "TEACHERS_HOME_PROMOTED_COLLECTIONS" : "false",
-                                "TEACHERS_SUBJECTS" : "false",
                                 "USER_DATA_HIDDEN" : "true" }
                             } 
                         """.trimIndent()
@@ -298,15 +294,6 @@ class OrganisationControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", equalTo(org.id.value)))
                 .andExpect(jsonPath("$.organisationDetails.features.LTI_SLS_TERMS_BUTTON", equalTo(false)))
-                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_BANNER", equalTo(false)))
-                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_HOME_SUGGESTED_VIDEOS", equalTo(false)))
-                .andExpect(
-                    jsonPath(
-                        "$.organisationDetails.features.TEACHERS_HOME_PROMOTED_COLLECTIONS",
-                        equalTo(false)
-                    )
-                )
-                .andExpect(jsonPath("$.organisationDetails.features.TEACHERS_SUBJECTS", equalTo(false)))
                 .andExpect(jsonPath("$.organisationDetails.features.USER_DATA_HIDDEN", equalTo(true)))
         }
 

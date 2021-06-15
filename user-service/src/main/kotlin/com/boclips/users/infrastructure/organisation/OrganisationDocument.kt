@@ -23,7 +23,7 @@ data class OrganisationDocument(
     val billing: Boolean? = null,
     val contentPackageId: String? = null,
     val contentPackageByClient: Map<String, String>? = null,
-    val features: Map<FeatureKey, Boolean>?,
+    val features: Map<String, Boolean>?,
     val prices: CustomPricesDocument?,
     val legacyId: String? = null,
     val logoUrl: String? = null
@@ -44,20 +44,6 @@ data class CustomPricesDocument(
     val videoTypePrices: Map<VideoTypeKey, PriceDocument>?,
     val channelPrices: Map<String, PriceDocument>?,
 )
-
-enum class FeatureKey {
-    LTI_SLS_TERMS_BUTTON,
-    LTI_RESPONSIVE_VIDEO_CARD,
-    LTI_AGE_FILTER,
-    TEACHERS_HOME_BANNER,
-    TEACHERS_HOME_SUGGESTED_VIDEOS,
-    TEACHERS_HOME_PROMOTED_COLLECTIONS,
-    TEACHERS_SUBJECTS,
-    USER_DATA_HIDDEN,
-    BO_WEB_APP_COPY_OLD_LINK_BUTTON,
-    BO_WEB_APP_ADDITIONAL_SERVICES,
-    BO_WEB_APP_PRICES
-}
 
 data class LocationDocument(
     val code: String

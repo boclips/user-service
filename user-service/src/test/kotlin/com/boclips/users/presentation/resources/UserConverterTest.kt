@@ -60,7 +60,7 @@ class UserConverterTest : AbstractSpringIntegrationTest() {
                     state = State.fromCode("NY"),
                     country = Country.fromCode("USA")
                 ),
-                features = mapOf(Feature.TEACHERS_HOME_BANNER to true)
+                features = mapOf(Feature.BO_WEB_APP_ADDITIONAL_SERVICES to true)
             ),
             shareCode = "1234"
         )
@@ -87,7 +87,7 @@ class UserConverterTest : AbstractSpringIntegrationTest() {
         assertThat(userResource.organisation!!.state!!.id).isEqualTo("NY")
         assertThat(userResource.organisation!!.country!!.name).isEqualTo("United States")
         assertThat(userResource.organisation!!.country!!.id).isEqualTo("USA")
-        assertThat(userResource.features!![FeatureKeyResource.TEACHERS_HOME_BANNER.toString()]).isEqualTo(true)
+        assertThat(userResource.features!![FeatureKeyResource.BO_WEB_APP_ADDITIONAL_SERVICES.toString()]).isEqualTo(true)
         assertThat(userResource.shareCode).isEqualTo("1234")
     }
 

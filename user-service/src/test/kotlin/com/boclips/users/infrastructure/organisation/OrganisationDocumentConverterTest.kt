@@ -9,8 +9,8 @@ import com.boclips.users.domain.model.organisation.District
 import com.boclips.users.domain.model.organisation.OrganisationId
 import com.boclips.users.domain.model.organisation.OrganisationTag
 import com.boclips.users.domain.model.organisation.OrganisationType
-import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.domain.model.organisation.Prices
+import com.boclips.users.domain.model.organisation.School
 import com.boclips.users.testsupport.factories.OrganisationDocumentFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory
 import com.boclips.users.testsupport.factories.OrganisationFactory.Companion.deal
@@ -214,8 +214,8 @@ class OrganisationDocumentConverterTest {
                         VideoTypeKey.STOCK to PriceDocument(BigDecimal.ZERO, "USD")
                     ),
                     channelPrices = mapOf(
-                        "channel-TED" to PriceDocument(amount = BigDecimal.ONE, currency ="USD"),
-                        "channel-orange" to PriceDocument(amount = BigDecimal.TEN, currency ="USD")
+                        "channel-TED" to PriceDocument(amount = BigDecimal.ONE, currency = "USD"),
+                        "channel-orange" to PriceDocument(amount = BigDecimal.TEN, currency = "USD")
                     )
                 )
             )
@@ -227,8 +227,8 @@ class OrganisationDocumentConverterTest {
                         VideoTypeKey.NEWS to PriceDocument(BigDecimal.TEN, "USD"),
                     ),
                     channelPrices = mapOf(
-                        "channel-TED" to PriceDocument(amount = BigDecimal.ONE, currency ="USD"),
-                        "channel-orange" to PriceDocument(amount = BigDecimal.TEN, currency ="USD")
+                        "channel-TED" to PriceDocument(amount = BigDecimal.ONE, currency = "USD"),
+                        "channel-orange" to PriceDocument(amount = BigDecimal.TEN, currency = "USD")
                     )
                 )
             )
@@ -326,6 +326,34 @@ class OrganisationDocumentConverterTest {
 
             assertThat(organisation.deal.prices).isNull()
             assertThat((organisation as School).district!!.deal.prices).isNull()
+        }
+    }
+
+    @Nested
+    inner class FeaturesConversions {
+
+        @Test
+        fun `converts known features on organisation document`() {
+            val organisationDocument = OrganisationDocumentFactory.sample(
+                features = mapOf(Feature.LTI_AGE_FILTER.name to true, Feature.LTI_SLS_TERMS_BUTTON.name to false)
+            )
+
+            val organisation = OrganisationDocumentConverter.fromDocument(organisationDocument)
+
+            assertThat(organisation.features!![Feature.LTI_AGE_FILTER]).isTrue
+            assertThat(organisation.features!![Feature.LTI_SLS_TERMS_BUTTON]).isFalse
+        }
+
+        @Test
+        fun `ignores unknown features from document`() {
+            val organisationDocument = OrganisationDocumentFactory.sample(
+                features = mapOf("RANDOM_FEATURE" to true, Feature.LTI_SLS_TERMS_BUTTON.name to false)
+            )
+
+            val organisation = OrganisationDocumentConverter.fromDocument(organisationDocument)
+
+            assertThat(organisation.features?.size).isEqualTo(Feature.values().size)
+            assertThat(organisation.features!![Feature.LTI_SLS_TERMS_BUTTON]).isFalse
         }
     }
 }

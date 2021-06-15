@@ -57,7 +57,7 @@ class EventConverterTest {
             organisation = OrganisationFactory.school(
                 features = mapOf(
                     Feature.LTI_AGE_FILTER to false,
-                    Feature.TEACHERS_SUBJECTS to true
+                    Feature.LTI_RESPONSIVE_VIDEO_CARD to true
                 )
             ),
             externalIdentity = ExternalIdentity(id = ExternalUserId(value = "external-id-1"))
@@ -83,7 +83,7 @@ class EventConverterTest {
 
         assertThat(eventUser.organisation.features).isNotNull()
         assertThat(eventUser.organisation.features["LTI_AGE_FILTER"]).isFalse()
-        assertThat(eventUser.organisation.features["TEACHERS_SUBJECTS"]).isTrue()
+        assertThat(eventUser.organisation.features["LTI_RESPONSIVE_VIDEO_CARD"]).isTrue()
     }
 
     @Test
@@ -125,10 +125,6 @@ class EventConverterTest {
 
         assertThat(eventOrganisation.features["LTI_AGE_FILTER"]).isTrue()
         assertThat(eventOrganisation.features["LTI_SLS_TERMS_BUTTON"]).isFalse()
-        assertThat(eventOrganisation.features["TEACHERS_HOME_BANNER"]).isTrue()
-        assertThat(eventOrganisation.features["TEACHERS_HOME_SUGGESTED_VIDEOS"]).isTrue()
-        assertThat(eventOrganisation.features["TEACHERS_HOME_PROMOTED_COLLECTIONS"]).isTrue()
-        assertThat(eventOrganisation.features["TEACHERS_SUBJECTS"]).isTrue()
         assertThat(eventOrganisation.features["USER_DATA_HIDDEN"]).isFalse()
         assertThat(eventOrganisation.features["BO_WEB_APP_ADDITIONAL_SERVICES"]).isTrue()
     }

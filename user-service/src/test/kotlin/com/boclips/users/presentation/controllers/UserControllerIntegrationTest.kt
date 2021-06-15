@@ -810,7 +810,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
                 saveOrganisation(
                     school(
                         address = Address(country = Country.usa(), state = State.fromCode("WA")),
-                        features = mapOf(Feature.TEACHERS_HOME_BANNER to true)
+                        features = mapOf(Feature.USER_DATA_HIDDEN to true)
                     )
                 )
             val user = saveUser(UserFactory.sample(organisation = organisation))
@@ -840,7 +840,7 @@ class UserControllerIntegrationTest : AbstractSpringIntegrationTest() {
             )
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.features").exists())
-                .andExpect(jsonPath("$.features.TEACHERS_HOME_BANNER").isBoolean())
+                .andExpect(jsonPath("$.features.USER_DATA_HIDDEN").isBoolean())
         }
 
         @Test
