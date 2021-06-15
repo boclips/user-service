@@ -8,6 +8,7 @@ import com.boclips.users.domain.service.user.IdentityProvider
 import com.boclips.users.domain.service.user.SessionProvider
 import com.boclips.users.infrastructure.MongoDatabase.DB_NAME
 import com.boclips.users.infrastructure.access.MongoContentPackageRepository
+import com.boclips.users.infrastructure.account.MongoAccountRepository
 import com.boclips.users.infrastructure.hubspot.HubSpotClient
 import com.boclips.users.infrastructure.hubspot.resources.HubSpotProperties
 import com.boclips.users.infrastructure.keycloak.KeycloakDbProperties
@@ -146,6 +147,11 @@ class InfrastructureConfiguration(
     @Bean
     fun mongoOrganisationAccountRepository(): MongoOrganisationRepository {
         return MongoOrganisationRepository(mongoClient())
+    }
+
+    @Bean
+    fun mongoAccountRepository(): MongoAccountRepository {
+        return MongoAccountRepository(mongoClient())
     }
 
     @Bean

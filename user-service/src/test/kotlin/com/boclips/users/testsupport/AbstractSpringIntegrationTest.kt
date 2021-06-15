@@ -5,6 +5,8 @@ import com.boclips.users.application.CaptchaProvider
 import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageRepository
+import com.boclips.users.domain.model.account.Account
+import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationRepository
 import com.boclips.users.domain.model.subject.Subject
@@ -75,6 +77,9 @@ abstract class AbstractSpringIntegrationTest {
 
     @Autowired
     lateinit var organisationRepository: OrganisationRepository
+
+    @Autowired
+    lateinit var accountRepository: AccountRepository
 
     @Autowired
     lateinit var contentPackageRepository: ContentPackageRepository
