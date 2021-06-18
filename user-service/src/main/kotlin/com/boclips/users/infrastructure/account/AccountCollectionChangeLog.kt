@@ -18,14 +18,16 @@ class AccountCollectionChangeLog {
     fun createBoclipsAccount(
         @NonLockGuarded mongoClient: MongoClient,
     ) {
-        val boclipsOrg: Document = mongoClient.getDatabase(DB_NAME).getCollection("organisations").findOne(
+        val database = mongoClient.getDatabase(DB_NAME)
+        val boclipsOrg: Document = database.getCollection("organisations").findOne(
             Filters.eq("name", "Boclips")
         )!!
 
         val boclipsOrganisationId = boclipsOrg["_id"] as ObjectId
         val boclipsAccountDocument = Document().append("name", "Boclips").append("organisations", listOf(boclipsOrganisationId))
 
-        val insertResult = mongoClient.getDatabase(DB_NAME).getCollection("accounts")
+        database.createCollection("accounts")
+        val insertResult = database.getCollection("accounts")
             .insertOne(boclipsAccountDocument)
 
         logger.info { "createBoclipsAccount results: $insertResult" }
