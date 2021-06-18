@@ -41,6 +41,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.getContentPackages").doesNotExist())
             .andExpect(jsonPath("$._links.getContentPackage").doesNotExist())
             .andExpect(jsonPath("$._links.updateContentPackage").doesNotExist())
+            .andExpect(jsonPath("$._links.accounts").doesNotExist())
     }
 
     @Test
@@ -71,6 +72,7 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(jsonPath("$._links.getContentPackages").doesNotExist())
             .andExpect(jsonPath("$._links.getContentPackage").doesNotExist())
             .andExpect(jsonPath("$._links.updateContentPackage").doesNotExist())
+            .andExpect(jsonPath("$._links.accounts").doesNotExist())
     }
 
     @Test
@@ -234,6 +236,18 @@ class LinksControllerIntegrationTest : AbstractSpringIntegrationTest() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$._links.getContentPackages.href", endsWith("/content-packages")))
             .andExpect(jsonPath("$._links.getContentPackage.href", endsWith("/content-packages/{id}")))
+    }
+
+    @Test
+    fun `user with VIEW_ACCOUNTS role`() {
+        userRepository.create(
+            UserFactory.sample(
+                identity = IdentityFactory.sample(id = "a-user-id")
+            )
+        )
+        mvc.perform(get("/v1/").asUserWithRoles("a-user-id", UserRoles.VIEW_ACCOUNTS))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$._links.accounts.href", endsWith("/accounts")))
     }
 
     @Test

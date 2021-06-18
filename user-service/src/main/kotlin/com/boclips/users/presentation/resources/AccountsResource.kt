@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.resources
 
 
-data class AccountsResource(
+open class AccountsResource(
     val _embedded: AccountsWrapper
 )
 

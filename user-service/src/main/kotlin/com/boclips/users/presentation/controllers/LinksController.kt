@@ -63,7 +63,8 @@ class LinksController(
                 userLinkBuilder.isUserActiveLink(),
                 contentPackageLinkBuilder.getContentPackagesLink(),
                 contentPackageLinkBuilder.getContentPackageLink(),
-                contentPackageLinkBuilder.updateContentPackageLink()
+                contentPackageLinkBuilder.updateContentPackageLink(),
+                contentPackageLinkBuilder.accountsLink(),
             )
         )
     }
