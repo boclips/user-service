@@ -171,7 +171,7 @@ class InfrastructureConfiguration(
         )
     }
 
-    @Profile("!test")
+    @Profile("!test", "!testing")
     @Bean
     fun mongockInitializingBeanRunner(
         springContext: ApplicationContext,
