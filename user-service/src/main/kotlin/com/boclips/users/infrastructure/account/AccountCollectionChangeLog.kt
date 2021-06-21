@@ -1,4 +1,5 @@
 package com.boclips.users.infrastructure.account
+
 import com.boclips.users.infrastructure.MongoDatabase.DB_NAME
 import com.github.cloudyrock.mongock.ChangeLog
 import com.github.cloudyrock.mongock.ChangeSet
@@ -23,13 +24,48 @@ class AccountCollectionChangeLog {
             Filters.eq("name", "Boclips")
         )?.let { org ->
             val boclipsOrganisationId = org["_id"] as ObjectId
-            val boclipsAccountDocument = Document().append("name", "Boclips").append("organisations", listOf(boclipsOrganisationId))
+            val boclipsAccountDocument =
+                Document().append("name", "Boclips").append("organisations", listOf(boclipsOrganisationId))
 
             val insertResult = database.getCollection("accounts")
                 .insertOne(boclipsAccountDocument)
 
             logger.info { "createBoclipsAccount results: $insertResult" }
         } ?: logger.info { "no boclips org, skipping account creation" }
+    }
 
+    @ChangeSet(order = "002", id = "2021-06-21T17:10", author = "mjanik")
+    fun createAccounts(
+        @NonLockGuarded mongoClient: MongoClient,
+    ) {
+        val database = mongoClient.getDatabase(DB_NAME)
+
+        val allOrgsWithDomain = database.getCollection("organisations")
+            .find(
+                Filters.and(
+                    Filters.exists("domain"),
+                    Filters.ne("domain", null)
+                )
+            )
+            .map { org -> org["name"]!! as String to org["_id"]!! as ObjectId }
+            .groupBy(keySelector = { it.first }, valueTransform = { it.second })
+            .toMap()
+
+        val allServiceAccountOrgs: Map<String, ObjectId> = database.getCollection("users")
+            .find(Filters.regex("username", "service-account"))
+            .mapNotNull { it["organisation"] as? Document }
+            .map { org -> org["name"]!! as String to org["_id"]!! as ObjectId }
+            .toMap()
+
+        val allOrgs = allServiceAccountOrgs + allOrgsWithDomain
+
+        allOrgs
+            .filter { it.key != "Boclips" }
+            .map { Document().append("name", it.key).append("organisations", it.value) }
+            .let {
+                database.getCollection("accounts")
+                    .insertMany(it)
+                logger.info { "createAccounts inserted size: ${it.size}" }
+            }
     }
 }
