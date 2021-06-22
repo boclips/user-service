@@ -61,7 +61,7 @@ class AccountCollectionChangeLog {
 
         allOrgs
             .filter { it.key != "Boclips" }
-            .map { Document().append("name", it.key).append("organisations", it.value) }
+            .map { Document().append("name", it.key).append("organisations", listOf(it.value)) }
             .let {
                 database.getCollection("accounts")
                     .insertMany(it)
