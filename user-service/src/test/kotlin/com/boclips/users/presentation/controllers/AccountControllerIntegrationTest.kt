@@ -1,7 +1,7 @@
 package com.boclips.users.presentation.controllers
 
 import com.boclips.users.config.security.UserRoles
-import com.boclips.users.domain.model.account.AccountProducts
+import com.boclips.users.domain.model.account.AccountProduct
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.boclips.users.testsupport.asUserWithRoles
 import org.hamcrest.Matchers.equalTo
@@ -20,8 +20,8 @@ internal class AccountControllerIntegrationTest : AbstractSpringIntegrationTest(
     @Test
     fun `gets all accounts`() {
         val accountOne =
-            saveAccount(name = "greg's account", products = setOf(AccountProducts.API, AccountProducts.B2T))
-        val accountTwo = saveAccount(name = "alex's account", products = setOf(AccountProducts.LTI))
+            saveAccount(name = "greg's account", products = setOf(AccountProduct.API, AccountProduct.B2T))
+        val accountTwo = saveAccount(name = "alex's account", products = setOf(AccountProduct.LTI))
 
         mockMvc.perform(
             MockMvcRequestBuilders.get("/v1/accounts").asUserWithRoles(

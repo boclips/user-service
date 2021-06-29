@@ -6,7 +6,7 @@ import com.boclips.users.application.commands.GetOrImportUser
 import com.boclips.users.domain.model.access.ContentPackage
 import com.boclips.users.domain.model.access.ContentPackageRepository
 import com.boclips.users.domain.model.account.Account
-import com.boclips.users.domain.model.account.AccountProducts
+import com.boclips.users.domain.model.account.AccountProduct
 import com.boclips.users.domain.model.account.AccountRepository
 import com.boclips.users.domain.model.organisation.Organisation
 import com.boclips.users.domain.model.organisation.OrganisationRepository
@@ -169,7 +169,7 @@ abstract class AbstractSpringIntegrationTest {
         return createdUser
     }
 
-    fun saveAccount(name: String, products: Set<AccountProducts>): Account {
+    fun saveAccount(name: String, products: Set<AccountProduct>): Account {
         return accountRepository.create(
             AccountDocument(
                 name = name,

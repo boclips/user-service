@@ -1,5 +1,5 @@
 package com.boclips.users.domain.model.account
 
-enum class AccountProducts {
+enum class AccountProduct {
     B2T, API, B2B, LTI
 }

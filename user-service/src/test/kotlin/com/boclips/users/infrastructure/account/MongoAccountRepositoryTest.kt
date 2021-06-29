@@ -19,7 +19,7 @@ internal class MongoAccountRepositoryTest : AbstractSpringIntegrationTest() {
     @Test
     fun `can get all accounts`() {
         val firstAccount =
-            AccountDocument(name = "my new account", _id = ObjectId(), products = setOf("TI"))
+            AccountDocument(name = "my new account", _id = ObjectId(), products = setOf("LTI"))
         val secondAccount = AccountDocument(
             name = "my other new account",
             _id = ObjectId(),
