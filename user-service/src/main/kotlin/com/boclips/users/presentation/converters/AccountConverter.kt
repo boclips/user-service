@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component
 @Component
 class AccountConverter {
     fun toAccountsResource(accounts: List<Account>): AccountsResource {
-        val accountResources = accounts.map { AccountResource(id = it.id.value, name = it.name) }
+        val accountResources =
+            accounts.map { AccountResource(id = it.id.value, name = it.name, products = it.products) }
         return AccountsResource(AccountsWrapper(accountResources))
     }
 }
