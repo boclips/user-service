@@ -95,7 +95,7 @@ class AccountCollectionChangeLog {
             database.getCollection("accounts")
                 .insertOne(
                     Document(
-                        mapOf("name" to listOf(account.key), "products" to setOf(account.value.toString()))
+                        mapOf("name" to account.key, "products" to setOf(account.value.toString()))
                     )
                 )
         }

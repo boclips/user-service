@@ -62,6 +62,8 @@ class AccountCollectionChangeLogTest : AbstractSpringIntegrationTest() {
         val added2 = mongoClient.getDatabase(DB_NAME).getCollection("accounts")
             .findOne(Filters.eq("name", "Savas Physics"))
 
+        Assertions.assertThat(added!!["name"]).isEqualTo("Savvaas English")
+        Assertions.assertThat(added2!!["name"]).isEqualTo("Savas Physics")
         Assertions.assertThat(added!!["products"]).isEqualTo(listOf(LTI.toString()))
         Assertions.assertThat(added2!!["products"]).isEqualTo(listOf(B2B.toString()))
     }
