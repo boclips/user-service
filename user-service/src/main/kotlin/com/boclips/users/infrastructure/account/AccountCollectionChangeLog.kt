@@ -75,7 +75,7 @@ class AccountCollectionChangeLog {
             }
     }
 
-    @ChangeSet(order = "003", id = "2021-06-30T15:10", author = "mrose,gtatarzyn")
+    @ChangeSet(order = "003", id = "2021-06-30T16:20", author = "mrose,gtatarzyn")
     fun addAccounts(
         @NonLockGuarded mongoClient: MongoClient,
     ) {
@@ -101,7 +101,7 @@ class AccountCollectionChangeLog {
         }
     }
 
-    @ChangeSet(order = "004", id = "2021-06-30T15:10", author = "mrose,gtatarzyn")
+    @ChangeSet(order = "004", id = "2021-06-30T16:30", author = "mrose,gtatarzyn")
     fun updateProducts(
         @NonLockGuarded mongoClient: MongoClient,
     ) {
