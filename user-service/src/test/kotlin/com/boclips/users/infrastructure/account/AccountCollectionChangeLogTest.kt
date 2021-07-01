@@ -8,7 +8,7 @@ import com.boclips.users.infrastructure.MongoDatabase.DB_NAME
 import com.boclips.users.infrastructure.account.AccountCollectionChangeLog
 import com.boclips.users.testsupport.AbstractSpringIntegrationTest
 import com.mongodb.client.model.Filters
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.bson.Document
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Test
@@ -48,10 +48,12 @@ class AccountCollectionChangeLogTest : AbstractSpringIntegrationTest() {
         val updated2 = mongoClient.getDatabase(DB_NAME).getCollection("accounts")
             .findOne(Filters.eq("_id", "account-id2"))
 
-        Assertions.assertThat(updated!!["products"] as List<*>).containsExactlyInAnyOrder(B2T.toString())
-        Assertions.assertThat(updated2!!["products"]as List<*>).containsExactlyInAnyOrder(B2T.toString(), API.toString()
+        assertThat(updated!!["products"] as List<*>).containsExactlyInAnyOrder(B2T.toString())
+        assertThat(updated2!!["products"] as List<*>).containsExactlyInAnyOrder(
+            B2T.toString(), API.toString()
         )
     }
+
     @Test
     fun `should add account with no organisations`() {
         accountCollectionChangeLog.addAccounts(mongoClient)
@@ -62,9 +64,52 @@ class AccountCollectionChangeLogTest : AbstractSpringIntegrationTest() {
         val added2 = mongoClient.getDatabase(DB_NAME).getCollection("accounts")
             .findOne(Filters.eq("name", "Savas Physics"))
 
-        Assertions.assertThat(added!!["name"]).isEqualTo("Savvaas English")
-        Assertions.assertThat(added2!!["name"]).isEqualTo("Savas Physics")
-        Assertions.assertThat(added!!["products"]).isEqualTo(listOf(LTI.toString()))
-        Assertions.assertThat(added2!!["products"]).isEqualTo(listOf(B2B.toString()))
+        assertThat(added!!["name"]).isEqualTo("Savvaas English")
+        assertThat(added2!!["name"]).isEqualTo("Savas Physics")
+        assertThat(added!!["products"]).isEqualTo(listOf(LTI.toString()))
+        assertThat(added2!!["products"]).isEqualTo(listOf(B2B.toString()))
+    }
+
+    @Test
+    fun `should remove exccess nesting from organisations`() {
+        mongoClient.getDatabase(DB_NAME).getCollection("accounts")
+            .insertMany(
+                listOf(
+                    Document(
+                        mapOf(
+                            "_id" to "account-id",
+                            "organisations" to listOf(
+                                listOf(ObjectId("5da7202591e54a00013dd2de"))
+                            )
+                        )
+                    ),
+                    Document(
+                        mapOf(
+                            "_id" to "account-id2",
+                            "organisations" to listOf(
+                                ObjectId("5eaafed77a8aaa6c7a328fdc"),
+                            )
+                        )
+                    ),
+                    Document(
+                        mapOf(
+                            "_id" to "account-id3"
+                        )
+                    )
+                )
+            )
+
+        accountCollectionChangeLog.flattenOrganisations(mongoClient)
+
+        val doubleNestedOrgs = mongoClient.getDatabase(DB_NAME).getCollection("accounts")
+            .findOne(Filters.eq("_id", "account-id"))
+        val regularOrgs = mongoClient.getDatabase(DB_NAME).getCollection("accounts")
+            .findOne(Filters.eq("_id", "account-id2"))
+        val noOrganisations = mongoClient.getDatabase(DB_NAME).getCollection("accounts")
+            .findOne(Filters.eq("_id", "account-id3"))
+
+        assertThat(doubleNestedOrgs!!["organisations"]).isEqualTo(listOf(ObjectId("5da7202591e54a00013dd2de")))
+        assertThat(regularOrgs!!["organisations"]).isEqualTo(listOf(ObjectId("5eaafed77a8aaa6c7a328fdc")))
+        assertThat(noOrganisations!!["organisations"]).isNull()
     }
 }
