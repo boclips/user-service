@@ -1,7 +1,6 @@
 buildscript {
     ext {
         kotlinVersion = '1.5.10'
-        jacksonVersion = '2.11.0'
         lombok = 'org.projectlombok:lombok:1.18.8'
         feignClientVersion = '10.7.0'
     }
@@ -75,13 +74,13 @@ dependencies {
 
     implementation('com.github.boclips:event-bus:8.0.0')
     implementation('com.github.boclips:boclips-spring-web:0.510.0')
-    implementation('com.github.boclips:boclips-spring-security:0.704.0')
+    implementation('com.github.boclips:boclips-spring-security:0.715.0')
     implementation('com.github.boclips:videos:v766')
 
     implementation('com.jayway.jsonpath:json-path:2.3.0')
     implementation('io.github.microutils:kotlin-logging:1.6.22')
-    implementation('com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1')
-    implementation('com.fasterxml.jackson.core:jackson-databind')
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
 
     implementation("org.keycloak:keycloak-admin-client:$keycloakVersion")
     implementation("org.keycloak:keycloak-authz-client:$keycloakVersion")

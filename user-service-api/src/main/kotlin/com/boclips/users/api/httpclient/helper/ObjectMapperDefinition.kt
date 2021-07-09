@@ -12,7 +12,7 @@ class ObjectMapperDefinition {
             val defaultObjectMapper = ObjectMapper()
             defaultObjectMapper.registerModule(Jackson2HalModule())
             defaultObjectMapper.registerModule(JavaTimeModule())
-            defaultObjectMapper.registerModule(KotlinModule())
+            defaultObjectMapper.registerModule(KotlinModule.Builder().build())
             defaultObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             return defaultObjectMapper
         }
